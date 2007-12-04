@@ -1,0 +1,65 @@
+<?xml version='1.0' encoding="iso-8859-15"?>
+
+
+<!ELEMENT Practica (Descripcion,Test+,Nota?)>
+<!ATTLIST Practica fecha         CDATA #REQUIRED
+                   usuario       CDATA #REQUIRED
+                   identificador CDATA #REQUIRED>
+
+                   
+<!ELEMENT Test (Descripcion,EvaluacionTest,Caso*)>
+<!ATTLIST Test identificador     CDATA #REQUIRED>
+
+
+<!ELEMENT EvaluacionTest (Descripcion?,Nota?)>
+<!ATTLIST EvaluacionTest codigoEvaluacionTest CDATA #REQUIRED>
+
+
+<!ELEMENT Caso (EvaluacionCaso)>
+<!ATTLIST Caso identificador     CDATA #REQUIRED>
+
+
+<!ELEMENT EvaluacionCaso (Descripcion?)>
+<!ATTLIST EvaluacionCaso codigoEvaluacionCaso CDATA #REQUIRED>
+
+
+<!ELEMENT Nota EMPTY>
+<!ATTLIST Nota valor CDATA #REQUIRED>
+
+
+<!ELEMENT Descripcion (#PCDATA)>
+
+
+
+
+
+                   
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
