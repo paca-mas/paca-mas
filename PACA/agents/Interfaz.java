@@ -31,6 +31,7 @@ import jade.content.onto.OntologyException;
 import jade.content.onto.basic.Action;
 import jade.core.AID;
 import jade.core.Agent;
+import jade.core.behaviours.Behaviour;
 import jade.core.behaviours.CyclicBehaviour;
 import jade.core.behaviours.OneShotBehaviour;
 import jade.core.behaviours.SimpleBehaviour;
@@ -39,6 +40,7 @@ import jade.domain.FIPAException;
 import jade.domain.FIPAAgentManagement.DFAgentDescription;
 import jade.domain.FIPAAgentManagement.ServiceDescription;
 import jade.lang.acl.ACLMessage;
+import jade.lang.acl.MessageTemplate;
 import jade.util.leap.ArrayList;
 import jade.util.leap.List;
 import jade.util.leap.Serializable;
@@ -882,18 +884,17 @@ public class Interfaz extends Agent {
 
 			//and3.set_0(listaFP);
 			//and3.set_1(and4);
+			
+			//Guardamos en and3 los ficheros pedidos
 			and3 = InsertarFicherosPedidos(ficherosUltimaPractica, contenidoFicheros, and4, te);
-			//and3.set(SL1Vocabulary.AND_LEFT, (AbsObject) listaFP);
-			//and3.set(SL1Vocabulary.AND_RIGHT, and4);
-
+			
 			//and2.set_0(listaTes);
 			//and2.set_1(and3);
 			AbsConcept AbsPrac = (AbsConcept)PACAOntology.fromObject(pract);
 			
+			//Guardamos en and2 los tests pedidos
 			and2 = InsertarTestPedidos(TestUltimaPractica, AbsPrac, and3);
-			//and2.set(SL1Vocabulary.AND_LEFT, (AbsObject) listaTes);
-			//and2.set(SL1Vocabulary.AND_RIGHT, and3);
-
+			
 			//and1.set_0(cor);
 			//and1.set_1(and2);
 			and1.set(SL1Vocabulary.AND_LEFT, AbsCor);
@@ -905,13 +906,9 @@ public class Interfaz extends Agent {
 			qriota.setVariable(x);
 			qriota.setProposition(and1);
 
-			//qriota.set_1(and1);
-			//qriota.set(SL2Vocabulary.ALL, and1);
-
 			//List l_out = new ArrayList();
 			//l_out.add(qriota);
 
-			//fillMsgContent(msg_out, l_out);
 			getContentManager().fillContent(msg_out, qriota);
 
 		}
@@ -1483,15 +1480,164 @@ public class Interfaz extends Agent {
 	
 	public class TestsBehaviour extends OneShotBehaviour{
 		private Testigo test1;
-		public TestsBehaviour(Agent _a, Testigo test){
+		private String prac1;
+		public TestsBehaviour(Agent _a, Testigo test, String pracAux){
 			super(_a);
 			this.test1 = test;
+			this.prac1 = pracAux;
 		}
 		
 		public void action(){
+			test1.setResultado(doPeticionTestPractica(prac1));
+		}
+	}
+
+	//Comportamiento que envía la petición para autenticarse
+	public class EnviaAutenticaBehaviour extends OneShotBehaviour{
+		private String usuAux;
+		private String passAux;
+		private Testigo tes1;
+		public EnviaAutenticaBehaviour(Agent _a, Testigo tes, String usuario, String passw){
+			super(_a);
+			this.usuAux = usuario;
+			this.passAux = passw;
+			this.tes1 = tes;
+		}
+		public void action(){
+			System.out.println("COMPORTAMIENTO ENVIAAUTENTICA");
+			ACLMessage respuesta = new ACLMessage(ACLMessage.QUERY_IF);
+			respuesta.setLanguage(codec.getName());
+			respuesta.setOntology(AuthOntology.ONTOLOGY_NAME);
+			respuesta.addReceiver(new AID(AgenteAutenticador, AID.ISLOCALNAME));
+					
+			// Creamos el predicado.
+			Autenticado aut = new Autenticado();
+			Usuario user2 = new Usuario();
+			
+			System.out.println("USUARIO: "+usuAux);
+			System.out.println("PASSWORD: "+passAux);
+			// Creamos el usuario
+			user2.setUser_id(usuAux);
+			user2.setPassword(passAux);
+			
+			aut.setUsuario(user2);
+		
+			try{
+				//Mandamos el predicado "aut"
+				getContentManager().fillContent(respuesta,aut);
+				addBehaviour(new RecibeMensajes(myAgent, usuAux, passAux, tes1));
+				send(respuesta);
+				System.out.println(respuesta);
+				
+				
+			}
+			catch (CodecException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			} 
+			catch (OntologyException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			}
 			
 		}
 	}
+	
+	
+	//Comportamiento para autentica al usuario
+	public class Autenticacion extends OneShotBehaviour{
+		private Testigo tes1;
+		private boolean resultado;
+		private AbsContentElement mens1;
+		private String usu1;
+		private String pass1;
+		public Autenticacion(Agent _a, Testigo tes, AbsContentElement mensaje, String usuario, String passw){
+			super(_a);
+			this.tes1 = tes;
+			this.mens1 = mensaje;
+			this.usu1 = usuario;
+			this.pass1 = passw;
+		}
+		
+		public void action(){
+			try{
+				System.out.println("COMPORTAMIENTO AUTENTICACION");
+				System.out.println(mens1);
+				// Ahora iremos cogiendo los objetos creados de la ontologia.
+				
+				String tipoObjetoContenido = mens1.getTypeName();
+				
+				if (tipoObjetoContenido.equals(SL1Vocabulary.NOT)){
+					resultado = false;
+				}
+				else{
+					setAlumnoID(usu1);
+					setAlumnoPass(pass1);
+					resultado = true;
+				}
+			}
+			catch(Exception ex){
+				resultado = false;
+			}
+			System.out.println("Y el resultado es: "+resultado);
+			tes1.setResultadoB(resultado);
+		}
+	}
+	
+	//Comportamiento que recibe mensajes...
+	public class RecibeMensajes extends Behaviour{
+		private String usu1;
+		private String pass1;
+		private Testigo tes1;
+		
+		private boolean finalizado = false;
+				
+		private MessageTemplate p1 = MessageTemplate.MatchPerformative(ACLMessage.INFORM);
+		private MessageTemplate p2 = MessageTemplate.MatchOntology(AuthOntology.ONTOLOGY_NAME);
+		private MessageTemplate plantilla = MessageTemplate.and(p1,p2);
+
+		public RecibeMensajes(Agent _a, String usuario, String passw, Testigo tes){
+			super(_a);
+			this.usu1 = usuario;
+			this.pass1 = passw;
+			this.tes1 = tes;
+		}
+		
+		public void action(){
+			//block();
+			ACLMessage respuesta = receive(plantilla);
+			System.out.println("MENSAJEEEEE: "+respuesta);
+			if (respuesta != null){
+				
+				try {
+					AbsContentElement listaObj2 = null;
+					listaObj2 = getContentManager().extractAbsContent(respuesta);
+					System.out.println("TIPOOO: "+listaObj2.getTypeName());
+					if (listaObj2.getTypeName().equals("autenticado")){
+						addBehaviour(new Autenticacion(myAgent, tes1, listaObj2, usu1, pass1));
+						finalizado = true;
+					}
+				} catch (CodecException e) {
+					// TODO Auto-generated catch block
+					e.printStackTrace();
+				} catch (OntologyException e) {
+					// TODO Auto-generated catch block
+					e.printStackTrace();
+				}
+			}
+			else{
+				block();
+			}
+		}
+
+		@Override
+		public boolean done() {
+			// TODO Auto-generated method stub
+			return finalizado;
+		}
+	}
+	
+
 }
 
 
