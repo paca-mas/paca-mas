@@ -269,7 +269,23 @@ public class InterfazJSP extends Interfaz {
 			HttpServletRequest param1 = (HttpServletRequest) test2.getParametro();
 			String auxUsuario = param1.getParameter("user_id");
 			String auxPass = param1.getParameter("password");
-			addBehaviour(new AutenticaBehaviour(this.myAgent, test2, auxUsuario, auxPass));
+			//addBehaviour(new AutenticaBehaviour(this.myAgent, test2, auxUsuario, auxPass));
+			addBehaviour(new EnviaAutenticaBehaviour(this.myAgent, test2, auxUsuario, auxPass));
+		}
+	}
+	
+	public class PideTestRequestBeha extends OneShotBehaviour{
+		private Testigo tes2;
+		
+		public PideTestRequestBeha (Agent _a, Testigo tes1){
+			super(_a);
+			this.tes2 = tes1;
+		}
+		
+		public void action(){
+			HttpServletRequest param1 = (HttpServletRequest) tes2.getParametro();
+			String practica = param1.getParameter("practica");
+			addBehaviour(new TestsBehaviour(this.myAgent,tes2,practica));
 		}
 	}
 	
@@ -319,8 +335,9 @@ public class InterfazJSP extends Interfaz {
 					break;
 					
 				case pedirTests:
-					System.out.println("Operacion pedirTests");
-					tes.setResultado(agent.doPeticionTestPracticaRequest((HttpServletRequest) tes.getParametro()));
+					//System.out.println("Operacion pedirTests");
+					//tes.setResultado(agent.doPeticionTestPracticaRequest((HttpServletRequest) tes.getParametro()));
+					addBehaviour(new PideTestRequestBeha(agent, tes));
 					break;
 					
 				case pedirFicheros:
