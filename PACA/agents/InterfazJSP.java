@@ -77,8 +77,11 @@ public class InterfazJSP extends Interfaz {
 		for (int i=0; i < ListaTest.toArray().length; i++) {
 			NombreTest[i] = (String) ListaTest.toArray()[i];
 		}
+		
+		System.out.println("DONDE C.... ESTAMOS???????");
 
 		return (doFicherosPractica(NombreTest));
+		//return NombreTest;
 	}
 
 
@@ -156,7 +159,7 @@ public class InterfazJSP extends Interfaz {
 				output[i]=(String)lista.get(i);
 			}
 		}
-
+		
 		return output;
 	}
 
@@ -285,11 +288,12 @@ public class InterfazJSP extends Interfaz {
 		public void action(){
 			HttpServletRequest param1 = (HttpServletRequest) tes2.getParametro();
 			String practica = param1.getParameter("practica");
-			addBehaviour(new TestsBehaviour(this.myAgent,tes2,practica));
+			//addBehaviour(new TestsBehaviour(this.myAgent,tes2,practica));
+			addBehaviour(new PideTestBeha(this.myAgent, tes2, practica));
 		}
 	}
 	
-	
+		
 	public class InicializaObjeto extends CyclicBehaviour{
 		
 		private boolean done=false;
@@ -305,6 +309,8 @@ public class InterfazJSP extends Interfaz {
 			while (!agent.FinSetup){
 				System.out.println("FINSETUP");
 			}
+			
+			
 			Object o = this.myAgent.getO2AObject();
 			
 			
@@ -331,7 +337,8 @@ public class InterfazJSP extends Interfaz {
 				case pedirPracticas:
 					//System.out.println("Operacion pedirPracticas");
 					//tes.setResultado(agent.doPeticion());
-					addBehaviour(new PracticasBehaviour(agent, tes));
+					//addBehaviour(new PracticasBehaviour(agent, tes));
+					addBehaviour(new PidePracticasBehavior(agent, tes));
 					break;
 					
 				case pedirTests:
@@ -347,7 +354,8 @@ public class InterfazJSP extends Interfaz {
 					
 				case insertarFicheros:
 					System.out.println("Operacion InsertarFicheros");
-					tes.setResultado(agent.doFicherosPractica((String[]) tes.getParametro()));
+					//tes.setResultado(agent.doFicherosPractica((String[]) tes.getParametro()));
+					addBehaviour(new PideFicherosBeha(agent, tes, (String[]) tes.getParametro()));
 					break;
 					
 				default: 

@@ -207,6 +207,135 @@ public class Corrector extends Agent {
 		}
 	}
 
+	//Comportamiento que manda los tests al agente Interfaz
+	public class TestsCorrecBehaviour extends OneShotBehaviour{
+		private ACLMessage mens1;
+		private AbsPredicate pred1;
+		private AbsIRE ire1;
+		public TestsCorrecBehaviour(Agent _a, ACLMessage msg1, AbsPredicate pred, AbsIRE ire){
+			super(_a);
+			this.mens1 = msg1;
+			this.pred1 = pred;
+			this.ire1 = ire;
+		}
+		public void action(){
+			
+			System.out.println("COMPORTAMIENTO CORRECTOR PARA TESTSSSSSSSSSSSSSSSSS");
+			//Obtenemos el predicado TESTS
+			Tests tes;
+			try {
+				tes = (Tests) ontologia.toObject(pred1);
+				
+				Test[] te;
+				//Obtenemos los tests disponibles para la practica seleccionada
+				te = TestParaPractica(tes.getPractica().getId());
+				
+				AbsAggregate absTests = new AbsAggregate (BasicOntology.SET);
+				
+				
+				// Adds the Test
+				//Pasamos los tests a objectos abstractos
+				for (int i=0; i < te.length; i++) {
+					AbsConcept elem = (AbsConcept) ontologia.fromObject(te[i]);
+					absTests.add(elem);
+				}
+														
+				//Modifificacion Carlos
+				AbsPredicate qrr = new AbsPredicate (SL1Vocabulary.EQUALS);
+				qrr.set(SL1Vocabulary.EQUALS_LEFT, ire1);
+				qrr.set(SL1Vocabulary.EQUALS_RIGHT,absTests);
+
+				try {
+					getContentManager().fillContent(mens1, qrr);
+					myAgent.send(mens1);
+				} catch (CodecException e) {
+					// TODO Auto-generated catch block
+					e.printStackTrace();
+				}
+				
+			} catch (UngroundedException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			} catch (OntologyException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			}
+			System.out.println("FIN COMPORTAMIENTO CORRECTOR PARA TESTSSSSSSSSSSSSSSSSS");
+		}
+	}
+	
+	
+	//Comportamiento que manda los ficheros a corregir
+	public class FicherosCorrBehaviour extends OneShotBehaviour{
+		private ACLMessage mens1;
+		private AbsPredicate pred1;
+		private AbsPredicate pred2;
+		private AbsIRE ire1;
+		public FicherosCorrBehaviour(Agent _a, ACLMessage msg1, AbsPredicate predIzd, AbsPredicate predDcha, AbsIRE ire){
+			super(_a);
+			this.mens1 = msg1;
+			this.pred1 = predIzd;
+			this.pred2 = predDcha;
+			this.ire1 = ire;
+		}
+		public void action(){
+			System.out.println("COMPORTAMIENTO CORRECTOR FICHEROSSSSSSSSSSSSSSSSSS");
+			
+			Corrige corr;
+			try {
+				corr = (Corrige) ontologia.toObject(pred1);
+				Practica pract = corr.getPractica();
+				
+				//Guardamos todos los Test que nos han pedido
+				Test [] testAux3 = ExtraeTestsPedidos(pred2);
+				
+				//Obtenemos los ficheros fuentes necesarios para cada Test
+				FuentesPrograma[] fp = FicheroParaPractica(pract.getId(), testAux3);
+				
+				// Creamos el listado de ficheros de forma abstracta
+				AbsAggregate absFicheros = new AbsAggregate (BasicOntology.SET);
+											
+				for (int i=0; i < fp.length; i++){
+					//Creamos un objecto abstracto por cada fichero y la añadimos al aggregate
+					AbsConcept elem;
+					try {
+						elem = (AbsConcept)ontologia.fromObject(fp[i]);
+						absFicheros.add(elem);
+					} catch (OntologyException e) {
+						// TODO Auto-generated catch block
+						e.printStackTrace();
+					}
+					
+				}
+			
+				//Creamos el predicado abstracto EQUALS
+				AbsPredicate equalPred = new AbsPredicate(SLVocabulary.EQUALS);
+				equalPred.set(SLVocabulary.EQUALS_LEFT,ire1);
+				equalPred.set(SLVocabulary.EQUALS_RIGHT,absFicheros);
+				
+				try {
+					getContentManager().fillContent(mens1, equalPred);
+				} catch (CodecException e) {
+					// TODO Auto-generated catch block
+					e.printStackTrace();
+				} catch (OntologyException e) {
+					// TODO Auto-generated catch block
+					e.printStackTrace();
+				}
+				myAgent.send(mens1);
+			} catch (UngroundedException e1) {
+				// TODO Auto-generated catch block
+				e1.printStackTrace();
+			} catch (OntologyException e1) {
+				// TODO Auto-generated catch block
+				e1.printStackTrace();
+			}
+			
+			System.out.println("FIN COMPORTAMIENTO CORRECTOR FICHEROSSSSSSSSSSSSSSSSSS");
+			
+		}
+	}
+	
 	/**
        Comportamiento que encapsula la funcionalidad del agente corrector, se ejecuta de manera cíclica hasta que 
        el agente muere.
@@ -241,8 +370,12 @@ public class Corrector extends Agent {
 			if (debug){
 				System.out.println("Corrector.java: Esperamos a que llegue un mensaje");
 			}
-			ACLMessage msg = blockingReceive();
 			
+			//ACLMessage msg = blockingReceive();
+			ACLMessage msg = receive();
+			
+			if (msg != null){
+									
 			if (debug){
 				System.out.println("----------");
 				System.out.println(msg.toString());
@@ -443,6 +576,7 @@ public class Corrector extends Agent {
 									getContentManager().fillContent(reply,equalPred);
 									myAgent.send(reply);*/
 									
+									
 									addBehaviour(new PracCorrecBehaviour(this.myAgent, reply, allPred));
 																		
 								}
@@ -460,7 +594,7 @@ public class Corrector extends Agent {
 									if (requestedInfo3Name.equals(SL1Vocabulary.AND)){
 										// --> FicheroParaPractica <---------------------------------------------------
 										
-										Corrige corr = (Corrige) ontologia.toObject(AbsLEFT1);
+										/*Corrige corr = (Corrige) ontologia.toObject(AbsLEFT1);
 										
 										Practica pract = corr.getPractica();
 																			
@@ -485,7 +619,9 @@ public class Corrector extends Agent {
 										equalPred.set(SLVocabulary.EQUALS_RIGHT,absFicheros);
 										
 										getContentManager().fillContent(reply, equalPred);
-										myAgent.send(reply);
+										myAgent.send(reply);*/
+										
+										addBehaviour(new FicherosCorrBehaviour(this.myAgent, reply, AbsLEFT1, AbsRIGHT1, allPred));
 										
 									}
 									else
@@ -494,7 +630,7 @@ public class Corrector extends Agent {
 										if (debug){
 											System.out.println("Dentro de TestPorPractica");
 										}
-										
+										/*
 										//Obtenemos el predicado TESTS
 										Tests tes = (Tests) ontologia.toObject(AbsRIGHT1);
 										Test[] te;
@@ -517,7 +653,8 @@ public class Corrector extends Agent {
 										qrr.set(SL1Vocabulary.EQUALS_RIGHT,absTests);
 
 										getContentManager().fillContent(reply, qrr);
-										myAgent.send(reply);
+										myAgent.send(reply);*/
+										addBehaviour(new TestsCorrecBehaviour(this.myAgent, reply, AbsRIGHT1, allPred));
 									}
 								}
 
@@ -653,6 +790,13 @@ public class Corrector extends Agent {
 				}
 			}
 			//myAgent.send(reply);
+			}
+			//============================== cambios para el receive no bloqueante ==========
+			else{
+				block();
+			}
+			//============================== fin cambios receive no bloqueante ==============
+		
 		}
 	}
 
