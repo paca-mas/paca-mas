@@ -1,0 +1,84 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
+
+<html>  
+  <head>
+    <title>
+      P&aacute;gina de Autentificaci&oacute;n
+    </title>
+    <LINK REL=STYLESHEET TYPE="text/css" HREF="http://platon.escet.urjc.es/estilos/estiloPACA.css">
+    <SCRIPT TYPE="text/javascript">
+      <!--
+
+      function desactivarBoton() {
+        document.formauth.botonLogin.disabled=true;
+        document.formauth.botonBorrar.disabled=true;
+      }
+
+
+      function comprobar_form(form){
+        completo = true
+        obj = eval(form)	
+        for(i=0;i<obj.length;i++){
+          if (obj.elements[i].value == ""){
+            completo = false
+          }
+        }
+        if (!completo){
+          alert("Por favor, inserte su identificador y su clave.");
+        }
+        else{
+	  desactivarBoton();
+        }
+        return completo;
+      }
+
+      //-->
+    </SCRIPT>
+  </head>
+  <body>
+
+    <P Align="CENTER">
+    <form method="post" action="respAuth.jsp" name="formauth" onSubmit="return comprobar_form(this);">
+      <br>
+      <P ALIGN="CENTER">
+	Bienvenido, por favor inicie una sesi&oacute;n:
+      </P>
+      <br>
+      <P Align="CENTER">
+      <P class="form">
+	<table border="0" width="50%" class="color" align="center">
+	  <tr>
+	    <td width="50%">
+	      Usuario:
+	    </td>
+	    <td width="50%">
+	      <input type="text" name="user_id" size="25">
+	    </td>
+	  </tr>
+	  <tr>
+	    <td width="50%">
+	      Password:
+	    </td>
+	    <td width="50%">
+	      <input type="password" name="password" size="25">
+	    </td>
+	  </tr>
+	  <tr>
+	    <td width="50%">
+	      &nbsp; 
+	    </td>
+	    <td width="50%">
+	      <P Align="center">
+		<input type="submit" value="Login" name="botonLogin">
+		<input type="reset" value="Borrar" name="botonBorrar">
+	      </P>
+	    </td>
+	  </tr>
+	</table>
+    </form>
+  <br>
+
+  </body>
+</html>
+
+
