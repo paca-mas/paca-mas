@@ -88,7 +88,7 @@
 
       %>
       <H3 class="error"><P  align="center">Debe elegir al menos un test de la lista anterior. Por favor, vuelva hacia
-      atrás con el navegador y realice de nuevo su selección.</P></H2>
+      atrás con el navegador y realice de nuevo su selección.</P></H3>
       <%
 
       }
