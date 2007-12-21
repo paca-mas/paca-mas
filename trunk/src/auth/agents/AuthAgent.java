@@ -1,7 +1,5 @@
 package auth.agents;
 
-
-
 //Paquetes JAVA. 
 import jade.content.ContentElement;
 import jade.content.abs.AbsPredicate;
@@ -23,186 +21,172 @@ import auth.ontology.AuthOntology;
 import auth.ontology.Usuario;
 import auth.util.PasswordParser;
 
-
-
 /** 
-    Este agente se encarga de autenticar un usuario. Para ello, se utiliza un nombre de usuario 
-    y un password que identifica de forma inequívoca a un usuario en el sistema.
-    @author Sergio Saugar García.
+Este agente se encarga de autenticar un usuario. Para ello, se utiliza un nombre de usuario 
+y un password que identifica de forma inequï¿½voca a un usuario en el sistema.
+@author Sergio Saugar Garcï¿½a.
  */
 public class AuthAgent extends Agent {
-	
-	public boolean debug=true;
 
-	//Añadido Carlos
-	private Codec codec = new SLCodec();
+    private boolean ejecucionEnPruebas = true;
+    public boolean debug = true;
 
-	/**
-       AID de esta instancia del agente de autenticación.
-	 */
-	private AID miAID;
+    //Aï¿½adido Carlos
+    private Codec codec = new SLCodec();
+    /**
+    AID de esta instancia del agente de autenticaciï¿½n.
+     */
+    private AID miAID;
 
-	//Nombre de la ontologia
-	private Ontology ontologia = AuthOntology.getInstance();
+    //Nombre de la ontologia
+    private Ontology ontologia = AuthOntology.getInstance();
 
+    protected void setup() {
 
+        miAID = getAID();
 
-
-
-
-
-	protected void setup() {
-
-		miAID = getAID();
-
-		// Register the codec for the SL0 language
-		getContentManager().registerLanguage(codec);
+        // Register the codec for the SL0 language
+        getContentManager().registerLanguage(codec);
 
 
-		// Register the ontology used by this application
-		getContentManager().registerOntology(ontologia);
-		
-		if (debug){
-			System.out.println("Comienza el Agente Autenticador");
-		}
-			
-		// Añadir el comportamiento.
-		AutenticarBehaviour autentifica = new AutenticarBehaviour(this);
-		addBehaviour(autentifica);
-	}
+        // Register the ontology used by this application
+        getContentManager().registerOntology(ontologia);
 
+        if (debug) {
+            System.out.println("Comienza el Agente Autenticador");
+        }
 
-	/**
-       Este comportamiento recibe un mensaje QUERY-IF que utiliza la ontologia AuthOntology. 
-       Extrae el contenido de dicho mensaje que es el predicado "Autenticado". Extrae el usuario
-       que viene dentro de dicho predicado y comprueba que el identificador de usuario y su clave
-       estén registrados. En dicho caso, envía un mensaje informando de la autenticación. En caso 
-       contrario, envía un mensaje notificando la no autenticación.
-	 */
-	class AutenticarBehaviour extends CyclicBehaviour {
-		
-		
-		private MessageTemplate p1 = MessageTemplate.MatchPerformative(ACLMessage.QUERY_IF);
-		private MessageTemplate p2 = MessageTemplate.MatchOntology(AuthOntology.ONTOLOGY_NAME);
+        // Aï¿½adir el comportamiento.
+        AutenticarBehaviour autentifica = new AutenticarBehaviour(this);
+        addBehaviour(autentifica);
+    }
 
-		/**
-	   Creamos una plantilla para sólo responder a los mensajes de nuestra ontología y en concreto,
-	   a los mensajes de petición de autentificación.
-		 */
-		private MessageTemplate plantilla = MessageTemplate.and(p1,p2);
+    /**
+    Este comportamiento recibe un mensaje QUERY-IF que utiliza la ontologia AuthOntology. 
+    Extrae el contenido de dicho mensaje que es el predicado "Autenticado". Extrae el usuario
+    que viene dentro de dicho predicado y comprueba que el identificador de usuario y su clave
+    estï¿½n registrados. En dicho caso, envï¿½a un mensaje informando de la autenticaciï¿½n. En caso 
+    contrario, envï¿½a un mensaje notificando la no autenticaciï¿½n.
+     */
+    class AutenticarBehaviour extends CyclicBehaviour {
 
+        private MessageTemplate p1 = MessageTemplate.MatchPerformative(ACLMessage.QUERY_IF);
+        private MessageTemplate p2 = MessageTemplate.MatchOntology(AuthOntology.ONTOLOGY_NAME);
+        /**
+        Creamos una plantilla para sï¿½lo responder a los mensajes de nuestra ontologï¿½a y en concreto,
+        a los mensajes de peticiï¿½n de autentificaciï¿½n.
+         */
+        private MessageTemplate plantilla = MessageTemplate.and(p1, p2);
+        /**
+        Tabla Hash donde se van a almacenar los pares identificadorUsuario-password.
+         */
+        private Hashtable tablaPass;
 
-		/**
-	   Tabla Hash donde se van a almacenar los pares identificadorUsuario-password.
-		 */
-		private Hashtable tablaPass;
+        /**
+        Constructor del comportamiento. 
+        @param a Agente al que pertenece el comportamiento.
+         */
+        public AutenticarBehaviour(Agent a) {
 
+            super(a);
 
-		/**
-	   Constructor del comportamiento. 
-	   @param a Agente al que pertenece el comportamiento.
-		 */
-		public AutenticarBehaviour(Agent a) {
+            if (ejecucionEnPruebas) {
+                tablaPass = new Hashtable();
+                
+                tablaPass.put("ssaugar", "admin");
+                tablaPass.put("romartin", "admin");
+                tablaPass.put("csimon", "admin");
+                tablaPass.put("admin", "admin");
+                
+            } else {
+                //Rellenamos la tabla desde el fichero de passwords, a travï¿½s del parser de XML.
+                PasswordParser parser = new PasswordParser();
+                tablaPass = parser.getTabla();
+            }
+        }
 
-			super(a);
+        /**
+        Mï¿½todo que se ejecuta cada vez que el comportamiento recibe su rodaja de Round-Robin.
+         */
+        public void action() {
 
-			//Rellenamos la tabla desde el fichero de passwords, a través del parser de XML.
-			PasswordParser parser = new PasswordParser();
-			tablaPass = parser.getTabla();
-		}
+            // Nos bloqueamos hasta recibir un mensaje.
+            block();
 
+            ACLMessage msg = receive(plantilla);
 
-		/**
-	   Método que se ejecuta cada vez que el comportamiento recibe su rodaja de Round-Robin.
-		 */
-		public void action() {
+            if (msg != null) {
+                Evaluar(msg);
+            }
+        }
 
-			// Nos bloqueamos hasta recibir un mensaje.
-			block();
+        /**
+        Comprueba si el user y el password son correctos.
+        En caso de que sean correctos devuelve true, falso en caso contrario.
+        @param user El identificador del usuario.
+        @param password La contraseï¿½a del usuario.
+         */
+        private void Evaluar(ACLMessage mens) {
 
-			ACLMessage msg = receive(plantilla);
+            // Capturamos el solicitante del mensaje.
+            AID solicitanteAgent = mens.getSender();
 
-			if(msg != null){     
-				Evaluar(msg);
-			}
-		}
+            ACLMessage respuesta = mens.createReply();
+            respuesta.setPerformative(ACLMessage.INFORM);
 
+            if (debug) {
+                System.out.println("------- EVALUAR: Llegada del mensaje--------");
+                System.out.println(mens.toString());
+                System.out.println("--------FIN Llegada del mensaje-------------");
+            }
 
-		/**
-	   Comprueba si el user y el password son correctos.
-	   En caso de que sean correctos devuelve true, falso en caso contrario.
-	   @param user El identificador del usuario.
-	   @param password La contraseña del usuario.
-		 */
-		private void Evaluar(ACLMessage mens){
+            try {
+                // Extraemos los objetos del mensaje.
+                ContentElement contenido = null;
+                contenido = getContentManager().extractContent(mens);
 
-			// Capturamos el solicitante del mensaje.
-			AID solicitanteAgent = mens.getSender();
+                // Capturamos el predicado.
+                Autenticado aut = (Autenticado) contenido;
 
-			ACLMessage respuesta = mens.createReply();
-			respuesta.setPerformative(ACLMessage.INFORM);
-			
-			if (debug){
-				System.out.println("------- EVALUAR: Llegada del mensaje--------");
-				System.out.println(mens.toString());
-				System.out.println("--------FIN Llegada del mensaje-------------");
-			}
-			
-			try{
-				// Extraemos los objetos del mensaje.
-				ContentElement contenido = null;
-				contenido = getContentManager().extractContent(mens);
-				
-				// Capturamos el predicado.
-				Autenticado aut = (Autenticado)contenido;
-				
-				// Capturamos el usuario.
-				Usuario user = aut.getUsuario();
+                // Capturamos el usuario.
+                Usuario user = aut.getUsuario();
 
-				// Ahora que tenemos el usuario comprobamos que esté en la tabla de passwords.
-				if (tablaPass.containsKey(user.getUser_id()) 
-						&& ((String)tablaPass.get(user.getUser_id())).equals(user.getPassword())){
-					// Entonces el usuario existe y la password es correcta.
-					// Por lo tanto, mandamos un INFORM con el mismo predicado.
-					respuesta.setContent(mens.getContent());
-					send(respuesta);
-				}
-				else{
+                // Ahora que tenemos el usuario comprobamos que estï¿½ en la tabla de passwords.
+                if (tablaPass.containsKey(user.getUser_id()) && ((String) tablaPass.get(user.getUser_id())).equals(user.getPassword())) {
+                    // Entonces el usuario existe y la password es correcta.
+                    // Por lo tanto, mandamos un INFORM con el mismo predicado.
+                    respuesta.setContent(mens.getContent());
+                    send(respuesta);
+                } else {
 
-					//Creamos la "negación" para negar el predicado al ser el Login incorrecto
-					AbsPredicate not = new AbsPredicate (SLVocabulary.NOT);
-					not.set(SLVocabulary.NOT_WHAT, ontologia.fromObject(contenido));
-					
-					if (debug){
-						System.out.println("Rellenamos un NOT");	
-					}
-					
-					// Por lo tanto, mandamos un INFORM negando el predicado.
-					getContentManager().fillContent(respuesta, not);
-					send(respuesta);
-			
-				}
-				
-			}
-			
-			catch (java.lang.NullPointerException e) {
-				// El mensaje no tiene contenido
-				e.printStackTrace();
-				System.out.println("El mensaje no tiene contenido");
-			}
+                    //Creamos la "negaciï¿½n" para negar el predicado al ser el Login incorrecto
+                    AbsPredicate not = new AbsPredicate(SLVocabulary.NOT);
+                    not.set(SLVocabulary.NOT_WHAT, ontologia.fromObject(contenido));
 
-			catch (OntologyException oe) {
-				//Error en la ontologia (paso de mensajes)
-				System.out.println("AuthAgent.java: Ocurrio Excepcion en la ontologia");
-			} 
-			
-			catch (Exception exc){
-				System.out.println("---------- EXCEPCION --------------------");
-			    System.err.println(exc);
-			    System.out.println("---------- FIN EXCEPCION ----------------");
-			    System.exit(1);
-			}
+                    if (debug) {
+                        System.out.println("Rellenamos un NOT");
+                    }
 
-		}
-	}
+                    // Por lo tanto, mandamos un INFORM negando el predicado.
+                    getContentManager().fillContent(respuesta, not);
+                    send(respuesta);
+
+                }
+
+            } catch (java.lang.NullPointerException e) {
+                // El mensaje no tiene contenido
+                e.printStackTrace();
+                System.out.println("El mensaje no tiene contenido");
+            } catch (OntologyException oe) {
+                //Error en la ontologia (paso de mensajes)
+                System.out.println("AuthAgent.java: Ocurrio Excepcion en la ontologia");
+            } catch (Exception exc) {
+                System.out.println("---------- EXCEPCION --------------------");
+                System.err.println(exc);
+                System.out.println("---------- FIN EXCEPCION ----------------");
+                System.exit(1);
+            }
+
+        }
+    }
 }
