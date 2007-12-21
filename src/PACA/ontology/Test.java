@@ -7,12 +7,23 @@ import jade.content.Concept;
 
 
 /**
-   Clase que implementa el concepto Test de la ontología.
-   Modificado Carlos Simón García
+   Clase que implementa el concepto Test de la ontologï¿½a.
+   Modificado Carlos Simï¿½n Garcï¿½a
 */
 public class Test implements Concept{
     private String Id;
     private String Descripcion;
+    
+    
+    public Test() {
+        this.Id = "";
+        this.Descripcion = "";
+    }
+    
+    public Test(String _id, String _description) {
+        this.Id = _id;
+        this.Descripcion = _description;
+    }
     
     public String getId( )
     {
