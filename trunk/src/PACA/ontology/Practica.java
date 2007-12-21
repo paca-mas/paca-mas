@@ -5,8 +5,8 @@ import jade.content.Concept;
 
 
 /**
-   Clase que implementa el concepto Practica de la ontología.
-   Modificado Carlos Simón García
+   Clase que implementa el concepto Practica de la ontologï¿½a.
+   Modificado Carlos Simï¿½n Garcï¿½a
  */
 public class Practica implements Concept{
 	private String Id; 
@@ -20,6 +20,11 @@ public class Practica implements Concept{
 	public Practica ( String nombre) {
 		Id = nombre;
 	}
+        
+        public Practica (String _id, String _description) {
+            this.Id = _id;
+            this.Descripcion = _description;
+        }
 
 	public String getId( ) 
 	{
