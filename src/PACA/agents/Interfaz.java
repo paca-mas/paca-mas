@@ -2046,7 +2046,7 @@ public class Interfaz extends Agent {
 						finalizado = true;
 					}
 					else if (tipoMensaje.equals("=")){
-						if (Paso==0){
+						/*if (Paso==0){
 							addBehaviour(new RecibePracticasBeh(myAgent, tes1, listaObj2));
 							Paso = 1;
 							finalizado = true;
@@ -2059,7 +2059,30 @@ public class Interfaz extends Agent {
 						else{
 							addBehaviour(new RecibeFicherosBeha(myAgent, tes1, listaObj2));
 							finalizado = true;
+						}*/
+						
+						//===============================================================
+						
+						
+						AbsAggregate ListaElementos = (AbsAggregate) listaObj2.getAbsObject(SLVocabulary.EQUALS_RIGHT);
+						
+						//Cogemos el primer elemento de la lista
+						AbsConcept primerElem = (AbsConcept) ListaElementos.get(0);
+						
+						//Miramos el tipo del primer elemento
+						String tipo = primerElem.getTypeName();
+						System.out.println("Tipo: "+tipo);
+						if (tipo.equals("practica")) {
+							System.out.println("Es una practica");
+							addBehaviour(new RecibePracticasBeh(myAgent, tes1, listaObj2));
+							finalizado = true;
 						}
+						else if (tipo.equals("test")){
+							System.out.println("Es un test");
+							addBehaviour(new RecibeTestBeha(myAgent, tes1, listaObj2));
+							finalizado = true;
+						}
+						
 					}
 					
 				} catch (CodecException e) {
