@@ -1528,10 +1528,10 @@ public class Interfaz extends Agent {
 		}
 		public void action(){
 			System.out.println("COMPORTAMIENTO ENVIAAUTENTICA");
-			ACLMessage respuesta = new ACLMessage(ACLMessage.QUERY_IF);
-			respuesta.setLanguage(codec.getName());
-			respuesta.setOntology(AuthOntology.ONTOLOGY_NAME);
-			respuesta.addReceiver(new AID(AgenteAutenticador, AID.ISLOCALNAME));
+			ACLMessage solicitud = new ACLMessage(ACLMessage.QUERY_IF);
+			solicitud.setLanguage(codec.getName());
+			solicitud.setOntology(AuthOntology.ONTOLOGY_NAME);
+			solicitud.addReceiver(new AID(AgenteAutenticador, AID.ISLOCALNAME));
 					
 			// Creamos el predicado.
 			Autenticado aut = new Autenticado();
@@ -1552,10 +1552,10 @@ public class Interfaz extends Agent {
 		
 			try{
 				//Mandamos el predicado "aut"
-				getContentManager().fillContent(respuesta,aut);
+				getContentManager().fillContent(solicitud,aut);
 				addBehaviour(new RecibeMensajes(myAgent, tes1));
-				send(respuesta);
-				System.out.println(respuesta);
+				send(solicitud);
+				System.out.println(solicitud);
 				
 				
 			}
@@ -1682,11 +1682,11 @@ public class Interfaz extends Agent {
 	
 	public class RecibePracticasBeh extends OneShotBehaviour{
 		private Testigo tes1;
-		private AbsContentElement mens1;
-		public RecibePracticasBeh(Agent _a, Testigo tes, AbsContentElement mensaje){
+		private AbsAggregate practicas1;
+		public RecibePracticasBeh(Agent _a, Testigo tes, AbsAggregate practicas){
 			super(_a);
 			this.tes1 = tes;
-			this.mens1 = mensaje;
+			this.practicas1 = practicas;
 		}
 		
 		public void action(){
@@ -1694,13 +1694,12 @@ public class Interfaz extends Agent {
 			try {
 				System.out.println("COMPORTAMIENTOOOOOOOO RECIBE PRACTICAS");
 				//Sacamos las practicas que vienen en el mensaje como conceptos abstractos
-				AbsAggregate Practicas = (AbsAggregate) mens1.getAbsObject(SLVocabulary.EQUALS_RIGHT);
-
+				
 				Practica p = new Practica();
-				retornable = new String[Practicas.size()];
-				for (int i=0; i < Practicas.size(); i++) {
+				retornable = new String[practicas1.size()];
+				for (int i=0; i < practicas1.size(); i++) {
 					//Pasamos de concepto abstracto a objeto "real", en este caso son practicas
-					p = (Practica) PACAOntology.toObject(Practicas.get(i));
+					p = (Practica) PACAOntology.toObject(practicas1.get(i));
 					
 					retornable[i] = p.getId();
 					System.out.println(retornable[i]);
@@ -1720,13 +1719,15 @@ public class Interfaz extends Agent {
 				// ofrecemos las practicas ...
 				retornable = new String[2];
 				retornable[0]="Error en la obtención de las prácticas";
-				retornable[1]= mens1.toString();
+				retornable[1]= practicas1.toString();
 			}
 			System.out.println("Ponemos las practicas en retornable");
 			tes1.setResultado(retornable);
 		}
 	}
 	//-------------------------- FIN COMPORTAMIENTOS PARA PRACTICAS -----------------------
+	
+	
 	
 	//-------------------------- COMPORTAMIENTOS PARA TESTS -------------------------------
 	public class PideTestBeha extends OneShotBehaviour{
@@ -1820,11 +1821,11 @@ public class Interfaz extends Agent {
 	
 	public class RecibeTestBeha extends OneShotBehaviour{
 		private Testigo tes1;
-		private AbsContentElement mens1;
-		public RecibeTestBeha(Agent _a, Testigo tes, AbsContentElement mensaje){
+		private AbsAggregate tests1;
+		public RecibeTestBeha(Agent _a, Testigo tes, AbsAggregate tests_){
 			super(_a);
 			this.tes1 = tes;
-			this.mens1 = mensaje;
+			this.tests1 = tests_;
 		}
 		
 		public void action(){
@@ -1833,15 +1834,14 @@ public class Interfaz extends Agent {
 			String[] posiblesID = new String[0];
 			try{
 				//Sacamos los tests que vienen en el mensaje como conceptos abstractos
-				AbsAggregate ListaTest = (AbsAggregate) mens1.getAbsObject(SLVocabulary.EQUALS_RIGHT);
 						
 				Test t = new Test();
-				retornable = new String[ListaTest.size()*2];
-				posiblesID = new String[ListaTest.size()];
+				retornable = new String[tests1.size()*2];
+				posiblesID = new String[tests1.size()];
 				int j=0;
-				for (int i=0; i < ListaTest.size(); i++) {
+				for (int i=0; i < tests1.size(); i++) {
 					//Pasamos de concepto abstracto a objeto "real", en este caso son tests
-					t = (Test) PACAOntology.toObject(ListaTest.get(i));
+					t = (Test) PACAOntology.toObject(tests1.get(i));
 																	
 					retornable[j++] = t.getId();
 					posiblesID[i] = t.getId();
@@ -1865,6 +1865,9 @@ public class Interfaz extends Agent {
 		}
 	}
 	//-------------------------- FIN COMPORTAMIENTOS PARA TESTS ---------------------------
+	
+	
+	
 	
 	//-------------------------- COMPORTAMIENTOS PARA PEDIR FICHEROS ----------------------
 	public class PideFicherosBeha extends OneShotBehaviour{
@@ -1979,24 +1982,23 @@ public class Interfaz extends Agent {
 	
 	public class RecibeFicherosBeha extends OneShotBehaviour{
 		private Testigo tes2;
-		private AbsContentElement mens1;
-		public RecibeFicherosBeha(Agent _a, Testigo tes, AbsContentElement mensaje){
+		private AbsAggregate ficheros1;
+		public RecibeFicherosBeha(Agent _a, Testigo tes, AbsAggregate ficheros){
 			super(_a);
 			this.tes2 = tes;
-			this.mens1 = mensaje;
+			this.ficheros1 = ficheros;
 		}
 		public void action(){
 			System.out.println("COMPORTAMIENTOOOOOOOOOO RECIBE FICHEROS");
 			String[] retornable = new String[0];
 			try{
 				//Sacamos los ficheros que vienen en el mensaje como conceptos abstractos
-				AbsAggregate Ficheros = (AbsAggregate) mens1.getAbsObject(SLVocabulary.EQUALS_RIGHT);
-
+				
 				// Pasamos la lista a un String[]
 				FuentesPrograma fp;
-				retornable = new String[Ficheros.size()];
-				for (int i=0; i < Ficheros.size(); i++) {
-					fp = (FuentesPrograma) PACAOntology.toObject(Ficheros.get(i));
+				retornable = new String[ficheros1.size()];
+				for (int i=0; i < ficheros1.size(); i++) {
+					fp = (FuentesPrograma) PACAOntology.toObject(ficheros1.get(i));
 					retornable[i] = fp.getNombre();
 					System.out.println(retornable[i]);
 				}
@@ -2037,34 +2039,17 @@ public class Interfaz extends Agent {
 			System.out.println("MENSAJEEEEE: "+respuesta);
 			if (respuesta != null){
 				try {
-					AbsContentElement listaObj2 = null;
-					listaObj2 = getContentManager().extractAbsContent(respuesta);
-					String tipoMensaje = listaObj2.getTypeName();
+					AbsContentElement listaAbs = null;
+					listaAbs = getContentManager().extractAbsContent(respuesta);
+					String tipoMensaje = listaAbs.getTypeName();
 					System.out.println("TIPOOO: "+tipoMensaje);
 					if (tipoMensaje.equals("autenticado")){
-						addBehaviour(new Autenticacion(myAgent, tes1, listaObj2));
+						addBehaviour(new Autenticacion(myAgent, tes1, listaAbs));
 						finalizado = true;
 					}
 					else if (tipoMensaje.equals("=")){
-						/*if (Paso==0){
-							addBehaviour(new RecibePracticasBeh(myAgent, tes1, listaObj2));
-							Paso = 1;
-							finalizado = true;
-						}
-						else if (Paso ==1){
-							addBehaviour(new RecibeTestBeha(myAgent, tes1, listaObj2));
-							Paso = 2;
-							finalizado = true;
-						}
-						else{
-							addBehaviour(new RecibeFicherosBeha(myAgent, tes1, listaObj2));
-							finalizado = true;
-						}*/
-						
-						//===============================================================
-						
-						
-						AbsAggregate ListaElementos = (AbsAggregate) listaObj2.getAbsObject(SLVocabulary.EQUALS_RIGHT);
+												
+						AbsAggregate ListaElementos = (AbsAggregate) listaAbs.getAbsObject(SLVocabulary.EQUALS_RIGHT);
 						
 						//Cogemos el primer elemento de la lista
 						AbsConcept primerElem = (AbsConcept) ListaElementos.get(0);
@@ -2074,12 +2059,17 @@ public class Interfaz extends Agent {
 						System.out.println("Tipo: "+tipo);
 						if (tipo.equals("practica")) {
 							System.out.println("Es una practica");
-							addBehaviour(new RecibePracticasBeh(myAgent, tes1, listaObj2));
+							addBehaviour(new RecibePracticasBeh(myAgent, tes1, ListaElementos));
 							finalizado = true;
 						}
 						else if (tipo.equals("test")){
 							System.out.println("Es un test");
-							addBehaviour(new RecibeTestBeha(myAgent, tes1, listaObj2));
+							addBehaviour(new RecibeTestBeha(myAgent, tes1, ListaElementos));
+							finalizado = true;
+						}
+						else{
+							System.out.println("Es un fichero");
+							addBehaviour(new RecibeFicherosBeha(myAgent, tes1, ListaElementos));
 							finalizado = true;
 						}
 						
