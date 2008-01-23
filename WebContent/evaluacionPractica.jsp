@@ -2,12 +2,15 @@
   <%@ page import="javax.servlet.jsp.*"%>
   <%@ page import="javax.servlet.*"%>
   <%@ page import="java.util.*"%>
+  <%@ page import="auth.util.*"%>
+  <%@page import="jade.wrapper.*"%>
 
-  <jsp:useBean id="interfaz" class="PACA.agents.InterfazJSP" scope="session"/>
+  <jsp:useBean id="interfaz" class="auth.util.Niapa" scope="session"/>
 
 
  
 <!doctype html public "-//w3c//dtd html 4.0 transitional//en">
+
 <html>
   
   <head>
@@ -35,16 +38,34 @@
   // Hacemos la evaluación de la práctica con los fichero leidos del
   // formulario anterior.	
 	
-  String[] contenidoFicheros = new String[interfaz.ficherosUltimaPractica.length];
+  //String[] contenidoFicheros = new String[interfaz.ficherosUltimaPractica.length];
 
-  for (int i=0; i < interfaz.ficherosUltimaPractica.length; i++) {
+  //for (int i=0; i < interfaz.ficherosUltimaPractica.length; i++) {
 
-    contenidoFicheros[i] = request.getParameter(interfaz.ficherosUltimaPractica[i]);
-  }
+    //contenidoFicheros[i] = request.getParameter(interfaz.ficherosUltimaPractica[i]);
+  //}
 	
 	 
   //String eval = interfaz.doCorreccion(contenidoFicheros);  
-  String eval = interfaz.doCorreccionRequest(request);
+  //---> la que vale... String eval = interfaz.doCorreccionRequest(request);
+  
+  	System.out.println("Instertamos los ficheros");
+  	Testigo resultado=new Testigo();
+	resultado.setOperacion(Testigo.Operaciones.corregir);
+	resultado.setParametro((HttpServletRequest)request);
+	System.out.println("Creamos el testigo con su operacion");
+
+	interfaz.getAtributo().putO2AObject(resultado,AgentController.SYNC);
+
+	System.out.println("Comienzo del bucle de los ficheros insertados");
+	while(!resultado.isRelleno()){
+		}
+
+	String eval = (String)resultado.getResultado();
+  
+  
+  
+  
 
 %>
 	<br>

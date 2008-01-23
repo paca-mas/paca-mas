@@ -139,7 +139,7 @@ public class Corrector extends Agent {
 		PracticasPrueba[1] = new Practica("Practica_2", "Des. Practica 2");
 		PracticasPrueba[2] = new Practica("Practica_3", "Des. Practica 3");
 		PracticasPrueba[3] = new Practica("Practica_4", "Des. Practica 4");
-
+ 
 		// Test de Prácticas
 		TestPracticasPrueba = new Hashtable<String, Test[]>();
 		Test[] Testtmp;
