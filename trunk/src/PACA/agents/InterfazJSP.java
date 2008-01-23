@@ -358,6 +358,16 @@ public class InterfazJSP extends Interfaz {
 					addBehaviour(new PideFicherosBeha(agent, tes, (String[]) tes.getParametro()));
 					break;
 					
+				case corregir:
+					System.out.println("Operacion corregir algo... ");
+					try {
+							tes.setResultado(agent.doCorreccionRequest((HttpServletRequest) tes.getParametro()));
+						} catch (IOException e) {
+							// TODO Auto-generated catch block
+							e.printStackTrace();
+						}
+					break;
+					
 				default: 
 					tes.setResultado(chivato+"-");
 					chivato++;

@@ -209,7 +209,7 @@ public class Interfaz extends Agent {
 	
 	/**
 	 * Este método devuelve el Agente Corrector que hemos elegido
-	 */
+	 **/
 	
 	public AID getAgenteCorrector(){
 		return this.AgenteCorrector;
@@ -807,7 +807,7 @@ public class Interfaz extends Agent {
 
 		try {	
 
-						
+			System.out.println("DOCORRECCIONNNNNNNNNNNNNNNNNNNNNNNNNNNNN");		
 
 			//Corrige cor = new Corrige();
 			//Practica pract = new Practica(ultimaPractica);
@@ -845,8 +845,9 @@ public class Interfaz extends Agent {
 			//evap.setTextoEvaluacion("?evaluacion");
 			
 			//Creamos el predicado abstracto Evaluacion Practica
-			AbsPredicate AbsEvap = new AbsPredicate(pacaOntology.EVALUACIONPRACTICA);
+			AbsPredicate AbsEvap = new AbsPredicate(pacaOntology.EVALUAPRACTICA);
 			AbsEvap.set(pacaOntology.EVALUACIONPRACTICA_TEXTO, "?evaluacion");
+			System.out.println("Creamos el predicado EVALUACIONPRACTICA");
 
 			// Incluir los ficheros y rellenado de los ands
 
@@ -887,12 +888,15 @@ public class Interfaz extends Agent {
 			AbsPredicate AbsCor = new AbsPredicate(pacaOntology.CORRIGE);
 			AbsCor.set(pacaOntology.PRACTICA, AbsPract);
 			AbsCor.set(pacaOntology.CORRECTOR, AbsCorr);
+			
+			System.out.println("y el alumno es... "+alumnoID);
+			System.out.println("y su passwd es... "+alumnoPass);
 
 			Alumno al = new Alumno(alumnoID, alumnoPass);
 			
 			//Convertimos al en concepto abstracto
 			AbsConcept Absal = (AbsConcept) PACAOntology.fromObject(al);
-
+			System.out.println("Creamos el predicado abstracto alumno... ");
 
 			AbsPredicate and1 = new AbsPredicate(SL1Vocabulary.AND);
 			AbsPredicate and2 = new AbsPredicate(SL1Vocabulary.AND);
@@ -925,7 +929,7 @@ public class Interfaz extends Agent {
 			
 			//Creamos el IRE para enviar. En este caso IOTA
 			AbsIRE qriota = new AbsIRE(SL2Vocabulary.IOTA);
-			AbsVariable x = new AbsVariable("?evaluacion",pacaOntology.EVALUACIONPRACTICA);
+			AbsVariable x = new AbsVariable("evaluacion",pacaOntology.EVALUAPRACTICA);
 			qriota.setVariable(x);
 			qriota.setProposition(and1);
 
@@ -933,20 +937,32 @@ public class Interfaz extends Agent {
 			//l_out.add(qriota);
 
 			getContentManager().fillContent(msg_out, qriota);
+			send(msg_out);
+			System.out.println("Mandamos el IOTA... ");
 
 		}
+		catch (OntologyException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		} 
+		
+		catch (CodecException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+		
 		catch (Exception e) {
 			retornable = e.toString();
 		}
 
-		send(msg_out);
+		//send(msg_out);
 
 		msg_in = blockingReceive();
-		if (debug){
+		//if (debug){
 			System.out.println("----------------------------------------------------");
 			System.out.println(msg_in.toString());
 			System.out.println("----------------------------------------------------");
-		}
+		//}
 		
 		// Leemos el contenido del mensaje
 		try {

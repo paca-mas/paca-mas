@@ -156,9 +156,11 @@ public class pacaOntology extends Ontology{
 			cs5.add(FICHERO_CONTENIDO, (PrimitiveSchema) getSchema(BasicOntology.STRING));
 
 			//EvaluacionPractica
+			/*
 			add(new ConceptSchema(EVALUACIONPRACTICA),EvaluacionPractica.class);
 			ConceptSchema cs6 = (ConceptSchema) getSchema(EVALUACIONPRACTICA);
 			cs6.add(EVALUACIONPRACTICA_TEXTO, (PrimitiveSchema) getSchema(BasicOntology.STRING));
+			*/
 			
 			//Pendiente de crear Concepto Interfaz!!!!!
 			//---------- FIN CONCEPTOS -----------
@@ -201,11 +203,20 @@ public class pacaOntology extends Ontology{
 			PredicateSchema ps5 = (PredicateSchema) getSchema(ENTREGARPRACTICA);
 			ps5.add(CORRECTOR, (ConceptSchema) getSchema(CORRECTOR));
 			ps5.add(PRACTICA, (ConceptSchema) getSchema(PRACTICA));
+			
+			//EvaluaPractica
+			add(new PredicateSchema(EVALUAPRACTICA), EvaluacionPractica.class);
+			PredicateSchema ps6 = (PredicateSchema) getSchema(EVALUAPRACTICA);
+			ps6.add(EVALUACIONPRACTICA_TEXTO, (PrimitiveSchema) getSchema(BasicOntology.STRING));
 
 			//---------- FIN PREDICADOS ----------------
 
 		}
 		catch(OntologyException oe) {
+			oe.printStackTrace();
+		}
+		
+		catch(Exception oe){
 			oe.printStackTrace();
 		}
 	}
