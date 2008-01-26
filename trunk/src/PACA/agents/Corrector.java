@@ -512,36 +512,51 @@ public class Corrector extends Agent {
 									// If QUERY-REF (iota  
 									// --> EnvioCorrecionAlumno <--------------------------------------------------
 									printError("Dentro de EnvioCorrecionAlumno");
+									
+									AbsIRE iotaPred = (AbsIRE) l_in;
+									System.out.println(iotaPred);
+
+									//Obtenemos la proposicion del predicado
+									AbsPredicate qiota = (AbsPredicate) iotaPred.getProposition();
+									System.out.println(qiota);
 
 
 									//query_ref_IOTA qiota = new query_ref_IOTA();
 									//A�adido Carlos
-									AbsPredicate qiota = new AbsPredicate(SL2Vocabulary.IOTA);
+									//AbsPredicate qiota = new AbsPredicate(SL2Vocabulary.IOTA);
 									//qiota = (query_ref_IOTA) requestedInfo;
 									//Modificacion Carlos
-									qiota.set(SL2Vocabulary.IOTA, requestedInfoName);
+									//qiota.set(SL2Vocabulary.IOTA, requestedInfoName);
 
 									// Extract the practica from the message
 									//Modificacion Carlos (Funcionara???)
 									//get1=RIGHT , get0=LEFT
 									//And and1 = (And) qiota.get_1();
 									//Corrige corr = (Corrige) and1.get_0();
-									AbsObject and1 = qiota.getAbsObject(SL2Vocabulary.IOTA);
-									Corrige corr = (Corrige) and1.getAbsObject(SL1Vocabulary.AND_LEFT);
-
-
+									//AbsObject and1 = qiota.getAbsObject(SL2Vocabulary.IOTA);
+									String tipoiota = qiota.getTypeName();
+									System.out.println("tipo: "+tipoiota);
+									
+									AbsPredicate andLEFT1 = (AbsPredicate) qiota.getAbsObject(SL1Vocabulary.AND_LEFT);
+									System.out.println("and left1: "+andLEFT1);
+									Corrige corr = (Corrige) ontologia.toObject(andLEFT1);
+									
 									Practica pract = corr.getPractica();
+									System.out.println(pract.getId());
 
 
 									//And and2 = (And) and1.get_1();
 									//A�adido Carlos
 									//get1=RIGHT , get0=LEFT
-									AbsObject and2 = and1.getAbsObject(SL2Vocabulary.AND_RIGHT);
+									
+									AbsPredicate andRIGHT1 = (AbsPredicate) qiota.getAbsObject(SL1Vocabulary.AND_RIGHT);
+									System.out.println("and right1: "+andRIGHT1);
 
 
 									//And and3 = (And) and2.get_1();
 									//A�adido Carlos
 									//get1=RIGHT , get0=LEFT
+									AbsPredicate and2 = null;
 									AbsObject and3 = and2.getAbsObject(SL2Vocabulary.AND_RIGHT);
 
 
