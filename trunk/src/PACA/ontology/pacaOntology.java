@@ -138,10 +138,10 @@ public class pacaOntology extends Ontology{
 			cs2.add(CORRECTOR_ID, (PrimitiveSchema) getSchema(BasicOntology.STRING));
 
 			//Concepto Alumno
-			add(new ConceptSchema(ALUMNO), Alumno.class);
-			ConceptSchema cs3 = (ConceptSchema) getSchema(ALUMNO);
-			cs3.add(ALUMNO_ID, (PrimitiveSchema) getSchema(BasicOntology.STRING));
-			cs3.add(ALUMNO_PASSWD, (PrimitiveSchema) getSchema(BasicOntology.STRING));
+			//add(new ConceptSchema(ALUMNO), Alumno.class);
+			//ConceptSchema cs3 = (ConceptSchema) getSchema(ALUMNO);
+			//cs3.add(ALUMNO_ID, (PrimitiveSchema) getSchema(BasicOntology.STRING));
+			//cs3.add(ALUMNO_PASSWD, (PrimitiveSchema) getSchema(BasicOntology.STRING));
 
 			//Concepto Fichero
 			add(new ConceptSchema(FICHERO), Fichero.class);
@@ -208,6 +208,12 @@ public class pacaOntology extends Ontology{
 			add(new PredicateSchema(EVALUAPRACTICA), EvaluacionPractica.class);
 			PredicateSchema ps6 = (PredicateSchema) getSchema(EVALUAPRACTICA);
 			ps6.add(EVALUACIONPRACTICA_TEXTO, (PrimitiveSchema) getSchema(BasicOntology.STRING));
+			
+			//Predicado Alumno
+			add(new PredicateSchema(ALUMNO), Alumno.class);
+			PredicateSchema cs7 = (PredicateSchema) getSchema(ALUMNO);
+			cs7.add(ALUMNO_ID, (PrimitiveSchema) getSchema(BasicOntology.STRING));
+			cs7.add(ALUMNO_PASSWD, (PrimitiveSchema) getSchema(BasicOntology.STRING));
 
 			//---------- FIN PREDICADOS ----------------
 

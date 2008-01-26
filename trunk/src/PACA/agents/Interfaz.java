@@ -844,10 +844,7 @@ public class Interfaz extends Agent {
 			//EvaluacionPractica evap = new EvaluacionPractica();
 			//evap.setTextoEvaluacion("?evaluacion");
 			
-			//Creamos el predicado abstracto Evaluacion Practica
-			AbsPredicate AbsEvap = new AbsPredicate(pacaOntology.EVALUAPRACTICA);
-			AbsEvap.set(pacaOntology.EVALUACIONPRACTICA_TEXTO, "?evaluacion");
-			System.out.println("Creamos el predicado EVALUACIONPRACTICA");
+			
 
 			// Incluir los ficheros y rellenado de los ands
 
@@ -884,6 +881,12 @@ public class Interfaz extends Agent {
 			//Convertimos correc en concepto abstracto
 			AbsConcept AbsCorr = (AbsConcept) PACAOntology.fromObject(correc);
 			
+			
+			//Creamos el predicado abstracto Evaluacion Practica
+			AbsPredicate AbsEvap = new AbsPredicate(pacaOntology.EVALUAPRACTICA);
+			AbsEvap.set(pacaOntology.EVALUACIONPRACTICA_TEXTO, "?evaluacion");
+			System.out.println("Creamos el predicado EVALUACIONPRACTICA");
+			
 			//Creamos el predicado abstracto Corrige con AbsPract y AbsCorr
 			AbsPredicate AbsCor = new AbsPredicate(pacaOntology.CORRIGE);
 			AbsCor.set(pacaOntology.PRACTICA, AbsPract);
@@ -892,11 +895,17 @@ public class Interfaz extends Agent {
 			System.out.println("y el alumno es... "+alumnoID);
 			System.out.println("y su passwd es... "+alumnoPass);
 
-			Alumno al = new Alumno(alumnoID, alumnoPass);
+			//Alumno al = new Alumno(alumnoID, alumnoPass);
+			AbsPredicate Absal = new AbsPredicate(pacaOntology.ALUMNO);
+			Absal.set(pacaOntology.ALUMNO_ID,alumnoID);
+			Absal.set(pacaOntology.ALUMNO_PASSWD,alumnoPass);
+			System.out.println("Creamos el predicado abstracto alumno");
+			
+			
 			
 			//Convertimos al en concepto abstracto
-			AbsConcept Absal = (AbsConcept) PACAOntology.fromObject(al);
-			System.out.println("Creamos el predicado abstracto alumno... ");
+			//AbsConcept Absal = (AbsConcept) PACAOntology.fromObject(al);
+			//System.out.println("Creamos el predicado abstracto alumno... ");
 
 			AbsPredicate and1 = new AbsPredicate(SL1Vocabulary.AND);
 			AbsPredicate and2 = new AbsPredicate(SL1Vocabulary.AND);

@@ -2,6 +2,7 @@
 package PACA.ontology;
 
 import jade.content.Concept;
+import jade.content.Predicate;
 
  
  
@@ -9,8 +10,8 @@ import jade.content.Concept;
    Clase que implementa el concepto Alumno de la ontología.
    Modificado Carlos Simón García 
 */
-public class Alumno implements Concept{
-
+//public class Alumno implements Concept{
+public class Alumno implements Predicate{
     /**
        Identificador del alumno.
     */
