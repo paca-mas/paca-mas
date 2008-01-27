@@ -881,31 +881,37 @@ public class Interfaz extends Agent {
 			//Convertimos correc en concepto abstracto
 			AbsConcept AbsCorr = (AbsConcept) PACAOntology.fromObject(correc);
 			
+			System.out.println("Creamos los objetso Abstractos practica y corrector");
 			
 			//Creamos el predicado abstracto Evaluacion Practica
 			AbsPredicate AbsEvap = new AbsPredicate(pacaOntology.EVALUAPRACTICA);
 			AbsEvap.set(pacaOntology.EVALUACIONPRACTICA_TEXTO, "?evaluacion");
-			System.out.println("Creamos el predicado EVALUACIONPRACTICA");
+			
+			
+			System.out.println("Creamos la EVALUACION PRACTICA");
 			
 			//Creamos el predicado abstracto Corrige con AbsPract y AbsCorr
 			AbsPredicate AbsCor = new AbsPredicate(pacaOntology.CORRIGE);
 			AbsCor.set(pacaOntology.PRACTICA, AbsPract);
 			AbsCor.set(pacaOntology.CORRECTOR, AbsCorr);
 			
-			System.out.println("y el alumno es... "+alumnoID);
-			System.out.println("y su passwd es... "+alumnoPass);
+			System.out.println("Creamos el predicado abstracto CORRIGE");
 
 			//Alumno al = new Alumno(alumnoID, alumnoPass);
+			//Alumno al = new Alumno();
+			//al.setIdentificador(alumnoID);
+			//al.setPassword(alumnoPass);
 			AbsPredicate Absal = new AbsPredicate(pacaOntology.ALUMNO);
 			Absal.set(pacaOntology.ALUMNO_ID,alumnoID);
 			Absal.set(pacaOntology.ALUMNO_PASSWD,alumnoPass);
 			System.out.println("Creamos el predicado abstracto alumno");
 			
 			
-			
 			//Convertimos al en concepto abstracto
 			//AbsConcept Absal = (AbsConcept) PACAOntology.fromObject(al);
-			//System.out.println("Creamos el predicado abstracto alumno... ");
+			
+			
+
 
 			AbsPredicate and1 = new AbsPredicate(SL1Vocabulary.AND);
 			AbsPredicate and2 = new AbsPredicate(SL1Vocabulary.AND);
@@ -914,27 +920,52 @@ public class Interfaz extends Agent {
 			
 			//get1=RIGHT , get0=LEFT
 			//and4.set_0(evap);
-			//and4.set_1(al);
+			//and4.set_1(al); AbsEvap Absal
 			and4.set(SL1Vocabulary.AND_LEFT, AbsEvap);
 			and4.set(SL1Vocabulary.AND_RIGHT, Absal);
-
+			
+			
+			System.out.println("and4");
+			
 			//and3.set_0(listaFP);
 			//and3.set_1(and4);
 			
 			//Guardamos en and3 los ficheros pedidos
-			and3 = InsertarFicherosPedidos(ficherosUltimaPractica, contenidoFicheros, and4, te);
+			and3 = InsertarFicherosPedidos(ficherosUltimaPractica, contenidoFicheros, Absal, te);
+			System.out.println("and3: Ficheros"+and3);
+			System.out.println("***********************************************");
+			AbsPredicate aux3 = (AbsPredicate) and3.getAbsObject(SL1Vocabulary.AND_LEFT);
+			System.out.println(aux3);
+			System.out.println("***********************************************");
+			AbsPredicate aux4 = (AbsPredicate) and3.getAbsObject(SL1Vocabulary.AND_RIGHT);
+			System.out.println(aux4);
+			System.out.println("***********************************************");
 			
 			//and2.set_0(listaTes);
 			//and2.set_1(and3);
-			AbsConcept AbsPrac = (AbsConcept)PACAOntology.fromObject(pract);
+			//AbsConcept AbsPrac = (AbsConcept)PACAOntology.fromObject(pract);
 			
 			//Guardamos en and2 los tests pedidos
-			and2 = InsertarTestPedidos(TestUltimaPractica, AbsPrac, and3);
+			//and2 = InsertarTestPedidos(TestUltimaPractica, AbsPract, and3);
+			and2 = InsertarTestPedidos(TestUltimaPractica, AbsPract, Absal);
+			
+			System.out.println("and2: Test pedidos"+and2);
+			System.out.println("***********************************************");
+			AbsPredicate aux1 = (AbsPredicate) and2.getAbsObject(SL1Vocabulary.AND_LEFT);
+			System.out.println(aux1);
+			System.out.println("***********************************************");
+			AbsPredicate aux2 = (AbsPredicate) and2.getAbsObject(SL1Vocabulary.AND_RIGHT);
+			System.out.println(aux2);
+			System.out.println("***********************************************");
+			
+			AbsPredicate andZ = new AbsPredicate(SL1Vocabulary.AND);
+			andZ.set(SL1Vocabulary.AND_LEFT,and3);
+			andZ.set(SL1Vocabulary.AND_RIGHT,and2);
 			
 			//and1.set_0(cor);
 			//and1.set_1(and2);
 			and1.set(SL1Vocabulary.AND_LEFT, AbsCor);
-			and1.set(SL1Vocabulary.AND_RIGHT, and2);
+			and1.set(SL1Vocabulary.AND_RIGHT, andZ);
 			
 			//Creamos el IRE para enviar. En este caso IOTA
 			AbsIRE qriota = new AbsIRE(SL2Vocabulary.IOTA);

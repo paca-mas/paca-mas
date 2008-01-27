@@ -532,8 +532,6 @@ public class Corrector extends Agent {
 									//Modificacion Carlos (Funcionara???)
 									//get1=RIGHT , get0=LEFT
 									//And and1 = (And) qiota.get_1();
-									//Corrige corr = (Corrige) and1.get_0();
-									//AbsObject and1 = qiota.getAbsObject(SL2Vocabulary.IOTA);
 									String tipoiota = qiota.getTypeName();
 									System.out.println("tipo: "+tipoiota);
 									
@@ -551,13 +549,30 @@ public class Corrector extends Agent {
 									
 									AbsPredicate andRIGHT1 = (AbsPredicate) qiota.getAbsObject(SL1Vocabulary.AND_RIGHT);
 									System.out.println("and right1: "+andRIGHT1);
+									System.out.println("****************************************************");
 
 
 									//And and3 = (And) and2.get_1();
 									//A�adido Carlos
 									//get1=RIGHT , get0=LEFT
+									AbsPredicate andLEFT2 = (AbsPredicate) andRIGHT1.getAbsObject(SL1Vocabulary.AND_LEFT);
+									System.out.println("and LEFT2: "+andLEFT2);
+									AbsPredicate andRIGHT2 = (AbsPredicate) andRIGHT1.getAbsObject(SL1Vocabulary.AND_RIGHT);
+									System.out.println("and RIGHT2: "+andRIGHT2);
+									AbsPredicate andLEFT4 = (AbsPredicate) andRIGHT2.getAbsObject(SL1Vocabulary.AND_LEFT);
+									System.out.println("and LEFT4: "+andLEFT4);
+									AbsPredicate andRIGHT4 = (AbsPredicate) andRIGHT2.getAbsObject(SL1Vocabulary.AND_RIGHT);
+									System.out.println("and RIGHT4: "+andRIGHT4);
+									
+									Test [] testAux3 = ExtraeTestsPedidos(andRIGHT2);
+									
+									
+									AbsPredicate and3 = null;
 									AbsPredicate and2 = null;
-									AbsObject and3 = and2.getAbsObject(SL2Vocabulary.AND_RIGHT);
+							
+															
+									//AbsPredicate and2 = null;
+									//AbsObject and3 = and2.getAbsObject(SL2Vocabulary.AND_RIGHT);
 
 
 									//And and4 = (And) and3.get_1();
@@ -1601,76 +1616,97 @@ public class Corrector extends Agent {
 
 	//Metodo que extrae los Test pedidos
 	private Test[] ExtraeTestsPedidos(AbsPredicate predicado) {
-		int con = 0;
-		Test[] testAux = new Test[10];
-		AbsPredicate predicado_izda = (AbsPredicate) predicado.getAbsObject(SL1Vocabulary.AND_LEFT);
-
-		AbsPredicate predicado_derecha = (AbsPredicate) predicado.getAbsObject(SL1Vocabulary.AND_RIGHT);
-
-		if (predicado_derecha.getTypeName().equals(pacaOntology.FICHEROFUENTES)) {
-			if (predicado_izda.getTypeName().equals(pacaOntology.TESTS)) {
-				Tests test1;
-				try {
-					test1 = (Tests) ontologia.toObject(predicado_izda);
-					testAux[con] = test1.getTest();
-					con++;
-				} catch (UngroundedException e) {
-					// TODO Auto-generated catch block
-					e.printStackTrace();
-				} catch (OntologyException e) {
-					// TODO Auto-generated catch block
-					e.printStackTrace();
-				}
-
-			}
-		} else {
-			while (!predicado_derecha.getTypeName().equals(pacaOntology.FICHEROFUENTES)) {
-				if (predicado_izda.getTypeName().equals(pacaOntology.TESTS)) {
-					Tests test1;
+		int con=0;
+		 Test[] testAux = new Test[10];
+		 AbsPredicate predicado_izda = (AbsPredicate) predicado.getAbsObject(SL1Vocabulary.AND_LEFT);
+		 System.out.println("pizda: "+predicado_izda);
+		 System.out.println(predicado_izda.getTypeName());
+		 System.out.println("*************************************************");
+		 
+		 AbsPredicate predicado_derecha = (AbsPredicate) predicado.getAbsObject(SL1Vocabulary.AND_RIGHT);
+		 System.out.println("pdcha: "+predicado_derecha);
+		 System.out.println(predicado_derecha.getTypeName());
+		 System.out.println("*************************************************");
+		 
+		 //if (predicado_derecha.getTypeName().equals(pacaOntology.FICHEROFUENTES)){
+		 if ((predicado_derecha.getTypeName().equals(pacaOntology.FICHEROFUENTES)) || (predicado_derecha.getTypeName().equals(pacaOntology.ALUMNO)) ){
+			 if (predicado_izda.getTypeName().equals(pacaOntology.TESTS)){
+			 		Tests test1;
 					try {
 						test1 = (Tests) ontologia.toObject(predicado_izda);
-						testAux[con] = test1.getTest();
-					} catch (UngroundedException e) {
+						testAux[con]=test1.getTest();
+				 		con++;
+					} 
+					catch (UngroundedException e) {
 						// TODO Auto-generated catch block
 						e.printStackTrace();
 					} catch (OntologyException e) {
 						// TODO Auto-generated catch block
 						e.printStackTrace();
 					}
-
-				}
-
-				predicado_izda = (AbsPredicate) predicado_derecha.getAbsObject(SL1Vocabulary.AND_LEFT);
-
-				predicado_derecha = (AbsPredicate) predicado_derecha.getAbsObject(SL1Vocabulary.AND_RIGHT);
-
-				if (predicado_derecha.getTypeName().equals(pacaOntology.FICHEROFUENTES)) {
-					if (predicado_izda.getTypeName().equals(pacaOntology.TESTS)) {
-						Tests test1;
-						try {
-							test1 = (Tests) ontologia.toObject(predicado_izda);
-							con++;
-							testAux[con] = test1.getTest();
-
-						} catch (UngroundedException e) {
-							// TODO Auto-generated catch block
-							e.printStackTrace();
-						} catch (OntologyException e) {
-							// TODO Auto-generated catch block
-							e.printStackTrace();
-						}
-
+			 		
+			 	}
+		 }
+		 else{
+			 //while (!predicado_derecha.getTypeName().equals(pacaOntology.FICHEROFUENTES)){
+			 while ((!predicado_derecha.getTypeName().equals(pacaOntology.FICHEROFUENTES)) && (!predicado_derecha.getTypeName().equals(pacaOntology.ALUMNO))){
+						
+			 	if (predicado_izda.getTypeName().equals(pacaOntology.TESTS)){
+					 Tests test1;
+					try {
+						test1 = (Tests) ontologia.toObject(predicado_izda);
+						testAux[con]=test1.getTest();
+					} 
+					catch (UngroundedException e) {
+						// TODO Auto-generated catch block
+						e.printStackTrace();
+					} 
+					catch (OntologyException e) {
+						// TODO Auto-generated catch block
+						e.printStackTrace();
 					}
-				}
+					 
+				 }
 
-				con++;
-			}
-		}
+				 predicado_izda = (AbsPredicate) predicado_derecha.getAbsObject(SL1Vocabulary.AND_LEFT);
+				 System.out.println("pizda: "+predicado_izda);
+				 System.out.println(predicado_izda.getTypeName());
+				 System.out.println("*************************************************");
+				 
+				 predicado_derecha = (AbsPredicate) predicado_derecha.getAbsObject(SL1Vocabulary.AND_RIGHT);
+				 System.out.println("pdcha: "+predicado_derecha);
+				 System.out.println(predicado_derecha.getTypeName());
+				 System.out.println("*************************************************");
+				 
+				 //if (predicado_derecha.getTypeName().equals(pacaOntology.FICHEROFUENTES)){
+				 if ((predicado_derecha.getTypeName().equals(pacaOntology.FICHEROFUENTES)) || (predicado_derecha.getTypeName().equals(pacaOntology.ALUMNO)) ){
+					 if (predicado_izda.getTypeName().equals(pacaOntology.TESTS)){
+					 		Tests test1;
+							try {
+								test1 = (Tests) ontologia.toObject(predicado_izda);
+								con++;
+						 		testAux[con]=test1.getTest();
+						 							 		
+							} catch (UngroundedException e) {
+								// TODO Auto-generated catch block
+								e.printStackTrace();
+							} catch (OntologyException e) {
+								// TODO Auto-generated catch block
+								e.printStackTrace();
+							}
+					 		
+					 	}
+				 }
+				 
+				 con++;
+			 }
+		 }
 
 		Test[] testAux2 = new Test[con];
 
 		for (int x = 0; x < con; x++) {
 			testAux2[x] = testAux[x];
+			System.out.println(testAux2[x].getId());
 		}
 
 		return testAux2;
