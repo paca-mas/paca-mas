@@ -385,13 +385,19 @@ public class Corrector extends Agent {
 					AbsConcept elem;
 					try {
 						elem = (AbsConcept) ontologia.fromObject(fp[i]);
-						absFicheros.add(elem);
+						
+						// Work Around: rormartin
+						// TODO: FicheroParaPracticas work fine?
+						if (elem != null) {
+							absFicheros.add(elem);
+						}
 					} catch (OntologyException e) {
 						// TODO Auto-generated catch block
 						e.printStackTrace();
 					}
 
 				}
+				
 
 				//Creamos el predicado abstracto EQUALS
 				AbsPredicate equalPred = new AbsPredicate(SLVocabulary.EQUALS);
@@ -1055,8 +1061,10 @@ public class Corrector extends Agent {
 				new java.util.ArrayList<FuentesPrograma>();
 
 			for (Test test : ListaTest) {
-				for (FuentesPrograma fp : this.FuentesProgramaPrueba.get(test.getId())) {
-					lista.add(fp);
+				for (FuentesPrograma fp : this.FuentesProgramaPrueba.get(test.getId())){
+					if (fp != null) {
+						lista.add(fp);
+					}
 				}
 			}
 
@@ -1301,7 +1309,7 @@ public class Corrector extends Agent {
 						"\"><EvaluacionCaso codigoEvaluacionCaso=\"terminacion_incorrecta\">" +
 						"<Descripcion><![CDATA[" +
 						f.getContenido() +
-						"</Descripcion></EvaluacionCaso></Caso>";
+						"]]></Descripcion></EvaluacionCaso></Caso>";
 				}
 				
 				text_eva += "</Test>";
