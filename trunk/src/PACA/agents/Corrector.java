@@ -51,6 +51,7 @@ import PACA.ontology.FicheroFuentes;
 import PACA.ontology.FormaGrupoCon;
 import PACA.ontology.Interactua;
 import PACA.ontology.Practica;
+import PACA.ontology.ResultadoEvaluacion;
 import PACA.ontology.Test;
 import PACA.ontology.Tests;
 import PACA.ontology.pacaOntology;
@@ -607,16 +608,18 @@ public class Corrector extends Agent {
 
 									EvaluacionPractica EvaP = EnvioCorreccionAlumno(pract, FP, Te, al, msg.getSender().getLocalName());
 									String Contenido = EvaP.getTextoEvaluacion();
+									System.out.println("Connnnnnnnnn: "+Contenido);
 									//query_ref_response qrr = new query_ref_response();
 									//qrr.set_0(qiota);
 									//qrr.add_1(EvaP);
-
-									//Modifificacion Carlos
-									AbsPredicate AbsEvap = new AbsPredicate(pacaOntology.EVALUAPRACTICA);
-									AbsEvap.set(pacaOntology.EVALUACIONPRACTICA_TEXTO,Contenido);
+									ResultadoEvaluacion RE = new ResultadoEvaluacion();
+									RE.setResultadoEvaluacionTexto(Contenido);
 									
-									//AbsAggregate agrAux = new AbsAggregate (BasicOntology.SET);
-																		
+									AbsConcept AbsEvap = (AbsConcept) ontologia.fromObject(RE);
+									
+									
+									
+										
 									
 									AbsPredicate qrr = new AbsPredicate(SL1Vocabulary.EQUALS);
 									qrr.set(SL1Vocabulary.EQUALS_LEFT, iotaPred);

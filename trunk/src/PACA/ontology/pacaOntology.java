@@ -79,6 +79,10 @@ public class pacaOntology extends Ontology{
 	public static final String EVALUACIONPRACTICA_TEXTO ="textoEvaluacion";
 	
 	public static final String INTERFAZ = "interfaz";
+	
+	
+	public static final String RESULTADOEVALUACION = "resultadoEvaluacion";
+	public static final String RESULTADOEVALUACION_TEXTO = "resultadoEvaluacionTexto";
 
 
 	// Predicados
@@ -161,6 +165,11 @@ public class pacaOntology extends Ontology{
 			ConceptSchema cs6 = (ConceptSchema) getSchema(EVALUACIONPRACTICA);
 			cs6.add(EVALUACIONPRACTICA_TEXTO, (PrimitiveSchema) getSchema(BasicOntology.STRING));
 			*/
+			
+			
+			add(new ConceptSchema(RESULTADOEVALUACION), ResultadoEvaluacion.class);
+			ConceptSchema cs6 = (ConceptSchema) getSchema(RESULTADOEVALUACION);
+			cs6.add(RESULTADOEVALUACION_TEXTO, (PrimitiveSchema) getSchema(BasicOntology.STRING));
 			
 			//Pendiente de crear Concepto Interfaz!!!!!
 			//---------- FIN CONCEPTOS -----------

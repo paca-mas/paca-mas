@@ -51,6 +51,7 @@ import PACA.ontology.EvaluacionPractica;
 import PACA.ontology.FicheroFuentes;
 import PACA.ontology.Interactua;
 import PACA.ontology.Practica;
+import PACA.ontology.ResultadoEvaluacion;
 import PACA.ontology.Test;
 import PACA.ontology.Tests;
 import PACA.ontology.pacaOntology;
@@ -992,7 +993,8 @@ public class Interfaz extends Agent {
 		}
 		
 		catch (Exception e) {
-			retornable = e.toString();
+			//retornable = e.toString();
+			e.printStackTrace();
 		}
 
 		//send(msg_out);
@@ -1001,30 +1003,40 @@ public class Interfaz extends Agent {
 		//if (debug){
 			System.out.println("----------------------------------------------------");
 			System.out.println(msg_in.toString());
-			System.out.println("----------------------------------------------------");
+			System.out.println("---------hoooooooolaaaaaaaa-------------------------------------------");
 		//}
 		
 		// Leemos el contenido del mensaje
 		try {
+			System.out.println("Estamos en el tryyy");
 			//List l_in = extractMsgContent(msg_in);
 			AbsContentElement l_in = null;
 			l_in = getContentManager().extractAbsContent(msg_in);
+			System.out.println(l_in.toString());
 
 			//query_ref_response qres = (query_ref_response) l_in.get(0);
 			//Modificacion Carlos
 			//AbsObject qres = (AbsObject) l_in.get(0);
-			AbsPredicate qres = (AbsPredicate) l_in.getAbsObject(SL1Vocabulary.EQUALS);
+			//AbsPredicate qres = (AbsPredicate) l_in.getAbsObject(SL1Vocabulary.EQUALS);
+			AbsConcept derecha = (AbsConcept) l_in.getAbsObject(SL1Vocabulary.EQUALS_RIGHT);
+			System.out.println("derechaaaa: "+derecha);
 
 			//EvaluacionPractica eva = (EvaluacionPractica) qres.get_1();
-			EvaluacionPractica eva = (EvaluacionPractica) qres.getAbsObject(SL1Vocabulary.EQUALS_RIGHT);
-
+			//EvaluacionPractica eva = (EvaluacionPractica) qres.getAbsObject(SL1Vocabulary.EQUALS_RIGHT);
+			ResultadoEvaluacion re = (ResultadoEvaluacion) PACAOntology.toObject(derecha);
+			EvaluacionPractica eva = new EvaluacionPractica();
+		
+			eva.setTextoEvaluacion(re.getResultadoEvaluacionTexto());
+			System.out.println("EVAAAA :"+eva.getTextoEvaluacion());
+			//retornable = re.getResultadoEvaluacionTexto();
 			retornable = eva.getTextoEvaluacion();
+			System.out.println("Vamos a parsear:"+retornable);
 		}
 		catch (Exception e) {
 			retornable = e.toString();
 		}
 
-		System.out.println("Vamos a parsear:"+retornable);
+		//System.out.println("Vamos a parsear:"+retornable);
 		return retornable;
 	}
 
