@@ -4,17 +4,10 @@ package PACA.agents;
 
 
 //Paquetes JAVA.
-import java.util.Enumeration;
-import java.util.Hashtable;
-import java.util.Random;
-
-import org.omg.CORBA.portable.IndirectionException;
-
 import jade.content.Concept;
 import jade.content.abs.AbsAggregate;
 import jade.content.abs.AbsConcept;
 import jade.content.abs.AbsContentElement;
-import jade.content.abs.AbsContentElementList;
 import jade.content.abs.AbsIRE;
 import jade.content.abs.AbsObject;
 import jade.content.abs.AbsPredicate;
@@ -32,18 +25,20 @@ import jade.content.onto.basic.Action;
 import jade.core.AID;
 import jade.core.Agent;
 import jade.core.behaviours.Behaviour;
-import jade.core.behaviours.CyclicBehaviour;
 import jade.core.behaviours.OneShotBehaviour;
-import jade.core.behaviours.SimpleBehaviour;
 import jade.domain.DFService;
 import jade.domain.FIPAException;
 import jade.domain.FIPAAgentManagement.DFAgentDescription;
 import jade.domain.FIPAAgentManagement.ServiceDescription;
 import jade.lang.acl.ACLMessage;
 import jade.lang.acl.MessageTemplate;
-import jade.util.leap.ArrayList;
-import jade.util.leap.List;
 import jade.util.leap.Serializable;
+
+import java.util.ArrayList;
+import java.util.Hashtable;
+import java.util.List;
+import java.util.Random;
+
 import PACA.ontology.Alumno;
 import PACA.ontology.Corrector;
 import PACA.ontology.Corrige;
@@ -59,8 +54,8 @@ import PACA.ontology.Fichero.FuentesPrograma;
 import auth.ontology.Autenticado;
 import auth.ontology.AuthOntology;
 import auth.ontology.Usuario;
-import auth.util.Niapa;
 import auth.util.Testigo;
+
 
 
 
@@ -930,6 +925,10 @@ public class Interfaz extends Agent {
 			
 			//and3.set_0(listaFP);
 			//and3.set_1(and4);
+			List <AbsPredicate> lista2 = ConstruirListaFF(ficherosUltimaPractica, contenidoFicheros,te);
+			
+			AbsPredicate car = ConstruirAnd2(lista2);
+			
 			
 			//Guardamos en and3 los ficheros pedidos
 			and3 = InsertarFicherosPedidos(ficherosUltimaPractica, contenidoFicheros, Absal, te);
@@ -1524,6 +1523,188 @@ public class Interfaz extends Agent {
 		return andD;
 	}
 	
+	public List<AbsPredicate> ConstruiListaTests (String [] TestsAux, AbsConcept practAux){
+		List <AbsPredicate> ListaAux = new ArrayList<AbsPredicate>();
+		
+		for (int contador = 0; contador < TestsAux.length; contador++) {
+			Test te = new Test();
+			AbsConcept AbsTest;
+			te.setId(TestsAux[contador]);
+			te.setDescripcion("");
+			
+			try {
+				AbsTest = (AbsConcept) PACAOntology.fromObject(te);
+				AbsPredicate AbsTests = new AbsPredicate(pacaOntology.TESTS);
+				AbsTests.set(pacaOntology.TEST, AbsTest);
+				AbsTests.set(pacaOntology.PRACTICA, practAux);
+				ListaAux.add(AbsTests);
+			} catch (OntologyException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			}
+		}
+		
+		System.out.println("Lista nueva: "+ListaAux.toString());
+		return ListaAux;
+	}
+	
+	public List<AbsPredicate> ConstruirListaFF (String[] conjFich, String[] contFich, Test teAux){
+		List <AbsPredicate> ListaAux = new ArrayList<AbsPredicate>();
+		FuentesPrograma fp = new FuentesPrograma();
+		for (int contador = 0; contador < conjFich.length; contador++) {
+			
+			fp.setNombre(conjFich[contador]);
+			fp.setContenido(contFich[contador]);
+		
+			AbsConcept AbsFP;
+			try {
+				AbsFP = (AbsConcept) PACAOntology.fromObject(fp);
+				AbsConcept AbsTest =(AbsConcept) PACAOntology.fromObject(teAux);
+				//Creamos el predicado abstracto "FICHEROFUENTS"
+				AbsPredicate AbsFicheros = new AbsPredicate(pacaOntology.FICHEROFUENTES);
+				AbsFicheros.set(pacaOntology.TEST, AbsTest);
+				AbsFicheros.set(pacaOntology.FUENTESPROGRAMA, AbsFP);
+				ListaAux.add(AbsFicheros);
+			} 
+			catch (OntologyException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			}
+			
+		}
+		System.out.println("Lista nueva ficheros: "+ListaAux.toString());
+		return ListaAux;
+	}
+	
+	public AbsPredicate ConstruirAnd2(List <AbsPredicate> coleccion){
+		AbsPredicate resultado = null;
+		AbsPredicate predicadoAnd = new AbsPredicate(SL1Vocabulary.AND);
+		AbsPredicate predicadoAnd2 = new AbsPredicate(SL1Vocabulary.AND);
+		
+		int numero = coleccion.size();
+		System.out.println("numeroooo "+numero);
+		try{
+			if (numero==1){
+				resultado = (AbsPredicate) coleccion.get(0);
+				return resultado;
+			}
+			else{
+				//Obtenemos un Iterador y recorremos la lista.
+				//Iterator iter = list.iterator();
+				//while (iter.hasNext())
+				//System.out.println(iter.next());
+				//}
+				AbsPredicate element = (AbsPredicate) coleccion.get(0);
+				System.out.println("element: "+element);
+				predicadoAnd.set(SL1Vocabulary.AND_LEFT, element);
+				element = (AbsPredicate) coleccion.get(1);
+				System.out.println("element: "+element);
+				predicadoAnd.set(SL1Vocabulary.AND_RIGHT, element);
+				int i=2;
+				while (i<numero){
+					element = (AbsPredicate) coleccion.get(i);
+					predicadoAnd2.set(SL1Vocabulary.AND_LEFT, predicadoAnd);
+					predicadoAnd2.set(SL1Vocabulary.AND_RIGHT, element);
+				
+					predicadoAnd = new AbsPredicate(SL1Vocabulary.AND);
+					predicadoAnd = predicadoAnd2;
+					predicadoAnd2 = new AbsPredicate(SL1Vocabulary.AND);
+					i++;
+				}
+				
+			}
+			
+		}
+		catch (Exception oe){
+			oe.printStackTrace();
+		}
+		System.out.println("Construir AND: "+predicadoAnd);
+		return predicadoAnd;
+	}
+	
+	
+	private List<AbsPredicate> ConstruyeTabla(AbsPredicate predicado){
+		AbsPredicate auxIzda = null;
+		AbsPredicate auxDcha = null;
+		
+		System.out.println("predicado: "+predicado);
+		
+		Hashtable<String,List> tablaTipos = new Hashtable<String,List>();
+		System.out.println("Intentamos construir la tabla");
+		
+		if (predicado.getTypeName().equals("and")){
+			auxIzda = (AbsPredicate) predicado.getAbsObject(SL1Vocabulary.AND_LEFT);
+			auxDcha = (AbsPredicate) predicado.getAbsObject(SL1Vocabulary.AND_RIGHT);
+			
+							
+			while (auxIzda.getTypeName().equals("and")){
+				String tipo = auxDcha.getTypeName();
+				System.out.println("tipito: "+tipo);
+			
+			
+				List<AbsPredicate> listaAux = new ArrayList<AbsPredicate>();
+				if (tablaTipos.containsKey(tipo)){
+					listaAux = tablaTipos.get(tipo);
+					listaAux.add(auxDcha);
+					System.out.println("TablitaaaaF" + listaAux.toString());
+					tablaTipos.put(tipo, listaAux);
+				}
+				else{
+					List <AbsPredicate>listaAux2 = new ArrayList<AbsPredicate>();
+					listaAux2.add(auxDcha);
+					System.out.println("Tablitaaaa" + listaAux2.toString());
+					tablaTipos.put(tipo, listaAux2);
+				}
+			
+				auxDcha = (AbsPredicate) auxIzda.getAbsObject(SL1Vocabulary.AND_RIGHT);
+				auxIzda = (AbsPredicate) auxIzda.getAbsObject(SL1Vocabulary.AND_LEFT);
+			}
+		
+			System.out.println("1.izda: "+auxIzda);
+			System.out.println("2.dcha: "+auxDcha);
+		
+			if (tablaTipos.containsKey(auxDcha.getTypeName())){
+				List<AbsPredicate> listaAux3 = new ArrayList<AbsPredicate>();
+				listaAux3 = tablaTipos.get(auxDcha.getTypeName());
+				listaAux3.add(auxDcha);
+				System.out.println("TablitaaaaF" + listaAux3.toString());
+				tablaTipos.put(auxDcha.getTypeName(), listaAux3);
+			}
+			else{
+				List <AbsPredicate>listaAux2 = new ArrayList<AbsPredicate>();
+				listaAux2.add(auxDcha);
+				System.out.println("Tablitaaaa" + listaAux2.toString());
+				tablaTipos.put(auxDcha.getTypeName(), listaAux2);
+			}
+		
+			if (tablaTipos.containsKey(auxIzda.getTypeName())){
+				List<AbsPredicate> listaAux3 = new ArrayList<AbsPredicate>();
+				listaAux3 = tablaTipos.get(auxIzda.getTypeName());
+				listaAux3.add(auxIzda);
+				System.out.println("TablitaaaaF" + listaAux3.toString());
+				tablaTipos.put(auxIzda.getTypeName(), listaAux3);
+			}
+			else{
+				List <AbsPredicate>listaAux2 = new ArrayList<AbsPredicate>();
+				listaAux2.add(auxIzda);
+				System.out.println("Tablitaaaa" + listaAux2.toString());
+				tablaTipos.put(auxIzda.getTypeName(), listaAux2);
+			}
+		}
+		else{
+			List <AbsPredicate>listaAux2 = new ArrayList<AbsPredicate>();
+			listaAux2.add(predicado);
+			System.out.println("Tablitaaaa" + listaAux2.toString());
+			tablaTipos.put(predicado.getTypeName(), listaAux2);
+			
+		}
+		
+		
+		
+		return null;
+	}
+	
+	
 	
 	//====================== COMPORTAMIENTOS ===========================
 	public class AutenticaBehaviour extends OneShotBehaviour {
@@ -2009,7 +2190,13 @@ public class Interfaz extends Agent {
 				
 				//Pasamos el predicado FicheroFuentes a predicado abstracto
 				AbsPredicate Absff = (AbsPredicate) PACAOntology.fromObject(ff);
-							
+				
+				List <AbsPredicate> list1 = ConstruiListaTests(IdTest, AbsPract);
+				
+				AbsPredicate carlos = ConstruirAnd2(list1);
+				
+				List <AbsPredicate> car2 = ConstruyeTabla(carlos);
+														
 				and2 = InsertarTestPedidos(IdTest, AbsPract, Absff);
 				
 				
