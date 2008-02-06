@@ -28,8 +28,8 @@ import jade.domain.FIPAException;
 import jade.domain.FIPAAgentManagement.DFAgentDescription;
 import jade.domain.FIPAAgentManagement.ServiceDescription;
 import jade.lang.acl.ACLMessage;
-import jade.util.leap.ArrayList;
-import jade.util.leap.List;
+//import jade.util.leap.ArrayList;
+//import jade.util.leap.List;
 
 import java.io.BufferedReader;
 import java.io.File;
@@ -42,6 +42,9 @@ import java.io.Serializable;
 import java.io.StringWriter;
 import java.text.DateFormat;
 import java.util.Date;
+import java.util.ArrayList;
+import java.util.Hashtable;
+import java.util.List;
 
 import PACA.ontology.Alumno;
 import PACA.ontology.Corrige;
@@ -370,7 +373,7 @@ public class Corrector extends Agent {
 			try {
 				corr = (Corrige) ontologia.toObject(pred1);
 				Practica pract = corr.getPractica();
-
+				
 				//Guardamos todos los Test que nos han pedido
 				Test[] testAux3 = ExtraeTestsPedidos(pred2);
 
@@ -1819,6 +1822,8 @@ public class Corrector extends Agent {
 		return fuentesAux2;
 		
 	}
+	
+	
 }
 
 
