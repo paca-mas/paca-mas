@@ -35,7 +35,9 @@ import jade.lang.acl.MessageTemplate;
 import jade.util.leap.Serializable;
 
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.Hashtable;
+import java.util.Iterator;
 import java.util.List;
 import java.util.Random;
 
@@ -1581,19 +1583,14 @@ public class Interfaz extends Agent {
 		AbsPredicate predicadoAnd = new AbsPredicate(SL1Vocabulary.AND);
 		AbsPredicate predicadoAnd2 = new AbsPredicate(SL1Vocabulary.AND);
 		
-		int numero = coleccion.size();
-		System.out.println("numeroooo "+numero);
+		int tamano = coleccion.size();
+		System.out.println("numeroooo "+tamano);
 		try{
-			if (numero==1){
+			if (tamano==1){
 				resultado = (AbsPredicate) coleccion.get(0);
 				return resultado;
 			}
 			else{
-				//Obtenemos un Iterador y recorremos la lista.
-				//Iterator iter = list.iterator();
-				//while (iter.hasNext())
-				//System.out.println(iter.next());
-				//}
 				AbsPredicate element = (AbsPredicate) coleccion.get(0);
 				System.out.println("element: "+element);
 				predicadoAnd.set(SL1Vocabulary.AND_LEFT, element);
@@ -1601,7 +1598,7 @@ public class Interfaz extends Agent {
 				System.out.println("element: "+element);
 				predicadoAnd.set(SL1Vocabulary.AND_RIGHT, element);
 				int i=2;
-				while (i<numero){
+				while (i<tamano){
 					element = (AbsPredicate) coleccion.get(i);
 					predicadoAnd2.set(SL1Vocabulary.AND_LEFT, predicadoAnd);
 					predicadoAnd2.set(SL1Vocabulary.AND_RIGHT, element);
@@ -1623,7 +1620,52 @@ public class Interfaz extends Agent {
 	}
 	
 	
-	private List<AbsPredicate> ConstruyeTabla(AbsPredicate predicado){
+	public AbsPredicate ConstruirAnd2Col(Collection<AbsPredicate> coleccion){
+		AbsPredicate resultado = null;
+		AbsPredicate predicadoAnd = new AbsPredicate(SL1Vocabulary.AND);
+		AbsPredicate predicadoAnd2 = new AbsPredicate(SL1Vocabulary.AND);
+		
+		int tamano = coleccion.size();
+		System.out.println("tamanoooooooooo "+tamano);
+		try{
+			if (tamano==1){
+				resultado = (AbsPredicate) coleccion;
+				return resultado;
+			}
+			else{
+				Iterator<AbsPredicate> it = coleccion.iterator();
+				AbsPredicate element = (AbsPredicate) it.next();
+				System.out.println("element: "+element);
+				predicadoAnd.set(SL1Vocabulary.AND_LEFT, element);
+				element = (AbsPredicate) it.next();
+				System.out.println("element: "+element);
+				predicadoAnd.set(SL1Vocabulary.AND_RIGHT, element);
+				
+				while (it.hasNext()){
+					
+					element = (AbsPredicate) it;
+					predicadoAnd2.set(SL1Vocabulary.AND_LEFT, predicadoAnd);
+					predicadoAnd2.set(SL1Vocabulary.AND_RIGHT, element);
+				
+					predicadoAnd = new AbsPredicate(SL1Vocabulary.AND);
+					predicadoAnd = predicadoAnd2;
+					predicadoAnd2 = new AbsPredicate(SL1Vocabulary.AND);
+				}
+				
+			}
+			
+		}
+		catch (Exception oe){
+			oe.printStackTrace();
+		}
+		System.out.println("Construir Coleccion: "+predicadoAnd);
+		return predicadoAnd;
+	}
+	
+	
+	
+	
+	private void ConstruyeTabla(AbsPredicate predicado){
 		AbsPredicate auxIzda = null;
 		AbsPredicate auxDcha = null;
 		
@@ -1646,13 +1688,11 @@ public class Interfaz extends Agent {
 				if (tablaTipos.containsKey(tipo)){
 					listaAux = tablaTipos.get(tipo);
 					listaAux.add(auxDcha);
-					System.out.println("TablitaaaaF" + listaAux.toString());
 					tablaTipos.put(tipo, listaAux);
 				}
 				else{
 					List <AbsPredicate>listaAux2 = new ArrayList<AbsPredicate>();
 					listaAux2.add(auxDcha);
-					System.out.println("Tablitaaaa" + listaAux2.toString());
 					tablaTipos.put(tipo, listaAux2);
 				}
 			
@@ -1698,10 +1738,6 @@ public class Interfaz extends Agent {
 			tablaTipos.put(predicado.getTypeName(), listaAux2);
 			
 		}
-		
-		
-		
-		return null;
 	}
 	
 	
@@ -2193,9 +2229,15 @@ public class Interfaz extends Agent {
 				
 				List <AbsPredicate> list1 = ConstruiListaTests(IdTest, AbsPract);
 				
-				AbsPredicate carlos = ConstruirAnd2(list1);
+				AbsPredicate pruebaP = ConstruirAnd2(list1);
 				
-				List <AbsPredicate> car2 = ConstruyeTabla(carlos);
+				Collection <AbsPredicate> colAux = new ArrayList<AbsPredicate>();
+				colAux.add(AbsCor);
+				colAux.add(pruebaP);
+				
+				AbsPredicate pruebaC = ConstruirAnd2Col(colAux);
+				
+				ConstruyeTabla(pruebaP);
 														
 				and2 = InsertarTestPedidos(IdTest, AbsPract, Absff);
 				
