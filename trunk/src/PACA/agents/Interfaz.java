@@ -58,6 +58,8 @@ import auth.ontology.AuthOntology;
 import auth.ontology.Usuario;
 import auth.util.Testigo;
 
+import PACA.util.*;
+
 
 
 
@@ -1546,7 +1548,6 @@ public class Interfaz extends Agent {
 			}
 		}
 		
-		System.out.println("Lista nueva: "+ListaAux.toString());
 		return ListaAux;
 	}
 	
@@ -1574,7 +1575,6 @@ public class Interfaz extends Agent {
 			}
 			
 		}
-		System.out.println("Lista nueva ficheros: "+ListaAux.toString());
 		return ListaAux;
 	}
 	
@@ -1584,7 +1584,7 @@ public class Interfaz extends Agent {
 		AbsPredicate predicadoAnd2 = new AbsPredicate(SL1Vocabulary.AND);
 		
 		int tamano = coleccion.size();
-		System.out.println("numeroooo "+tamano);
+		
 		try{
 			if (tamano==1){
 				resultado = (AbsPredicate) coleccion.get(0);
@@ -1592,10 +1592,8 @@ public class Interfaz extends Agent {
 			}
 			else{
 				AbsPredicate element = (AbsPredicate) coleccion.get(0);
-				System.out.println("element: "+element);
 				predicadoAnd.set(SL1Vocabulary.AND_LEFT, element);
 				element = (AbsPredicate) coleccion.get(1);
-				System.out.println("element: "+element);
 				predicadoAnd.set(SL1Vocabulary.AND_RIGHT, element);
 				int i=2;
 				while (i<tamano){
@@ -1615,7 +1613,6 @@ public class Interfaz extends Agent {
 		catch (Exception oe){
 			oe.printStackTrace();
 		}
-		System.out.println("Construir AND: "+predicadoAnd);
 		return predicadoAnd;
 	}
 	
@@ -1626,24 +1623,23 @@ public class Interfaz extends Agent {
 		AbsPredicate predicadoAnd2 = new AbsPredicate(SL1Vocabulary.AND);
 		
 		int tamano = coleccion.size();
-		System.out.println("tamanoooooooooo "+tamano);
 		try{
 			if (tamano==1){
-				resultado = (AbsPredicate) coleccion;
+				Iterator<AbsPredicate> it = coleccion.iterator();
+				resultado = (AbsPredicate) it.next();
 				return resultado;
 			}
 			else{
 				Iterator<AbsPredicate> it = coleccion.iterator();
 				AbsPredicate element = (AbsPredicate) it.next();
-				System.out.println("element: "+element);
 				predicadoAnd.set(SL1Vocabulary.AND_LEFT, element);
 				element = (AbsPredicate) it.next();
-				System.out.println("element: "+element);
 				predicadoAnd.set(SL1Vocabulary.AND_RIGHT, element);
 				
 				while (it.hasNext()){
 					
-					element = (AbsPredicate) it;
+					element = (AbsPredicate) it.next();
+								
 					predicadoAnd2.set(SL1Vocabulary.AND_LEFT, predicadoAnd);
 					predicadoAnd2.set(SL1Vocabulary.AND_RIGHT, element);
 				
@@ -1665,15 +1661,12 @@ public class Interfaz extends Agent {
 	
 	
 	
-	private void ConstruyeTabla(AbsPredicate predicado){
+	public void ConstruyeTabla(AbsPredicate predicado){
 		AbsPredicate auxIzda = null;
 		AbsPredicate auxDcha = null;
-		
-		System.out.println("predicado: "+predicado);
-		
+				
 		Hashtable<String,List> tablaTipos = new Hashtable<String,List>();
-		System.out.println("Intentamos construir la tabla");
-		
+				
 		if (predicado.getTypeName().equals("and")){
 			auxIzda = (AbsPredicate) predicado.getAbsObject(SL1Vocabulary.AND_LEFT);
 			auxDcha = (AbsPredicate) predicado.getAbsObject(SL1Vocabulary.AND_RIGHT);
@@ -1738,6 +1731,24 @@ public class Interfaz extends Agent {
 			tablaTipos.put(predicado.getTypeName(), listaAux2);
 			
 		}
+	}
+	
+	public void ConstruyeTablaCol (AbsPredicate coleccion){
+		AbsPredicate auxIzda = null;
+		AbsPredicate auxDcha = null;
+		
+		System.out.println("predicado: "+coleccion);
+		
+		Hashtable<String,List> tablaTipos = new Hashtable<String,List>();
+		System.out.println("Intentamos construir la tabla");
+		
+		if (coleccion.getTypeName().equals("and")){
+			auxIzda = (AbsPredicate) coleccion.getAbsObject(SL1Vocabulary.AND_LEFT);
+			auxDcha = (AbsPredicate) coleccion.getAbsObject(SL1Vocabulary.AND_RIGHT);
+			ConstruyeTabla(auxIzda);
+			ConstruyeTabla(auxDcha);
+		}
+		
 	}
 	
 	
@@ -2114,7 +2125,7 @@ public class Interfaz extends Agent {
 		}
 		
 		public void action(){
-			System.out.println("COMPORTAMIENTOOOOOOOO RECIBE TESTS");
+			
 			String[] retornable = new String[0];
 			String[] posiblesID = new String[0];
 			try{
@@ -2165,8 +2176,7 @@ public class Interfaz extends Agent {
 		}
 		
 		public void action(){
-			System.out.println("COMPORTAMIENTOOOOOO PIDE FICHEROS");
-			
+						
 			String IdPractica  = ultimaPractica;
 
 			// Y nos guardamos los últimos test solicitados
@@ -2228,16 +2238,20 @@ public class Interfaz extends Agent {
 				AbsPredicate Absff = (AbsPredicate) PACAOntology.fromObject(ff);
 				
 				List <AbsPredicate> list1 = ConstruiListaTests(IdTest, AbsPract);
-				
+								
 				AbsPredicate pruebaP = ConstruirAnd2(list1);
 				
 				Collection <AbsPredicate> colAux = new ArrayList<AbsPredicate>();
 				colAux.add(AbsCor);
 				colAux.add(pruebaP);
+				colAux.add(Absff);
 				
 				AbsPredicate pruebaC = ConstruirAnd2Col(colAux);
 				
-				ConstruyeTabla(pruebaP);
+				//ConstruyeTabla(pruebaP);
+				
+				System.out.println("******************************************");
+				ConstruyeTablaCol(pruebaC);
 														
 				and2 = InsertarTestPedidos(IdTest, AbsPract, Absff);
 				
@@ -2286,7 +2300,6 @@ public class Interfaz extends Agent {
 			this.ficheros1 = ficheros;
 		}
 		public void action(){
-			System.out.println("COMPORTAMIENTOOOOOOOOOO RECIBE FICHEROS");
 			String[] retornable = new String[0];
 			try{
 				//Sacamos los ficheros que vienen en el mensaje como conceptos abstractos
@@ -2297,7 +2310,6 @@ public class Interfaz extends Agent {
 				for (int i=0; i < ficheros1.size(); i++) {
 					fp = (FuentesPrograma) PACAOntology.toObject(ficheros1.get(i));
 					retornable[i] = fp.getNombre();
-					System.out.println(retornable[i]);
 				}
 				
 			}
@@ -2308,8 +2320,7 @@ public class Interfaz extends Agent {
 
 			ficherosUltimaPractica = retornable;
 			tes2.setResultado(retornable);
-			System.out.println("RELLENAMOS LOS FICHEROSSSSSSSSSSSSS");
-			
+					
 		}
 	}
 	
