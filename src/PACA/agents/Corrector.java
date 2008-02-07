@@ -276,7 +276,6 @@ public class Corrector extends Agent {
 			//Mandamos el predicado al interfaz
 			try {
 				getContentManager().fillContent(resp1, equalPred);
-				System.out.println("Rellenamos el resp1");
 			} catch (CodecException e) {
 				// TODO Auto-generated catch block
 				e.printStackTrace();
@@ -284,8 +283,6 @@ public class Corrector extends Agent {
 				// TODO Auto-generated catch block
 				e.printStackTrace();
 			}
-			System.out.println(resp1.toString());
-			System.out.println("FINNNN CORRECTOR COMPORTAMIENTOOOOOOOO PRACTICASSSSSSSSS");
 			send(resp1);
 		}
 	}
@@ -306,7 +303,6 @@ public class Corrector extends Agent {
 
 		public void action() {
 
-			System.out.println("COMPORTAMIENTO CORRECTOR PARA TESTSSSSSSSSSSSSSSSSS");
 			//Obtenemos el predicado TESTS
 			Tests tes;
 			try {
@@ -346,7 +342,7 @@ public class Corrector extends Agent {
 				// TODO Auto-generated catch block
 				e.printStackTrace();
 			}
-			System.out.println("FIN COMPORTAMIENTO CORRECTOR PARA TESTSSSSSSSSSSSSSSSSS");
+			
 		}
 	}
 
@@ -367,8 +363,7 @@ public class Corrector extends Agent {
 		}
 
 		public void action() {
-			System.out.println("COMPORTAMIENTO CORRECTOR FICHEROSSSSSSSSSSSSSSSSSS");
-
+			
 			Corrige corr;
 			try {
 				corr = (Corrige) ontologia.toObject(pred1);
@@ -424,8 +419,6 @@ public class Corrector extends Agent {
 				// TODO Auto-generated catch block
 				e1.printStackTrace();
 			}
-
-			System.out.println("FIN COMPORTAMIENTO CORRECTOR FICHEROSSSSSSSSSSSSSSSSSS");
 
 		}
 	}
