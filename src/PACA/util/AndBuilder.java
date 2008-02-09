@@ -9,14 +9,36 @@ import java.util.Hashtable;
 import java.util.Iterator;
 import java.util.List;
 
+/**
+* AntBuilder. Creates SL1Vocabulary.AND predicates from:
+* <ul>
+*    <li> AbsPredicates </li>
+*    <li> Collection of AbsPredicates</li>
+* </ul>
+* Put all predicates in a <b>big AND</big> predicate.
+* 
+* AntBuilder can be use too for extract information from a big and 
+* heterogeneous AND (in term of predicates's types). Adding a AbsPredicate 
+* AND, and using the method <code>getPredicateList(predicateType)</code>
+* can extract a list with all the predicates of the specific type
+*/
 public class AndBuilder {
 
 	private Hashtable<String, List<AbsPredicate>> tabla;
 
+	/**
+	* Create a new and empty AndBuilder	
+	*/
 	public AndBuilder() {
 		this.tabla = new Hashtable<String, List<AbsPredicate>>();
 	}
 
+	/**
+	* Add new single predicate (or complex with a lot of "ANDs") to
+	* the builder. Internaly remove all the ANDs predicates and only store
+	* the rest of the predicates
+	* @param predicado AbsPredicate to add
+	*/
 	public void addPredicate(AbsPredicate predicado) {
 		AbsPredicate auxIzda = null;
 		AbsPredicate auxDcha = null;
@@ -42,6 +64,14 @@ public class AndBuilder {
 		}
 	}
 	
+	
+	/**
+	* Return a list of predicates in that had been added to the AnbBuilder
+	* (with <code>addPredicate</code> or <code>addPredicates</code>) with the
+	* specific type.
+	* @param tipo Type in the ontology to look for in the predicates
+	* @return List of all predicates that match with the specify type
+	*/
 	public List<AbsPredicate> getPredicateList(String tipo){
 		
 		if (this.tabla.containsValue(tipo)){
@@ -53,6 +83,12 @@ public class AndBuilder {
 				
 	}
 
+	/**
+	* Similary to <code>addPredicate</code> with a list of
+	* AbsPredicates. Interate in <code>coleccion</code> and use the basic
+	* <code>addPredicate</code>
+	* @param coleccion collection of predicates to add to the builder
+	*/
 	public void addPredicates(Collection<AbsPredicate> coleccion) {
 
 		for (AbsPredicate p : coleccion) {
@@ -61,6 +97,12 @@ public class AndBuilder {
 
 	}
 
+	/**
+	* Static method that creates create a complex "AND" predicate from
+	* all the predicates in the coleccion parameter
+	* @param coleccion of predicates to concatenate in a big AND precidate
+	* @return And Predicate with all the predicates in the coleccion
+	*/
 	public static AbsPredicate buildAndfromList(List<AbsPredicate> coleccion) {
 		AbsPredicate resultado = null;
 		AbsPredicate predicadoAnd = new AbsPredicate(SL1Vocabulary.AND);
@@ -96,7 +138,10 @@ public class AndBuilder {
 		return predicadoAnd;
 	}
 	
-	
+	/**
+	* Create an AND predicate from all of predicates added in the objet
+	* @return And predicte with all the predicates in the object
+	*/
 	public AbsPredicate getAnd(){
 		Collection<List<AbsPredicate>> coleccion = this.tabla.values();
 		List<AbsPredicate> lista = new ArrayList<AbsPredicate>();
