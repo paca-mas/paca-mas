@@ -29,13 +29,15 @@
     Profile p;
     ContainerController cc;
     AgentController agentInterfaz=null;
+    InterfazJSP agent=null;
             
     try {
     	//interfaz.doStart(nombre);
     	rt = Runtime.instance();
     	p = new ProfileImpl(false); 
     	cc = rt.createAgentContainer(p);
-    	agentInterfaz = cc.createNewAgent(nombre,"PACA.agents.InterfazJSP", new Object[0]);
+    	agent = new InterfazJSP();
+    	agentInterfaz = cc.acceptNewAgent(nombre,agent);
     	if (agentInterfaz!=null){
     		agentInterfaz.start();
     		System.out.println("Nombre Agente: "+agentInterfaz.getName());
@@ -46,6 +48,9 @@
     		System.out.println("Ponemos algo en agente... ");
     		System.out.println("INTERFAZ: "+interfaz.toString());
     		System.out.println("AGENTE INTERFAZ: "+agentInterfaz.toString());
+    		while (!agent.isFinSetup()){
+    			System.out.println("Esperando al fin... ");
+    		}
     		    	}
     	else{
     		System.out.println("Agente no Arrancado"+agentInterfaz.getState().getName());
@@ -66,6 +71,7 @@
 <!doctype html public "-//w3c//dtd html 4.0 transitional//en">
 <%@page import="PACA.ontology.pacaOntology"%>
 <%@page import="PACA.agents.Interfaz"%>
+<%@page import="PACA.agents.InterfazJSP"%>
 <html>
   
   <head>

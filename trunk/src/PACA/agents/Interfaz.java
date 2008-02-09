@@ -2239,11 +2239,29 @@ public class Interfaz extends Agent {
 				
 				List <AbsPredicate> list1 = ConstruiListaTests(IdTest, AbsPract);
 								
-				AbsPredicate pruebaP = ConstruirAnd2(list1);
+				//AbsPredicate pruebaP = ConstruirAnd2(list1);
+				AndBuilder constructor = new AndBuilder();
+				
+				constructor.addPredicates(list1);
+				constructor.addPredicate(AbsCor);
+				constructor.addPredicate(Absff);
+				
+				System.out.println("*****************************************");
+				System.out.println("Resultadito: "+constructor.getAnd().toString());
+				System.out.println("*****************************************");
+				
+				AndBuilder constructor2 = new AndBuilder();
+				
+				constructor2.addPredicate(constructor.getAnd());
+				System.out.println("*****************************************");
+				System.out.println("Resultadito: "+constructor2.getAnd().toString());
+				System.out.println("*****************************************");
+				
+				
 				
 				Collection <AbsPredicate> colAux = new ArrayList<AbsPredicate>();
 				colAux.add(AbsCor);
-				colAux.add(pruebaP);
+				//colAux.add(pruebaP);
 				colAux.add(Absff);
 				
 				AbsPredicate pruebaC = ConstruirAnd2Col(colAux);
