@@ -395,11 +395,18 @@ public class InterfazJSP extends Interfaz {
 	
 	protected void setup(){
 		super.setup();
-		
+		System.out.print("Ni idea");
 		this.setEnabledO2ACommunication(true, 0);
 		
+		System.out.println("añadir comportamineto");
 		addBehaviour(new InicializaObjeto());
+		System.out.println("añadido comportamineto");
+		
 		FinSetup=true;
+	}
+	
+	public boolean isFinSetup(){
+		return FinSetup;
 	}
 }
 
