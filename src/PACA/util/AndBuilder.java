@@ -5,6 +5,7 @@ import jade.content.lang.sl.SL1Vocabulary;
 
 import java.util.ArrayList;
 import java.util.Collection;
+import java.util.Enumeration;
 import java.util.Hashtable;
 import java.util.Iterator;
 import java.util.List;
@@ -56,10 +57,12 @@ public class AndBuilder {
 				listaAux3 = this.tabla.get(predicado.getTypeName());
 				listaAux3.add(predicado);
 				this.tabla.put(predicado.getTypeName(), listaAux3);
+				
 			} else {
 				List<AbsPredicate> listaAux2 = new ArrayList<AbsPredicate>();
 				listaAux2.add(predicado);
 				this.tabla.put(predicado.getTypeName(), listaAux2);
+				
 			}
 		}
 	}
@@ -74,7 +77,8 @@ public class AndBuilder {
 	*/
 	public List<AbsPredicate> getPredicateList(String tipo){
 		
-		if (this.tabla.containsValue(tipo)){
+		if (this.tabla.containsKey(tipo)){
+		//if (this.tabla.containsValue(tipo)){
 			return this.tabla.get(tipo);
 		}
 		else{
@@ -136,7 +140,7 @@ public class AndBuilder {
 		}
 
 		return predicadoAnd;
-	}
+	} 
 	
 	/**
 	* Create an AND predicate from all of predicates added in the objet
@@ -152,8 +156,10 @@ public class AndBuilder {
 		
 	}
 	
+	public boolean existsPredicate(String tipo){
+		return this.tabla.containsKey(tipo);
+	}
 	
-
-	
+		
 
 }

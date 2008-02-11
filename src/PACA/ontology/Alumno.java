@@ -10,8 +10,8 @@ import jade.content.Predicate;
    Clase que implementa el concepto Alumno de la ontología.
    Modificado Carlos Simón García 
 */
-//public class Alumno implements Concept{
-public class Alumno implements Predicate{
+public class Alumno implements Concept{
+
     /**
        Identificador del alumno.
     */

@@ -44,6 +44,7 @@ import java.text.DateFormat;
 import java.util.Date;
 import java.util.ArrayList;
 import java.util.Hashtable;
+import java.util.Iterator;
 import java.util.List;
 
 import PACA.ontology.Alumno;
@@ -59,6 +60,8 @@ import PACA.ontology.Test;
 import PACA.ontology.Tests;
 import PACA.ontology.pacaOntology;
 import PACA.ontology.Fichero.FuentesPrograma;
+import PACA.util.AndBuilder;
+
 import java.util.Hashtable;
 
 /**
@@ -291,10 +294,11 @@ public class Corrector extends Agent {
 	public class TestsCorrecBehaviour extends OneShotBehaviour {
 
 		private ACLMessage mens1;
-		private AbsPredicate pred1;
+		private List<AbsPredicate> pred1;
 		private AbsIRE ire1;
 
-		public TestsCorrecBehaviour(Agent _a, ACLMessage msg1, AbsPredicate pred, AbsIRE ire) {
+		//public TestsCorrecBehaviour(Agent _a, ACLMessage msg1, AbsPredicate pred, AbsIRE ire) {
+		public TestsCorrecBehaviour(Agent _a, ACLMessage msg1, List<AbsPredicate> pred, AbsIRE ire) {
 			super(_a);
 			this.mens1 = msg1;
 			this.pred1 = pred;
@@ -306,7 +310,9 @@ public class Corrector extends Agent {
 			//Obtenemos el predicado TESTS
 			Tests tes;
 			try {
-				tes = (Tests) ontologia.toObject(pred1);
+				Iterator<AbsPredicate> it = pred1.iterator();
+				tes = (Tests) ontologia.toObject(it.next());
+				//tes = (Tests) ontologia.toObject(pred1);
 
 				Test[] te;
 				//Obtenemos los tests disponibles para la practica seleccionada
@@ -350,11 +356,11 @@ public class Corrector extends Agent {
 	public class FicherosCorrBehaviour extends OneShotBehaviour {
 
 		private ACLMessage mens1;
-		private AbsPredicate pred1;
-		private AbsPredicate pred2;
+		private List<AbsPredicate> pred1;
+		private List<AbsPredicate> pred2;
 		private AbsIRE ire1;
 
-		public FicherosCorrBehaviour(Agent _a, ACLMessage msg1, AbsPredicate predIzd, AbsPredicate predDcha, AbsIRE ire) {
+		public FicherosCorrBehaviour(Agent _a, ACLMessage msg1, List<AbsPredicate> predIzd, List<AbsPredicate> predDcha, AbsIRE ire) {
 			super(_a);
 			this.mens1 = msg1;
 			this.pred1 = predIzd;
@@ -366,11 +372,13 @@ public class Corrector extends Agent {
 			
 			Corrige corr;
 			try {
-				corr = (Corrige) ontologia.toObject(pred1);
+				Iterator<AbsPredicate> itCor = pred1.iterator();
+				corr = (Corrige) ontologia.toObject(itCor.next());
 				Practica pract = corr.getPractica();
 				
 				//Guardamos todos los Test que nos han pedido
-				Test[] testAux3 = ExtraeTestsPedidos(pred2);
+				//Test[] testAux3 = ExtraeTestsPedidos(pred2);
+				Test[] testAux3 = ExtraeTestsPedidos2(pred2);
 
 				//Obtenemos los ficheros fuentes necesarios para cada Test
 				FuentesPrograma[] fp = FicheroParaPractica(pract.getId(), testAux3);
@@ -655,6 +663,7 @@ public class Corrector extends Agent {
 
 									//Obtenemos el predicado original (CORRIGE, PRACTICAS, TESTS... )
 									String requestedInfo2Name = qall.getTypeName();
+									System.out.println("Proposicion: "+requestedInfo2Name);
 
 									if (requestedInfo2Name.equals(pacaOntology.CORRIGE)) {
 										// --> PracticasDisponibles <--------------------------------------------------
@@ -679,16 +688,38 @@ public class Corrector extends Agent {
 										addBehaviour(new PracCorrecBehaviour(this.myAgent, reply, allPred));
 
 									} else {
+										 
+										AndBuilder predicado = new AndBuilder();
+										predicado.addPredicate(qall);
+										System.out.println("Proposicion que llega: "+predicado.getAnd());
+							
+										
+										if (predicado.existsPredicate(pacaOntology.FICHEROFUENTES)){
+											System.out.println("Estamos en los ficheros!!!!!!!");
+											List<AbsPredicate> lisCorrige = predicado.getPredicateList(pacaOntology.CORRIGE);
+											List<AbsPredicate> listTests = predicado.getPredicateList(pacaOntology.TESTS);
+											addBehaviour(new FicherosCorrBehaviour(this.myAgent, reply, lisCorrige, listTests, allPred));
+											
+											
+										
+										
+										
+										
+										
+										
+										//******************** FUNCIONA *************************										
 										//Sacamos las partes izquierda y derecha del predicado AND
-										AbsPredicate AbsLEFT1 = (AbsPredicate) qall.getAbsObject(SL1Vocabulary.AND_LEFT);
+										//AbsPredicate AbsLEFT1 = (AbsPredicate) qall.getAbsObject(SL1Vocabulary.AND_LEFT);
 
 										//Obtenemos el predicado con el que queremos trabajar AND, TESTS...
-										AbsPredicate AbsRIGHT1 = (AbsPredicate) qall.getAbsObject(SL1Vocabulary.AND_RIGHT);
+										//AbsPredicate AbsRIGHT1 = (AbsPredicate) qall.getAbsObject(SL1Vocabulary.AND_RIGHT);
 
-										String requestedInfo3Name = AbsRIGHT1.getTypeName();
-
+										//String requestedInfo3Name = AbsRIGHT1.getTypeName();
+										//******************** FIN FUNCIONA *********************
+										
+										
 										//Modificacion Carlos
-										if (requestedInfo3Name.equals(SL1Vocabulary.AND)) {
+										//if (requestedInfo3Name.equals(SL1Vocabulary.AND)) {
 											// --> FicheroParaPractica <---------------------------------------------------
 
 											/*Corrige corr = (Corrige) ontologia.toObject(AbsLEFT1);
@@ -711,7 +742,8 @@ public class Corrector extends Agent {
 											getContentManager().fillContent(reply, equalPred);
 											myAgent.send(reply);*/
 
-											addBehaviour(new FicherosCorrBehaviour(this.myAgent, reply, AbsLEFT1, AbsRIGHT1, allPred));
+											//addBehaviour(new FicherosCorrBehaviour(this.myAgent, reply, AbsLEFT1, AbsRIGHT1, allPred));
+											
 
 										} else {
 											// --> TestPorPractica <-------------------------------------------------------
@@ -737,7 +769,14 @@ public class Corrector extends Agent {
 											qrr.set(SL1Vocabulary.EQUALS_RIGHT,absTests);
 											getContentManager().fillContent(reply, qrr);
 											myAgent.send(reply);*/
-											addBehaviour(new TestsCorrecBehaviour(this.myAgent, reply, AbsRIGHT1, allPred));
+											//addBehaviour(new TestsCorrecBehaviour(this.myAgent, reply, AbsRIGHT1, allPred));
+											List<AbsPredicate> lll = new ArrayList<AbsPredicate>();
+											lll=predicado.getPredicateList(pacaOntology.TESTS);
+											System.out.println("*************************************");
+											System.out.println(lll);
+											System.out.println("*************************************");
+											//Test[] aux555 = ExtraeTestsPedidos2(lll);
+											addBehaviour(new TestsCorrecBehaviour(this.myAgent, reply, lll, allPred));
 										}
 									}
 
@@ -1814,6 +1853,27 @@ public class Corrector extends Agent {
 
 		return fuentesAux2;
 		
+	}
+	
+	private Test[] ExtraeTestsPedidos2(List<AbsPredicate> lista) {
+		int tamano = lista.size();
+		Test[] testAux = new Test[tamano];
+		Iterator<AbsPredicate> it = lista.iterator();
+		for (int i = 0; i < testAux.length; i++) {
+			Tests aux;
+			try {
+				aux = (Tests)ontologia.toObject(it.next());
+				testAux[i]=  aux.getTest();
+				System.out.println("Extrae Tests: "+testAux[i].getId());
+			} catch (UngroundedException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			} catch (OntologyException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			}
+		}
+		return testAux;
 	}
 	
 	
