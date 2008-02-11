@@ -883,11 +883,13 @@ public class Interfaz extends Agent {
 			
 			System.out.println("Creamos los objetso Abstractos practica y corrector");
 			
+			Alumno al = new Alumno(alumnoID, alumnoPass);
+			AbsConcept Absal = (AbsConcept) PACAOntology.fromObject(al);
+			
 			//Creamos el predicado abstracto Evaluacion Practica
 			AbsPredicate AbsEvap = new AbsPredicate(pacaOntology.EVALUAPRACTICA);
 			AbsEvap.set(pacaOntology.EVALUACIONPRACTICA_TEXTO, "?evaluacion");
-			
-			
+			AbsEvap.set(pacaOntology.ALUMNO,Absal);
 			System.out.println("Creamos la EVALUACION PRACTICA");
 			
 			//Creamos el predicado abstracto Corrige con AbsPract y AbsCorr
@@ -897,22 +899,7 @@ public class Interfaz extends Agent {
 			
 			System.out.println("Creamos el predicado abstracto CORRIGE");
 
-			//Alumno al = new Alumno(alumnoID, alumnoPass);
-			//Alumno al = new Alumno();
-			//al.setIdentificador(alumnoID);
-			//al.setPassword(alumnoPass);
-			AbsPredicate Absal = new AbsPredicate(pacaOntology.ALUMNO);
-			Absal.set(pacaOntology.ALUMNO_ID,alumnoID);
-			Absal.set(pacaOntology.ALUMNO_PASSWD,alumnoPass);
-			System.out.println("Creamos el predicado abstracto alumno");
 			
-			
-			//Convertimos al en concepto abstracto
-			//AbsConcept Absal = (AbsConcept) PACAOntology.fromObject(al);
-			
-			
-
-
 			AbsPredicate and1 = new AbsPredicate(SL1Vocabulary.AND);
 			AbsPredicate and2 = new AbsPredicate(SL1Vocabulary.AND);
 			AbsPredicate and3 = new AbsPredicate(SL1Vocabulary.AND);
@@ -921,29 +908,36 @@ public class Interfaz extends Agent {
 			//get1=RIGHT , get0=LEFT
 			//and4.set_0(evap);
 			//and4.set_1(al); AbsEvap Absal
-			and4.set(SL1Vocabulary.AND_LEFT, AbsEvap);
-			and4.set(SL1Vocabulary.AND_RIGHT, Absal);
+			//and4.set(SL1Vocabulary.AND_LEFT, AbsEvap);
+			//and4.set(SL1Vocabulary.AND_RIGHT, Absal);
 			
 			
-			System.out.println("and4");
+			//System.out.println("and4");
 			
 			//and3.set_0(listaFP);
 			//and3.set_1(and4);
-			List <AbsPredicate> lista2 = ConstruirListaFF(ficherosUltimaPractica, contenidoFicheros,te);
+			List <AbsPredicate> listaTest = ConstruiListaTests(TestUltimaPractica, AbsPract);
+			List <AbsPredicate> listaFF = ConstruirListaFF(ficherosUltimaPractica, contenidoFicheros,te);
 			
-			AbsPredicate car = ConstruirAnd2(lista2);
+			AndBuilder predicado = new AndBuilder();
+			predicado.addPredicate(AbsCor);
+			predicado.addPredicates(listaTest);
+			predicado.addPredicates(listaFF);
+			predicado.addPredicate(AbsEvap);
+			System.out.println("doCorrecion: "+predicado.getAnd());
+			
 			
 			
 			//Guardamos en and3 los ficheros pedidos
-			and3 = InsertarFicherosPedidos(ficherosUltimaPractica, contenidoFicheros, Absal, te);
-			System.out.println("and3: Ficheros"+and3);
-			System.out.println("***********************************************");
-			AbsPredicate aux3 = (AbsPredicate) and3.getAbsObject(SL1Vocabulary.AND_LEFT);
-			System.out.println(aux3);
-			System.out.println("***********************************************");
-			AbsPredicate aux4 = (AbsPredicate) and3.getAbsObject(SL1Vocabulary.AND_RIGHT);
-			System.out.println(aux4);
-			System.out.println("***********************************************");
+			//and3 = InsertarFicherosPedidos(ficherosUltimaPractica, contenidoFicheros, Absal, te);
+			//System.out.println("and3: Ficheros"+and3);
+			//System.out.println("***********************************************");
+			//AbsPredicate aux3 = (AbsPredicate) and3.getAbsObject(SL1Vocabulary.AND_LEFT);
+			//System.out.println(aux3);
+			//System.out.println("***********************************************");
+			//AbsPredicate aux4 = (AbsPredicate) and3.getAbsObject(SL1Vocabulary.AND_RIGHT);
+			//System.out.println(aux4);
+			//System.out.println("***********************************************");
 			
 			//and2.set_0(listaTes);
 			//and2.set_1(and3);
@@ -951,31 +945,31 @@ public class Interfaz extends Agent {
 			
 			//Guardamos en and2 los tests pedidos
 			//and2 = InsertarTestPedidos(TestUltimaPractica, AbsPract, and3);
-			and2 = InsertarTestPedidos(TestUltimaPractica, AbsPract, Absal);
+			//and2 = InsertarTestPedidos(TestUltimaPractica, AbsPract, Absal);
 			
-			System.out.println("and2: Test pedidos"+and2);
-			System.out.println("***********************************************");
-			AbsPredicate aux1 = (AbsPredicate) and2.getAbsObject(SL1Vocabulary.AND_LEFT);
-			System.out.println(aux1);
-			System.out.println("***********************************************");
-			AbsPredicate aux2 = (AbsPredicate) and2.getAbsObject(SL1Vocabulary.AND_RIGHT);
-			System.out.println(aux2);
-			System.out.println("***********************************************");
+			//System.out.println("and2: Test pedidos"+and2);
+			///System.out.println("***********************************************");
+			//AbsPredicate aux1 = (AbsPredicate) and2.getAbsObject(SL1Vocabulary.AND_LEFT);
+			//System.out.println(aux1);
+			//System.out.println("***********************************************");
+			//AbsPredicate aux2 = (AbsPredicate) and2.getAbsObject(SL1Vocabulary.AND_RIGHT);
+			//System.out.println(aux2);
+			//System.out.println("***********************************************");
 			
-			AbsPredicate andZ = new AbsPredicate(SL1Vocabulary.AND);
-			andZ.set(SL1Vocabulary.AND_LEFT,and3);
-			andZ.set(SL1Vocabulary.AND_RIGHT,and2);
+			//AbsPredicate andZ = new AbsPredicate(SL1Vocabulary.AND);
+			//andZ.set(SL1Vocabulary.AND_LEFT,and3);
+			//andZ.set(SL1Vocabulary.AND_RIGHT,and2);
 			
 			//and1.set_0(cor);
 			//and1.set_1(and2);
-			and1.set(SL1Vocabulary.AND_LEFT, AbsCor);
-			and1.set(SL1Vocabulary.AND_RIGHT, andZ);
+			//and1.set(SL1Vocabulary.AND_LEFT, AbsCor);
+			//and1.set(SL1Vocabulary.AND_RIGHT, andZ);
 			
 			//Creamos el IRE para enviar. En este caso IOTA
 			AbsIRE qriota = new AbsIRE(SL2Vocabulary.IOTA);
 			AbsVariable x = new AbsVariable("evaluacion",pacaOntology.EVALUAPRACTICA);
 			qriota.setVariable(x);
-			qriota.setProposition(and1);
+			qriota.setProposition(predicado.getAnd());
 
 			//List l_out = new ArrayList();
 			//l_out.add(qriota);
@@ -1578,180 +1572,6 @@ public class Interfaz extends Agent {
 		return ListaAux;
 	}
 	
-	public AbsPredicate ConstruirAnd2(List <AbsPredicate> coleccion){
-		AbsPredicate resultado = null;
-		AbsPredicate predicadoAnd = new AbsPredicate(SL1Vocabulary.AND);
-		AbsPredicate predicadoAnd2 = new AbsPredicate(SL1Vocabulary.AND);
-		
-		int tamano = coleccion.size();
-		
-		try{
-			if (tamano==1){
-				resultado = (AbsPredicate) coleccion.get(0);
-				return resultado;
-			}
-			else{
-				AbsPredicate element = (AbsPredicate) coleccion.get(0);
-				predicadoAnd.set(SL1Vocabulary.AND_LEFT, element);
-				element = (AbsPredicate) coleccion.get(1);
-				predicadoAnd.set(SL1Vocabulary.AND_RIGHT, element);
-				int i=2;
-				while (i<tamano){
-					element = (AbsPredicate) coleccion.get(i);
-					predicadoAnd2.set(SL1Vocabulary.AND_LEFT, predicadoAnd);
-					predicadoAnd2.set(SL1Vocabulary.AND_RIGHT, element);
-				
-					predicadoAnd = new AbsPredicate(SL1Vocabulary.AND);
-					predicadoAnd = predicadoAnd2;
-					predicadoAnd2 = new AbsPredicate(SL1Vocabulary.AND);
-					i++;
-				}
-				
-			}
-			
-		}
-		catch (Exception oe){
-			oe.printStackTrace();
-		}
-		return predicadoAnd;
-	}
-	
-	
-	public AbsPredicate ConstruirAnd2Col(Collection<AbsPredicate> coleccion){
-		AbsPredicate resultado = null;
-		AbsPredicate predicadoAnd = new AbsPredicate(SL1Vocabulary.AND);
-		AbsPredicate predicadoAnd2 = new AbsPredicate(SL1Vocabulary.AND);
-		
-		int tamano = coleccion.size();
-		try{
-			if (tamano==1){
-				Iterator<AbsPredicate> it = coleccion.iterator();
-				resultado = (AbsPredicate) it.next();
-				return resultado;
-			}
-			else{
-				Iterator<AbsPredicate> it = coleccion.iterator();
-				AbsPredicate element = (AbsPredicate) it.next();
-				predicadoAnd.set(SL1Vocabulary.AND_LEFT, element);
-				element = (AbsPredicate) it.next();
-				predicadoAnd.set(SL1Vocabulary.AND_RIGHT, element);
-				
-				while (it.hasNext()){
-					
-					element = (AbsPredicate) it.next();
-								
-					predicadoAnd2.set(SL1Vocabulary.AND_LEFT, predicadoAnd);
-					predicadoAnd2.set(SL1Vocabulary.AND_RIGHT, element);
-				
-					predicadoAnd = new AbsPredicate(SL1Vocabulary.AND);
-					predicadoAnd = predicadoAnd2;
-					predicadoAnd2 = new AbsPredicate(SL1Vocabulary.AND);
-				}
-				
-			}
-			
-		}
-		catch (Exception oe){
-			oe.printStackTrace();
-		}
-		System.out.println("Construir Coleccion: "+predicadoAnd);
-		return predicadoAnd;
-	}
-	
-	
-	
-	
-	public void ConstruyeTabla(AbsPredicate predicado){
-		AbsPredicate auxIzda = null;
-		AbsPredicate auxDcha = null;
-				
-		Hashtable<String,List> tablaTipos = new Hashtable<String,List>();
-				
-		if (predicado.getTypeName().equals("and")){
-			auxIzda = (AbsPredicate) predicado.getAbsObject(SL1Vocabulary.AND_LEFT);
-			auxDcha = (AbsPredicate) predicado.getAbsObject(SL1Vocabulary.AND_RIGHT);
-			
-							
-			while (auxIzda.getTypeName().equals("and")){
-				String tipo = auxDcha.getTypeName();
-				System.out.println("tipito: "+tipo);
-			
-			
-				List<AbsPredicate> listaAux = new ArrayList<AbsPredicate>();
-				if (tablaTipos.containsKey(tipo)){
-					listaAux = tablaTipos.get(tipo);
-					listaAux.add(auxDcha);
-					tablaTipos.put(tipo, listaAux);
-				}
-				else{
-					List <AbsPredicate>listaAux2 = new ArrayList<AbsPredicate>();
-					listaAux2.add(auxDcha);
-					tablaTipos.put(tipo, listaAux2);
-				}
-			
-				auxDcha = (AbsPredicate) auxIzda.getAbsObject(SL1Vocabulary.AND_RIGHT);
-				auxIzda = (AbsPredicate) auxIzda.getAbsObject(SL1Vocabulary.AND_LEFT);
-			}
-		
-			System.out.println("1.izda: "+auxIzda);
-			System.out.println("2.dcha: "+auxDcha);
-		
-			if (tablaTipos.containsKey(auxDcha.getTypeName())){
-				List<AbsPredicate> listaAux3 = new ArrayList<AbsPredicate>();
-				listaAux3 = tablaTipos.get(auxDcha.getTypeName());
-				listaAux3.add(auxDcha);
-				System.out.println("TablitaaaaF" + listaAux3.toString());
-				tablaTipos.put(auxDcha.getTypeName(), listaAux3);
-			}
-			else{
-				List <AbsPredicate>listaAux2 = new ArrayList<AbsPredicate>();
-				listaAux2.add(auxDcha);
-				System.out.println("Tablitaaaa" + listaAux2.toString());
-				tablaTipos.put(auxDcha.getTypeName(), listaAux2);
-			}
-		
-			if (tablaTipos.containsKey(auxIzda.getTypeName())){
-				List<AbsPredicate> listaAux3 = new ArrayList<AbsPredicate>();
-				listaAux3 = tablaTipos.get(auxIzda.getTypeName());
-				listaAux3.add(auxIzda);
-				System.out.println("TablitaaaaF" + listaAux3.toString());
-				tablaTipos.put(auxIzda.getTypeName(), listaAux3);
-			}
-			else{
-				List <AbsPredicate>listaAux2 = new ArrayList<AbsPredicate>();
-				listaAux2.add(auxIzda);
-				System.out.println("Tablitaaaa" + listaAux2.toString());
-				tablaTipos.put(auxIzda.getTypeName(), listaAux2);
-			}
-		}
-		else{
-			List <AbsPredicate>listaAux2 = new ArrayList<AbsPredicate>();
-			listaAux2.add(predicado);
-			System.out.println("Tablitaaaa" + listaAux2.toString());
-			tablaTipos.put(predicado.getTypeName(), listaAux2);
-			
-		}
-	}
-	
-	public void ConstruyeTablaCol (AbsPredicate coleccion){
-		AbsPredicate auxIzda = null;
-		AbsPredicate auxDcha = null;
-		
-		System.out.println("predicado: "+coleccion);
-		
-		Hashtable<String,List> tablaTipos = new Hashtable<String,List>();
-		System.out.println("Intentamos construir la tabla");
-		
-		if (coleccion.getTypeName().equals("and")){
-			auxIzda = (AbsPredicate) coleccion.getAbsObject(SL1Vocabulary.AND_LEFT);
-			auxDcha = (AbsPredicate) coleccion.getAbsObject(SL1Vocabulary.AND_RIGHT);
-			ConstruyeTabla(auxIzda);
-			ConstruyeTabla(auxDcha);
-		}
-		
-	}
-	
-	
 	
 	//====================== COMPORTAMIENTOS ===========================
 	public class AutenticaBehaviour extends OneShotBehaviour {
@@ -2087,14 +1907,22 @@ public class Interfaz extends Agent {
 							
 				AbsVariable x = new AbsVariable("test",pacaOntology.TEST);
 				
-				AbsPredicate and1 = new AbsPredicate(SL1Vocabulary.AND);
-				and1.set(SL1Vocabulary.AND_LEFT, AbsCorrige);
-				and1.set(SL2Vocabulary.AND_RIGHT, AbsTests);
+				//********************* Esto vale NO BORRAR ****************
+				//AbsPredicate and1 = new AbsPredicate(SL1Vocabulary.AND);
+				//and1.set(SL1Vocabulary.AND_LEFT, AbsCorrige);
+				//and1.set(SL2Vocabulary.AND_RIGHT, AbsTests);
+				//**********************************************************
+				
+				AndBuilder predicado = new AndBuilder();
+				predicado.addPredicate(AbsCorrige);
+				predicado.addPredicate(AbsTests);
+				System.out.println("Predicado pide Tests: "+predicado.getAnd());
 			
 				
 				AbsIRE qrall = new AbsIRE(SL2Vocabulary.ALL);
 				qrall.setVariable(x);
-				qrall.setProposition(and1);
+				//qrall.setProposition(and1);
+				qrall.setProposition(predicado.getAnd());
 							
 				getContentManager().fillContent(msg_out, qrall);
 				addBehaviour(new RecibeMensajes(myAgent, tes1));
@@ -2237,55 +2065,32 @@ public class Interfaz extends Agent {
 				//Pasamos el predicado FicheroFuentes a predicado abstracto
 				AbsPredicate Absff = (AbsPredicate) PACAOntology.fromObject(ff);
 				
-				List <AbsPredicate> list1 = ConstruiListaTests(IdTest, AbsPract);
+				List <AbsPredicate> listaTest = ConstruiListaTests(IdTest, AbsPract);
 								
 				//AbsPredicate pruebaP = ConstruirAnd2(list1);
 				AndBuilder constructor = new AndBuilder();
 				
-				constructor.addPredicates(list1);
 				constructor.addPredicate(AbsCor);
+				constructor.addPredicates(listaTest);
 				constructor.addPredicate(Absff);
+				System.out.println("Pide ficheros: "+constructor.getAnd());
 				
-				System.out.println("*****************************************");
-				System.out.println("Resultadito: "+constructor.getAnd().toString());
-				System.out.println("*****************************************");
-				
-				AndBuilder constructor2 = new AndBuilder();
-				
-				constructor2.addPredicate(constructor.getAnd());
-				System.out.println("*****************************************");
-				System.out.println("Resultadito: "+constructor2.getAnd().toString());
-				System.out.println("*****************************************");
+								
+				//and2 = InsertarTestPedidos(IdTest, AbsPract, Absff);
 				
 				
-				
-				Collection <AbsPredicate> colAux = new ArrayList<AbsPredicate>();
-				colAux.add(AbsCor);
-				//colAux.add(pruebaP);
-				colAux.add(Absff);
-				
-				AbsPredicate pruebaC = ConstruirAnd2Col(colAux);
-				
-				//ConstruyeTabla(pruebaP);
-				
-				System.out.println("******************************************");
-				ConstruyeTablaCol(pruebaC);
-														
-				and2 = InsertarTestPedidos(IdTest, AbsPract, Absff);
-				
-				
-				AbsPredicate and1 = new AbsPredicate(SL1Vocabulary.AND);
+				//AbsPredicate and1 = new AbsPredicate(SL1Vocabulary.AND);
 				//and1.set_0(cor);
 				//and1.set_1(and2);
-				and1.set(SL1Vocabulary.AND_LEFT, AbsCor);
-				and1.set(SL1Vocabulary.AND_RIGHT, and2);
+				//and1.set(SL1Vocabulary.AND_LEFT, AbsCor);
+				//and1.set(SL1Vocabulary.AND_RIGHT, and2);
 				
 				
 				//Modificacion Carlos
 				AbsIRE qrall = new AbsIRE(SL2Vocabulary.ALL);
 				AbsVariable x = new AbsVariable("nombre",pacaOntology.FICHEROFUENTES);
 				qrall.setVariable(x);
-				qrall.setProposition(and1);
+				qrall.setProposition(constructor.getAnd());
 									
 				getContentManager().fillContent(msg_out, qrall);
 				addBehaviour(new RecibeMensajes(myAgent,tes1));

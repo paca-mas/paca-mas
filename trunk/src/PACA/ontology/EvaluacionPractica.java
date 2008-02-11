@@ -17,6 +17,7 @@ public class EvaluacionPractica implements Predicate{
     
     
     private String textoEvaluacion;
+    private Alumno alumno;
     
     
     public void setTextoEvaluacion( String texto )
@@ -30,5 +31,11 @@ public class EvaluacionPractica implements Predicate{
 	return textoEvaluacion;
     }
     
+    public void setAlumno(Alumno al1){
+    	alumno = al1;
+    }
     
+    public Alumno getAlumno(){
+    	return alumno;
+    }
 }
