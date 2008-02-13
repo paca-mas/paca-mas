@@ -159,14 +159,7 @@ public class pacaOntology extends Ontology{
 			cs5.add(FICHERO_NOMBRE, (PrimitiveSchema) getSchema(BasicOntology.STRING));
 			cs5.add(FICHERO_CONTENIDO, (PrimitiveSchema) getSchema(BasicOntology.STRING));
 
-			//EvaluacionPractica
-			/*
-			add(new ConceptSchema(EVALUACIONPRACTICA),EvaluacionPractica.class);
-			ConceptSchema cs6 = (ConceptSchema) getSchema(EVALUACIONPRACTICA);
-			cs6.add(EVALUACIONPRACTICA_TEXTO, (PrimitiveSchema) getSchema(BasicOntology.STRING));
-			*/
-			
-			
+			//Resultado Evaluacion		
 			add(new ConceptSchema(RESULTADOEVALUACION), ResultadoEvaluacion.class);
 			ConceptSchema cs6 = (ConceptSchema) getSchema(RESULTADOEVALUACION);
 			cs6.add(RESULTADOEVALUACION_TEXTO, (PrimitiveSchema) getSchema(BasicOntology.STRING));
