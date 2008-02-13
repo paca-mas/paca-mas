@@ -1000,7 +1000,7 @@ public class Interfaz extends Agent {
 		//if (debug){
 			System.out.println("----------------------------------------------------");
 			System.out.println(msg_in.toString());
-			System.out.println("---------hoooooooolaaaaaaaa-------------------------------------------");
+			System.out.println("----------------------------------------------------");
 		//}
 		
 		// Leemos el contenido del mensaje

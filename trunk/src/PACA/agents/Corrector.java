@@ -531,7 +531,33 @@ public class Corrector extends Agent {
 									//Obtenemos la proposicion del predicado
 									AbsPredicate qiota = (AbsPredicate) iotaPred.getProposition();
 									System.out.println(qiota);
-
+									
+									AndBuilder predicado = new AndBuilder();
+									predicado.addPredicate(qiota);
+									
+									List<AbsPredicate> listCorr = predicado.getPredicateList(pacaOntology.CORRIGE);
+									System.out.println("Corrige: "+listCorr);
+									List<AbsPredicate> listTests = predicado.getPredicateList(pacaOntology.TESTS);
+									System.out.println("Tests: "+listTests);
+									List<AbsPredicate> listFich = predicado.getPredicateList(pacaOntology.FICHEROFUENTES);
+									System.out.println("Ficheros: "+listFich);
+									List<AbsPredicate> listEvap = predicado.getPredicateList(pacaOntology.EVALUAPRACTICA);
+									System.out.println("Evaluacion: "+listEvap);
+									
+									System.out.println("*************************************");
+									
+									Iterator<AbsPredicate> it = listCorr.iterator();
+									Corrige cor1 = (Corrige) ontologia.toObject(it.next());
+									
+									Iterator<AbsPredicate> it2 = listEvap.iterator();
+									EvaluacionPractica eva1 = (EvaluacionPractica) ontologia.toObject(it2.next());
+									
+									Test [] Te = ExtraeTestsPedidos2(listTests);
+									FuentesPrograma [] FP = ExtraeFuentesPedidos2(listFich);
+									
+									Practica pract = cor1.getPractica();
+									Alumno al = eva1.getAlumno();
+									
 
 									//query_ref_IOTA qiota = new query_ref_IOTA();
 									//A�adido Carlos
@@ -544,43 +570,20 @@ public class Corrector extends Agent {
 									//Modificacion Carlos (Funcionara???)
 									//get1=RIGHT , get0=LEFT
 									//And and1 = (And) qiota.get_1();
-									String tipoiota = qiota.getTypeName();
-									System.out.println("tipo: "+tipoiota);
 									
-									AbsPredicate andLEFT1 = (AbsPredicate) qiota.getAbsObject(SL1Vocabulary.AND_LEFT);
-									System.out.println("and left1: "+andLEFT1);
-									Corrige corr = (Corrige) ontologia.toObject(andLEFT1);
-									
-									Practica pract = corr.getPractica();
-									System.out.println(pract.getId());
 
 
 									//And and2 = (And) and1.get_1();
 									//A�adido Carlos
 									//get1=RIGHT , get0=LEFT
 									
-									AbsPredicate andRIGHT1 = (AbsPredicate) qiota.getAbsObject(SL1Vocabulary.AND_RIGHT);
-									System.out.println("and right1: "+andRIGHT1);
-									System.out.println("****************************************************");
+									
 
 
 									//And and3 = (And) and2.get_1();
 									//A�adido Carlos
 									//get1=RIGHT , get0=LEFT
-									AbsPredicate andLEFT2 = (AbsPredicate) andRIGHT1.getAbsObject(SL1Vocabulary.AND_LEFT);
-									System.out.println("and LEFT2: "+andLEFT2);
-									AbsPredicate andRIGHT2 = (AbsPredicate) andRIGHT1.getAbsObject(SL1Vocabulary.AND_RIGHT);
-									System.out.println("and RIGHT2: "+andRIGHT2);
-									AbsPredicate andLEFT4 = (AbsPredicate) andRIGHT2.getAbsObject(SL1Vocabulary.AND_LEFT);
-									System.out.println("and LEFT4: "+andLEFT4);
-									AbsPredicate andRIGHT4 = (AbsPredicate) andRIGHT2.getAbsObject(SL1Vocabulary.AND_RIGHT);
-									System.out.println("and RIGHT4: "+andRIGHT4);
 									
-									Test [] Te = ExtraeTestsPedidos(andRIGHT2);
-									System.out.println("**********************************************");
-									System.out.println("**********************************************");
-									//Para los FuentesProgramas hay que pasar andLEFT2
-									FuentesPrograma [] FP = ExtraeFuentesPedidos(andLEFT2);
 									
 									//A�adido Carlos
 									//get1=RIGHT , get0=LEFT
@@ -607,15 +610,8 @@ public class Corrector extends Agent {
 
 									//Alumno al = (Alumno) and4.get_1();
 									//Modificacion Carlos
-									//Alumno al = (Alumno) and4.getAbsObject(SL2Vocabulary.AND_RIGHT);
-									AbsPredicate andRIGHT5 = (AbsPredicate) andRIGHT4.getAbsObject(SL1Vocabulary.AND_RIGHT);
-									System.out.println("andRIGHT5: "+andRIGHT5);
 									
-									Alumno al = (Alumno) ontologia.toObject(andRIGHT5);
-									System.out.println(al.getIdentificador());
-									System.out.println(al.getPassword());
-
-
+									
 									EvaluacionPractica EvaP = EnvioCorreccionAlumno(pract, FP, Te, al, msg.getSender().getLocalName());
 									String Contenido = EvaP.getTextoEvaluacion();
 									System.out.println("Connnnnnnnnn: "+Contenido);
@@ -1874,6 +1870,27 @@ public class Corrector extends Agent {
 			}
 		}
 		return testAux;
+	}
+	
+	private FuentesPrograma[] ExtraeFuentesPedidos2(List<AbsPredicate> lista) {
+		int tamano = lista.size();
+		FuentesPrograma[] fuentesAux = new FuentesPrograma[tamano];
+		Iterator<AbsPredicate> it = lista.iterator();
+		for (int i = 0; i < fuentesAux.length; i++) {
+			FicheroFuentes aux;
+			try {
+				aux = (FicheroFuentes)ontologia.toObject(it.next());
+				fuentesAux[i]=  aux.getFuentesPrograma();
+				System.out.println("Extrae Ficheros: "+fuentesAux[i].getNombre());
+			} catch (UngroundedException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			} catch (OntologyException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			}
+		}
+		return fuentesAux;
 	}
 	
 	
