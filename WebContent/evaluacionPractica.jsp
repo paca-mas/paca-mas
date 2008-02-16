@@ -61,7 +61,23 @@
 	while(!resultado.isRelleno()){
 		}
 
-	String eval = (String)resultado.getResultado();
+	String eval1 = (String)resultado.getResultado();
+	
+	//================== Añadido para parsear el resultado aparte ===============
+	
+	System.out.println("Instertamos el XML");
+  	Testigo resultado2=new Testigo();
+	resultado2.setOperacion(Testigo.Operaciones.parsear);
+	resultado2.setParametro(eval1);
+	System.out.println("Creamos el testigo con su operacion");
+
+	interfaz.getAtributo().putO2AObject(resultado2,AgentController.SYNC);
+
+	System.out.println("Comienzo del bucle de los ficheros insertados");
+	while(!resultado2.isRelleno()){
+		}
+
+	String eval = (String)resultado2.getResultado();	
   
   
   
