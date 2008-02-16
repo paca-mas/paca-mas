@@ -78,8 +78,6 @@ public class InterfazJSP extends Interfaz {
 			NombreTest[i] = (String) ListaTest.toArray()[i];
 		}
 		
-		System.out.println("DONDE C.... ESTAMOS???????");
-
 		return (doFicherosPractica(NombreTest));
 		//return NombreTest;
 	}
@@ -258,7 +256,93 @@ public class InterfazJSP extends Interfaz {
 	
 	
 	//================================================================================
+	public String[] doObtieneContenidoRequest(HttpServletRequest request) throws IOException {
+
+		java.lang.Runtime runtime = java.lang.Runtime.getRuntime();
+		MultipartParser parser = new MultipartParser(request,1000000);
+
+		// Almacenamos los ficheros en un array de String
+		String[] contenidos = new String[ficherosUltimaPractica.length];
+		int cont = 0;
+
+		Part parte = parser.readNextPart();
+
+		while (parte!=null){
+			if (parte.isFile()){
+				FilePart filepart = (FilePart) parte;
+				InputStream is = filepart.getInputStream();
+				StringWriter sw = new StringWriter();
+
+				int tempo = is.read();
+				while (tempo != -1 ) {
+					sw.write(tempo);
+					tempo = is.read();
+				}
+
+				contenidos[cont] = sw.toString();
+				cont++;
+			}
+			parte = parser.readNextPart();
+		}
+
+		return contenidos;
+	}
 	
+	public String ParseaSalida (String salida1){
+		String salida="";
+		try{
+
+			EvaluacionParser XMLparser = new EvaluacionParser(salida1,this);
+			salida= XMLparser.getEvaluacion();
+		}
+		catch(Exception e){
+			salida="Hubo Errores "+e.getMessage();
+		}
+		return salida;
+	}
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	//========================================================================
 	public class AutenticaRequestBeha extends OneShotBehaviour{
 		
 		private Testigo test2;
@@ -293,7 +377,7 @@ public class InterfazJSP extends Interfaz {
 		}
 	}
 	
-		
+			
 	public class InicializaObjeto extends CyclicBehaviour{
 		
 		private boolean done=false;
@@ -360,12 +444,28 @@ public class InterfazJSP extends Interfaz {
 					
 				case corregir:
 					System.out.println("Operacion corregir algo... ");
+					//try {
+						//tes.setResultado(agent.doCorreccionRequest((HttpServletRequest) tes.getParametro()));
+						//}
+					//catch (IOException e) {
+						//TODO Auto-generated catch block
+						//e.printStackTrace();
+					//}
+					
+					//============= Comportamiento ====================
 					try {
-							tes.setResultado(agent.doCorreccionRequest((HttpServletRequest) tes.getParametro()));
-						} catch (IOException e) {
+							String[] contenido = doObtieneContenidoRequest((HttpServletRequest)tes.getParametro());
+							addBehaviour(new PideCorreccionBeha(agent, tes, contenido));
+						} 
+					catch (IOException e) {
 							// TODO Auto-generated catch block
 							e.printStackTrace();
-						}
+					}		
+					break;
+					
+				case parsear:
+					System.out.println("Operacion parseo XML ");
+					tes.setResultado(ParseaSalida((String) tes.getParametro()));
 					break;
 					
 				default: 

@@ -5,7 +5,7 @@ public class Testigo {
 	//Operaciones es un tipo enumerado en donde definimos las operaciones que queremos realizar
 	public enum Operaciones {
 		autenticar, pedirPracticas, pedirTests, pedirFicheros,insertarFicheros,
-		buscarCorrector, corregir
+		buscarCorrector, corregir, parsear
 		
 	}
 	
