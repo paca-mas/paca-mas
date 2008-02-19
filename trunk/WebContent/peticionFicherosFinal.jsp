@@ -2,6 +2,9 @@
   <%@ page import="javax.servlet.jsp.*"%>
   <%@ page import="javax.servlet.*"%>
   <%@ page import="java.util.*"%>
+  <%@ page import="jade.core.Runtime"%>
+  <%@ page import="jade.wrapper.*"%>
+  <%@ page import="auth.util.*"%>
 
   <jsp:useBean id="interfaz" class="auth.util.Niapa" scope="session"/>
 
@@ -59,7 +62,20 @@
     <%@ include file="barra2.html"%>	
     <br>
       <% 
-      String[] testSeleccionados = interfaz.doTestEntregaFinal(request);
+      //String[] testSeleccionados = interfaz.doTestEntregaFinal(request);
+      System.out.println("Pedimos los Ficheros para entregar la practica");
+	  Testigo resultado=new Testigo();
+	  resultado.setOperacion(Testigo.Operaciones.pedirFicherosFinal);
+	  resultado.setParametro(request);
+	  System.out.println("Creamos el testigo con su operacion");
+
+	  interfaz.getAtributo().putO2AObject(resultado,AgentController.SYNC);
+
+	  System.out.println("Comienzo del bucle de ficheros");
+	  while(!resultado.isRelleno()){
+			}
+
+	  String [] testSeleccionados = (String [])resultado.getResultado();
        
       if (testSeleccionados.length==0){
       %>
@@ -94,7 +110,20 @@
      <%
       // Hacemos la consulta de los ficheros necesarios y rellenamos el formulario
         
-	  String[] ficheros = interfaz.doFicherosPractica(testSeleccionados);
+	  //String[] ficheros = interfaz.doFicherosPractica(testSeleccionados);
+     	System.out.println("Pedimos los Ficheros");
+		Testigo resultado2=new Testigo();
+		resultado2.setOperacion(Testigo.Operaciones.insertarFicheros);
+		resultado2.setParametro(testSeleccionados); 
+		System.out.println("Creamos el testigo con su operacion");
+
+		interfaz.getAtributo().putO2AObject(resultado2,AgentController.SYNC);
+
+		System.out.println("Comienzo del bucle de ficheros");
+		while(!resultado2.isRelleno()){
+			}
+
+		String [] ficheros = (String [])resultado2.getResultado();
      %>
 
    <br>

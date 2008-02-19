@@ -187,6 +187,13 @@ public class pacaOntology extends Ontology{
 			PredicateSchema ps2 = (PredicateSchema) getSchema(FICHEROFUENTES);
 			ps2.add(TEST, (ConceptSchema) getSchema(TEST));
 			ps2.add(FUENTESPROGRAMA, (ConceptSchema) getSchema(FUENTESPROGRAMA));
+			
+			//EvaluaPractica
+			add(new PredicateSchema(EVALUAPRACTICA), EvaluacionPractica.class);
+			PredicateSchema ps6 = (PredicateSchema) getSchema(EVALUAPRACTICA);
+			ps6.add(EVALUACIONPRACTICA_TEXTO, (PrimitiveSchema) getSchema(BasicOntology.STRING));
+			ps6.add(ALUMNO, (ConceptSchema) getSchema(ALUMNO));
+			
 
 			//FormaGrupoCon
 			add(new PredicateSchema(FORMAGRUPOCON),FormaGrupoCon.class);
@@ -198,7 +205,10 @@ public class pacaOntology extends Ontology{
 			add(new PredicateSchema(INTERACTUA),Interactua.class);
 			PredicateSchema ps4 = (PredicateSchema) getSchema(INTERACTUA);
 			ps4.add(ALUMNO, (ConceptSchema) getSchema(ALUMNO));
+			ps4.add(INTERFAZ, (ConceptSchema) getSchema(BasicOntology.AID));
+			
 			//ps4.add(INTERACTUA, (ConceptSchema) getSchema(INTERFAZ));
+			
 
 			//EntregarPractica
 			add(new PredicateSchema(ENTREGARPRACTICA),EntregarPractica.class);
@@ -206,13 +216,9 @@ public class pacaOntology extends Ontology{
 			ps5.add(CORRECTOR, (ConceptSchema) getSchema(CORRECTOR));
 			ps5.add(PRACTICA, (ConceptSchema) getSchema(PRACTICA));
 			
-			//EvaluaPractica
-			add(new PredicateSchema(EVALUAPRACTICA), EvaluacionPractica.class);
-			PredicateSchema ps6 = (PredicateSchema) getSchema(EVALUAPRACTICA);
-			ps6.add(EVALUACIONPRACTICA_TEXTO, (PrimitiveSchema) getSchema(BasicOntology.STRING));
-			ps6.add(ALUMNO, (ConceptSchema) getSchema(ALUMNO));
 			
-
+			
+			
 			//---------- FIN PREDICADOS ----------------
 
 		}

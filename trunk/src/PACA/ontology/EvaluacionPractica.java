@@ -5,7 +5,7 @@ package PACA.ontology;
 import jade.content.Predicate;
 
 
-
+ 
 /**
    Clase que implementa el predicado EvaluacionPractica de la ontología.
    Modificado Carlos Simón García
