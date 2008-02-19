@@ -229,6 +229,9 @@ public class InterfazJSP extends Interfaz {
 		}
 
 		String salida="";
+		
+		
+		System.out.println("Estamos entregando... ");
 
 		salida = doEntregaPractica(contenidos,login,pass);
 
@@ -444,15 +447,6 @@ public class InterfazJSP extends Interfaz {
 					
 				case corregir:
 					System.out.println("Operacion corregir algo... ");
-					//try {
-						//tes.setResultado(agent.doCorreccionRequest((HttpServletRequest) tes.getParametro()));
-						//}
-					//catch (IOException e) {
-						//TODO Auto-generated catch block
-						//e.printStackTrace();
-					//}
-					
-					//============= Comportamiento ====================
 					try {
 							String[] contenido = doObtieneContenidoRequest((HttpServletRequest)tes.getParametro());
 							addBehaviour(new PideCorreccionBeha(agent, tes, contenido));
@@ -466,6 +460,21 @@ public class InterfazJSP extends Interfaz {
 				case parsear:
 					System.out.println("Operacion parseo XML ");
 					tes.setResultado(ParseaSalida((String) tes.getParametro()));
+					break;
+				
+				case pedirFicherosFinal:
+					System.out.println("Operacion pedir Ficheros final");
+					tes.setResultado((agent.doTestEntregaFinal((HttpServletRequest) tes.getParametro())));
+					break;
+					
+				case entregarPractica:
+					System.out.println("Operacion entregar Practica");
+					try {
+							tes.setResultado((agent.doEntregaFinalRequest((HttpServletRequest) tes.getParametro())));
+						} catch (IOException e) {
+							// TODO Auto-generated catch block
+							e.printStackTrace();
+						}
 					break;
 					
 				default: 

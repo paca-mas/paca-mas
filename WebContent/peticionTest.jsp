@@ -107,7 +107,7 @@
 	<br>
 	<p align="right"><input type="submit" name="seleccionar" value="Seleccionar Test" onclick="javascript:salida=false;"></p>
     </form>
-  </p>    
+  </P>    
 
   <HR> 
   <p align="center">
