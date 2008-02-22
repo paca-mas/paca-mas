@@ -2,10 +2,10 @@
     <%@ page import="javax.servlet.jsp.*"%>
     <%@ page import="javax.servlet.*"%>
     <%@ page import="java.util.*"%>
-    <%@ page import="auth.util.*"%>
+    <%@ page import="PACA.util.*"%>
     <%@page import="jade.wrapper.*"%>
 
-      <jsp:useBean id="interfaz" class="auth.util.Niapa" scope="session"/>
+      <jsp:useBean id="interfaz" class="PACA.util.AgentBean" scope="session"/>
 
 
 <!doctype html public "-//w3c//dtd html 4.0 transitional//en">
@@ -44,7 +44,8 @@
 	resultado.setParametro((HttpServletRequest)request);
 	System.out.println("Creamos el testigo con su operacion");
 
-	interfaz.getAtributo().putO2AObject(resultado,AgentController.SYNC);
+	//interfaz.getAtributo().putO2AObject(resultado,AgentController.SYNC);
+	interfaz.sendTestigo(resultado);
 
 	System.out.println("Comienzo del bucle de la practica entregada");
 	while(!resultado.isRelleno()){
@@ -60,7 +61,8 @@
 	resultado2.setParametro(eval1);
 	System.out.println("Creamos el testigo con su operacion");
 
-	interfaz.getAtributo().putO2AObject(resultado2,AgentController.SYNC);
+	//interfaz.getAtributo().putO2AObject(resultado2,AgentController.SYNC);
+	interfaz.sendTestigo(resultado2);
 
 	System.out.println("Comienzo del bucle de la salida parseada");
 	while(!resultado2.isRelleno()){

@@ -4,9 +4,9 @@
 <%@ page import="java.util.*"%>
 <%@ page import="jade.core.Runtime"%>
 <%@ page import="jade.wrapper.*"%>
-<%@ page import="auth.util.*"%>
+<%@ page import="PACA.util.*"%>
 
-<jsp:useBean id="interfaz" class="auth.util.Niapa" scope="session"/>
+<jsp:useBean id="interfaz" class="PACA.util.AgentBean" scope="session"/>
  
 
     
@@ -75,7 +75,8 @@
   		resultado.setParametro(request);
   		System.out.println("Creamos el testigo con su operacion");
 
-  		interfaz.getAtributo().putO2AObject(resultado,AgentController.SYNC);
+  		//interfaz.getAtributo().putO2AObject(resultado,AgentController.SYNC);
+		interfaz.sendTestigo(resultado);
 
   		System.out.println("Comienzo del bucle de ficheros");
   		while(!resultado.isRelleno()){
@@ -112,7 +113,8 @@
 		resultado2.setParametro(testSeleccionados); 
 		System.out.println("Creamos el testigo con su operacion");
 
-		interfaz.getAtributo().putO2AObject(resultado2,AgentController.SYNC);
+		//interfaz.getAtributo().putO2AObject(resultado2,AgentController.SYNC);
+		interfaz.sendTestigo(resultado2);
 
 		System.out.println("Comienzo del bucle de ficheros");
 		while(!resultado2.isRelleno()){

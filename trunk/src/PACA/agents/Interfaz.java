@@ -56,7 +56,7 @@ import PACA.ontology.Fichero.FuentesPrograma;
 import auth.ontology.Autenticado;
 import auth.ontology.AuthOntology;
 import auth.ontology.Usuario;
-import auth.util.Testigo;
+import PACA.util.Testigo;
 
 import PACA.util.*;
 
@@ -64,10 +64,10 @@ import PACA.util.*;
 
 
 /** 
-    Este agente contiene la comunicación necesaria que debe tener un agente usuario
-    humano para interaccionar con el resto de agentes de ésta plataforma. Es decir,
+    Este agente contiene la comunicaciï¿½n necesaria que debe tener un agente usuario
+    humano para interaccionar con el resto de agentes de ï¿½sta plataforma. Es decir,
     este agente encapsula los protocolos definidos para el sistema.
-    @author Sergio Saugar García
+    @author Sergio Saugar Garcï¿½a
     
  */
 public class Interfaz extends Agent {
@@ -100,13 +100,13 @@ public class Interfaz extends Agent {
 	private AID miAID;
 
 	/**
-       AID del agente corrector de prácticas.
+       AID del agente corrector de prï¿½cticas.
 	 */
 	private AID correctorAID;
 
 	/**
-       Variable booleana cerrojo para evitar que ninguna función se ejecute
-       antes de que termine de ejecutarse el método "setup"
+       Variable booleana cerrojo para evitar que ninguna funciï¿½n se ejecute
+       antes de que termine de ejecutarse el mï¿½todo "setup"
 	 */
 	private boolean terminadoSetup = false;
 	
@@ -122,25 +122,25 @@ public class Interfaz extends Agent {
 	private String AgenteAutenticador = "autenticador";
 
 	/**
-       El identificador de la última práctica solicitada
+       El identificador de la ï¿½ltima prï¿½ctica solicitada
 	 */
 	public String ultimaPractica;
 
 	/**
-       Array con los nombres de los ficheros de la última
-       práctica solicitada
+       Array con los nombres de los ficheros de la ï¿½ltima
+       prï¿½ctica solicitada
 	 */
 	public String[] ficherosUltimaPractica;
 
 	/**
-       Array con los identificadores de los test de la última
-       práctica solicitada
+       Array con los identificadores de los test de la ï¿½ltima
+       prï¿½ctica solicitada
 	 */
 	public String[] TestUltimaPractica;
 
 	/**
        Array con los identificadores de los test posibles para una
-       práctica solicitada.
+       prï¿½ctica solicitada.
 	 */
 	public String[] TestPosiblesPractica;
 	
@@ -180,35 +180,35 @@ public class Interfaz extends Agent {
 
 
 	/**
-       Este método asigna el identificador del alumno que representamos.
+       Este mï¿½todo asigna el identificador del alumno que representamos.
 	 */
 	public void setAlumnoID(String id){
 		this.alumnoID=id;
 	}
 
 	/**
-       Este método asigna el password que utilizara el alumno que representamos.
+       Este mï¿½todo asigna el password que utilizara el alumno que representamos.
 	 */
 	public void setAlumnoPass(String pass){
 		this.alumnoPass=pass;
 	}
 
 	/**
-       Este método devuelve el identificador del alumno que representamos.
+       Este mï¿½todo devuelve el identificador del alumno que representamos.
 	 */
 	public String getAlumnoID(){
 		return this.alumnoID;
 	}
 
 	/**
-       Este método devuelve el password del alumno que representamos.
+       Este mï¿½todo devuelve el password del alumno que representamos.
 	 */
 	public String getAlumnoPass(){
 		return this.alumnoPass;
 	}
 	
 	/**
-	 * Este método devuelve el Agente Corrector que hemos elegido
+	 * Este mï¿½todo devuelve el Agente Corrector que hemos elegido
 	 **/
 	
 	public AID getAgenteCorrector(){
@@ -216,7 +216,7 @@ public class Interfaz extends Agent {
 	}
 
 	/**
-	 * Este método asigna el Agente Corrector que hemos elegido 
+	 * Este mï¿½todo asigna el Agente Corrector que hemos elegido 
 	 */
 	public void setAgenteCorrector(AID agenteCorr){
 		this.AgenteCorrector=agenteCorr;
@@ -235,7 +235,7 @@ public class Interfaz extends Agent {
 	
 	 
 	/**
-       Este método se ejecuta al iniciar el agente y es el encargado de configurarlo.
+       Este mï¿½todo se ejecuta al iniciar el agente y es el encargado de configurarlo.
 	 */
 	protected void setup() {
 		
@@ -269,15 +269,15 @@ public class Interfaz extends Agent {
 
 
 	/*
-       Antes de ejecutarse ninguna función, debe terminar
-       de ejecutarse el procedimiento "setup", así que pondremos un
-       pequeño cerrojo con una variable booleana. 
+       Antes de ejecutarse ninguna funciï¿½n, debe terminar
+       de ejecutarse el procedimiento "setup", asï¿½ que pondremos un
+       pequeï¿½o cerrojo con una variable booleana. 
 	 */
 
 
 
 	/**
-       Encapsula la comunicación necesaria para realizar el protocolo de autenticación definido.
+       Encapsula la comunicaciï¿½n necesaria para realizar el protocolo de autenticaciï¿½n definido.
        @return True o False dependiendo de si se ha producido de forma exitosa o no la autenticacion.
 	 */ 
 	public final boolean doAutenticacion(String user, String pass){
@@ -351,9 +351,9 @@ public class Interfaz extends Agent {
 
 
 	/**
-       Este método encapsula la interacción necesaria para obtener los identificadores de las 
-       prácticas disponibles en el sistema.
-       @return Devuelve un array con los  nombres de las prácticas disponibles.
+       Este mï¿½todo encapsula la interacciï¿½n necesaria para obtener los identificadores de las 
+       prï¿½cticas disponibles en el sistema.
+       @return Devuelve un array con los  nombres de las prï¿½cticas disponibles.
 	 */
 
 	public final String[] doPeticion(){
@@ -462,10 +462,10 @@ public class Interfaz extends Agent {
 			e.printStackTrace();
 		}
 		catch (Exception e) {
-			// Si obtenemos alguna excepción de error, directamente no
+			// Si obtenemos alguna excepciï¿½n de error, directamente no
 			// ofrecemos las practicas ...
 			retornable = new String[2];
-			retornable[0]="Error en la obtención de las prácticas";
+			retornable[0]="Error en la obtenciï¿½n de las prï¿½cticas";
 			retornable[1]= msg_in.toString();
 		}
 
@@ -475,10 +475,10 @@ public class Interfaz extends Agent {
 
 
 	/**
-       Dado un identificador de prácticas, se solicitan los tests correpondientes a la
+       Dado un identificador de prï¿½cticas, se solicitan los tests correpondientes a la
        misma.
-       @param IdPractica Identificador de la práctica de la que se desea obtener los tests configurados.
-       @return Devuelve un array con los  nombres de los test de la práctica.
+       @param IdPractica Identificador de la prï¿½ctica de la que se desea obtener los tests configurados.
+       @return Devuelve un array con los  nombres de los test de la prï¿½ctica.
 	 */
 
 	public final String[] doPeticionTestPractica(String IdPractica){
@@ -491,7 +491,7 @@ public class Interfaz extends Agent {
 		while (!terminadoSetup) {
 		}
 
-		// Nos guardamos la última práctica solicitada
+		// Nos guardamos la ï¿½ltima prï¿½ctica solicitada
 		ultimaPractica = IdPractica;
 				
 		AID aaaAgente = getAgenteCorrector();
@@ -614,10 +614,10 @@ public class Interfaz extends Agent {
 			
 		}
 		catch (Exception e) {
-			// Si obtenemos alguna excepción de error, directamente no
+			// Si obtenemos alguna excepciï¿½n de error, directamente no
 			// ofrecemos los tests ...
 			retornable = new String[2];
-			retornable[0]="Error en la obtención de los tests";
+			retornable[0]="Error en la obtenciï¿½n de los tests";
 			retornable[1]= "Error:" + e.toString();
 		}
 		TestPosiblesPractica = posiblesID;
@@ -626,7 +626,7 @@ public class Interfaz extends Agent {
 
 
 	/**
-       Este método encapsula la comunicación necesaria para obtener los nombres de los ficheros
+       Este mï¿½todo encapsula la comunicaciï¿½n necesaria para obtener los nombres de los ficheros
        que son necesarios para los tests que han sido seleccionados.
        @param IdTest Tests seleccionados por el usuario.
        @return Array con el identificador de los ficheros necesarios para evaluar los tests.
@@ -639,7 +639,7 @@ public class Interfaz extends Agent {
 
 		String IdPractica  = ultimaPractica;
 
-		// Y nos guardamos los últimos test solicitados
+		// Y nos guardamos los ï¿½ltimos test solicitados
 		TestUltimaPractica = IdTest;
 		
 		AID aaaAgente = getAgenteCorrector();
@@ -777,13 +777,13 @@ public class Interfaz extends Agent {
 
 
 	/**
-       Encapsula la interacción necesaria para realizar la evaluación de ciertos ficheros, pasándolos
-       los tests que fueron seleccionados. Posteriormente, se obtiene el texto de la evaluación.
-       Las práctica a corregir está almacenada en <code>ultimaPractica</code> 
+       Encapsula la interacciï¿½n necesaria para realizar la evaluaciï¿½n de ciertos ficheros, pasï¿½ndolos
+       los tests que fueron seleccionados. Posteriormente, se obtiene el texto de la evaluaciï¿½n.
+       Las prï¿½ctica a corregir estï¿½ almacenada en <code>ultimaPractica</code> 
        (que se actualiza con cada consulta de ficheros) y los nombres de 
        los ficheros en <code>ficherosUltimaPractica</code> (igualmente 
-       actualizados en cada consulta de ficheros de una práctica). 
-       @param ContenidoFicheros El contenido de los ficheros de la evaluación.     
+       actualizados en cada consulta de ficheros de una prï¿½ctica). 
+       @param ContenidoFicheros El contenido de los ficheros de la evaluaciï¿½n.     
        Estos ficheros deben tener una correspondencia con los nombre de ficheros en <code>ficherosUltimaPractica</code>
        @return El texto proporcionado por el corrector
 	 */
@@ -803,7 +803,7 @@ public class Interfaz extends Agent {
 		msg_out.setLanguage(codec.getName());
 		msg_out.setOntology(pacaOntology.NAME);
 
-		String retornable = new String("Evaluación no efectuada");
+		String retornable = new String("Evaluaciï¿½n no efectuada");
 
 		try {	
 
@@ -1039,17 +1039,17 @@ public class Interfaz extends Agent {
 	}
 
 	/**
-       Encapsula la comunicación necesaria para realizar la entrega de la práctica seleccionada por el alumno.
-       El agente corrector nos indicará si la acción se ha realizado o no se ha podido realizar.
-       Las práctica a entregar está almacenada en <code>ultimaPractica</code>
+       Encapsula la comunicaciï¿½n necesaria para realizar la entrega de la prï¿½ctica seleccionada por el alumno.
+       El agente corrector nos indicarï¿½ si la acciï¿½n se ha realizado o no se ha podido realizar.
+       Las prï¿½ctica a entregar estï¿½ almacenada en <code>ultimaPractica</code>
        (que se actualiza con cada consulta de ficheros) y los nombres de 
        los ficheros en <code>ficherosUltimaPractica</code> (igualmente 
-       actualizados en cada consulta de ficheros de una práctica).
-       @param ContenidoFicheros El contenido de los ficheros de la evaluación. 
+       actualizados en cada consulta de ficheros de una prï¿½ctica).
+       @param ContenidoFicheros El contenido de los ficheros de la evaluaciï¿½n. 
        Estos ficheros deben tener una correspondencia con los nombre de ficheros en <code>ficherosUltimaPractica</code>
-       @param NombreCompanero El nombre del compañero con el que forma grupo el actual alumno que utiliza la interfaz
-       @param PassCompanero El password del compañero con el que forma grupo el actual alumno que utiliza la interfaz
-       @return El texto que indica si la acción se realizó
+       @param NombreCompanero El nombre del compaï¿½ero con el que forma grupo el actual alumno que utiliza la interfaz
+       @param PassCompanero El password del compaï¿½ero con el que forma grupo el actual alumno que utiliza la interfaz
+       @return El texto que indica si la acciï¿½n se realizï¿½
 	 */
 	public final String doEntregaPractica(String[] contenidoFicheros,
 			String NombreCompanero,
@@ -1071,16 +1071,16 @@ public class Interfaz extends Agent {
 		String retornable = new String("Entrega no efectuada");
 
 		/*
-	  Primero verificamos que el usuario compañero
+	  Primero verificamos que el usuario compaï¿½ero
 	  pueda identificarse (si existe)
-	  Se considerará que no se tiene compañero cuando
-	  el login de este esté en blanco
+	  Se considerarï¿½ que no se tiene compaï¿½ero cuando
+	  el login de este estï¿½ en blanco
 		 */
 
 		if (!(NombreCompanero.equals(""))) 
 		{
 			if (!doAutenticacion(NombreCompanero, PassCompanero)) {
-				return "El usuario compañero de práctica no pudo autenticarse";
+				return "El usuario compaï¿½ero de prï¿½ctica no pudo autenticarse";
 			}
 		}
 
@@ -1270,12 +1270,12 @@ public class Interfaz extends Agent {
 
 			if (msg_in.getPerformative() == ACLMessage.INFORM &&
 					requestedInfoName.equals(BasicOntology.DONE)) {
-				retornable = "La práctica se entregó correctamente";
+				retornable = "La prï¿½ctica se entregï¿½ correctamente";
 			}
 			else {
-				// La práctica no se ha entregado, porque alguno
+				// La prï¿½ctica no se ha entregado, porque alguno
 				// de los usuarios ya ha entregado la
-				// práctica o porque se entrega fuera de plazo
+				// prï¿½ctica o porque se entrega fuera de plazo
 
 				//And andF = (And) l_in.get(1);
 				AbsObject andF = l_in.getAbsObject(SL1Vocabulary.AND);
@@ -1283,13 +1283,13 @@ public class Interfaz extends Agent {
 				Interactua interac = (Interactua) andF.getAbsObject(SL1Vocabulary.AND_RIGHT);
 
 				if (interac.getAlumno().getIdentificador().equals("Entrega fuera de plazo")) {
-					retornable = "Error en la entrega de la práctica: " +
+					retornable = "Error en la entrega de la prï¿½ctica: " +
 					"La entrega se ha realizado fuera de plazo.";
 				} else 
 				{
-					retornable = "Error en la entrega de la práctica: " +
+					retornable = "Error en la entrega de la prï¿½ctica: " +
 					"El alumno " + interac.getAlumno().getIdentificador() +
-					" ya ha entregado la práctica.";
+					" ya ha entregado la prï¿½ctica.";
 				}
 			}
 		}
@@ -1829,10 +1829,10 @@ public class Interfaz extends Agent {
 				e.printStackTrace();
 			}
 			catch (Exception e) {
-				// Si obtenemos alguna excepción de error, directamente no
+				// Si obtenemos alguna excepciï¿½n de error, directamente no
 				// ofrecemos las practicas ...
 				retornable = new String[2];
-				retornable[0]="Error en la obtención de las prácticas";
+				retornable[0]="Error en la obtenciï¿½n de las prï¿½cticas";
 				retornable[1]= practicas1.toString();
 			}
 			System.out.println("Ponemos las practicas en retornable");
@@ -1855,7 +1855,7 @@ public class Interfaz extends Agent {
 		
 		public void action(){
 			
-			//Nos guardamos la última práctica solicitada
+			//Nos guardamos la ï¿½ltima prï¿½ctica solicitada
 			ultimaPractica = IdPractica;
 					
 			AID aaaAgente = getAgenteCorrector();
@@ -1970,10 +1970,10 @@ public class Interfaz extends Agent {
 				
 			}
 			catch (Exception e) {
-				// Si obtenemos alguna excepción de error, directamente no
+				// Si obtenemos alguna excepciï¿½n de error, directamente no
 				// ofrecemos los tests ...
 				retornable = new String[2];
-				retornable[0]="Error en la obtención de los tests";
+				retornable[0]="Error en la obtenciï¿½n de los tests";
 				retornable[1]= "Error:" + e.toString();
 			}
 			TestPosiblesPractica = posiblesID;
@@ -2001,7 +2001,7 @@ public class Interfaz extends Agent {
 						
 			String IdPractica  = ultimaPractica;
 
-			// Y nos guardamos los últimos test solicitados
+			// Y nos guardamos los ï¿½ltimos test solicitados
 			TestUltimaPractica = IdTest;
 			
 			AID aaaAgente = getAgenteCorrector();
@@ -2154,7 +2154,7 @@ public class Interfaz extends Agent {
 			msg_out.setLanguage(codec.getName());
 			msg_out.setOntology(pacaOntology.NAME);
 
-			String retornable = new String("Evaluación no efectuada");
+			String retornable = new String("Evaluaciï¿½n no efectuada");
 			Practica pract = new Practica();
 			pract.setId(ultimaPractica);
 			pract.setDescripcion("");

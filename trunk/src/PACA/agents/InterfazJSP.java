@@ -3,28 +3,20 @@ package PACA.agents;
 
 
 
-import jade.core.AID;
 import jade.core.Agent;
 import jade.core.behaviours.CyclicBehaviour;
 import jade.core.behaviours.OneShotBehaviour;
-import jade.domain.DFService;
-import jade.domain.FIPAException;
-import jade.domain.FIPAAgentManagement.DFAgentDescription;
-import jade.domain.FIPAAgentManagement.ServiceDescription;
-import jade.tools.testagent.TestAgentFrame;
 import jade.util.leap.ArrayList;
 import jade.util.leap.List;
-import jade.wrapper.AgentController;
 
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.StringWriter;
-import java.io.UnsupportedEncodingException;
 
 import javax.servlet.http.HttpServletRequest;
 
 import PACA.parser.EvaluacionParser;
-import auth.util.Testigo;
+import PACA.util.Testigo;
 
 import com.oreilly.servlet.multipart.FilePart;
 import com.oreilly.servlet.multipart.MultipartParser;
@@ -37,17 +29,17 @@ import com.oreilly.servlet.multipart.Part;
     Hereda de un agente con funciones para interactuar con la 
     plataforma JADE y extiende las funciones propias para interacturar
     con JSP.
-    @author Sergio Saugar García.
-    Modificado para pruebas Carlos Simón García
+    @author Sergio Saugar Garcï¿½a.
+    Modificado para pruebas Carlos Simï¿½n Garcï¿½a
  */
 public class InterfazJSP extends Interfaz {
 	
 	/**
-       Lee la petición, de un formulario con "checkbox" que indican
+       Lee la peticiï¿½n, de un formulario con "checkbox" que indican
        los test de los que se solicitan los ficheros. Almacenamos
-       los test marcados y llamamos al "padre" con la función 
+       los test marcados y llamamos al "padre" con la funciï¿½n 
        doFicherosPractica.
-       @param request Petición del navegador, con los datos de formulario
+       @param request Peticiï¿½n del navegador, con los datos de formulario
 	 */
 	public String[] doFicherosPracticaRequest(HttpServletRequest request)
 	throws IOException, java.io.UnsupportedEncodingException {
@@ -64,7 +56,7 @@ public class InterfazJSP extends Interfaz {
 
 			if (parte.isParam()) {
 				ParamPart parametro = (ParamPart) parte;
-				// Si el parámetro está marcado (CHEKED) lo guardamos
+				// Si el parï¿½metro estï¿½ marcado (CHEKED) lo guardamos
 				if (parametro.getStringValue().equals("CHEKED")) {
 					ListaTest.add(parte.getName());
 				}
@@ -85,8 +77,8 @@ public class InterfazJSP extends Interfaz {
 
 
 	/**
-       Este método será invocado desde la página JSP para que el agente realice la corrección de una práctica.
-       @param request Petición que le ha sido realizada al JSP y que contiene los ficheros para la corrección.
+       Este mï¿½todo serï¿½ invocado desde la pï¿½gina JSP para que el agente realice la correcciï¿½n de una prï¿½ctica.
+       @param request Peticiï¿½n que le ha sido realizada al JSP y que contiene los ficheros para la correcciï¿½n.
 	*/
 	public String doCorreccionRequest(HttpServletRequest request) throws IOException {
 
@@ -132,16 +124,16 @@ public class InterfazJSP extends Interfaz {
 
 
 	/** HECHO
-       Método que obtiene los tests (que han sido seleccionados para ser corregidos) a partir de un objeto
-       petición.
-       @param request Petición que le ha sido realizada al JSP y que contiene los tests seleccionados.
+       Mï¿½todo que obtiene los tests (que han sido seleccionados para ser corregidos) a partir de un objeto
+       peticiï¿½n.
+       @param request Peticiï¿½n que le ha sido realizada al JSP y que contiene los tests seleccionados.
        @return Los identificadores de los tests seleccionados.
 	 */
 	public String[] doTestPracticasRequest(HttpServletRequest request){
 
 		ArrayList lista = new ArrayList();
 
-		// Miramos de todos los posibles, los que estén seleccionados.
+		// Miramos de todos los posibles, los que estï¿½n seleccionados.
 		for(int i=0;i<this.TestPosiblesPractica.length;i++){
 			if(request.getParameter(this.TestPosiblesPractica[i])!=null && 
 					((String)request.getParameter(this.TestPosiblesPractica[i])).equals("on")){
@@ -163,10 +155,10 @@ public class InterfazJSP extends Interfaz {
 
 
 	/**
-       Resuelve los tests que son necesarios para la entrega de una práctica.
+       Resuelve los tests que son necesarios para la entrega de una prï¿½ctica.
 	*/ 
 	public String[] doTestEntregaFinal(HttpServletRequest req){
-		// En realidad no tratamos la petición, sino que siempre
+		// En realidad no tratamos la peticiï¿½n, sino que siempre
 		// querremos todos los ficheros posibles.
 
 		return this.TestPosiblesPractica;
@@ -174,7 +166,7 @@ public class InterfazJSP extends Interfaz {
 
 
 	/**
-       Atiende a la petición de entrega de una práctica.
+       Atiende a la peticiï¿½n de entrega de una prï¿½ctica.
 	*/
 	public String doEntregaFinalRequest(HttpServletRequest request) throws IOException {
 
@@ -185,7 +177,7 @@ public class InterfazJSP extends Interfaz {
 		String[] contenidos = new String[ficherosUltimaPractica.length];
 		int cont = 0;
 
-		// Login y password del compañero.
+		// Login y password del compaï¿½ero.
 
 		String login="";
 		String pass="";
@@ -214,7 +206,7 @@ public class InterfazJSP extends Interfaz {
 				contenidos[cont] = sw.toString();
 				cont++;
 			}
-			if (parte.isParam()){//Entonces es un parámetro normal.
+			if (parte.isParam()){//Entonces es un parï¿½metro normal.
 				if(parte.getName().equals("login")){
 					ParamPart parampart = (ParamPart) parte;
 					login = parampart.getStringValue();
@@ -250,7 +242,7 @@ public class InterfazJSP extends Interfaz {
 
 
 	/**
-       Obtiene los tests relativos a una práctica. HECHO
+       Obtiene los tests relativos a una prï¿½ctica. HECHO
 	*/
 	public String[] doPeticionTestPracticaRequest(HttpServletRequest request){
 
@@ -381,135 +373,249 @@ public class InterfazJSP extends Interfaz {
 	}
 	
 			
-	public class InicializaObjeto extends CyclicBehaviour{
-		
-		private boolean done=false;
-		
-		private int chivato=0;
-		
-		
+//	public class InicializaObjeto extends CyclicBehaviour{
+//		
+//		private boolean done=false;
+//		
+//		private int chivato=0;
+//		
+//		
+//		public void action() {
+//			while (this.myAgent==null){
+//				System.out.println("AGENT ES NULL");
+//			}
+//			InterfazJSP agent = (InterfazJSP)this.myAgent;
+//			while (!agent.FinSetup){
+//				System.out.println("FINSETUP");
+//			}
+//			
+//			
+//			Object o = this.myAgent.getO2AObject();
+//			
+//			
+//			
+//			if (o!=null){
+//				//((Niapa)o).setAgent((InterfazJSP)this.myAgent);
+//																	
+//				Testigo tes = (Testigo)o;
+//				System.out.println("Que operacion es? "+tes.getOperacion());
+//				switch (tes.getOperacion()){
+//				
+//				case buscarCorrector:
+//					//System.out.println("Operacion BuscarCorrector");
+//					//tes.setResultado(agent.doBuscarCorrector());
+//					addBehaviour(new CorrectorBehaviour(agent, tes));
+//					break;
+//				
+//				case autenticar:
+//					//System.out.println("Operacion autenticar");
+//					//tes.setResultadoB(agent.doAutenticacionRequest((HttpServletRequest) tes.getParametro()));
+//					addBehaviour(new AutenticaRequestBeha(agent, tes));
+//					break;
+//					
+//				case pedirPracticas:
+//					//System.out.println("Operacion pedirPracticas");
+//					//tes.setResultado(agent.doPeticion());
+//					//addBehaviour(new PracticasBehaviour(agent, tes));
+//					addBehaviour(new PidePracticasBehavior(agent, tes));
+//					break;
+//					
+//				case pedirTests:
+//					//System.out.println("Operacion pedirTests");
+//					//tes.setResultado(agent.doPeticionTestPracticaRequest((HttpServletRequest) tes.getParametro()));
+//					addBehaviour(new PideTestRequestBeha(agent, tes));
+//					break;
+//					
+//				case pedirFicheros:
+//					System.out.println("Operacion pedirFicheros");
+//					tes.setResultado(agent.doTestPracticasRequest((HttpServletRequest) tes.getParametro()));
+//					break;
+//					
+//				case insertarFicheros:
+//					System.out.println("Operacion InsertarFicheros");
+//					//tes.setResultado(agent.doFicherosPractica((String[]) tes.getParametro()));
+//					addBehaviour(new PideFicherosBeha(agent, tes, (String[]) tes.getParametro()));
+//					break;
+//					
+//				case corregir:
+//					System.out.println("Operacion corregir algo... ");
+//					try {
+//							String[] contenido = doObtieneContenidoRequest((HttpServletRequest)tes.getParametro());
+//							addBehaviour(new PideCorreccionBeha(agent, tes, contenido));
+//						} 
+//					catch (IOException e) {
+//							// TODO Auto-generated catch block
+//							e.printStackTrace();
+//					}		
+//					break;
+//					
+//				case parsear:
+//					System.out.println("Operacion parseo XML ");
+//					tes.setResultado(ParseaSalida((String) tes.getParametro()));
+//					break;
+//				
+//				case pedirFicherosFinal:
+//					System.out.println("Operacion pedir Ficheros final");
+//					tes.setResultado((agent.doTestEntregaFinal((HttpServletRequest) tes.getParametro())));
+//					break;
+//					
+//				case entregarPractica:
+//					System.out.println("Operacion entregar Practica");
+//					try {
+//							tes.setResultado((agent.doEntregaFinalRequest((HttpServletRequest) tes.getParametro())));
+//						} catch (IOException e) {
+//							// TODO Auto-generated catch block
+//							e.printStackTrace();
+//						}
+//					break;
+//					
+//				default: 
+//					tes.setResultado(chivato+"-");
+//					chivato++;
+//					break;
+//				}	
+//				
+//				
+//				System.out.println("Objetoooooooo"+o);
+//				done=true;
+//				
+//							
+//			}
+//			
+//			
+//		}
+//		
+//		
+//	}
+
+	
+	public class ProcesaTestigo extends OneShotBehaviour {
+
+		private Testigo testigo;
+
+		public ProcesaTestigo(Testigo _tes) {
+
+			this.testigo = _tes;
+
+		}
+
 		public void action() {
-			while (this.myAgent==null){
+			while (this.myAgent == null) {
 				System.out.println("AGENT ES NULL");
 			}
-			InterfazJSP agent = (InterfazJSP)this.myAgent;
-			while (!agent.FinSetup){
+			InterfazJSP agent = (InterfazJSP) this.myAgent;
+			while (!agent.FinSetup) {
 				System.out.println("FINSETUP");
 			}
-			
-			
-			Object o = this.myAgent.getO2AObject();
-			
-			
-			
-			if (o!=null){
-				//((Niapa)o).setAgent((InterfazJSP)this.myAgent);
-																	
-				Testigo tes = (Testigo)o;
-				System.out.println("Que operacion es? "+tes.getOperacion());
-				switch (tes.getOperacion()){
-				
-				case buscarCorrector:
-					//System.out.println("Operacion BuscarCorrector");
-					//tes.setResultado(agent.doBuscarCorrector());
-					addBehaviour(new CorrectorBehaviour(agent, tes));
-					break;
-				
-				case autenticar:
-					//System.out.println("Operacion autenticar");
-					//tes.setResultadoB(agent.doAutenticacionRequest((HttpServletRequest) tes.getParametro()));
-					addBehaviour(new AutenticaRequestBeha(agent, tes));
-					break;
-					
-				case pedirPracticas:
-					//System.out.println("Operacion pedirPracticas");
-					//tes.setResultado(agent.doPeticion());
-					//addBehaviour(new PracticasBehaviour(agent, tes));
-					addBehaviour(new PidePracticasBehavior(agent, tes));
-					break;
-					
-				case pedirTests:
-					//System.out.println("Operacion pedirTests");
-					//tes.setResultado(agent.doPeticionTestPracticaRequest((HttpServletRequest) tes.getParametro()));
-					addBehaviour(new PideTestRequestBeha(agent, tes));
-					break;
-					
-				case pedirFicheros:
-					System.out.println("Operacion pedirFicheros");
-					tes.setResultado(agent.doTestPracticasRequest((HttpServletRequest) tes.getParametro()));
-					break;
-					
-				case insertarFicheros:
-					System.out.println("Operacion InsertarFicheros");
-					//tes.setResultado(agent.doFicherosPractica((String[]) tes.getParametro()));
-					addBehaviour(new PideFicherosBeha(agent, tes, (String[]) tes.getParametro()));
-					break;
-					
-				case corregir:
-					System.out.println("Operacion corregir algo... ");
-					try {
-							String[] contenido = doObtieneContenidoRequest((HttpServletRequest)tes.getParametro());
-							addBehaviour(new PideCorreccionBeha(agent, tes, contenido));
-						} 
-					catch (IOException e) {
-							// TODO Auto-generated catch block
-							e.printStackTrace();
-					}		
-					break;
-					
-				case parsear:
-					System.out.println("Operacion parseo XML ");
-					tes.setResultado(ParseaSalida((String) tes.getParametro()));
-					break;
-				
-				case pedirFicherosFinal:
-					System.out.println("Operacion pedir Ficheros final");
-					tes.setResultado((agent.doTestEntregaFinal((HttpServletRequest) tes.getParametro())));
-					break;
-					
-				case entregarPractica:
-					System.out.println("Operacion entregar Practica");
-					try {
-							tes.setResultado((agent.doEntregaFinalRequest((HttpServletRequest) tes.getParametro())));
+
+			if (this.testigo != null) {
+
+				System.out.println("Que operacion es? " + testigo.getOperacion());
+				switch (testigo.getOperacion()) {
+
+					case buscarCorrector:
+						//System.out.println("Operacion BuscarCorrector");
+						//tes.setResultado(agent.doBuscarCorrector());
+						addBehaviour(new CorrectorBehaviour(agent, testigo));
+						break;
+
+					case autenticar:
+						//System.out.println("Operacion autenticar");
+						//tes.setResultadoB(agent.doAutenticacionRequest((HttpServletRequest) tes.getParametro()));
+						addBehaviour(new AutenticaRequestBeha(agent, testigo));
+						break;
+
+					case pedirPracticas:
+						//System.out.println("Operacion pedirPracticas");
+						//tes.setResultado(agent.doPeticion());
+						//addBehaviour(new PracticasBehaviour(agent, tes));
+						addBehaviour(new PidePracticasBehavior(agent, testigo));
+						break;
+
+					case pedirTests:
+						//System.out.println("Operacion pedirTests");
+						//tes.setResultado(agent.doPeticionTestPracticaRequest((HttpServletRequest) tes.getParametro()));
+						addBehaviour(new PideTestRequestBeha(agent, testigo));
+						break;
+
+					case pedirFicheros:
+						System.out.println("Operacion pedirFicheros");
+						testigo.setResultado(agent.doTestPracticasRequest((HttpServletRequest) testigo.getParametro()));
+						break;
+
+					case insertarFicheros:
+						System.out.println("Operacion InsertarFicheros");
+						//tes.setResultado(agent.doFicherosPractica((String[]) tes.getParametro()));
+						addBehaviour(new PideFicherosBeha(agent, testigo, (String[]) testigo.getParametro()));
+						break;
+
+					case corregir:
+						System.out.println("Operacion corregir algo... ");
+						try {
+							String[] contenido = doObtieneContenidoRequest((HttpServletRequest) testigo.getParametro());
+							addBehaviour(new PideCorreccionBeha(agent, testigo, contenido));
 						} catch (IOException e) {
 							// TODO Auto-generated catch block
 							e.printStackTrace();
 						}
-					break;
-					
-				default: 
-					tes.setResultado(chivato+"-");
-					chivato++;
-					break;
-				}	
-				
-				
-				System.out.println("Objetoooooooo"+o);
-				done=true;
-				
-							
+						break;
+
+					case parsear:
+						System.out.println("Operacion parseo XML ");
+						testigo.setResultado(ParseaSalida((String) testigo.getParametro()));
+						break;
+
+					case pedirFicherosFinal:
+						System.out.println("Operacion pedir Ficheros final");
+						testigo.setResultado((agent.doTestEntregaFinal((HttpServletRequest) testigo.getParametro())));
+						break;
+
+					case entregarPractica:
+						System.out.println("Operacion entregar Practica");
+						try {
+							testigo.setResultado((agent.doEntregaFinalRequest((HttpServletRequest) testigo.getParametro())));
+						} catch (IOException e) {
+							// TODO Auto-generated catch block
+							e.printStackTrace();
+						}
+						break;
+
+					default:
+						testigo.setResultado("-");
+						break;
+				}
 			}
-			
-			
 		}
-		
-		
 	}
-	
+
 	
 	
 	public boolean FinSetup=false;
 	
 	
+	/**
+	 * Method to proccess a testigo object. Create new
+	 * "ProcesaTestigo" behaviour to proccess <b>one</b>
+	 * "Testigo" only. 
+	 * (Replace the old "Put2Object" method)
+	 * @param testigo
+	 */
+	public void sendTestigo(Testigo testigo) {
+		
+		this.addBehaviour(new ProcesaTestigo(testigo));
+		
+	}
 	
+	
+	@Override
 	protected void setup(){
 		super.setup();
 		System.out.print("Ni idea");
 		this.setEnabledO2ACommunication(true, 0);
 		
-		System.out.println("añadir comportamineto");
-		addBehaviour(new InicializaObjeto());
-		System.out.println("añadido comportamineto");
+		//System.out.println("aï¿½adir comportamineto");
+		//addBehaviour(new InicializaObjeto());
+		//System.out.println("aï¿½adido comportamineto");
 		
 		FinSetup=true;
 	}
