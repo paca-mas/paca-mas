@@ -4,9 +4,9 @@
   <%@ page import="java.util.*"%>
   <%@ page import="jade.core.Runtime"%>
   <%@ page import="jade.wrapper.*"%>
-  <%@ page import="auth.util.*"%>
+  <%@ page import="PACA.util.*"%>
 
-  <jsp:useBean id="interfaz" class="auth.util.Niapa" scope="session"/>
+  <jsp:useBean id="interfaz" class="PACA.util.AgentBean" scope="session"/>
   
   
 
@@ -76,7 +76,8 @@
 	resultado2.setParametro((HttpServletRequest)request);
 	System.out.println("Creamos el testigo con su operacion");
 
-	interfaz.getAtributo().putO2AObject(resultado2,AgentController.SYNC);
+	//interfaz.getAtributo().putO2AObject(resultado2,AgentController.SYNC);
+	interfaz.sendTestigo(resultado2);
 
 	System.out.println("Comienzo del bucle de tests");
 	while(!resultado2.isRelleno()){

@@ -5,7 +5,7 @@
   <%@ page import="javax.servlet.jsp.*"%>
   <%@ page import="javax.servlet.*"%>
   <%@ page import="java.util.*"%>
-  <%@ page import="auth.util.*"%> 
+  <%@ page import="PACA.util.*"%> 
   
   
    
@@ -20,7 +20,7 @@
   </jsp:useBean>
 
 
-  <jsp:useBean id="interfaz" class="auth.util.Niapa" scope="session">
+  <jsp:useBean id="interfaz" class="PACA.util.AgentBean" scope="session">
 
     <% 
   
@@ -31,39 +31,39 @@
     AgentController agentInterfaz=null;
     InterfazJSP agent=null;
             
-    try {
-    	//interfaz.doStart(nombre);
-    	rt = Runtime.instance();
-    	p = new ProfileImpl(false); 
-    	cc = rt.createAgentContainer(p);
-    	agent = new InterfazJSP();
-    	agentInterfaz = cc.acceptNewAgent(nombre,agent);
-    	if (agentInterfaz!=null){
-    		agentInterfaz.start();
-    		System.out.println("Nombre Agente: "+agentInterfaz.getName());
-    		System.out.println("Agente Arrancado: "+agentInterfaz.getState().getName());
-    		interfaz.setAtributo(agentInterfaz);
-    		//interfaz.setAgent(null);
-    		//agentInterfaz.putO2AObject(interfaz,AgentController.SYNC);
-    		System.out.println("Ponemos algo en agente... ");
-    		System.out.println("INTERFAZ: "+interfaz.toString());
-    		System.out.println("AGENTE INTERFAZ: "+agentInterfaz.toString());
-    		while (!agent.isFinSetup()){
-    			System.out.println("Esperando al fin... ");
-    		}
-    		    	}
-    	else{
-    		System.out.println("Agente no Arrancado"+agentInterfaz.getState().getName());
-    	}
-    }
-    
-    catch (Exception ex) {
-       out.println(ex);
-       System.out.println("Excepcion en respAuth.jsp");
-       ex.printStackTrace();
-       System.out.println("Fin Excepcion en respAuth.jsp");
-    }
- 
+	try {
+			//interfaz.doStart(nombre);
+			rt = Runtime.instance();
+			p = new ProfileImpl(false);
+			cc = rt.createAgentContainer(p);
+			agent = new InterfazJSP();
+			agentInterfaz = cc.acceptNewAgent(nombre, agent);
+			if (agentInterfaz != null) {
+				agentInterfaz.start();
+				System.out.println("Nombre Agente: " + agentInterfaz.getName());
+				System.out.println("Agente Arrancado: " + agentInterfaz.getState().getName());
+				interfaz.setAgentInterfaz(agent);
+				interfaz.setAgentController(agentInterfaz);
+				//interfaz.setAgent(null);
+				//agentInterfaz.putO2AObject(interfaz,AgentController.SYNC);
+				System.out.println("Ponemos algo en agente... ");
+				System.out.println("INTERFAZ: " + interfaz.toString());
+				System.out.println("AGENTE INTERFAZ: " + agentInterfaz.toString());
+				while (!agent.isFinSetup()) {
+					System.out.println("Esperando al fin... ");
+				}
+				
+				
+			} else {
+				System.out.println("Agente no Arrancado" + agentInterfaz.getState().getName());
+			}
+		} catch (Exception ex) {
+			out.println(ex);
+			System.out.println("Excepcion en respAuth.jsp");
+			ex.printStackTrace();
+			System.out.println("Fin Excepcion en respAuth.jsp");
+		}
+  
     %>    
   </jsp:useBean>
 
@@ -120,8 +120,9 @@
   	resultado.setOperacion(Testigo.Operaciones.autenticar);
   	resultado.setParametro((HttpServletRequest) request);
   	
-  	interfaz.getAtributo().putO2AObject(resultado,AgentController.SYNC);
-  	
+  	//interfaz.getAtributo().putO2AObject(resultado,AgentController.SYNC);
+	interfaz.sendTestigo(resultado);
+	
   	System.out.println("Comienzo del bucle");
   	while(!resultado.isRelleno()){
   	}
@@ -174,7 +175,9 @@
 	Testigo resultado3=new Testigo();
 	resultado3.setOperacion(Testigo.Operaciones.buscarCorrector);
 
-	interfaz.getAtributo().putO2AObject(resultado3,AgentController.SYNC);
+	//interfaz.getAtributo().putO2AObject(resultado3,AgentController.SYNC);
+	interfaz.sendTestigo(resultado3);
+	
 	while(!resultado3.isRelleno()){
 	}
 
@@ -187,7 +190,8 @@
 	resultado2.setOperacion(Testigo.Operaciones.pedirPracticas);
 	System.out.println("Creamos el testigo con su operacion");
 	
-	interfaz.getAtributo().putO2AObject(resultado2,AgentController.SYNC);
+	//interfaz.getAtributo().putO2AObject(resultado2,AgentController.SYNC);
+	interfaz.sendTestigo(resultado2);
 	
 	System.out.println("Comienzo del bucle de practicas");
 	while(!resultado2.isRelleno()){

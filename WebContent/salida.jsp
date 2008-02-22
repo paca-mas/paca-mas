@@ -3,9 +3,9 @@
   <%@ page import="javax.servlet.jsp.*"%>
   <%@ page import="javax.servlet.*"%>
   <%@ page import="java.util.*"%>
-  <%@ page import="auth.util.*"%>
+  <%@ page import="PACA.util.*"%>
  
-  <jsp:useBean id="interfaz" class="auth.util.Niapa" scope="session"/>
+  <jsp:useBean id="interfaz" class="PACA.util.AgentBean" scope="session"/>
     
 <!doctype html public "-//w3c//dtd html 4.0 transitional//en">
 <html>
@@ -19,7 +19,7 @@
   </head>
 <body>
    <%
-   interfaz.getAtributo().kill();
+   interfaz.getAgentController().kill();
    session.invalidate();
    %>
 
@@ -27,7 +27,7 @@
 <br>
 <br>
 <br>
-<p align="center">
+<p style="text-align: center">
    Gracias por utilizar la plataforma de correcci&oacute;n autom&aacute;tica.<br>
 </p>
 </body>
