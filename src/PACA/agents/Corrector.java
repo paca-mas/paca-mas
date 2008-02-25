@@ -6,7 +6,6 @@ import jade.content.abs.AbsContentElement;
 import jade.content.abs.AbsIRE;
 import jade.content.abs.AbsObject;
 import jade.content.abs.AbsPredicate;
-import jade.content.abs.AbsTerm;
 import jade.content.lang.Codec;
 import jade.content.lang.Codec.CodecException;
 import jade.content.lang.sl.SL1Vocabulary;
@@ -28,8 +27,6 @@ import jade.domain.FIPAException;
 import jade.domain.FIPAAgentManagement.DFAgentDescription;
 import jade.domain.FIPAAgentManagement.ServiceDescription;
 import jade.lang.acl.ACLMessage;
-//import jade.util.leap.ArrayList;
-//import jade.util.leap.List;
 
 import java.io.BufferedReader;
 import java.io.File;
@@ -41,8 +38,8 @@ import java.io.InputStream;
 import java.io.Serializable;
 import java.io.StringWriter;
 import java.text.DateFormat;
-import java.util.Date;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.Hashtable;
 import java.util.Iterator;
 import java.util.List;
@@ -61,8 +58,6 @@ import PACA.ontology.Tests;
 import PACA.ontology.pacaOntology;
 import PACA.ontology.Fichero.FuentesPrograma;
 import PACA.util.AndBuilder;
-
-import java.util.Hashtable;
 
 /**
 Este agente se encarga de realizar la correcci�n de las pr�cticas y tambi�n deposita las entregas que los 
@@ -523,21 +518,10 @@ public class Corrector extends Agent {
 		public void action() {
 
 			// Start
-			//ACLMessage msg = myAgent.blockingReceive();
-			if (debug) {
-				System.out.println("Corrector.java: Esperamos a que llegue un mensaje");
-			}
-
-			//ACLMessage msg = blockingReceive();
+			
 			ACLMessage msg = receive();
 
 			if (msg != null) {
-
-				if (debug) {
-					System.out.println("----------");
-					System.out.println(msg.toString());
-					System.out.println("----------");
-				}
 
 				ACLMessage reply = msg.createReply();
 
@@ -574,11 +558,7 @@ public class Corrector extends Agent {
 							AbsContentElement l_in = null;
 							l_in = getContentManager().extractAbsContent(msg);
 							String requestedInfoName = l_in.getTypeName();
-							if (debug) {
-								System.out.println("ALL?: " + SL2Vocabulary.ALL);
-								System.out.println("requestedInfoName: " + requestedInfoName);
-							}
-
+							
 							// If the receive message isn't a QUERY-REF (all or
 							// QUERY-REF (iota, reply a NOT_UNDERTOOD message
 
@@ -624,14 +604,10 @@ public class Corrector extends Agent {
 
 										} else {
 											// --> TestPorPractica <-------------------------------------------------------
-											if (debug) {
-												System.out.println("Dentro de TestPorPractica");
-											}
-											
-											//Obtenemos el predicado TESTS
-											List<AbsPredicate> lll = new ArrayList<AbsPredicate>();
-											lll=predicado.getPredicateList(pacaOntology.TESTS);
-											addBehaviour(new TestsCorrecBehaviour(this.myAgent, reply, lll, allPred));
+																						
+											List<AbsPredicate> listaT = new ArrayList<AbsPredicate>();
+											listaT=predicado.getPredicateList(pacaOntology.TESTS);
+											addBehaviour(new TestsCorrecBehaviour(this.myAgent, reply, listaT, allPred));
 										}
 									}
 
@@ -644,11 +620,15 @@ public class Corrector extends Agent {
 
 							// Extract the content of the message
 							//List l_in = myAgent.extractMsgContent(msg);
-							//Modificacion Carlos		
+							//Modificacion Carlos	
+							
+							
+							
+							
 							List l_in = (List) msg.getContentObject();
 
 							Action act = new Action();
-							act = (Action) l_in.get(0);
+							//act = (Action) l_in.get(0);
 
 							// Extract the practica from the message
 							//And and1 = (And) act.get_1();
@@ -758,7 +738,7 @@ public class Corrector extends Agent {
 						e.printStackTrace();
 					}
 				}
-				//myAgent.send(reply);
+				
 			} //============================== cambios para el receive no bloqueante ==========
 			else {
 				block();

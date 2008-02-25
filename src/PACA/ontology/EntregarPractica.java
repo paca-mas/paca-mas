@@ -1,7 +1,9 @@
 
 package PACA.ontology;
 
+import jade.content.AgentAction;
 import jade.content.Predicate;
+import jade.content.abs.AbsPredicate;
 
 
 
@@ -10,10 +12,12 @@ import jade.content.Predicate;
    Modificado Carlos Simón García
 */
 
-public class EntregarPractica implements Predicate{
+public class EntregarPractica implements AgentAction{
     private Corrector correc;
     
     private Practica pract;
+    
+    private AbsPredicate entrega;
 
 	
     public Corrector getCorrector( )
@@ -36,23 +40,11 @@ public class EntregarPractica implements Predicate{
 	pract = i;
     }
 
-    public Corrector get_0( )
-    {
-	return getCorrector();
-    }
+    public AbsPredicate getEntrega() {
+		return entrega;
+	}
 
-    public void set_0( Corrector i )
-    {
-	setCorrector(i);
-    }
-
-    public Practica get_1( )
-    {
-	return getPractica();
-    }
-
-    public void set_1 ( Practica i )
-    {
-	setPractica(i);
-    }
+	public void setEntrega(AbsPredicate entrega) {
+		this.entrega = entrega;
+	}
 }
