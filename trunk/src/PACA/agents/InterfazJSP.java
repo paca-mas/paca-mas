@@ -16,7 +16,7 @@ import java.io.StringWriter;
 import javax.servlet.http.HttpServletRequest;
 
 import PACA.parser.EvaluacionParser;
-import PACA.util.Testigo;
+import PACA.util.*;
 
 import com.oreilly.servlet.multipart.FilePart;
 import com.oreilly.servlet.multipart.MultipartParser;
@@ -34,101 +34,7 @@ import com.oreilly.servlet.multipart.Part;
  */
 public class InterfazJSP extends Interfaz {
 	
-	/**
-       Lee la petici�n, de un formulario con "checkbox" que indican
-       los test de los que se solicitan los ficheros. Almacenamos
-       los test marcados y llamamos al "padre" con la funci�n 
-       doFicherosPractica.
-       @param request Petici�n del navegador, con los datos de formulario
-	 */
-	public String[] doFicherosPracticaRequest(HttpServletRequest request)
-	throws IOException, java.io.UnsupportedEncodingException {
-
-		String[] NombreTest = new String[0];
-		List ListaTest = new ArrayList();
-
-		java.lang.Runtime runtime = java.lang.Runtime.getRuntime();
-		MultipartParser parser = new MultipartParser(request,1000000);
-
-		Part parte = parser.readNextPart();
-
-		while (parte != null) {
-
-			if (parte.isParam()) {
-				ParamPart parametro = (ParamPart) parte;
-				// Si el par�metro est� marcado (CHEKED) lo guardamos
-				if (parametro.getStringValue().equals("CHEKED")) {
-					ListaTest.add(parte.getName());
-				}
-			}
-			parte = parser.readNextPart();
-		}
-
-		// Pasamos al array
-		NombreTest = new String[ListaTest.toArray().length];
-		for (int i=0; i < ListaTest.toArray().length; i++) {
-			NombreTest[i] = (String) ListaTest.toArray()[i];
-		}
-		
-		return (doFicherosPractica(NombreTest));
-		//return NombreTest;
-	}
-
-
-
-	/**
-       Este m�todo ser� invocado desde la p�gina JSP para que el agente realice la correcci�n de una pr�ctica.
-       @param request Petici�n que le ha sido realizada al JSP y que contiene los ficheros para la correcci�n.
-	*/
-	public String doCorreccionRequest(HttpServletRequest request) throws IOException {
-
-		java.lang.Runtime runtime = java.lang.Runtime.getRuntime();
-		MultipartParser parser = new MultipartParser(request,1000000);
-
-		// Almacenamos los ficheros en un array de String
-		String[] contenidos = new String[ficherosUltimaPractica.length];
-		int cont = 0;
-
-		Part parte = parser.readNextPart();
-
-		while (parte!=null){
-			if (parte.isFile()){
-				FilePart filepart = (FilePart) parte;
-				InputStream is = filepart.getInputStream();
-				StringWriter sw = new StringWriter();
-
-				int tempo = is.read();
-				while (tempo != -1 ) {
-					sw.write(tempo);
-					tempo = is.read();
-				}
-
-				contenidos[cont] = sw.toString();
-				cont++;
-			}
-			parte = parser.readNextPart();
-		}
-
-		String salida="";
-
-		try{
-
-			EvaluacionParser XMLparser = new EvaluacionParser(doCorreccion(contenidos),this);
-			salida= XMLparser.getEvaluacion();
-		}
-		catch(Exception e){
-			salida="Hubo Errores "+e.getMessage();
-		}
-		return salida;
-	}
-
-
-	/** HECHO
-       M�todo que obtiene los tests (que han sido seleccionados para ser corregidos) a partir de un objeto
-       petici�n.
-       @param request Petici�n que le ha sido realizada al JSP y que contiene los tests seleccionados.
-       @return Los identificadores de los tests seleccionados.
-	 */
+	
 	public String[] doTestPracticasRequest(HttpServletRequest request){
 
 		ArrayList lista = new ArrayList();
@@ -222,33 +128,11 @@ public class InterfazJSP extends Interfaz {
 
 		String salida="";
 		
-		
-		System.out.println("Estamos entregando... ");
-
 		salida = doEntregaPractica(contenidos,login,pass);
 
 		return salida;
 	}
 
-
-
-	/**
-       Autentica a un usuario. HECHO
-	 */
-	public boolean doAutenticacionRequest(HttpServletRequest request){
-
-		return this.doAutenticacion(request.getParameter("user_id"), request.getParameter("password"));
-	}
-
-
-	/**
-       Obtiene los tests relativos a una pr�ctica. HECHO
-	*/
-	public String[] doPeticionTestPracticaRequest(HttpServletRequest request){
-
-		return this.doPeticionTestPractica(request.getParameter("practica"));
-	}
-	
 	
 	//================================================================================
 	public String[] doObtieneContenidoRequest(HttpServletRequest request) throws IOException {
@@ -298,45 +182,6 @@ public class InterfazJSP extends Interfaz {
 	
 	
 	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
 	//========================================================================
 	public class AutenticaRequestBeha extends OneShotBehaviour{
 		
@@ -351,7 +196,6 @@ public class InterfazJSP extends Interfaz {
 			HttpServletRequest param1 = (HttpServletRequest) test2.getParametro();
 			String auxUsuario = param1.getParameter("user_id");
 			String auxPass = param1.getParameter("password");
-			//addBehaviour(new AutenticaBehaviour(this.myAgent, test2, auxUsuario, auxPass));
 			addBehaviour(new EnviaAutenticaBehaviour(this.myAgent, test2, auxUsuario, auxPass));
 		}
 	}
@@ -367,12 +211,12 @@ public class InterfazJSP extends Interfaz {
 		public void action(){
 			HttpServletRequest param1 = (HttpServletRequest) tes2.getParametro();
 			String practica = param1.getParameter("practica");
-			//addBehaviour(new TestsBehaviour(this.myAgent,tes2,practica));
 			addBehaviour(new PideTestBeha(this.myAgent, tes2, practica));
 		}
 	}
 	
 			
+
 //	public class InicializaObjeto extends CyclicBehaviour{
 //		
 //		private boolean done=false;
@@ -499,14 +343,19 @@ public class InterfazJSP extends Interfaz {
 
 		}
 
+
+		
 		public void action() {
 			while (this.myAgent == null) {
 				System.out.println("AGENT ES NULL");
 			}
+
 			InterfazJSP agent = (InterfazJSP) this.myAgent;
 			while (!agent.FinSetup) {
+
 				System.out.println("FINSETUP");
 			}
+
 
 			if (this.testigo != null) {
 
@@ -515,63 +364,58 @@ public class InterfazJSP extends Interfaz {
 
 					case buscarCorrector:
 						//System.out.println("Operacion BuscarCorrector");
-						//tes.setResultado(agent.doBuscarCorrector());
 						addBehaviour(new CorrectorBehaviour(agent, testigo));
 						break;
 
 					case autenticar:
 						//System.out.println("Operacion autenticar");
-						//tes.setResultadoB(agent.doAutenticacionRequest((HttpServletRequest) tes.getParametro()));
 						addBehaviour(new AutenticaRequestBeha(agent, testigo));
 						break;
 
 					case pedirPracticas:
 						//System.out.println("Operacion pedirPracticas");
-						//tes.setResultado(agent.doPeticion());
-						//addBehaviour(new PracticasBehaviour(agent, tes));
 						addBehaviour(new PidePracticasBehavior(agent, testigo));
 						break;
 
 					case pedirTests:
 						//System.out.println("Operacion pedirTests");
-						//tes.setResultado(agent.doPeticionTestPracticaRequest((HttpServletRequest) tes.getParametro()));
 						addBehaviour(new PideTestRequestBeha(agent, testigo));
 						break;
 
 					case pedirFicheros:
-						System.out.println("Operacion pedirFicheros");
+						//System.out.println("Operacion pedirFicheros");
 						testigo.setResultado(agent.doTestPracticasRequest((HttpServletRequest) testigo.getParametro()));
 						break;
 
 					case insertarFicheros:
-						System.out.println("Operacion InsertarFicheros");
-						//tes.setResultado(agent.doFicherosPractica((String[]) tes.getParametro()));
+						//System.out.println("Operacion InsertarFicheros");
 						addBehaviour(new PideFicherosBeha(agent, testigo, (String[]) testigo.getParametro()));
 						break;
 
 					case corregir:
-						System.out.println("Operacion corregir algo... ");
+						//System.out.println("Operacion corregir algo... ");
 						try {
 							String[] contenido = doObtieneContenidoRequest((HttpServletRequest) testigo.getParametro());
 							addBehaviour(new PideCorreccionBeha(agent, testigo, contenido));
 						} catch (IOException e) {
+
 							// TODO Auto-generated catch block
 							e.printStackTrace();
 						}
 						break;
 
 					case parsear:
-						System.out.println("Operacion parseo XML ");
+						//System.out.println("Operacion parseo XML ");
 						testigo.setResultado(ParseaSalida((String) testigo.getParametro()));
 						break;
 
 					case pedirFicherosFinal:
-						System.out.println("Operacion pedir Ficheros final");
+						//System.out.println("Operacion pedir Ficheros final");
 						testigo.setResultado((agent.doTestEntregaFinal((HttpServletRequest) testigo.getParametro())));
 						break;
 
 					case entregarPractica:
-						System.out.println("Operacion entregar Practica");
+						//System.out.println("Operacion entregar Practica");
 						try {
 							testigo.setResultado((agent.doEntregaFinalRequest((HttpServletRequest) testigo.getParametro())));
 						} catch (IOException e) {
@@ -610,13 +454,7 @@ public class InterfazJSP extends Interfaz {
 	@Override
 	protected void setup(){
 		super.setup();
-		System.out.print("Ni idea");
 		this.setEnabledO2ACommunication(true, 0);
-		
-		//System.out.println("a�adir comportamineto");
-		//addBehaviour(new InicializaObjeto());
-		//System.out.println("a�adido comportamineto");
-		
 		FinSetup=true;
 	}
 	

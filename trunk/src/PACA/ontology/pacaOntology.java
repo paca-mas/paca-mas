@@ -13,9 +13,14 @@ package PACA.ontology;
 
 //import jade.onto.basic.*;
 
+import jade.content.AgentAction;
+import jade.content.lang.sl.SL0Vocabulary;
+import jade.content.lang.sl.SL1Vocabulary;
+import jade.content.lang.sl.SLVocabulary;
 import jade.content.onto.BasicOntology;
 import jade.content.onto.Ontology;
 import jade.content.onto.OntologyException;
+import jade.content.schema.AgentActionSchema;
 import jade.content.schema.ConceptSchema;
 import jade.content.schema.PredicateSchema;
 import jade.content.schema.PrimitiveSchema;
@@ -97,6 +102,11 @@ public class pacaOntology extends Ontology{
 	// Acciones
 
 	public static final String ENTREGARPRACTICA = "EntregarPractica";
+	public static final String ENTREGA = "Entrega";
+	
+	
+	//AgentAction
+	public static final String ACTIONENTREGAR = "ActionEntregar";
 
 	/**
        Instancia de la ontología. Sigue un patrón de diseño SINGLETON.
@@ -207,19 +217,19 @@ public class pacaOntology extends Ontology{
 			ps4.add(ALUMNO, (ConceptSchema) getSchema(ALUMNO));
 			ps4.add(INTERFAZ, (ConceptSchema) getSchema(BasicOntology.AID));
 			
-			//ps4.add(INTERACTUA, (ConceptSchema) getSchema(INTERFAZ));
-			
-
-			//EntregarPractica
-			add(new PredicateSchema(ENTREGARPRACTICA),EntregarPractica.class);
-			PredicateSchema ps5 = (PredicateSchema) getSchema(ENTREGARPRACTICA);
-			ps5.add(CORRECTOR, (ConceptSchema) getSchema(CORRECTOR));
-			ps5.add(PRACTICA, (ConceptSchema) getSchema(PRACTICA));
-			
-			
-			
 			
 			//---------- FIN PREDICADOS ----------------
+			
+			
+			
+			//---------- AGENT ACTIONS ----------------
+			//EntregarPractica
+			add(new AgentActionSchema(ENTREGARPRACTICA),EntregarPractica.class);
+			AgentActionSchema ps5 = (AgentActionSchema) getSchema(ENTREGARPRACTICA);
+			ps5.add(CORRECTOR, (ConceptSchema) getSchema(CORRECTOR));
+			ps5.add(PRACTICA, (ConceptSchema) getSchema(PRACTICA));
+			ps5.add(ENTREGA, (PredicateSchema) getSchema(SL1Vocabulary.AND));
+						
 
 		}
 		catch(OntologyException oe) {

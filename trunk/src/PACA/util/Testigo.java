@@ -1,6 +1,6 @@
 package PACA.util;
 
-public class Testigo {
+public class Testigo extends Resultado{
 	
 	//Operaciones es un tipo enumerado en donde definimos las operaciones que queremos realizar
 	public enum Operaciones {
@@ -13,7 +13,7 @@ public class Testigo {
 	private boolean relleno;
 	private Object parametro;
 	private Operaciones operacion;
-	private boolean resultadoB;
+	//private boolean resultadoB;
 	
 	
 	public Testigo(){
@@ -22,18 +22,18 @@ public class Testigo {
 	}
 	
 
-	public Object getResultado() {
-		return resultado;
-	}
+	//public Object getResultado() {
+		//return resultado;
+	//}
 
-	public void setResultado(Object resultado) {
-		this.resultado = resultado;
-		this.relleno=true;
-	}
+	//public void setResultado(Object resultado) {
+		//this.resultado = resultado;
+		//this.relleno=true;
+	//}
 	
-	public boolean isRelleno(){
-		return relleno;
-	}
+	//public boolean isRelleno(){
+		//return relleno;
+	//}
 
 
 	public Operaciones getOperacion() {
@@ -56,15 +56,15 @@ public class Testigo {
 	}
 
 
-	public boolean isResultadoB() {
-		return resultadoB;
-	}
+	//public boolean isResultadoB() {
+		//return resultadoB;
+	//}
 
 
-	public void setResultadoB(boolean resultadoB) {
-		this.resultadoB = resultadoB;
-		this.relleno=true;
-	}
+	//public void setResultadoB(boolean resultadoB) {
+		//this.resultadoB = resultadoB;
+		//this.relleno=true;
+	//}
 	
 	public String toString(){
 		return "Es relleno:"+this.isRelleno()+
