@@ -40,29 +40,22 @@
 			agentInterfaz = cc.acceptNewAgent(nombre, agent);
 			if (agentInterfaz != null) {
 				agentInterfaz.start();
-				System.out.println("Nombre Agente: " + agentInterfaz.getName());
-				System.out.println("Agente Arrancado: " + agentInterfaz.getState().getName());
 				interfaz.setAgentInterfaz(agent);
 				interfaz.setAgentController(agentInterfaz);
-				//interfaz.setAgent(null);
-				//agentInterfaz.putO2AObject(interfaz,AgentController.SYNC);
-				System.out.println("Ponemos algo en agente... ");
-				System.out.println("INTERFAZ: " + interfaz.toString());
-				System.out.println("AGENTE INTERFAZ: " + agentInterfaz.toString());
 				while (!agent.isFinSetup()) {
 					System.out.println("Esperando al fin... ");
 				}
 				
 				
-			} else {
+			} 
+			else {
 				System.out.println("Agente no Arrancado" + agentInterfaz.getState().getName());
 			}
-		} catch (Exception ex) {
+		} 
+	catch (Exception ex) {
 			out.println(ex);
-			System.out.println("Excepcion en respAuth.jsp");
 			ex.printStackTrace();
-			System.out.println("Fin Excepcion en respAuth.jsp");
-		}
+	}
   
     %>    
   </jsp:useBean>
@@ -113,24 +106,22 @@
 
   	boolean autenticado = false;
   
-	System.out.println("Intentamos autenticarnos... ");  
-  	//autenticado = interfaz.doAutenticacionRequest(request);
+	//autenticado = interfaz.doAutenticacionRequest(request);
   	//autenticado=false;
   	Testigo resultado=new Testigo();
   	resultado.setOperacion(Testigo.Operaciones.autenticar);
   	resultado.setParametro((HttpServletRequest) request);
-  	
+  	 
+
   	//interfaz.getAtributo().putO2AObject(resultado,AgentController.SYNC);
 	interfaz.sendTestigo(resultado);
 	
-  	System.out.println("Comienzo del bucle");
+
   	while(!resultado.isRelleno()){
-  	}
+  	 	}
   	
-  	System.out.println("RESULTADO RELLENOOOOOOOOOO: "+resultado.isResultadoB());
   	autenticado = resultado.isResultadoB();
-  	System.out.println("AUTENTICADOOOOOOOOOO: "+autenticado);
-  	
+  	 	
   	%>
   	<h1>Chivato <%= resultado.getResultado() %> </h1>
   	
@@ -171,7 +162,6 @@
     //String[] pract = interfaz.doPeticion();
 
 
-	System.out.println("Buscamos Corrector... ");
 	Testigo resultado3=new Testigo();
 	resultado3.setOperacion(Testigo.Operaciones.buscarCorrector);
 
@@ -185,15 +175,12 @@
 	
 	//-----------------------------------------------------------------------
 
-	System.out.println("Pedimos las practicas");
 	Testigo resultado2=new Testigo();
 	resultado2.setOperacion(Testigo.Operaciones.pedirPracticas);
-	System.out.println("Creamos el testigo con su operacion");
-	
+		
 	//interfaz.getAtributo().putO2AObject(resultado2,AgentController.SYNC);
 	interfaz.sendTestigo(resultado2);
 	
-	System.out.println("Comienzo del bucle de practicas");
 	while(!resultado2.isRelleno()){
 	}
 	

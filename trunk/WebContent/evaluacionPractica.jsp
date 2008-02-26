@@ -46,19 +46,14 @@
   //}
 	
 	 
-  //String eval = interfaz.doCorreccion(contenidoFicheros);  
-  //---> la que vale... String eval = interfaz.doCorreccionRequest(request);
-  
-  	System.out.println("Instertamos los ficheros");
+   	
   	Testigo resultado=new Testigo();
 	resultado.setOperacion(Testigo.Operaciones.corregir);
 	resultado.setParametro((HttpServletRequest)request);
-	System.out.println("Creamos el testigo con su operacion");
-
+	
 	//interfaz.getAtributo().putO2AObject(resultado,AgentController.SYNC);
 	interfaz.sendTestigo(resultado);
 
-	System.out.println("Comienzo del bucle de los ficheros insertados");
 	while(!resultado.isRelleno()){
 		}
 
@@ -66,25 +61,19 @@
 	
 	//================== Añadido para parsear el resultado aparte ===============
 	
-	System.out.println("Instertamos el XML");
-  	Testigo resultado2=new Testigo();
+	Testigo resultado2=new Testigo();
 	resultado2.setOperacion(Testigo.Operaciones.parsear);
 	resultado2.setParametro(eval1);
-	System.out.println("Creamos el testigo con su operacion");
-
+	
 	//interfaz.getAtributo().putO2AObject(resultado2,AgentController.SYNC);
 	interfaz.sendTestigo(resultado2);
 
-	System.out.println("Comienzo del bucle de los ficheros insertados");
 	while(!resultado2.isRelleno()){
 		}
 
 	String eval = (String)resultado2.getResultado();	
   
   
-  
-  
-
 %>
 	<br>
 	<%= eval %>

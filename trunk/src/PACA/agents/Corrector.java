@@ -286,7 +286,6 @@ public class Corrector extends Agent {
 		private List<AbsPredicate> pred1;
 		private AbsIRE ire1;
 
-		//public TestsCorrecBehaviour(Agent _a, ACLMessage msg1, AbsPredicate pred, AbsIRE ire) {
 		public TestsCorrecBehaviour(Agent _a, ACLMessage msg1, List<AbsPredicate> pred, AbsIRE ire) {
 			super(_a);
 			this.mens1 = msg1;
@@ -442,12 +441,10 @@ public class Corrector extends Agent {
 				AndBuilder predicado = new AndBuilder();
 				predicado.addPredicate(qiota);
 
+				//Obtenemos todos los predicados en forma de listas
 				List<AbsPredicate> listCorr = predicado.getPredicateList(pacaOntology.CORRIGE);
-				
 				List<AbsPredicate> listTests = predicado.getPredicateList(pacaOntology.TESTS);
-				
 				List<AbsPredicate> listFich = predicado.getPredicateList(pacaOntology.FICHEROFUENTES);
-				
 				List<AbsPredicate> listEvap = predicado.getPredicateList(pacaOntology.EVALUAPRACTICA);
 				
 				Iterator<AbsPredicate> it = listCorr.iterator();
@@ -462,22 +459,21 @@ public class Corrector extends Agent {
 				Practica pract = cor1.getPractica();
 				Alumno al = eva1.getAlumno();
 
-				//EvaluacionPractica EvaP = EnvioCorreccionAlumno(pract, FP, Te, al, msg.getSender().getLocalName());
-				EvaluacionPractica EvaP = EnvioCorreccionAlumno(pract, FP, Te, al, quien1);
+				EvaluacionPractica evaP = EnvioCorreccionAlumno(pract, FP, Te, al, quien1);
 
-				String Contenido = EvaP.getTextoEvaluacion();
+				String contenido = evaP.getTextoEvaluacion();
 				
-				ResultadoEvaluacion RE = new ResultadoEvaluacion();
-				RE.setResultadoEvaluacionTexto(Contenido);
+				ResultadoEvaluacion rEvap = new ResultadoEvaluacion();
+				rEvap.setResultadoEvaluacionTexto(contenido);
 
-				AbsConcept AbsEvap;
+				AbsConcept absEvap;
 
-				AbsEvap = (AbsConcept) ontologia.fromObject(RE);
+				absEvap = (AbsConcept) ontologia.fromObject(rEvap);
 
 
 				AbsPredicate qrr = new AbsPredicate(SL1Vocabulary.EQUALS);
 				qrr.set(SL1Vocabulary.EQUALS_LEFT, iotaPred);
-				qrr.set(SL1Vocabulary.EQUALS_RIGHT, AbsEvap);
+				qrr.set(SL1Vocabulary.EQUALS_RIGHT, absEvap);
 
 				getContentManager().fillContent(respuesta,qrr);
 				myAgent.send(respuesta);
@@ -1497,7 +1493,7 @@ public class Corrector extends Agent {
 	
 	
 	
-	
+	//Método que rellena los tests pedidos
 	private Test[] ExtraeTestsPedidos(List<AbsPredicate> lista) {
 		int tamano = lista.size();
 		Test[] testAux = new Test[tamano];
@@ -1518,6 +1514,8 @@ public class Corrector extends Agent {
 		return testAux;
 	}
 	
+	
+	//Método que rellena los ficheros fuentes
 	private FuentesPrograma[] ExtraeFuentesPedidos(List<AbsPredicate> lista) {
 		int tamano = lista.size();
 		FuentesPrograma[] fuentesAux = new FuentesPrograma[tamano];
