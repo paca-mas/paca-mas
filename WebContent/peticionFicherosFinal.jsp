@@ -100,7 +100,7 @@
         <LI>Tendrá que introducir el login y el passwd del compañero de grupo (en su caso).</LI>
         <LI>Si no tiene compañero, deje los campos correspondientes a los datos del mismo en blanco.</LI>
       </OL>
-     </p>
+     </P>
     </p> 
     <p align="center">
     <HR width="50%">

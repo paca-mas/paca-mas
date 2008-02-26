@@ -70,16 +70,14 @@
   // Hacemos la consulta de los tests necesarios y rellenamos el formulario
 	  
   //String[] tests = interfaz.doPeticionTestPracticaRequest(request);  
-	System.out.println("Pedimos los tests");
+	
 	Testigo resultado2=new Testigo();
 	resultado2.setOperacion(Testigo.Operaciones.pedirTests);
 	resultado2.setParametro((HttpServletRequest)request);
-	System.out.println("Creamos el testigo con su operacion");
-
+	
 	//interfaz.getAtributo().putO2AObject(resultado2,AgentController.SYNC);
 	interfaz.sendTestigo(resultado2);
 
-	System.out.println("Comienzo del bucle de tests");
 	while(!resultado2.isRelleno()){
 		}
 
@@ -104,11 +102,11 @@
    }
 %>
    </table><BR>
-</P>
+</p>
 	<br>
 	<p align="right"><input type="submit" name="seleccionar" value="Seleccionar Test" onclick="javascript:salida=false;"></p>
     </form>
-  </P>    
+  </p>    
 
   <HR> 
   <p align="center">

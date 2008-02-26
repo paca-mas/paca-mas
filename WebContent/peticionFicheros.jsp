@@ -69,16 +69,13 @@
 
       <% 
       //String[] testSeleccionados = interfaz.doTestPracticasRequest(request);
-      	System.out.println("Pedimos los Ficheros");
-  		Testigo resultado=new Testigo();
+      	Testigo resultado=new Testigo();
   		resultado.setOperacion(Testigo.Operaciones.pedirFicheros);
   		resultado.setParametro(request);
-  		System.out.println("Creamos el testigo con su operacion");
-
+  		
   		//interfaz.getAtributo().putO2AObject(resultado,AgentController.SYNC);
 		interfaz.sendTestigo(resultado);
 
-  		System.out.println("Comienzo del bucle de ficheros");
   		while(!resultado.isRelleno()){
   			}
 
@@ -107,16 +104,14 @@
      <%
       // Hacemos la consulta de los ficheros necesarios y rellenamos el formulario
       	//String[] ficheros = interfaz.doFicherosPractica(testSeleccionados);
-     	System.out.println("Pedimos los Ficheros");
+     	
 		Testigo resultado2=new Testigo();
 		resultado2.setOperacion(Testigo.Operaciones.insertarFicheros);
 		resultado2.setParametro(testSeleccionados); 
-		System.out.println("Creamos el testigo con su operacion");
-
+		
 		//interfaz.getAtributo().putO2AObject(resultado2,AgentController.SYNC);
 		interfaz.sendTestigo(resultado2);
 
-		System.out.println("Comienzo del bucle de ficheros");
 		while(!resultado2.isRelleno()){
 			}
 

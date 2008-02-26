@@ -73,11 +73,7 @@ import PACA.util.*;
  */
 public class Interfaz extends Agent {
 
-	private boolean debug = true;
-	private boolean debug2 = false;
-	private boolean debug3 = false; 
-	
-	
+		
 	private Codec codec = new SLCodec();
 	
 	//	Nombre de la ontologia
@@ -146,10 +142,7 @@ public class Interfaz extends Agent {
 	public String[] TestPosiblesPractica;
 	
 	
-	public int Paso;
-
-
-
+	
 	/**
        Constructor.
 	 */
@@ -604,11 +597,10 @@ public class Interfaz extends Agent {
 
 		msg_in = blockingReceive();
 
-		if (debug){
-			System.out.println("----------------------------------------------------");
-			System.out.println(msg_in.toString());
-			System.out.println("----------------------------------------------------");
-		}
+		System.out.println("----------------------------------------------------");
+		System.out.println(msg_in.toString());
+		System.out.println("----------------------------------------------------");
+		
 		
 		// Leemos el contenido del mensaje
 		try {
@@ -659,6 +651,8 @@ public class Interfaz extends Agent {
 		return retornable;
 	}
 	
+	
+	//Método que nos devuelve el corrector al que pediremos la correción
 	public AID doBuscarCorrector(){
 						
 		DFAgentDescription template = new DFAgentDescription();
@@ -713,147 +707,10 @@ public class Interfaz extends Agent {
 	
 	
 	
-	//Metodo que insterta en predicados abstractos "and" enlazados los Test seleccionados
-	public AbsPredicate InsertarTestPedidos(String[] conjTests, AbsConcept pracAux, AbsPredicate predAux){
-		
-		Test te = new Test();
-		int numeroTests = conjTests.length;
-				
-		AbsPredicate andA = new AbsPredicate(SL1Vocabulary.AND);
-		AbsPredicate andD = new AbsPredicate(SL1Vocabulary.AND);
-		
-		int contador=0;
-		while (contador<numeroTests){
-			
-			if (contador==0){
-				//Convertimos el test a un objecto abstracto
-				AbsConcept AbsTest;
-				try {
-					te.setId(conjTests[contador]);
-					te.setDescripcion("");
-					
-					AbsTest = (AbsConcept) PACAOntology.fromObject(te);
-					//Creamos el predicado abstracto "TESTS"
-					AbsPredicate AbsTests = new AbsPredicate(pacaOntology.TESTS);
-					AbsTests.set(pacaOntology.TEST, AbsTest);
-					AbsTests.set(pacaOntology.PRACTICA, pracAux);
-					
-					andD.set(SL1Vocabulary.AND_LEFT, AbsTests);
-					andD.set(SL1Vocabulary.AND_RIGHT, predAux);
-					
-				} catch (OntologyException e) {
-					// TODO Auto-generated catch block
-					e.printStackTrace();
-				}
-						
-			}
-			else{
-				te = new Test();
-				te.setId(conjTests[contador]);
-				te.setDescripcion("");
-				//Convertimos el test a un objecto abstracto
-				AbsConcept AbsTest;
-				try {
-					AbsTest = (AbsConcept) PACAOntology.fromObject(te);
-					//Creamos el predicado abstracto "TESTS"
-					AbsPredicate AbsTests = new AbsPredicate(pacaOntology.TESTS);
-					AbsTests.set(pacaOntology.TEST, AbsTest);
-					AbsTests.set(pacaOntology.PRACTICA, pracAux);
-
-					andA.set(SL1Vocabulary.AND_LEFT, AbsTests);
-					andA.set(SL1Vocabulary.AND_RIGHT, andD);
-					
-					andD = new AbsPredicate(SL1Vocabulary.AND);
-					andD = andA;
-					andA = new AbsPredicate(SL1Vocabulary.AND);
-
-				} catch (OntologyException e) {
-					// TODO Auto-generated catch block
-					e.printStackTrace();
-				}
-				
-			}
-			contador++;
-		}
-		
-		return andD;
-	}
 	
-//	Metodo que insterta en predicados abstractos "and" enlazados los Test seleccionados
-	public AbsPredicate InsertarFicherosPedidos(String[] conjFich, String[] contFich, AbsPredicate predAux, Test teAux){
-		
-		FuentesPrograma fp = new FuentesPrograma();
-	
-		int numeroFicheros = conjFich.length;
-				
-		AbsPredicate andA = new AbsPredicate(SL1Vocabulary.AND);
-		AbsPredicate andD = new AbsPredicate(SL1Vocabulary.AND);
-		
-		AbsConcept AbsFP;
-		AbsConcept AbsTest;
-		
-		int contador=0;
-		while (contador<numeroFicheros){
-			
-			if (contador==0){
-								
-				try {
-					fp.setNombre(conjFich[contador]);
-					fp.setContenido(contFich[contador]);
-					
-					AbsFP = (AbsConcept) PACAOntology.fromObject(fp);
-					AbsTest =(AbsConcept) PACAOntology.fromObject(teAux);
-					//Creamos el predicado abstracto "FICHEROFUENTS"
-					AbsPredicate AbsFicheros = new AbsPredicate(pacaOntology.FICHEROFUENTES);
-					AbsFicheros.set(pacaOntology.TEST, AbsTest);
-					AbsFicheros.set(pacaOntology.FUENTESPROGRAMA, AbsFP);
-					
-										
-					andD.set(SL1Vocabulary.AND_LEFT, AbsFicheros);
-					andD.set(SL1Vocabulary.AND_RIGHT, predAux);
-					
-				} catch (OntologyException e) {
-					// TODO Auto-generated catch block
-					e.printStackTrace();
-				}
-								
-			}
-			else{
-				
-				try {
-					fp = new FuentesPrograma();
-					fp.setNombre(conjFich[contador]);
-					fp.setContenido(contFich[contador]);
-					
-					AbsFP = (AbsConcept) PACAOntology.fromObject(fp);
-					AbsTest = (AbsConcept) PACAOntology.fromObject(teAux);
-					
-					//Creamos el predicado abstracto "FICHEROFUENTS"
-					AbsPredicate AbsFicheros = new AbsPredicate(pacaOntology.FICHEROFUENTES);
-					AbsFicheros.set(pacaOntology.TEST, AbsTest);
-					AbsFicheros.set(pacaOntology.FUENTESPROGRAMA, AbsFP);
-
-					andA.set(SL1Vocabulary.AND_LEFT, AbsFicheros);
-					andA.set(SL1Vocabulary.AND_RIGHT, andD);
-					
-					andD = new AbsPredicate(SL1Vocabulary.AND);
-					andD = andA;
-					andA = new AbsPredicate(SL1Vocabulary.AND);
-
-				} catch (OntologyException e) {
-					// TODO Auto-generated catch block
-					e.printStackTrace();
-				}
-				
-			}
-			contador++;
-		}
-		
-		return andD;
-	}
 	
 	public List<AbsPredicate> ConstruiListaTests (String [] TestsAux, AbsConcept practAux){
-		List <AbsPredicate> ListaAux = new ArrayList<AbsPredicate>();
+		List <AbsPredicate> listaAux = new ArrayList<AbsPredicate>();
 		
 		for (int contador = 0; contador < TestsAux.length; contador++) {
 			Test te = new Test();
@@ -866,18 +723,18 @@ public class Interfaz extends Agent {
 				AbsPredicate AbsTests = new AbsPredicate(pacaOntology.TESTS);
 				AbsTests.set(pacaOntology.TEST, AbsTest);
 				AbsTests.set(pacaOntology.PRACTICA, practAux);
-				ListaAux.add(AbsTests);
+				listaAux.add(AbsTests);
 			} catch (OntologyException e) {
 				// TODO Auto-generated catch block
 				e.printStackTrace();
 			}
 		}
 		
-		return ListaAux;
+		return listaAux;
 	}
 	
 	public List<AbsPredicate> ConstruirListaFF (String[] conjFich, String[] contFich, Test teAux){
-		List <AbsPredicate> ListaAux = new ArrayList<AbsPredicate>();
+		List <AbsPredicate> listaAux = new ArrayList<AbsPredicate>();
 		FuentesPrograma fp = new FuentesPrograma();
 		for (int contador = 0; contador < conjFich.length; contador++) {
 			
@@ -892,7 +749,7 @@ public class Interfaz extends Agent {
 				AbsPredicate AbsFicheros = new AbsPredicate(pacaOntology.FICHEROFUENTES);
 				AbsFicheros.set(pacaOntology.TEST, AbsTest);
 				AbsFicheros.set(pacaOntology.FUENTESPROGRAMA, AbsFP);
-				ListaAux.add(AbsFicheros);
+				listaAux.add(AbsFicheros);
 			} 
 			catch (OntologyException e) {
 				// TODO Auto-generated catch block
@@ -900,7 +757,7 @@ public class Interfaz extends Agent {
 			}
 			
 		}
-		return ListaAux;
+		return listaAux;
 	}
 	
 	
@@ -987,8 +844,6 @@ public class Interfaz extends Agent {
 		public void action(){
 			try{
 				
-				// Ahora iremos cogiendo los objetos creados de la ontologia.
-				
 				String tipoObjetoContenido = mens1.getTypeName();
 				
 				if (tipoObjetoContenido.equals(SL1Vocabulary.NOT)){
@@ -1019,20 +874,17 @@ public class Interfaz extends Agent {
 		}
 		public void action(){
 			
-			AID aaaAgente = getAgenteCorrector();
-			ACLMessage msg_out = new ACLMessage(ACLMessage.QUERY_REF);
-			//msg_out.addReceiver(new AID(AgenteCorrector, AID.ISLOCALNAME));
-			msg_out.addReceiver(aaaAgente);
-			msg_out.setLanguage(codec.getName());
-			msg_out.setOntology(pacaOntology.NAME);
+			AID agentCorrec = getAgenteCorrector();
+			ACLMessage solicitud = new ACLMessage(ACLMessage.QUERY_REF);
+			solicitud.addReceiver(agentCorrec);
+			solicitud.setLanguage(codec.getName());
+			solicitud.setOntology(pacaOntology.NAME);
 
-			// Generamos el mensaje para enviar
 			Practica pract = new Practica();
 			pract.setId("?practica");
 			pract.setDescripcion("");
 			Corrector correc = new Corrector();
-			correc.setId(aaaAgente.getName());
-			//correc.setId("corrector");
+			correc.setId(agentCorrec.getName());
 			
 			try {
 				
@@ -1056,9 +908,9 @@ public class Interfaz extends Agent {
 				qrall.setProposition(absPredCorr);
 							
 				//Mandamos el mensaje
-				getContentManager().fillContent(msg_out, qrall);
+				getContentManager().fillContent(solicitud, qrall);
 				addBehaviour(new RecibeMensajes(myAgent, tes));
-				send(msg_out);
+				send(solicitud);
 			}
 			catch (OntologyException e1) {
 				// TODO Auto-generated catch block
@@ -1134,14 +986,12 @@ public class Interfaz extends Agent {
 			//Nos guardamos la ï¿½ltima prï¿½ctica solicitada
 			ultimaPractica = IdPractica;
 					
-			AID aaaAgente = getAgenteCorrector();
+			AID agentCorrec = getAgenteCorrector();
 
-			ACLMessage msg_in;
-			ACLMessage msg_out = new ACLMessage(ACLMessage.QUERY_REF);
-			//msg_out.addReceiver(new AID(AgenteCorrector, AID.ISLOCALNAME));
-			msg_out.addReceiver(aaaAgente);
-			msg_out.setLanguage(codec.getName());
-			msg_out.setOntology(pacaOntology.NAME);
+			ACLMessage solicitud = new ACLMessage(ACLMessage.QUERY_REF);
+			solicitud.addReceiver(agentCorrec);
+			solicitud.setLanguage(codec.getName());
+			solicitud.setOntology(pacaOntology.NAME);
 
 			// Generamos el mensaje para enviar
 			Corrige cor = new Corrige();
@@ -1149,8 +999,7 @@ public class Interfaz extends Agent {
 			pract.setId(IdPractica);
 			pract.setDescripcion("");
 			PACA.ontology.Corrector correc = new PACA.ontology.Corrector();
-			//correc.setId("corrector");
-			correc.setId(aaaAgente.getName());
+			correc.setId(agentCorrec.getName());
 			cor.setPractica(pract);
 			cor.setCorrector(correc);
 			
@@ -1189,9 +1038,9 @@ public class Interfaz extends Agent {
 				qrall.setVariable(x);
 				qrall.setProposition(predicado.getAnd());
 							
-				getContentManager().fillContent(msg_out, qrall);
+				getContentManager().fillContent(solicitud, qrall);
 				addBehaviour(new RecibeMensajes(myAgent, tes1));
-				send(msg_out);
+				send(solicitud);
 						
 			}
 			catch (OntologyException e1) {
@@ -1272,13 +1121,12 @@ public class Interfaz extends Agent {
 			// Y nos guardamos los ï¿½ltimos test solicitados
 			TestUltimaPractica = IdTest;
 			
-			AID aaaAgente = getAgenteCorrector();
+			AID agentCorrec = getAgenteCorrector();
 
-			ACLMessage msg_out = new ACLMessage(ACLMessage.QUERY_REF);
-			//msg_out.addReceiver(new AID(AgenteCorrector, AID.ISLOCALNAME));
-			msg_out.addReceiver(aaaAgente);
-			msg_out.setLanguage(codec.getName());
-			msg_out.setOntology(pacaOntology.NAME);
+			ACLMessage solicitud = new ACLMessage(ACLMessage.QUERY_REF);
+			solicitud.addReceiver(agentCorrec);
+			solicitud.setLanguage(codec.getName());
+			solicitud.setOntology(pacaOntology.NAME);
 
 			// Leemos la practica y pedimos los ficheros
 			// necesarios
@@ -1291,8 +1139,7 @@ public class Interfaz extends Agent {
 				pract.setDescripcion("");
 
 				PACA.ontology.Corrector correc = new PACA.ontology.Corrector();
-				//correc.setId("corrector");
-				correc.setId(aaaAgente.getName());
+				correc.setId(agentCorrec.getName());
 				cor.setPractica(pract);
 				cor.setCorrector(correc);
 
@@ -1336,9 +1183,9 @@ public class Interfaz extends Agent {
 				qrall.setVariable(x);
 				qrall.setProposition(constructor.getAnd());
 									
-				getContentManager().fillContent(msg_out, qrall);
+				getContentManager().fillContent(solicitud, qrall);
 				addBehaviour(new RecibeMensajes(myAgent,tes1));
-				send(msg_out);
+				send(solicitud);
 
 			}
 			
@@ -1407,14 +1254,12 @@ public class Interfaz extends Agent {
 		
 		public void action(){
 			
-			AID aaaAgente = getAgenteCorrector();
+			AID agentCorrec = getAgenteCorrector();
 			
-			ACLMessage msg_in;
-			ACLMessage msg_out = new ACLMessage(ACLMessage.QUERY_REF);
-			//msg_out.addReceiver(new AID(AgenteCorrector, AID.ISLOCALNAME));
-			msg_out.addReceiver(aaaAgente);
-			msg_out.setLanguage(codec.getName());
-			msg_out.setOntology(pacaOntology.NAME);
+			ACLMessage solicitud = new ACLMessage(ACLMessage.QUERY_REF);
+			solicitud.addReceiver(agentCorrec);
+			solicitud.setLanguage(codec.getName());
+			solicitud.setOntology(pacaOntology.NAME);
 
 			String retornable = new String("Evaluaciï¿½n no efectuada");
 			Practica pract = new Practica();
@@ -1422,7 +1267,7 @@ public class Interfaz extends Agent {
 			pract.setDescripcion("");
 
 			PACA.ontology.Corrector correc = new PACA.ontology.Corrector();
-			correc.setId(aaaAgente.getName());
+			correc.setId(agentCorrec.getName());
 			
 			Test te = new Test();
 			te.setId("?allTest");
@@ -1462,9 +1307,9 @@ public class Interfaz extends Agent {
 				qriota.setVariable(x);
 				qriota.setProposition(predicado.getAnd());
 
-				getContentManager().fillContent(msg_out, qriota);
+				getContentManager().fillContent(solicitud, qriota);
 				addBehaviour(new RecibeMensajes(myAgent,tes));
-				send(msg_out);
+				send(solicitud);
 								
 			} 
 			catch (OntologyException e) {
@@ -1553,11 +1398,11 @@ public class Interfaz extends Agent {
 
 							//Miramos el tipo del primer elemento
 							String tipo = primerElem.getTypeName();
-							if (tipo.equals("practica")) {
+							if (tipo.equals(pacaOntology.PRACTICA)) {
 								addBehaviour(new RecibePracticasBeh(myAgent, tes1, listaElementos));
 								finalizado = true;
 							}
-							else if (tipo.equals("test")){
+							else if (tipo.equals(pacaOntology.TEST)){
 								addBehaviour(new RecibeTestBeha(myAgent, tes1, listaElementos));
 								finalizado = true;
 							}
