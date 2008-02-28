@@ -142,7 +142,7 @@ public class Corrector extends Agent {
 		PracticasPrueba[1] = new Practica("Practica_2", "Des. Practica 2");
 		PracticasPrueba[2] = new Practica("Practica_3", "Des. Practica 3");
 		PracticasPrueba[3] = new Practica("Practica_4", "Des. Practica 4");
- 
+
 		// Test de PrÃ¡cticas
 		TestPracticasPrueba = new Hashtable<String, Test[]>();
 		Test[] Testtmp;
@@ -240,16 +240,17 @@ public class Corrector extends Agent {
 		}
 
 		public void action() {
-			
 
-			//			 --> PracticasDisponibles <--------------------------------------------------
+
+			//--> PracticasDisponibles <---------------------------------------
 			Practica[] lpractn = PracticasDisponibles();
 
 			// Creamos el listado de practicas de forma abstracta
 			AbsAggregate absPracticas = new AbsAggregate(BasicOntology.SET);
 
 			for (int i = 0; i < lpractn.length; i++) {
-				//Creamos un objecto abstracto por cada practica y la aï¿½adimos al aggregate
+				// Creamos un objecto abstracto por cada practica y la 
+				// aï¿½adimos al aggregate
 				AbsConcept elem;
 				try {
 					elem = (AbsConcept) ontologia.fromObject(lpractn[i]);
@@ -286,7 +287,9 @@ public class Corrector extends Agent {
 		private List<AbsPredicate> pred1;
 		private AbsIRE ire1;
 
-		public TestsCorrecBehaviour(Agent _a, ACLMessage msg1, List<AbsPredicate> pred, AbsIRE ire) {
+		public TestsCorrecBehaviour(
+			Agent _a, ACLMessage msg1, List<AbsPredicate> pred, AbsIRE ire) {
+
 			super(_a);
 			this.mens1 = msg1;
 			this.pred1 = pred;
@@ -300,7 +303,7 @@ public class Corrector extends Agent {
 			try {
 				Iterator<AbsPredicate> it = pred1.iterator();
 				tes = (Tests) ontologia.toObject(it.next());
-				
+
 				Test[] te;
 				//Obtenemos los tests disponibles para la practica seleccionada
 				te = TestParaPractica(tes.getPractica().getId());
@@ -335,7 +338,7 @@ public class Corrector extends Agent {
 				// TODO Auto-generated catch block
 				e.printStackTrace();
 			}
-			
+
 		}
 	}
 
@@ -347,7 +350,13 @@ public class Corrector extends Agent {
 		private List<AbsPredicate> ltests;
 		private AbsIRE ire1;
 
-		public FicherosCorrBehaviour(Agent _a, ACLMessage msg1, List<AbsPredicate> lCorrige1, List<AbsPredicate> predDcha, AbsIRE ire) {
+		public FicherosCorrBehaviour(
+			Agent _a,
+			ACLMessage msg1,
+			List<AbsPredicate> lCorrige1,
+			List<AbsPredicate> predDcha,
+			AbsIRE ire) {
+
 			super(_a);
 			this.mens1 = msg1;
 			this.lCorrige = lCorrige1;
@@ -356,28 +365,30 @@ public class Corrector extends Agent {
 		}
 
 		public void action() {
-			
+
 			Corrige corr;
 			try {
 				Iterator<AbsPredicate> itCor = lCorrige.iterator();
 				corr = (Corrige) ontologia.toObject(itCor.next());
 				Practica pract = corr.getPractica();
-				
+
 				//Guardamos todos los Test que nos han pedido
 				Test[] testAux3 = ExtraeTestsPedidos(ltests);
 
 				//Obtenemos los ficheros fuentes necesarios para cada Test
-				FuentesPrograma[] fp = FicheroParaPractica(pract.getId(), testAux3);
+				FuentesPrograma[] fp =
+					FicheroParaPractica(pract.getId(), testAux3);
 
 				// Creamos el listado de ficheros de forma abstracta
 				AbsAggregate absFicheros = new AbsAggregate(BasicOntology.SET);
 
 				for (int i = 0; i < fp.length; i++) {
-					//Creamos un objecto abstracto por cada fichero y la aï¿½adimos al aggregate
+					// Creamos un objecto abstracto por cada fichero y la 
+					// aï¿½adimos al aggregate
 					AbsConcept elem;
 					try {
 						elem = (AbsConcept) ontologia.fromObject(fp[i]);
-						
+
 						// Work Around: rormartin
 						// TODO: FicheroParaPracticas work fine?
 						if (elem != null) {
@@ -389,7 +400,7 @@ public class Corrector extends Agent {
 					}
 
 				}
-				
+
 
 				//Creamos el predicado abstracto EQUALS
 				AbsPredicate equalPred = new AbsPredicate(SLVocabulary.EQUALS);
@@ -416,53 +427,64 @@ public class Corrector extends Agent {
 
 		}
 	}
-	
-	
-	public class CorrigePractBehaviour extends OneShotBehaviour{
-		
+
+	public class CorrigePractBehaviour extends OneShotBehaviour {
+
 		private AbsContentElement mensaje;
 		private ACLMessage respuesta;
 		private String quien1;
-		
-		public CorrigePractBehaviour(Agent _a, ACLMessage resp1, AbsContentElement msg1, String quien){
+
+		public CorrigePractBehaviour(
+			Agent _a,
+			ACLMessage resp1,
+			AbsContentElement msg1,
+			String quien) {
+
 			super(_a);
 			this.mensaje = msg1;
 			this.respuesta = resp1;
 			this.quien1 = quien;
 		}
-		public void action(){
+
+		public void action() {
 			try {
-				
+
 				AbsIRE iotaPred = (AbsIRE) mensaje;
-				
+
 				//Obtenemos la proposicion del predicado
 				AbsPredicate qiota = (AbsPredicate) iotaPred.getProposition();
-				
+
 				AndBuilder predicado = new AndBuilder();
 				predicado.addPredicate(qiota);
 
 				//Obtenemos todos los predicados en forma de listas
-				List<AbsPredicate> listCorr = predicado.getPredicateList(pacaOntology.CORRIGE);
-				List<AbsPredicate> listTests = predicado.getPredicateList(pacaOntology.TESTS);
-				List<AbsPredicate> listFich = predicado.getPredicateList(pacaOntology.FICHEROFUENTES);
-				List<AbsPredicate> listEvap = predicado.getPredicateList(pacaOntology.EVALUAPRACTICA);
-				
+				List<AbsPredicate> listCorr =
+					predicado.getPredicateList(pacaOntology.CORRIGE);
+				List<AbsPredicate> listTests =
+					predicado.getPredicateList(pacaOntology.TESTS);
+				List<AbsPredicate> listFich =
+					predicado.getPredicateList(pacaOntology.FICHEROFUENTES);
+				List<AbsPredicate> listEvap =
+					predicado.getPredicateList(pacaOntology.EVALUAPRACTICA);
+
 				Iterator<AbsPredicate> it = listCorr.iterator();
 				Corrige cor1 = (Corrige) ontologia.toObject(it.next());
 
 				Iterator<AbsPredicate> it2 = listEvap.iterator();
-				EvaluacionPractica eva1 = (EvaluacionPractica) ontologia.toObject(it2.next());
+				EvaluacionPractica eva1 =
+					(EvaluacionPractica) ontologia.toObject(it2.next());
 
-				Test [] Te = ExtraeTestsPedidos(listTests);
-				FuentesPrograma [] FP = ExtraeFuentesPedidos(listFich);
+				Test[] Te = ExtraeTestsPedidos(listTests);
+				FuentesPrograma[] FP = ExtraeFuentesPedidos(listFich);
 
 				Practica pract = cor1.getPractica();
 				Alumno al = eva1.getAlumno();
 
-				EvaluacionPractica evaP = EnvioCorreccionAlumno(pract, FP, Te, al, quien1);
+				EvaluacionPractica evaP =
+					EnvioCorreccionAlumno(pract, FP, Te, al, quien1);
 
 				String contenido = evaP.getTextoEvaluacion();
-				
+
 				ResultadoEvaluacion rEvap = new ResultadoEvaluacion();
 				rEvap.setResultadoEvaluacionTexto(contenido);
 
@@ -475,9 +497,9 @@ public class Corrector extends Agent {
 				qrr.set(SL1Vocabulary.EQUALS_LEFT, iotaPred);
 				qrr.set(SL1Vocabulary.EQUALS_RIGHT, absEvap);
 
-				getContentManager().fillContent(respuesta,qrr);
+				getContentManager().fillContent(respuesta, qrr);
 				myAgent.send(respuesta);
-				
+
 			} catch (CodecException e) {
 				// TODO Auto-generated catch block
 				e.printStackTrace();
@@ -485,14 +507,13 @@ public class Corrector extends Agent {
 				// TODO Auto-generated catch block
 				e.printStackTrace();
 			}
-						
+
 		}
 	}
-	
 
 	/**
-	Comportamiento que encapsula la funcionalidad del agente corrector, se ejecuta de manera cï¿½clica hasta que 
-	el agente muere.
+	 * Comportamiento que encapsula la funcionalidad del agente corrector, 
+	 * se ejecuta de manera cï¿½clica hasta que el agente muere.
 	 */
 	class CorrectorBehaviour extends CyclicBehaviour {
 
@@ -514,7 +535,7 @@ public class Corrector extends Agent {
 		public void action() {
 
 			// Start
-			
+
 			ACLMessage msg = receive();
 
 			if (msg != null) {
@@ -526,7 +547,7 @@ public class Corrector extends Agent {
 				// with NOT_UNDERSTOOD
 				// SUBSCRIBE is valid for enable debug mode
 				if (msg.getPerformative() != ACLMessage.QUERY_REF &
-						msg.getPerformative() != ACLMessage.REQUEST) {
+					msg.getPerformative() != ACLMessage.REQUEST) {
 
 					if (msg.getPerformative() == ACLMessage.SUBSCRIBE) {
 						if (debugMode) {
@@ -554,11 +575,12 @@ public class Corrector extends Agent {
 							AbsContentElement l_in = null;
 							l_in = getContentManager().extractAbsContent(msg);
 							String requestedInfoName = l_in.getTypeName();
-							
+
 							// If the receive message isn't a QUERY-REF (all or
 							// QUERY-REF (iota, reply a NOT_UNDERTOOD message
 
-							if ((!requestedInfoName.equals(SL2Vocabulary.ALL)) & (!requestedInfoName.equals(SL2Vocabulary.IOTA))) {
+							if ((!requestedInfoName.equals(SL2Vocabulary.ALL)) &
+								(!requestedInfoName.equals(SL2Vocabulary.IOTA))) {
 								reply.setPerformative(ACLMessage.NOT_UNDERSTOOD);
 								String content = "(" + msg.toString() + ")";
 								reply.setContent(content);
@@ -569,7 +591,7 @@ public class Corrector extends Agent {
 									// --> EnvioCorrecionAlumno <--------------------------------------------------
 									printError("Dentro de EnvioCorrecionAlumno");
 									addBehaviour(new CorrigePractBehaviour(this.myAgent, reply, l_in, msg.getSender().getLocalName()));
-									
+
 
 								} else {
 									// Here, is QUERY-REF (all
@@ -581,7 +603,7 @@ public class Corrector extends Agent {
 
 									//Obtenemos el predicado original (CORRIGE, PRACTICAS, TESTS... )
 									String requestedInfo2Name = qall.getTypeName();
-									
+
 									if (requestedInfo2Name.equals(pacaOntology.CORRIGE)) {
 										// --> PracticasDisponibles <--------------------------------------------------
 										addBehaviour(new PracCorrecBehaviour(this.myAgent, reply, allPred));
@@ -590,9 +612,9 @@ public class Corrector extends Agent {
 
 										AndBuilder predicado = new AndBuilder();
 										predicado.addPredicate(qall);
-										
-										if (predicado.existsPredicate(pacaOntology.FICHEROFUENTES)){
-											
+
+										if (predicado.existsPredicate(pacaOntology.FICHEROFUENTES)) {
+
 											List<AbsPredicate> lisCorrige = predicado.getPredicateList(pacaOntology.CORRIGE);
 											List<AbsPredicate> listTests = predicado.getPredicateList(pacaOntology.TESTS);
 											addBehaviour(new FicherosCorrBehaviour(this.myAgent, reply, lisCorrige, listTests, allPred));
@@ -600,9 +622,9 @@ public class Corrector extends Agent {
 
 										} else {
 											// --> TestPorPractica <-------------------------------------------------------
-																						
+
 											List<AbsPredicate> listaT = new ArrayList<AbsPredicate>();
-											listaT=predicado.getPredicateList(pacaOntology.TESTS);
+											listaT = predicado.getPredicateList(pacaOntology.TESTS);
 											addBehaviour(new TestsCorrecBehaviour(this.myAgent, reply, listaT, allPred));
 										}
 									}
@@ -614,40 +636,24 @@ public class Corrector extends Agent {
 
 							printError("Dentro de EntregarPractica");
 
-							// Extract the content of the message
-							//List l_in = myAgent.extractMsgContent(msg);
-							//Modificacion Carlos	
-							
-							
-							
-							
 							List l_in = (List) msg.getContentObject();
 
 							Action act = new Action();
 							//act = (Action) l_in.get(0);
 
 							// Extract the practica from the message
-							//And and1 = (And) act.get_1();
-							//Modificacion Carlos
 							AbsObject and1 = (AbsObject) act.getAction();
 
-
-							//EntregarPractica enPract = (EntregarPractica) and1.get_0();
-							//Modificacion Carlos
 							EntregarPractica enPract = (EntregarPractica) and1.getAbsObject(SL1Vocabulary.AND_LEFT);
 							Practica pract = enPract.getPractica();
-							//And and2 = (And) and1.get_1();
-							//And and3 = (And) and2.get_1();
-							//And and4 = (And) and3.get_1();
+
 							AbsObject and2 = and1.getAbsObject(SL1Vocabulary.AND_RIGHT);
 							AbsObject and3 = and2.getAbsObject(SL1Vocabulary.AND_RIGHT);
 							AbsObject and4 = and3.getAbsObject(SL1Vocabulary.AND_RIGHT);
 
-							//Lista secFuentes = (Lista) and3.get_0();
 							ArrayList secFuentes = new ArrayList();
 							secFuentes = (ArrayList) and3.getAbsObject(SL1Vocabulary.AND_LEFT);
 
-							//List listFF = secFuentes.getAll_0_List();
 							List listFF = (List) secFuentes.iterator();
 
 							FuentesPrograma[] FP =
@@ -660,60 +666,48 @@ public class Corrector extends Agent {
 							}
 
 							//Interactua inter = (Interactua) and4.get_0();
-							Interactua inter = (Interactua) and4.getAbsObject(SL1Vocabulary.AND_LEFT);
-							//FormaGrupoCon formg = (FormaGrupoCon) and4.get_1();
-							FormaGrupoCon formg = (FormaGrupoCon) and4.getAbsObject(SL1Vocabulary.AND_RIGHT);
+							Interactua inter =
+								(Interactua) and4.getAbsObject(SL1Vocabulary.AND_LEFT);
+
+							FormaGrupoCon formg =
+								(FormaGrupoCon) and4.getAbsObject(SL1Vocabulary.AND_RIGHT);
 
 
 							Alumno alre = EntregarPractica(pract,
-									FP,
-									formg.getAlumno1(),
-									formg.getAlumno2());
+								FP,
+								formg.getAlumno1(),
+								formg.getAlumno2());
 
 							// If alre.getIdentificador == "", all ok
 
 							if (alre.getIdentificador().equals("")) {
 
-								//DonePredicate dact = new DonePredicate();
-								//Modificacion Carlos
-
 								Done dact = new Done();
 
-								//dact.set_0(act);
-								//Modificacion Carlos
 								dact.setAction(act);
-
-
 
 								List l_out = new ArrayList();
 								l_out.add(dact);
 
-								//myAgent.fillMsgContent(reply,l_out);
-								//getContentManager().fillContent(reply, (AbsContentElement) l_out);
 								reply.setContentObject((Serializable) l_out);
 
 							} // FAILURE
 							else {
 								reply.setPerformative(ACLMessage.FAILURE);
 
-								//And andfailure = new And();
-								//Modificacion Carlos
 								AbsPredicate andfailure = new AbsPredicate(SL1Vocabulary.AND);
 								andfailure.set(SL1Vocabulary.AND_LEFT, (AbsObject) enPract);
-								//andfailure.set_0(enPract);
+
 								Interactua interfailure = new Interactua();
 								interfailure.setInterfaz(inter.getInterfaz());
 								interfailure.setAlumno(alre);
-								//andfailure.set_1(interfailure);
-								//Modificacion Carlos
+
 								andfailure.set(SL1Vocabulary.AND_RIGHT, (AbsObject) interfailure);
 
 								List l_out = new ArrayList();
 								l_out.add(act);
 								l_out.add(andfailure);
 
-								//myAgent.fillMsgContent(reply,l_out);
-								//getContentManager().fillContent(reply, (AbsContentElement) l_out);
 								reply.setContentObject((Serializable) l_out);
 							}
 
@@ -734,19 +728,19 @@ public class Corrector extends Agent {
 						e.printStackTrace();
 					}
 				}
-				
+
 			} //============================== cambios para el receive no bloqueante ==========
 			else {
 				block();
 			}
-			//============================== fin cambios receive no bloqueante ==============
+		//============================== fin cambios receive no bloqueante ==============
 
 		}
 	}
 
 	/**
-	Mï¿½todo que configura el agente. Selecciona el lenguaje de contenido, la ontologï¿½a que utiliza
-	y aniade el comportamiento que se ejecutarï¿½.
+	 * Mï¿½todo que configura el agente. Selecciona el lenguaje de contenido, 
+	 * la ontologï¿½a que utiliza y aniade el comportamiento que se ejecutarï¿½.
 	 */
 	protected void setup() {
 
@@ -764,9 +758,8 @@ public class Corrector extends Agent {
 		DFAgentDescription dfd = new DFAgentDescription();
 		AID nombreAgente = getAID();
 		dfd.setName(nombreAgente);
-		if (debug) {
-			System.out.println(nombreAgente.toString() + " quiere registrarse");
-		}
+		
+		printError(nombreAgente.toString() + " quiere registrarse");
 
 		ServiceDescription sd = new ServiceDescription();
 		sd.setType("Corrector");
@@ -775,14 +768,11 @@ public class Corrector extends Agent {
 		try {
 			DFService.register(this, dfd);
 		} catch (FIPAException fe) {
-			System.out.println("Excepcion al registrar Corrector");
+			System.err.println("Excepcion al registrar Corrector");
 			fe.printStackTrace();
 		}
 
-		if (debug) {
-			System.out.println(nombreAgente.toString() + " se ha registrado correctamente");
-		}
-
+		printError(nombreAgente.toString() + " se ha registrado correctamente");
 
 		// Create the FSMEBehaviour
 		CorrectorBehaviour Principal = new CorrectorBehaviour(this);
@@ -799,6 +789,7 @@ public class Corrector extends Agent {
 	 */
 	private Practica[] PracticasDisponibles() {
 
+		Practica[] Practicas;
 
 		if (this.ejecucionEnPruebas) {
 
@@ -806,51 +797,44 @@ public class Corrector extends Agent {
 
 
 		} else {
-			if (debug) {
-				System.out.println("DIRECTORIO: " + workDir);
-			}
-			Practica[] Practicas;
+			printError("DIRECTORIO: " + workDir);
 			File DirPracticas = new File(workDir);
 
 			// If workDir isn't a directory, practicas aren't aviable
 			if (!DirPracticas.isDirectory()) {
-				if (debug) {
-					System.out.println("No existe el directorio de practicas");
-				}
+				printError("No existe el directorio de practicas");
 				Practicas = new Practica[0];
 			} else {
-				if (debug) {
-					System.out.println("Estamos en el directorio de practicas");
-				}
-				String[] NombrePracticas = DirPracticas.list();
+				printError("Estamos en el directorio de practicas");
+			}
+			String[] NombrePracticas = DirPracticas.list();
 
-				// Asignation the name of the practicas...
-				// First count the real practica (directories)
-				int countReal = 0;
+			// Asignation the name of the practicas...
+			// First count the real practica (directories)
+			int countReal = 0;
 
-				Practica[] PracticasTemp = new Practica[NombrePracticas.length];
+			Practica[] PracticasTemp = new Practica[NombrePracticas.length];
 
-				for (int i = 0; i < NombrePracticas.length; i++) {
-					// The test is a directory ... test for exclude
-					// files
-					File Temp1 = new File(workDir + NombrePracticas[i]);
+			for (int i = 0; i < NombrePracticas.length; i++) {
+				// The test is a directory ... test for exclude
+				// files
+				File Temp1 = new File(workDir + NombrePracticas[i]);
 
-					if (Temp1.isDirectory()) {
-						PracticasTemp[countReal] = new Practica(NombrePracticas[i]);
-						PracticasTemp[countReal].setDescripcion("");
-						countReal++;
-					}
-				}
-
-				// Add only the directories
-				Practicas = new Practica[countReal];
-
-				for (int i = 0; i < countReal; i++) {
-					Practicas[i] = PracticasTemp[i];
+				if (Temp1.isDirectory()) {
+					PracticasTemp[countReal] = new Practica(NombrePracticas[i]);
+					PracticasTemp[countReal].setDescripcion("");
+					countReal++;
 				}
 			}
-			return Practicas;
+
+			// Add only the directories
+			Practicas = new Practica[countReal];
+
+			for (int i = 0; i < countReal; i++) {
+				Practicas[i] = PracticasTemp[i];
+			}
 		}
+		return Practicas;
 	}
 
 	/**
@@ -867,7 +851,6 @@ public class Corrector extends Agent {
 
 
 			Test[] te = new Test[0];
-			String[] ListaTest;
 
 			File practDir = new File(workDir + practica);
 
@@ -927,7 +910,7 @@ public class Corrector extends Agent {
 				new java.util.ArrayList<FuentesPrograma>();
 
 			for (Test test : ListaTest) {
-				for (FuentesPrograma fp : this.FuentesProgramaPrueba.get(test.getId())){
+				for (FuentesPrograma fp : this.FuentesProgramaPrueba.get(test.getId())) {
 					if (fp != null) {
 						lista.add(fp);
 					}
@@ -935,13 +918,13 @@ public class Corrector extends Agent {
 			}
 
 			FuentesPrograma fpr[] = new FuentesPrograma[lista.size()];
-			
+
 			int i = 0;
-			for (FuentesPrograma fp: lista) {
+			for (FuentesPrograma fp : lista) {
 				fpr[i++] = fp;
 			}
 			return fpr;
-			
+
 		} else {
 
 			FuentesPrograma[] FP;
@@ -1070,8 +1053,6 @@ public class Corrector extends Agent {
 	 */
 	private String[] searchAlumnoFiles(File file) {
 
-
-		String[] fichAl;
 		ArrayList al = new ArrayList();
 
 		try {
@@ -1155,35 +1136,35 @@ public class Corrector extends Agent {
 		if (this.ejecucionEnPruebas) {
 
 			EvaluacionPractica EvaP = new EvaluacionPractica();
-			
+
 			// Build xml Evaluation from parameters, for test
 			String text_eva = "";
-			
-			text_eva += "<Practica fecha=\"" + new java.util.Date() + 
+
+			text_eva += "<Practica fecha=\"" + new java.util.Date() +
 				"\" usuario=\"" + al.getIdentificador() + "\" identificador=\"" +
 				pract.getId() + "\"><Descripcion><![CDATA[" + pract.getDescripcion() +
 				"]]></Descripcion>";
-			
-			for (Test t: test) {
-				text_eva += "<Test identificador=\"" + t.getId() + "\">" + 
+
+			for (Test t : test) {
+				text_eva += "<Test identificador=\"" + t.getId() + "\">" +
 					"<Descripcion><![CDATA[" + t.getDescripcion() + "]]></Descripcion>" +
 					"<EvaluacionTest codigoEvaluacionTest=\"terminacion_incorrecta\">" +
 					"</EvaluacionTest>";
-				
-				for (FuentesPrograma f: fp) {
-					text_eva += "<Caso identificador=\"" + f.getNombre() + 
+
+				for (FuentesPrograma f : fp) {
+					text_eva += "<Caso identificador=\"" + f.getNombre() +
 						"\"><EvaluacionCaso codigoEvaluacionCaso=\"terminacion_incorrecta\">" +
 						"<Descripcion><![CDATA[" +
 						f.getContenido() +
 						"]]></Descripcion></EvaluacionCaso></Caso>";
 				}
-				
+
 				text_eva += "</Test>";
-			} 
-				
-			
+			}
+
+
 			text_eva += "</Practica>";
-			
+
 			EvaP.setTextoEvaluacion(text_eva);
 			return EvaP;
 
@@ -1228,10 +1209,10 @@ public class Corrector extends Agent {
 					filew.write(fp[i].getContenido());
 					filew.close();
 				} catch (IOException e) {
-					System.out.println("Error al escribir en disco");
+					System.err.println("Error al escribir en disco");
 					e.printStackTrace();
 				} catch (Exception e) {
-					System.out.println("Error al escribir.");
+					System.err.println("Error al escribir.");
 					e.printStackTrace();
 					printError("Error en Corrector de PACA: " + e.toString());
 				}
@@ -1478,7 +1459,11 @@ public class Corrector extends Agent {
 	Imprime el mensaje de error en caso de que estï¿½ activo el modo depuraciï¿½n.
 	 */
 	private void printError(String error) {
-		System.out.println(error);
+
+		if (debug) {
+			System.out.println(error);
+		}
+		
 		if (debugMode) {
 
 			ACLMessage aclmen = new ACLMessage(ACLMessage.INFORM);
@@ -1490,10 +1475,7 @@ public class Corrector extends Agent {
 		}
 	}
 
-	
-	
-	
-	//Método que rellena los tests pedidos
+	//Mï¿½todo que rellena los tests pedidos
 	private Test[] ExtraeTestsPedidos(List<AbsPredicate> lista) {
 		int tamano = lista.size();
 		Test[] testAux = new Test[tamano];
@@ -1501,8 +1483,8 @@ public class Corrector extends Agent {
 		for (int i = 0; i < testAux.length; i++) {
 			Tests aux;
 			try {
-				aux = (Tests)ontologia.toObject(it.next());
-				testAux[i]=  aux.getTest();
+				aux = (Tests) ontologia.toObject(it.next());
+				testAux[i] = aux.getTest();
 			} catch (UngroundedException e) {
 				// TODO Auto-generated catch block
 				e.printStackTrace();
@@ -1513,9 +1495,8 @@ public class Corrector extends Agent {
 		}
 		return testAux;
 	}
-	
-	
-	//Método que rellena los ficheros fuentes
+
+	//Mï¿½todo que rellena los ficheros fuentes
 	private FuentesPrograma[] ExtraeFuentesPedidos(List<AbsPredicate> lista) {
 		int tamano = lista.size();
 		FuentesPrograma[] fuentesAux = new FuentesPrograma[tamano];
@@ -1523,8 +1504,8 @@ public class Corrector extends Agent {
 		for (int i = 0; i < fuentesAux.length; i++) {
 			FicheroFuentes aux;
 			try {
-				aux = (FicheroFuentes)ontologia.toObject(it.next());
-				fuentesAux[i]=  aux.getFuentesPrograma();
+				aux = (FicheroFuentes) ontologia.toObject(it.next());
+				fuentesAux[i] = aux.getFuentesPrograma();
 			} catch (UngroundedException e) {
 				// TODO Auto-generated catch block
 				e.printStackTrace();
@@ -1535,18 +1516,4 @@ public class Corrector extends Agent {
 		}
 		return fuentesAux;
 	}
-	
-	
 }
-
-
-
-
-
-
-
-
-
-
-
-
