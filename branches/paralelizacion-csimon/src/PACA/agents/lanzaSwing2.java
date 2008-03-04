@@ -1,5 +1,13 @@
 package PACA.agents;
 
+import jade.core.Profile;
+import jade.core.ProfileImpl;
+import jade.core.Runtime;
+import jade.wrapper.AgentController;
+import jade.wrapper.ContainerController;
+
+import java.awt.BorderLayout;
+import java.awt.Dimension;
 import java.awt.GridLayout;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
@@ -10,6 +18,8 @@ import javax.swing.JFrame;
 import javax.swing.JPanel;
 import javax.swing.JPasswordField;
 import javax.swing.JTextField;
+
+import PACA.util.Testigo;
 
 public class lanzaSwing2 {
 	
@@ -40,7 +50,7 @@ public class lanzaSwing2 {
 	
 	//Autenticacion
 	static JTextField textoUsuario = new JTextField();
-	static JPasswordField textoPass = new JPasswordField();
+	static JTextField textoPass = new JTextField();
 	
 	//Practicas
 	static String[] practicas = {"Practica1", "Practica2", "Practica3", "Practica4"};
@@ -52,8 +62,16 @@ public class lanzaSwing2 {
 	static String[] Test2 = {"FicheroA", "FicheroB", "FicheroC", "FicheroD"};
 	static String[] Test3 = {"Fichero00", "Fichero01", "Fichero10", "Fichero11"};
 	
-	//Inicializacion
-	//----------- Paneles ------------
+	
+	
+	
+	
+	static Runtime rt;
+    static Profile p;
+    static ContainerController cc;
+    static AgentController agentInterfaz=null;
+    static InterfazSwing2 agent=null;
+            
 		
 	
 	/**
@@ -64,12 +82,8 @@ public class lanzaSwing2 {
 		
 		cPracticas = new JComboBox(practicas);
 		
-		ventana.setTitle("P A C A - Interfaz");
-		ventana.setDefaultCloseOperation(ventana.EXIT_ON_CLOSE);
-		ventana.getContentPane().setLayout(new GridLayout(10,10));
-		
-		
 		//---- Montar Paneles ----
+		//paraAutenticar.setSize(40, 50);
 		paraAutenticar.add(textoUsuario);
 		paraAutenticar.add(textoPass);
 		paraAutenticar.add(botonAutenticacion);
@@ -77,17 +91,17 @@ public class lanzaSwing2 {
 		paraPracticas.add(cPracticas);
 		paraPracticas.add(botonPracticas);
 		
-		//paraTests.add(cTests);
-		//paraTests.add(botonTests);
-		
-		//paraFicheros.add(cFicheros);
-		//paraFicheros.add(botonFicheros);
 		
 		paraCorregir.add(botonCorregir);
 		
 		//--- Fin Montar Paneles ----
 		
 		//--- Montar FRAME ----
+		
+		//ventana.setSize(600, 300);
+		ventana.setTitle("P A C A - Interfaz");
+		ventana.setDefaultCloseOperation(ventana.EXIT_ON_CLOSE);
+		ventana.getContentPane().setLayout(new GridLayout(10,100));
 		ventana.getContentPane().add(paraAutenticar);
 		ventana.getContentPane().add(paraPracticas);
 		ventana.getContentPane().add(paraTests);
@@ -100,6 +114,72 @@ public class lanzaSwing2 {
 		
 		
 		//Funcionalidad Botones
+		botonAutenticacion.addMouseListener(new MouseAdapter(){
+			public void mousePressed(MouseEvent e){
+				String texto = textoUsuario.getText();
+				String passw = textoPass.getText();
+				System.out.println("usuario: "+texto);
+				System.out.println("pass: "+passw);
+				
+				
+				//--------- Arrancamos el agente ---------------------
+				/*
+				String nombre = passw+texto;
+				Runtime rt;
+			    Profile p;
+			    ContainerController cc;
+			    AgentController agentInterfaz=null;
+			    InterfazSwing2 agent=null;*/
+			       
+				String nombre = passw+texto;
+				
+				try {
+						rt = Runtime.instance();
+						p = new ProfileImpl(false);
+						cc = rt.createAgentContainer(p);
+						agent = new InterfazSwing2();
+						agentInterfaz = cc.acceptNewAgent(nombre, agent);
+						if (agentInterfaz != null) {
+							agentInterfaz.start();
+							
+							//interfaz.setAgentInterfaz(agent);
+							//interfaz.setAgentController(agentInterfaz);
+							while (!agent.isFinSetup()) {
+								System.out.println("Esperando al fin... ");
+							}
+							
+							
+						} 
+						else {
+							System.out.println("Agente no Arrancado" + agentInterfaz.getState().getName());
+						}
+					} 
+				catch (Exception ex) {
+						ex.printStackTrace();
+				}
+				
+				boolean autenticado = false;
+				
+				Testigo testigo = new Testigo();
+				agent.prueba(texto, passw, testigo);
+				System.out.println("--------------------");
+								
+				while(!testigo.isRelleno()){
+					System.out.println("======");
+		  	 	}
+				
+				autenticado = testigo.isResultadoB();
+				System.out.println("autenticado: "+autenticado);
+				
+							
+				//----- FIN ARRANCAR AGENTE -----
+				
+				
+				
+				
+			}
+		} );
+		
 		
 		// Selecciona practicas
 		botonPracticas.addMouseListener( new MouseAdapter(){
