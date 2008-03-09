@@ -123,7 +123,6 @@
   	autenticado = resultado.isResultadoB();
   	 	
   	%>
-  	<h1>Chivato <%= resultado.getResultado() %> </h1>
   	
   	<%
   

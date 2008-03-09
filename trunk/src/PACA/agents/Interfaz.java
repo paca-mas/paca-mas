@@ -691,6 +691,7 @@ public class Interfaz extends Agent {
 				}
 			} catch (Exception ex) {
 				resultado = false;
+				tes1.setResultadoB(resultado);
 			}
 			tes1.setResultadoB(resultado);
 		}
@@ -1227,7 +1228,7 @@ public class Interfaz extends Agent {
 					listaAbs = getContentManager().extractAbsContent(respuesta);
 					String tipoMensaje = listaAbs.getTypeName();
 
-					if (tipoMensaje.equals("autenticado")) {
+					if (tipoMensaje.equals("autenticado") | tipoMensaje.equals("not")) {
 						addBehaviour(new RecibeAutenticacion(myAgent, tes1, listaAbs));
 						finalizado = true;
 					} else if (tipoMensaje.equals("=")) {
