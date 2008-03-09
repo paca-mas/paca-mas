@@ -101,7 +101,7 @@
         <LI>Si no tiene compañero, deje los campos correspondientes a los datos del mismo en blanco.</LI>
       </OL>
      </P>
-    </p> 
+    </P> 
     <p align="center">
     <HR width="50%">
     </p>
