@@ -102,7 +102,7 @@
    }
 %>
    </table><BR>
-</p>
+</P>
 	<br>
 	<p align="right"><input type="submit" name="seleccionar" value="Seleccionar Test" onclick="javascript:salida=false;"></p>
     </form>

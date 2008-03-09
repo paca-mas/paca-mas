@@ -56,7 +56,7 @@
 			out.println(ex);
 			ex.printStackTrace();
 	}
-  
+   
     %>    
   </jsp:useBean>
 
@@ -124,6 +124,7 @@
   	 	
   	%>
   	
+  	
   	<%
   
   if (!autenticado)
@@ -149,7 +150,7 @@
       //interfaz.setAlumnoID(request.getParameter("user_id"));
       //interfaz.setAlumnoPass(request.getParameter("password"));
 %>
-
+ 
 <br><br><br>
   <p align="center" class="color">
      Seleccione la práctica a evaluar.  </p><br>
