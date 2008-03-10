@@ -1,5 +1,6 @@
 package PACA.agents;
 
+import PACA.agents.Interfaz.PideCorreccionBeha;
 import PACA.util.*;
 
 
@@ -45,6 +46,12 @@ public class InterfazSwing2 extends Interfaz{
 		System.out.println("En busqueda de los ficheros... ");
 		addBehaviour(new PideFicherosBeha(this, tes, ficheros));
 		System.out.println("Ficheros encontrados... ");
+	}
+	
+	public void swingPideCorreccion(Testigo tes, String[] contenido){
+		System.out.println("En busqueda de la correccion... ");
+		addBehaviour(new PideCorreccionBeha(this, tes, contenido));
+		System.out.println("Correccion encontrada... ");
 	}
 	
 
