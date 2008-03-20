@@ -1,5 +1,6 @@
 package PACA.agents;
 
+import jade.core.AID;
 import jade.core.Profile;
 import jade.core.ProfileImpl;
 import jade.core.Runtime;
@@ -8,6 +9,7 @@ import jade.wrapper.ContainerController;
 
 import java.awt.BorderLayout;
 import java.awt.Dimension;
+import java.awt.GridLayout;
 import java.awt.List;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
@@ -64,8 +66,9 @@ public class lanzaSwing2 {
 	static List listaFichs = new List();
 	
 	//Salida correccion
-	static JTextArea correccion = new JTextArea("",5,20);
-	static JTextArea tiempoEmpleado = new JTextArea("",5,20);
+	static JTextArea correccion = new JTextArea();
+	static JTextArea tiempoEmpleado = new JTextArea("",1,10);
+	static JTextArea correctorElegido = new JTextArea("",1,25);
 	        
 	
 	//Contenido fichero
@@ -96,7 +99,7 @@ public class lanzaSwing2 {
 	static String generaContenido(){
 		
 		Aleatorio rand = new Aleatorio();
-		int tamano = rand.nextInt(5, 10);
+		int tamano = rand.nextInt(5000, 20000);
 		char[] contAux = new char[tamano];
 		for (int i = 0; i < contAux.length; i++) {
 			contAux[i]='a';
@@ -201,24 +204,37 @@ public class lanzaSwing2 {
 			
 			paraTests.add(listaTests);
 			paraTests.add(botonTests);
+			listaFichs.add("SELECCIONA LOS FICHEROS");
 			paraFicheros.add(listaFichs);
 			paraFicheros.add(botonFicheros);
-			paraCorregir.add(correccion);
+			//paraCorregir.add(correccion);
+			paraCorregir.add(tiempoEmpleado);
+			paraCorregir.add(correctorElegido);
 			
 			
 			
 			
 			
 			//--- Montar FRAME ----
-			ventana.setSize(new Dimension(800, 400));		
+			ventana.setSize(new Dimension(1100, 500));		
 			ventana.setDefaultCloseOperation(ventana.EXIT_ON_CLOSE);
-			ventana.setLayout(new BorderLayout());
+			
 			//ventana.getContentPane().add(paraAutenticar, BorderLayout.NORTH);
 			
+			
+			ventana.setLayout(new BorderLayout());
 			ventana.getContentPane().add(paraPracticas, BorderLayout.NORTH);
 			ventana.getContentPane().add(paraTests, BorderLayout.WEST);
 			ventana.getContentPane().add(paraFicheros, BorderLayout.CENTER);
 			ventana.getContentPane().add(paraCorregir, BorderLayout.EAST);
+			
+			/*
+			ventana.setLayout(new GridLayout(2,2));
+			ventana.getContentPane().add(paraPracticas);
+			ventana.getContentPane().add(paraTests);
+			ventana.getContentPane().add(paraFicheros);
+			ventana.getContentPane().add(paraCorregir);*/
+			
 			
 			ventana.setTitle("P A C A - Interfaz");
 			ventana.pack();
@@ -263,6 +279,7 @@ public class lanzaSwing2 {
 				paraTests.add(listaTests);
 				paraTests.add(botonTests);
 				ventana.getContentPane().add(paraTests, BorderLayout.WEST);
+				//ventana.getContentPane().add(paraTests);
 				ventana.validate();
 			}
 		} );
@@ -289,6 +306,7 @@ public class lanzaSwing2 {
 				paraFicheros.add(listaFichs);
 				paraFicheros.add(botonFicheros);
 				ventana.getContentPane().add(paraFicheros, BorderLayout.CENTER);
+				//ventana.getContentPane().add(paraFicheros);
 				ventana.validate();
 			}
 		} );
@@ -297,11 +315,17 @@ public class lanzaSwing2 {
 		botonFicheros.addMouseListener( new MouseAdapter(){
 			public void mousePressed(MouseEvent e){
 				String [] ficheros = listaFichs.getSelectedItems();
+				
+				Date comienzo = new Date();
+				Long enMilisegundos = comienzo.getTime();
+				
 				Testigo testigo = new Testigo();
 				String [] cont = new String[ficheros.length];
-				String contenido3 = generaContenido();
+				
 				for(int i = 0; i < cont.length; i++) {
-					cont[i]=contenido;
+					String contenido3 = generaContenido();
+					System.out.println("Tamano del fichero: "+contenido3.length());
+					cont[i]=contenido3;
 				}
 				
 				
@@ -309,7 +333,9 @@ public class lanzaSwing2 {
 				while(!testigo.isRelleno()){
 				}
 				
-				System.out.println("CORRECTOR ELEGIDO: "+testigo.getResultado());
+				AID nombre = (AID) testigo.getResultado();
+				String nombreCorto = nombre.getName();
+				System.out.println("Corrector: "+nombreCorto);
 				
 				testigo = new Testigo();
 				agent.swingPideCorreccion(testigo, cont);
@@ -328,11 +354,23 @@ public class lanzaSwing2 {
 					textoEva = "Practica Aceptada";
 				}
 				
+				Date finalizado = new Date();
+				Long enMilisegundos2 = finalizado.getTime();
 				
-				correccion.setText(textoEva);
-				paraCorregir.add(correccion);
+				Long duracion = enMilisegundos2 - enMilisegundos;
+				String duraAux = duracion.toString();
+				System.out.println("Tiempo necesitado: "+duraAux);
+				
+				//correccion.setText(textoEva);
+				tiempoEmpleado.setText(duraAux);
+				correctorElegido.setText(nombreCorto);
+				
+				//paraCorregir.add(correccion);
+				paraCorregir.add(tiempoEmpleado);
+				paraCorregir.add(correctorElegido);
 				//paraCorregir.add(botonCorregir);
 				ventana.getContentPane().add(paraCorregir, BorderLayout.EAST);
+				//ventana.getContentPane().add(paraCorregir);
 				ventana.validate();
 				
 			}

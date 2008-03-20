@@ -43,7 +43,9 @@ import java.util.Date;
 import java.util.Hashtable;
 import java.util.Iterator;
 import java.util.List;
+import java.util.Random;
 
+import PACA.agents.lanzaSwing2.Aleatorio;
 import PACA.ontology.Alumno;
 import PACA.ontology.Corrige;
 import PACA.ontology.EntregarPractica;
@@ -432,6 +434,20 @@ public class Corrector extends Agent {
 		}
 		public void action(){
 			try {
+				
+				//Añadido para realizar pruebas
+				if (ejecucionEnPruebas){
+					Aleatorio rand = new Aleatorio();
+					int retardo = rand.nextInt(500, 3000);
+					try {
+						Thread.sleep(retardo);
+					} catch (InterruptedException e) {
+						// TODO Auto-generated catch block
+						e.printStackTrace();
+					} 
+				}
+				//Fin añadido pruebas				
+				
 				
 				AbsIRE iotaPred = (AbsIRE) mensaje;
 				
@@ -1534,6 +1550,16 @@ public class Corrector extends Agent {
 			}
 		}
 		return fuentesAux;
+	}
+	
+	//Metodo que genera aleatorios entre intervalos
+	private class Aleatorio extends Random {
+		public int nextInt(int inferior, int superior) {
+			int i;
+			i=nextInt();
+			i=inferior+(Math.abs(i) % (superior-inferior+1));
+			return(i);
+		}
 	}
 	
 	
