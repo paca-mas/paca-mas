@@ -33,28 +33,16 @@ public class lanzaSwing2 {
 	//JFrame --- la ventana
 	static JFrame ventana = new JFrame();
 	
-	//JComBox ---- Uno por cada accion
-	static JComboBox cAutentica = new JComboBox();
-	static JComboBox cPracticas = new JComboBox();
-	static JComboBox cTests = new JComboBox();
-	static JComboBox cFicheros = new JComboBox();
-	
-	
-		
 	//JPanel ---- Uno por cada accion
-	static JPanel paraAutenticar = new JPanel();
 	static JPanel paraPracticas = new JPanel();
 	static JPanel paraTests = new JPanel();
 	static JPanel paraFicheros = new JPanel();
 	static JPanel paraCorregir = new JPanel();
-	static JPanel paraResultados = new JPanel();
 	
 	//JButton ---- Uno por cada accion
-	static JButton botonAutenticacion = new JButton("Autenticacion OK");
 	static JButton botonPracticas = new JButton("Elige Practica");
 	static JButton botonTests = new JButton("Elige Tests");
 	static JButton botonFicheros = new JButton("Corrige");
-	static JButton botonCorregir = new JButton("Corregir OK");
 	
 	//Autenticacion
 	static JTextField textoUsuario = new JTextField(10);
@@ -64,21 +52,24 @@ public class lanzaSwing2 {
 	static List listaPract = new List();
 	static List listaTests = new List();
 	static List listaFichs = new List();
+	static List listaCorrectores = new List();
 	
 	//Salida correccion
 	static JTextArea correccion = new JTextArea();
 	static JTextArea tiempoEmpleado = new JTextArea("",1,10);
 	static JTextArea correctorElegido = new JTextArea("",1,25);
+	
+	static boolean primeraCorreccion = true;
+	static String [] cont = new String[0];
+	static String [] cont2 = new String[0];
 	        
-	
-	//Contenido fichero
-	static String contenido = "hola";
-	
+	//Variables para crear el Agente Interfaz
 	static Runtime rt;
     static Profile p;
     static ContainerController cc;
     static AgentController agentInterfaz=null;
     static InterfazSwing2 agent=null;
+    //Fin Variables Agente Interfaz
             
 	static void repintar(JFrame frame1, JPanel panel1){
 		System.out.println("estamos repintando... ");
@@ -96,6 +87,8 @@ public class lanzaSwing2 {
 		}
 	}
 	
+	
+	//Metodo para generar contenido aleatorio entre 5K y 20K
 	static String generaContenido(){
 		
 		Aleatorio rand = new Aleatorio();
@@ -108,6 +101,7 @@ public class lanzaSwing2 {
 		return contenido2;
 	}
 	
+	
 	/**
 	 * @param args
 	 */
@@ -115,24 +109,19 @@ public class lanzaSwing2 {
 		
 		// TODO Auto-generated method stub
 		
-				
-		//---- Montar Panel Autenticacion ----
-		//paraAutenticar.add(textoUsuario);
-		//paraAutenticar.add(textoPass);
-		//paraAutenticar.add(botonAutenticacion);
-		//--- Fin Panel Autenticacion ----
+		//Rellenamos los paneles
+		paraPracticas.add(listaPract);
+		paraPracticas.add(botonPracticas);
 		
-		//paraPracticas.add(cPracticas);
-		//paraPracticas.add(botonPracticas);
+		paraTests.add(listaTests);
+		paraTests.add(botonTests);
+		listaFichs.add("SELECCIONA LOS FICHEROS");
+		paraFicheros.add(listaFichs);
+		paraFicheros.add(botonFicheros);
+		listaCorrectores.add("      CORRECTOR Y TIEMPO NECESITADO     ");
+		paraCorregir.add(listaCorrectores);
 		
-		//--- Fin FRAME ----
-		
-		
-		//Funcionalidad Botones
-		
-		
-		
-//		--------- Arrancamos el agente ---------------------
+	
 		Date ahora = new Date();
 		long lnMilisegundos = ahora.getTime();
 		System.out.println("Ahora :"+ahora.toString());
@@ -142,6 +131,31 @@ public class lanzaSwing2 {
 		String passw = "admin";
 					       
 		String nombre = texto + lnMilisegundos;
+		
+		//Montamos el JFrame
+		ventana.setSize(new Dimension(1100, 500));		
+		ventana.setDefaultCloseOperation(ventana.EXIT_ON_CLOSE);
+		
+					
+		ventana.setLayout(new BorderLayout());
+		ventana.getContentPane().add(paraPracticas, BorderLayout.NORTH);
+		ventana.getContentPane().add(paraTests, BorderLayout.WEST);
+		ventana.getContentPane().add(paraFicheros, BorderLayout.CENTER);
+		ventana.getContentPane().add(paraCorregir, BorderLayout.SOUTH);
+		
+		ventana.setTitle("P A C A - Interfaz -- " + nombre);
+		ventana.pack();
+		ventana.setVisible(true);
+		ventana.validate();
+		
+		try {
+			Thread.sleep(400);
+		} catch (InterruptedException e1) {
+			// TODO Auto-generated catch block
+			e1.printStackTrace();
+		}
+		
+		//--------- Arrancamos el agente ---------------------
 		
 		try {
 				rt = Runtime.instance();
@@ -165,8 +179,6 @@ public class lanzaSwing2 {
 		}
 		
 		boolean autenticado = false;
-		
-		
 		
 		Testigo testigo = new Testigo();
 		agent.swingAutentica(texto, passw, testigo);
@@ -196,21 +208,23 @@ public class lanzaSwing2 {
 				listaPract.add(pract[i]);						
 			}		
 			
-			//cPracticas = new JComboBox(pract);
 			paraPracticas.add(listaPract);
 			paraPracticas.add(botonPracticas);
-			//ventana.getContentPane().add(paraPracticas, BorderLayout.NORTH);
-			//ventana.validate();
+			ventana.getContentPane().add(paraPracticas, BorderLayout.NORTH);
+			ventana.validate();
+			
+			/*
+			paraPracticas.add(listaPract);
+			paraPracticas.add(botonPracticas);
 			
 			paraTests.add(listaTests);
 			paraTests.add(botonTests);
 			listaFichs.add("SELECCIONA LOS FICHEROS");
 			paraFicheros.add(listaFichs);
 			paraFicheros.add(botonFicheros);
-			//paraCorregir.add(correccion);
 			paraCorregir.add(tiempoEmpleado);
-			paraCorregir.add(correctorElegido);
-			
+			//paraCorregir.add(correctorElegido);
+			paraCorregir.add(listaCorrectores);
 			
 			
 			
@@ -219,28 +233,18 @@ public class lanzaSwing2 {
 			ventana.setSize(new Dimension(1100, 500));		
 			ventana.setDefaultCloseOperation(ventana.EXIT_ON_CLOSE);
 			
-			//ventana.getContentPane().add(paraAutenticar, BorderLayout.NORTH);
-			
-			
+						
 			ventana.setLayout(new BorderLayout());
 			ventana.getContentPane().add(paraPracticas, BorderLayout.NORTH);
 			ventana.getContentPane().add(paraTests, BorderLayout.WEST);
 			ventana.getContentPane().add(paraFicheros, BorderLayout.CENTER);
-			ventana.getContentPane().add(paraCorregir, BorderLayout.EAST);
+			ventana.getContentPane().add(paraCorregir, BorderLayout.SOUTH);
 			
-			/*
-			ventana.setLayout(new GridLayout(2,2));
-			ventana.getContentPane().add(paraPracticas);
-			ventana.getContentPane().add(paraTests);
-			ventana.getContentPane().add(paraFicheros);
-			ventana.getContentPane().add(paraCorregir);*/
-			
-			
-			ventana.setTitle("P A C A - Interfaz");
+			ventana.setTitle("P A C A - Interfaz -- " + nombre);
 			ventana.pack();
 			ventana.setVisible(true);
 			ventana.validate();
-			
+			*/
 			
 			
 		}
@@ -252,7 +256,6 @@ public class lanzaSwing2 {
 		// Selecciona practicas
 		botonPracticas.addMouseListener( new MouseAdapter(){
 			public void mousePressed(MouseEvent e){
-				//la propiedad getselecteditem() regresa un objeto
 				String practica = (String) listaPract.getSelectedItem();
 				System.out.println("salida: "+practica+"**");
 				
@@ -279,7 +282,6 @@ public class lanzaSwing2 {
 				paraTests.add(listaTests);
 				paraTests.add(botonTests);
 				ventana.getContentPane().add(paraTests, BorderLayout.WEST);
-				//ventana.getContentPane().add(paraTests);
 				ventana.validate();
 			}
 		} );
@@ -288,7 +290,6 @@ public class lanzaSwing2 {
 		//Selecciona Tests
 		botonTests.addMouseListener( new MouseAdapter(){
 			public void mousePressed(MouseEvent e){
-				//la propiedad getselecteditem() regresa un objeto
 				String [] testss  =  listaTests.getSelectedItems();
 											
 				Testigo testigo = new Testigo();
@@ -306,7 +307,6 @@ public class lanzaSwing2 {
 				paraFicheros.add(listaFichs);
 				paraFicheros.add(botonFicheros);
 				ventana.getContentPane().add(paraFicheros, BorderLayout.CENTER);
-				//ventana.getContentPane().add(paraFicheros);
 				ventana.validate();
 			}
 		} );
@@ -320,15 +320,29 @@ public class lanzaSwing2 {
 				Long enMilisegundos = comienzo.getTime();
 				
 				Testigo testigo = new Testigo();
-				String [] cont = new String[ficheros.length];
 				
-				for(int i = 0; i < cont.length; i++) {
-					String contenido3 = generaContenido();
-					System.out.println("Tamano del fichero: "+contenido3.length());
-					cont[i]=contenido3;
+				cont = new String[ficheros.length];
+				
+				if (primeraCorreccion){
+					cont2 = new String[ficheros.length];
+					
+					for(int i = 0; i < cont.length; i++) {
+						String contenido3 = generaContenido();
+						cont[i]=contenido3;
+						System.out.println("Tamano del fichero: "+cont[i].length());
+						cont2[i]=contenido3;
+						System.out.println("Tamano del fichero de backup: "+cont2[i].length());
+						primeraCorreccion = false;
+					}
+				}
+				else{
+					cont = cont2;
+					for (int i = 0; i < cont.length; i++) {
+						System.out.println("Tamano del fichero sin modificar: "+cont[i].length());
+					}
 				}
 				
-				
+					
 				agent.swingPideCorrector(testigo);
 				while(!testigo.isRelleno()){
 				}
@@ -360,17 +374,11 @@ public class lanzaSwing2 {
 				Long duracion = enMilisegundos2 - enMilisegundos;
 				String duraAux = duracion.toString();
 				System.out.println("Tiempo necesitado: "+duraAux);
+				String resultado = nombreCorto + "   " +duraAux;
 				
-				//correccion.setText(textoEva);
-				tiempoEmpleado.setText(duraAux);
-				correctorElegido.setText(nombreCorto);
-				
-				//paraCorregir.add(correccion);
-				paraCorregir.add(tiempoEmpleado);
-				paraCorregir.add(correctorElegido);
-				//paraCorregir.add(botonCorregir);
-				ventana.getContentPane().add(paraCorregir, BorderLayout.EAST);
-				//ventana.getContentPane().add(paraCorregir);
+				listaCorrectores.add(resultado);
+				paraCorregir.add(listaCorrectores);
+				ventana.getContentPane().add(paraCorregir, BorderLayout.SOUTH);
 				ventana.validate();
 				
 			}
