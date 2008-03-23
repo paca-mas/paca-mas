@@ -50,15 +50,17 @@ public class lanzador {
 					try {
 						Runtime rt = Runtime.getRuntime();
 						System.out.println("Intentamos lanzar el comando");
-						rt.exec("C:\\Documents and Settings\\Carlos\\Escritorio\\lanzaAgentes.bat");
+						//rt.exec("C:\\Documents and Settings\\Carlos\\Escritorio\\lanzaAgentes.bat");
+						rt.exec("java PACA.agents.lanzaSwing2");
+						//rt.exec("java PACA.agents.SimulaAgentes");
 						System.out.println("Se supone que se lanza");
-						try {
-							Thread.sleep(600);
-						} 
-						catch (InterruptedException e1) {
+						//try {
+							//Thread.sleep(200);
+						//} 
+						//catch (InterruptedException e1) {
 							// TODO Auto-generated catch block
-							e1.printStackTrace();
-						}
+							//e1.printStackTrace();
+						//}
 					
 					} catch (IOException e1) {
 						// TODO Auto-generated catch block
