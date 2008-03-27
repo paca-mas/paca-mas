@@ -42,30 +42,30 @@ public class EvaluacionParser extends DefaultHandler {
 
 
     /**
-       Método que inicializa la tabla de códigos y les asigna un comentario
+       Mï¿½todo que inicializa la tabla de cï¿½digos y les asigna un comentario
     */
     private void InicializaTabla(){
 
 	tablaCodigos=new Hashtable();
 
 	tablaCodigos.put("compilacion_correcta",
-			 new String("La compilación del test ha sido correcta."));
+			 new String("La compilaci&oacute;n del test ha sido correcta."));
 	tablaCodigos.put("error_compilacion",
-			 new String("Hubo un error en tiempo de compilación."));
+			 new String("Hubo un error en tiempo de compilaci&oacute;n."));
 	tablaCodigos.put("no_terminacion",
-			 new String("La ejecución no ha concluido después de un cierto periodo de tiempo."));
+			 new String("La ejecuci&oacute;n no ha concluido despu&eacute;s de un cierto periodo de tiempo."));
 	tablaCodigos.put("terminacion_anomala",
-			 new String("La ejecución del programa ha sido anómala."));
+			 new String("La ejecuci&oacute;n del programa ha sido an&oacute;mala."));
 	tablaCodigos.put("terminacion_correcta",
-			 new String("La ejecución de la prueba fue satisfactoria."));
+			 new String("La ejecuci&oacute;n de la prueba fue satisfactoria."));
 	tablaCodigos.put("terminacion_incorrecta",
-			 new String("La ejecución del programa no produjo los resultados esperados."));	
+			 new String("La ejecuci&oacute;n del programa no produjo los resultados esperados."));	
 
 
 	tablaCodigos.put("terminacion-correcta",
-			 new String("La ejecución de la prueba fue satisfactoria."));
-	tablaCodigos.put("terminación_incorrecta",
-			 new String("La ejecución del programa no produjo los resultados esperados."));	
+			 new String("La ejecuci&oacute;n de la prueba fue satisfactoria."));
+	tablaCodigos.put("terminacion_incorrecta",
+			 new String("La ejecuci&oacute;n del programa no produjo los resultados esperados."));	
 
 
     }
@@ -78,7 +78,7 @@ public class EvaluacionParser extends DefaultHandler {
     }
 
     /**
-       Método invocado por el parser al comenzar el documento.
+       Mï¿½todo invocado por el parser al comenzar el documento.
     */
     public void startDocument() throws SAXException {
 	//Iniciamos la cadena de evaluacion.
@@ -89,7 +89,7 @@ public class EvaluacionParser extends DefaultHandler {
 
 
     /**
-       Método invocado por el parser al encontrar caracteres en el documento.
+       Mï¿½todo invocado por el parser al encontrar caracteres en el documento.
     */
     public void characters(char[] ch, int start, int leng){
 
@@ -118,18 +118,18 @@ public class EvaluacionParser extends DefaultHandler {
 
 
     /**
-       Método invocado por el parser al encontrar una etiqueta de inicio de elemento.
+       Mï¿½todo invocado por el parser al encontrar una etiqueta de inicio de elemento.
     */
     public void startElement(String namespaceURI, String localName,
                              String rawName, Attributes atts)
 	throws SAXException{
 	
-	System.out.println("El elemento que llega es: "+rawName);
-	System.out.println("El elemento RAW que llega es: "+rawName);
+	// System.out.println("El elemento que llega es: "+rawName);
+	// System.out.println("El elemento RAW que llega es: "+rawName);
 
 	//Empieza una practica
 	if (rawName.equals("Practica")){
-	    System.out.println("llega una practica");
+	    // System.out.println("llega una practica");
 	    elemActual=rawName;
 	    String fecha = atts.getValue(0);
 	    String usuario = atts.getValue(1);
@@ -146,44 +146,44 @@ public class EvaluacionParser extends DefaultHandler {
 	}
 	
 	if (rawName.equals("Test")){
-	    System.out.println("llega un test");
+	    // System.out.println("llega un test");
 	    String identTest = atts.getValue(0);
 	    eval+="  <div class=\"test\"><h4 class=\"test\">"
 		+identTest+"</h4>\n";
-	    System.out.println("El resultado es: "+eval);
+	    // System.out.println("El resultado es: "+eval);
 	}
 
 	if (rawName.equals("EvaluacionTest")){
-	    System.out.println("llega una evaluaciontest");
+	    // System.out.println("llega una evaluaciontest");
 	    String codigoEvaluacionTest = atts.getValue(0);
 	    if(!codigoEvaluacionTest.equals("compilacion_correcta")){
 		eval+="  <h5 class=\"evaluaciontest\">"+
 		    buscaTabla(codigoEvaluacionTest)+"</h5>\n";
-	    System.out.println("El resultado es: "+eval);
+	    // System.out.println("El resultado es: "+eval);
 	    }
 	}
 	
 	if (rawName.equals("Caso")){
-	    System.out.println("llega un caso");
+	    // System.out.println("llega un caso");
 	    String identCaso = atts.getValue(0);
 	    eval+="   <P class=\"caso\"><h5 class=\"caso\">"+identCaso+"</h5></p>\n  <div class=\"caso\">\n";
-	    System.out.println("El resultado es: "+eval);
+	    // System.out.println("El resultado es: "+eval);
 	}
 
 	if (rawName.equals("EvaluacionCaso")){
-	    System.out.println("llega una evaluacioncaso");
+	    // System.out.println("llega una evaluacioncaso");
 	    String codigoEvaluacionCaso = atts.getValue(0);
 	    eval+="  <h5 class=\"evaluacioncaso\">"
 		+(String)buscaTabla(codigoEvaluacionCaso)+"</h5>\n";
 	    desccaso=true;
-	    System.out.println("El resultado es: "+eval);
+	    // System.out.println("El resultado es: "+eval);
 	}
 
 	if (rawName.equals("Nota")){
-	    System.out.println("llega una nota");
+	    // System.out.println("llega una nota");
 	    String nota = atts.getValue(0);
 	    eval+="  <h3 class=\"nota\">Nota: "+nota+"</h3>\n";
-	    System.out.println("El resultado es: "+eval);
+	    // System.out.println("El resultado es: "+eval);
 	}
 
 	if (rawName.equals("Descripcion")){
@@ -194,15 +194,15 @@ public class EvaluacionParser extends DefaultHandler {
 
     
     /**
-       Método invocado por el parser al finalizar cada elemento.
+       Mï¿½todo invocado por el parser al finalizar cada elemento.
     */
     public void endElement(String namespaceURI,	
 			   String localName, // simple name	
 			   String qName  // qualified name	
 			   ) throws SAXException{
 	
-	System.out.println("El elemento que termina es: "+qName);
-	System.out.println("El elemento qName que termina es: "+qName);
+	// System.out.println("El elemento que termina es: "+qName);
+	// System.out.println("El elemento qName que termina es: "+qName);
 
 	if (qName.equals("Practica")){
 	}
@@ -233,11 +233,11 @@ public class EvaluacionParser extends DefaultHandler {
 
 
     /**
-       Método invocado al finalizar el documento.
+       Mï¿½todo invocado al finalizar el documento.
     */
     public void endDocument() throws SAXException {
 	eval+="";
-	System.out.println("El documento parseado a HTML es:"+eval);
+	// System.out.println("El documento parseado a HTML es:"+eval);
     }
 
 
@@ -265,8 +265,8 @@ public class EvaluacionParser extends DefaultHandler {
             xmlReader = saxParser.getXMLReader();
 
         } catch (Exception ex) {
-	    System.out.println("Error creando el reader");
-            System.out.println(ex);
+	    // System.out.println("Error creando el reader");
+            // System.out.println(ex);
             System.exit(1);
         }
 
@@ -289,17 +289,17 @@ public class EvaluacionParser extends DefaultHandler {
 
         } 
 	catch (SAXException se) {
-	    System.out.println("Error al parsear");
+	    // System.out.println("Error al parsear");
             se.printStackTrace();
             System.exit(1);
         }
 	catch (IOException ioe) {
-	    System.out.println("Error de io");
+	    // System.out.println("Error de io");
             ioe.printStackTrace();
             System.exit(1);
         }
 	catch (Exception exc){
-	    System.out.println("Excepcion en el parser");
+	    // System.out.println("Excepcion en el parser");
 	    exc.printStackTrace();
 	    System.exit(1);
 	}
@@ -308,7 +308,7 @@ public class EvaluacionParser extends DefaultHandler {
 
     
     /**
-       Método que devuelve el resultado de la evaluación.
+       Mï¿½todo que devuelve el resultado de la evaluaciï¿½n.
     */
     public String getEvaluacion(){
 	return eval;
@@ -334,7 +334,7 @@ public class EvaluacionParser extends DefaultHandler {
 
 
         /**
-         * Devuelve información sobre la excepción.
+         * Devuelve informaciï¿½n sobre la excepciï¿½n.
          */
         private String getParseExceptionInfo(SAXParseException spe) {
             String systemId = spe.getSystemId();
@@ -348,7 +348,7 @@ public class EvaluacionParser extends DefaultHandler {
         }
 
 
-        // Los siguientes métodos son métodos estandar de SAX ErrorHandler.
+        // Los siguientes mï¿½todos son mï¿½todos estandar de SAX ErrorHandler.
         // See SAX documentation for more info.
 
 

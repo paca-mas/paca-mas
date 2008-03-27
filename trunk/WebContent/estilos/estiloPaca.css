@@ -1,145 +1,166 @@
 
+body{
+	background: #FAFAFA;
+	color: blue;
+}
+
+body.eval{
+}
+
+body.cab{
+	background: white;
+	color: blue;
+}
+
+.error{
+	color: white;
+	background: red;
+}
 
 
-      body{
-      background: #FAFAFA;
-      color: blue;
-      }
-
-      body.eval{
-      }
-	
-      body.cab{
-      background: white;
-      color: blue;
-      }
-
-
-      
-      .error{
-      color: white;
-      background: red;
-      }
+strong{
+	color: red;
+	text-transform: uppercase;  
+}
 
 
 
-      strong{
-      color: red;
-      text-transform: uppercase;  
-      }
+p.h2{
+	background: blue;
+	color: white;
+}
 
 
-      
-      p.h2{
-      background: blue;
-      color: white;
-      }
+p.desc{
+	color:black;
+}
 
-      
-      p.desc{
-      color:black;
-     }
 
-	
-      p.err{
-        color:red;
-      } 
+p.err{
+	color:red;
+} 
 
-      p.caso{
+p.caso{
 	align:center;
-      }
+}
 
-      p.test{
+p.test{
 	align:center;
-      }
+}
 
 
 
-      table.color{
-        background: #FFFFEE; 
-        color: blue;
-     }
-
-
-
-  
-     div.cabecera{
-       align: center;
-       border:1px solid #000;
-       background: rgb(255,255,238);
-     }
+table.color{
+	background: #FFFFEE; 
+	color: blue;
 	
-
-     div.practica{
-     }
-	
-
-     div.nota{
-       color: red;
-     }
-
-
-     div.test{
-     }
-	
-
-     div.codigoEval{
-     }
-	
-
-     div.caso{
-       border: 1px solid #000;
-       background: rgb(238,255,255);
-     }
-	
-
-     div.evalCaso{
-     }
-	
-     div.desc{
-     }	
-
-     div.form{
-       align: center;
-       border: 1px solid #000;
-       background: rgb(255,255,238);
-     }
+    border-top-style: none;
+    border-bottom-style: none;
+    border-left-style: none;
+    border-right-style: none;
+    align: center;
+    width: 50%;
+}
 
 
-     div.lat{
-       float: right;
-       width: 90%;
-       margin-right:15px;
-       margin-left:15px; 
-       padding-bottom:20px;
-     }
-	
 
 
+div.cabecera{
+	align: center;
+	border:1px solid #000;
+	background: rgb(255,255,238);
+}
+
+
+div.practica{
+}
+
+
+div.nota{
+	color: red;
+}
+
+
+div.test{
+}
+
+
+div.codigoEval{
+}
+
+
+div.caso{
+	border: 1px solid #000;
+	background: rgb(238,255,255);
+}
+
+
+div.evalCaso{
+}
+
+div.desc{
+}	
+
+div.form{
+	align: center;
+	border: 1px solid #000;
+	background: rgb(255,255,238);
+}
+
+
+div.lat{
+	float: right;
+	width: 90%;
+	margin-right:15px;
+	margin-left:15px; 
+	padding-bottom:20px;
+}
+
+
+h4{
+	background: blue;
+	color: white;
+}
+
+h4.test{
+	text-transform: uppercase;
+}
+
+h5.caso{
+	text-transform: uppercase;	
+}
+
+
+
+A:link{ 
+	text-decoration: none 
+}
+
+A:visited{
+	text-decoration: none;
+}
+
+A:active{
+	text-decoration: none
+}
+
+/*
+ * Auxiliares
+ */
+.center {
+	text-align: center;
+}
  
-     h4{
-      background: blue;
-      color: white;
-     }
-	   
-     h4.test{
-        text-transform: uppercase;
-     }
-	
-     h5.caso{
-        text-transform: uppercase;	
-     }
+/*
+ * Cabecera
+ */
+#cabecera {
+	text-align: center;
+	 
+}
 
-
-
-     A:link{ 
-   	text-decoration: none 
-     }
-
-     A:visited{
-   	text-decoration: none;
-     }
-
-     A:active{
-   	text-decoration: none
-     }
+#cuerpo {
+    margin-top: 50px;
+	margin-left: 50px;
+    margin-right: 50px;
+}
