@@ -15,7 +15,7 @@
     <title>
 	Entrega final.
     </title>
-    <LINK REL=STYLESHEET TYPE="text/css" HREF="http://platon.escet.urjc.es/estilos/estiloPACA.css">
+    <LINK REL=STYLESHEET TYPE="text/css" HREF="./estilos/estiloPaca.css">
     <SCRIPT TYPE="text/javascript">
       <!--
 

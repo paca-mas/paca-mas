@@ -48,7 +48,7 @@
 				</p>
 				<br>
 				<p class="center">
-				<P class="form">
+				<p class="form">
 				<table class="color">
 					<tr>
 						<td style="width: 50em;">
