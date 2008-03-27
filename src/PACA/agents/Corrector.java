@@ -25,6 +25,7 @@ import jade.core.behaviours.OneShotBehaviour;
 import jade.domain.DFService;
 import jade.domain.FIPAException;
 import jade.domain.FIPAAgentManagement.DFAgentDescription;
+import jade.domain.FIPAAgentManagement.Property;
 import jade.domain.FIPAAgentManagement.ServiceDescription;
 import jade.lang.acl.ACLMessage;
 
@@ -45,7 +46,6 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.Random;
 
-import PACA.agents.lanzaSwing2.Aleatorio;
 import PACA.ontology.Alumno;
 import PACA.ontology.Corrige;
 import PACA.ontology.EntregarPractica;
@@ -132,6 +132,10 @@ public class Corrector extends Agent {
 	private Practica[] PracticasPrueba;
 	private Hashtable<String, Test[]> TestPracticasPrueba;
 	private Hashtable<String, FuentesPrograma[]> FuentesProgramaPrueba;
+	
+	
+	private Integer numeroCorrecciones = 0;
+	
 
 	/**
 	 * Incicialización de datos para pruebas
@@ -584,7 +588,10 @@ public class Corrector extends Agent {
 									// If QUERY-REF (iota  
 									// --> EnvioCorrecionAlumno <--------------------------------------------------
 									printError("Dentro de EnvioCorrecionAlumno");
+									numeroCorrecciones++;
+									ActualizacionDF();
 									addBehaviour(new CorrigePractBehaviour(this.myAgent, reply, l_in, msg.getSender().getLocalName()));
+									
 									
 
 								} else {
@@ -601,7 +608,6 @@ public class Corrector extends Agent {
 									if (requestedInfo2Name.equals(pacaOntology.CORRIGE)) {
 										// --> PracticasDisponibles <--------------------------------------------------
 										addBehaviour(new PracCorrecBehaviour(this.myAgent, reply, allPred));
-
 									} else {
 
 										AndBuilder predicado = new AndBuilder();
@@ -775,10 +781,18 @@ public class Corrector extends Agent {
 
 		// Register the ontology used by this application
 		getContentManager().registerOntology(ontologia);
+		
+		RegistroDF();
 
+		/*
 		//DFService
 		DFAgentDescription dfd = new DFAgentDescription();
 		AID nombreAgente = getAID();
+		
+		Property prop = new Property();
+		prop.setName("Correciones");
+		prop.setValue(numeroCorrecciones);
+		
 		dfd.setName(nombreAgente);
 		if (debug) {
 			System.out.println(nombreAgente.toString() + " quiere registrarse");
@@ -787,6 +801,7 @@ public class Corrector extends Agent {
 		ServiceDescription sd = new ServiceDescription();
 		sd.setType("Corrector");
 		sd.setName("Agente-Corrector");
+		sd.addProperties(prop);
 		dfd.addServices(sd);
 		try {
 			DFService.register(this, dfd);
@@ -798,6 +813,7 @@ public class Corrector extends Agent {
 		if (debug) {
 			System.out.println(nombreAgente.toString() + " se ha registrado correctamente");
 		}
+		*/
 
 
 		// Create the FSMEBehaviour
@@ -1559,6 +1575,60 @@ public class Corrector extends Agent {
 			i=nextInt();
 			i=inferior+(Math.abs(i) % (superior-inferior+1));
 			return(i);
+		}
+	}
+	
+	//Metodo para registrarse en el DF
+	private void RegistroDF() {
+		//DFService
+		DFAgentDescription dfd = new DFAgentDescription();
+		AID nombreAgente = getAID();
+		
+		Property prop = new Property();
+		prop.setName("Correciones");
+		prop.setValue(numeroCorrecciones);
+		
+		dfd.setName(nombreAgente);
+		if (debug) {
+			System.out.println(nombreAgente.toString() + " quiere registrarse");
+		}
+
+		ServiceDescription sd = new ServiceDescription();
+		sd.setType("Corrector");
+		sd.setName("Agente-Corrector");
+		sd.addProperties(prop);
+		dfd.addServices(sd);
+		try {
+			DFService.register(this, dfd);
+		} catch (FIPAException fe) {
+			System.out.println("Excepcion al registrar Corrector");
+			fe.printStackTrace();
+		}
+
+		//if (debug) {
+			System.out.println(nombreAgente.toString() + " se ha registrado correctamente");
+		//}
+	}
+	
+	//Actualizacion de registro en el DF
+	private void ActualizacionDF(){
+		DFAgentDescription dfd = new DFAgentDescription();
+				
+		Property prop = new Property();
+		prop.setName("Correciones");
+		prop.setValue(numeroCorrecciones);
+		
+		ServiceDescription sd = new ServiceDescription();
+		sd.setType("Corrector");
+		sd.setName("Agente-Corrector");
+		sd.addProperties(prop);
+		dfd.addServices(sd);
+		
+		try {
+			DFService.modify(this, dfd);
+		} catch (FIPAException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
 		}
 	}
 	

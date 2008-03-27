@@ -31,6 +31,7 @@ import jade.core.behaviours.OneShotBehaviour;
 import jade.domain.DFService;
 import jade.domain.FIPAException;
 import jade.domain.FIPAAgentManagement.DFAgentDescription;
+import jade.domain.FIPAAgentManagement.Property;
 import jade.domain.FIPAAgentManagement.ServiceDescription;
 import jade.lang.acl.ACLMessage;
 import jade.lang.acl.MessageTemplate;
@@ -39,6 +40,7 @@ import jade.util.leap.Serializable;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Hashtable;
+import java.util.Iterator;
 import java.util.List;
 import java.util.Random;
 
@@ -658,6 +660,8 @@ public class Interfaz extends Agent {
 		DFAgentDescription template = new DFAgentDescription();
 		ServiceDescription sd = new ServiceDescription();
 		sd.setType("Corrector");
+		Property prop = new Property();
+		prop.setName("Correciones");
 		template.addServices(sd);
 		AID agenteCorr = null; 
 				
@@ -665,25 +669,43 @@ public class Interfaz extends Agent {
 		
 		try {
 			result = DFService.search(this, template);
-
+			
 			int tamano = result.length;
 			AID[] agentesCorrectores = new AID[result.length];
 			
+	
+			
+			
 			for (int i = 0; i < result.length; ++i) {
-				agentesCorrectores[i] = result[i].getName();
 				
+				//Para buscar propiedades
+				DFAgentDescription dfd = result[i];
+				Iterator sd1 = dfd.getAllServices();
+				ServiceDescription sd2 = (ServiceDescription) sd1.next();
+				Iterator propiedades = sd2.getAllProperties();
+				Property prop2 = (Property) propiedades.next();
+				System.out.println("Corrector... "+result[i].getName());
+				System.out.println("prop:"+prop2.getName());
+				System.out.println("ValorProp: "+prop2.getValue());
+				System.out.println("===============================================");
+				
+				agentesCorrectores[i]=result[i].getName();
+				//Fin para buscar propiedades
 			}
+			
+			
+			/*
+			for (int i = 0; i < result.length; ++i) {
+            	agentesCorrectores[i] = result[i].getName();
+            }*/
 			
 			Random rand = new Random();
 			int indiceCorrector = rand.nextInt(100);
 					
-			
 			int politica=indiceCorrector%tamano;
-			
-			
+					
 			agenteCorr=agentesCorrectores[politica];
-						
-			
+		
 			if (almacenCorrec.containsKey(agenteCorr)){
 				usado = almacenCorrec.get(agenteCorr);
 				usado++;
