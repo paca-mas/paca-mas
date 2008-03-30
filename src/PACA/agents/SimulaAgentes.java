@@ -7,13 +7,21 @@ import jade.core.Runtime;
 import jade.wrapper.AgentController;
 import jade.wrapper.ContainerController;
 
+import java.io.BufferedWriter;
+import java.io.File;
+import java.io.FileInputStream;
+import java.io.FileWriter;
+import java.io.IOException;
+import java.io.PrintStream;
 import java.util.Date;
 import java.util.Random;
 
 import PACA.agents.lanzaSwing2.Aleatorio;
 import PACA.util.Testigo;
 
-public class SimulaAgentes {
+//public class SimulaAgentes extends Thread{
+public class SimulaAgentes implements Runnable{
+//public class SimulaAgentes{
 	static class Aleatorio extends Random {
 		public int nextInt(int inferior, int superior) {
 			int i;
@@ -45,11 +53,36 @@ public class SimulaAgentes {
 	static InterfazSwing2 agent=null;
     //Fin Variables Agente Interfaz
 	
-	public static void main(String[] args) {
+	static void GeneraRetardo(int ret){
+		try {
+			Thread.sleep(ret);
+		} catch (InterruptedException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+	}
+	
+	/*
+	static String [] pract = null;
+	static int numPract;
+	static int eleccion;
+	static String [] tests = null;
+	static int tamano;
+	static String[] tests2 = null;
+	static int numTests;
+	static String [] listaTests = null;
+	static String [] fichs = null;
+	static String [] cont = null;
+	static String nombreCorto;*/
+	
+	
+	//public static void main(String[] args) {
+	public void run(){
+		
 		Date ahora = new Date();
 		long lnMilisegundos = ahora.getTime();
-		System.out.println("Ahora :"+ahora.toString());
-		System.out.println("Milisegundos: "+lnMilisegundos);
+		//System.out.println("Ahora :"+ahora.toString());
+		//System.out.println("Milisegundos: "+lnMilisegundos);
 		
 		String texto = "csimon";
 		String passw = "admin";
@@ -67,7 +100,7 @@ public class SimulaAgentes {
 				agentInterfaz.start();
 				
 				while (!agent.isFinSetup()) {
-					System.out.println("Esperando al fin... ");
+					//System.out.println("Esperando al fin... ");
 				}
 			} 
 			else {
@@ -84,163 +117,218 @@ public class SimulaAgentes {
 		
 		Testigo testigo = new Testigo();
 		agent.swingAutentica(texto, passw, testigo);
-		System.out.println("--------------------");
+		//System.out.println("--------------------");
 						
 		while(!testigo.isRelleno()){
 		}
 		
 		autenticado = testigo.isResultadoB();
-		System.out.println("autenticado: "+autenticado);
+		//System.out.println("autenticado: "+autenticado);
+		
 		
 		testigo = new Testigo();
+
+
 		agent.swingPideCorrector(testigo);
 		while(!testigo.isRelleno()){
 		}
-			
-		
+
+		GeneraRetardo(1000);
+
+
 		//---------------------- PRACTICAS -----------------------------
 		testigo = new Testigo();
-			
+
+
 		agent.swingPidePracticas(testigo);
 		while(!testigo.isRelleno()){
 		}
-			
+
 		String [] pract = (String [])testigo.getResultado();
-			
+		//pract = (String [])testigo.getResultado();
+
 		int numPract = pract.length;
-		
-		System.out.println("Numero de practicas: "+numPract);
-			
+
+		//System.out.println("Numero de practicas: "+numPract);
+
 		Aleatorio rand = new Aleatorio();
 		int eleccion = rand.nextInt(0, numPract-1);
-		System.out.println("Resultado aleatorio para practicas: "+eleccion);
-		
-		try {
-			Thread.sleep(1200);
-		} catch (InterruptedException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		}
-		
+		//eleccion = rand.nextInt(0, numPract-1);
+		//System.out.println("Resultado aleatorio para practicas: "+eleccion);
+
+		//try {
+		//Thread.sleep(1200);
+		//} catch (InterruptedException e) {
+		// TODO Auto-generated catch block
+		//e.printStackTrace();
+		//}
+		GeneraRetardo(2000);
+
 		//---------------------- FIN PRACTICAS -----------------------------
-		
-		
+
+
 		//-------------------------- TESTS ---------------------------------
 		testigo = new Testigo();
+
+		System.out.println("------------------------------------------------------");
+
 		System.out.println("Practica elegida: "+pract[eleccion].toString());
 		agent.swingPideTests(testigo, pract[eleccion]);
 		while(!testigo.isRelleno()){
 		}
-		
+
 		String [] tests = (String [])testigo.getResultado();
-		
+		//tests = (String [])testigo.getResultado();
+
 		int tamano = tests.length / 2;
-		
+		//tamano = tests.length / 2;
+
 		String[] tests2 = new String[tamano];
+		//tests2 = new String[tamano];
 		for (int i = 0; i < tests2.length; i++) {
-				tests2[i]=tests[i*2];
+			tests2[i]=tests[i*2];
 		}
-		
+
 		int numTests = tests2.length;
-		System.out.println("Numero de Tests: "+numTests);
-		
+		//numTests = tests2.length;
+		//System.out.println("Numero de Tests: "+numTests);
+
 		//Numero de tests a seleccionar
 		rand = new Aleatorio();
 		eleccion = rand.nextInt(0, numTests-1);
-		System.out.println("Resultado aleatorio para tests: "+eleccion);
+		//System.out.println("Resultado aleatorio para tests: "+eleccion);
 		String [] listaTests = new String[eleccion+1];
+		//listaTests = new String[eleccion+1];
+
 		for (int i = 0; i < listaTests.length; i++) {
 			Aleatorio rand2 = new Aleatorio();
 			int eleccion2 = rand2.nextInt(0, numTests-1);
 			listaTests[i] = tests2[eleccion2];
 		}
-		
-		
-		try {
-			Thread.sleep(800);
-		} catch (InterruptedException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		}
-				
+
+
+		//try {
+		//Thread.sleep(800);
+		//} catch (InterruptedException e) {
+		// TODO Auto-generated catch block
+		//e.printStackTrace();
+		//}
+		GeneraRetardo(1000);
+
+
 		//-------------------------- FIN TESTS ---------------------------------
-		
-		
-		
-		
+
+
+
+
 		//-------------------------- FICHEROS ------------------------------
 		testigo = new Testigo();
+
+
+
 		agent.swingPideFicheros(testigo, listaTests);
-		
+
 		while(!testigo.isRelleno()){
 		}
 		String [] fichs = (String [])testigo.getResultado();
-		
+		//fichs = (String [])testigo.getResultado();
+
 		String []cont = new String[fichs.length];
-		
+		//cont = new String[fichs.length];
+
+		//System.out.println("------------------------------------------------------");
+
 		for(int i = 0; i < cont.length; i++) {
 			String contenido3 = generaContenido();
 			cont[i]=contenido3;
 			System.out.println("Tamano del fichero: "+cont[i].length());
 		}
-		
-			
-		try {
-			Thread.sleep(1800);
-		} catch (InterruptedException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		}
-		
-		
+
+
+		//try {
+		//Thread.sleep(1800);
+		//} catch (InterruptedException e) {
+		// TODO Auto-generated catch block
+		//e.printStackTrace();
+		//}
+		GeneraRetardo(4000);
+
+
+
 		//Guardamos la hora de la peticion de correccion 
 		Date comienzo = new Date();
 		Long enMilisegundos = comienzo.getTime();
-		
+
 		testigo = new Testigo();
-		
+
+
 		agent.swingPideCorrector(testigo);
 		while(!testigo.isRelleno()){
 		}
-		
+
 		AID nombreC = (AID) testigo.getResultado();
 		String nombreCorto = nombreC.getName();
+		//nombreCorto = nombreC.getName();
 		System.out.println("Corrector: "+nombreCorto);
-		
+
+		GeneraRetardo(500);
+
+
 		testigo = new Testigo();
+
+
+
 		agent.swingPideCorreccion(testigo, cont);
 		while(!testigo.isRelleno()){
 		}
-		
+
 		String salida = (String) testigo.getResultado();
-						
+
 		int posicion = salida.indexOf("terminacion_incorrecta");
-		
+
 		String textoEva = null;
 		if (posicion!=-1){
 			textoEva = "Practica Erronea";
 		}
 		else{
 			textoEva = "Practica Aceptada";
-		}
-		
+		} 
+
 		System.out.println("Resultado de la correccion: "+textoEva);
-		
+
 		Date finalizado = new Date();
 		Long enMilisegundos2 = finalizado.getTime();
-		
+
 		Long duracion = enMilisegundos2 - enMilisegundos;
 		String duraAux = duracion.toString();
 		System.out.println("Tiempo necesitado: "+duraAux);
+		System.out.println("Interfaz: "+nombre); 
 		System.out.println("------------------------------------------------------");
-		
+
+		String sFichero = "C:\\Documents and Settings\\Carlos\\Escritorio\\Resultados\\"+nombre+".txt";
+		File fichero = new File(sFichero);
 		try {
-			Thread.sleep(30000);
-			System.exit(0);
-		} catch (InterruptedException e) {
+			BufferedWriter bw = new BufferedWriter(new FileWriter(fichero));
+			bw.write("Interfaz: "+nombre);
+			bw.newLine();
+			bw.write("Corrector: "+nombreCorto);
+			bw.newLine();
+			bw.write("Tiempo necesitado: "+duraAux);
+			bw.newLine();
+
+			bw.close();
+
+		} catch (IOException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
+		//try {
+		//Thread.sleep(30000);
+		//System.exit(0);
+		//} catch (InterruptedException e) {
+		// TODO Auto-generated catch block
+		//e.printStackTrace();
+		//}
 		
 		
 		

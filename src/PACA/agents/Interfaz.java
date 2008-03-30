@@ -684,10 +684,10 @@ public class Interfaz extends Agent {
 				ServiceDescription sd2 = (ServiceDescription) sd1.next();
 				Iterator propiedades = sd2.getAllProperties();
 				Property prop2 = (Property) propiedades.next();
-				System.out.println("Corrector... "+result[i].getName());
-				System.out.println("prop:"+prop2.getName());
-				System.out.println("ValorProp: "+prop2.getValue());
-				System.out.println("===============================================");
+				//System.out.println("Corrector... "+result[i].getName());
+				//System.out.println("prop:"+prop2.getName());
+				//System.out.println("ValorProp: "+prop2.getValue());
+				//System.out.println("===============================================");
 				
 				agentesCorrectores[i]=result[i].getName();
 				//Fin para buscar propiedades
@@ -731,7 +731,7 @@ public class Interfaz extends Agent {
 	
 	
 	
-	public List<AbsPredicate> ConstruiListaTests (String [] TestsAux, AbsConcept practAux){
+	private List<AbsPredicate> ConstruiListaTests (String [] TestsAux, AbsConcept practAux){
 		List <AbsPredicate> listaAux = new ArrayList<AbsPredicate>();
 		
 		for (int contador = 0; contador < TestsAux.length; contador++) {
@@ -750,21 +750,27 @@ public class Interfaz extends Agent {
 				// TODO Auto-generated catch block
 				e.printStackTrace();
 			}
+			catch (NullPointerException e1) {
+				// TODO Auto-generated catch block
+				e1.printStackTrace();
+			}
 		}
 		
 		return listaAux;
 	}
 	
-	public List<AbsPredicate> ConstruirListaFF (String[] conjFich, String[] contFich, Test teAux){
+	private List<AbsPredicate> ConstruirListaFF (String[] conjFich, String[] contFich, Test teAux){
 		List <AbsPredicate> listaAux = new ArrayList<AbsPredicate>();
 		FuentesPrograma fp = new FuentesPrograma();
 		for (int contador = 0; contador < conjFich.length; contador++) {
 			
-			fp.setNombre(conjFich[contador]);
-			fp.setContenido(contFich[contador]);
+			//fp.setNombre(conjFich[contador]);
+			//fp.setContenido(contFich[contador]);
 		
 			AbsConcept AbsFP;
 			try {
+				fp.setNombre(conjFich[contador]);
+				fp.setContenido(contFich[contador]);
 				AbsFP = (AbsConcept) PACAOntology.fromObject(fp);
 				AbsConcept AbsTest =(AbsConcept) PACAOntology.fromObject(teAux);
 				//Creamos el predicado abstracto "FICHEROFUENTS"
@@ -773,9 +779,23 @@ public class Interfaz extends Agent {
 				AbsFicheros.set(pacaOntology.FUENTESPROGRAMA, AbsFP);
 				listaAux.add(AbsFicheros);
 			} 
+			
+			catch (NullPointerException en){
+//				 TODO Auto-generated catch block
+				en.printStackTrace();
+			}
+			
+			catch (ArrayIndexOutOfBoundsException ex){
+//				 TODO Auto-generated catch block
+				ex.printStackTrace();
+			}
 			catch (OntologyException e) {
 				// TODO Auto-generated catch block
 				e.printStackTrace();
+			}
+			catch (Exception e1){
+//				 TODO Auto-generated catch block
+				e1.printStackTrace();
 			}
 			
 		}
@@ -906,10 +926,13 @@ public class Interfaz extends Agent {
 			Practica pract = new Practica();
 			pract.setId("?practica");
 			pract.setDescripcion("");
-			Corrector correc = new Corrector();
-			correc.setId(agentCorrec.getName());
+			//Corrector correc = new Corrector();
+			//correc.setId(agentCorrec.getName());
 			
 			try {
+				Corrector correc = new Corrector();
+				correc.setId(agentCorrec.getName());
+				
 				
 				//Convertimos la practica a un objecto abstracto
 				AbsConcept absPract = (AbsConcept) PACAOntology.fromObject(pract);
@@ -935,6 +958,12 @@ public class Interfaz extends Agent {
 				addBehaviour(new RecibeMensajes(myAgent, tes));
 				send(solicitud);
 			}
+			
+			catch (NullPointerException ex) {
+				// TODO Auto-generated catch block
+				ex.printStackTrace();
+			} 
+			
 			catch (OntologyException e1) {
 				// TODO Auto-generated catch block
 				e1.printStackTrace();
