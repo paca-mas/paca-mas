@@ -113,6 +113,7 @@ public class lanzaSwing2 {
 		paraPracticas.add(listaPract);
 		paraPracticas.add(botonPracticas);
 		
+		listaTests.add("SELECCIONA LOS TESTS");
 		paraTests.add(listaTests);
 		paraTests.add(botonTests);
 		listaFichs.add("SELECCIONA LOS FICHEROS");
@@ -133,7 +134,7 @@ public class lanzaSwing2 {
 		String nombre = texto + lnMilisegundos;
 		
 		//Montamos el JFrame
-		ventana.setSize(new Dimension(1100, 500));		
+		ventana.setSize(new Dimension(1200, 500));		
 		ventana.setDefaultCloseOperation(ventana.EXIT_ON_CLOSE);
 		
 					
@@ -212,40 +213,7 @@ public class lanzaSwing2 {
 			paraPracticas.add(botonPracticas);
 			ventana.getContentPane().add(paraPracticas, BorderLayout.NORTH);
 			ventana.validate();
-			
-			/*
-			paraPracticas.add(listaPract);
-			paraPracticas.add(botonPracticas);
-			
-			paraTests.add(listaTests);
-			paraTests.add(botonTests);
-			listaFichs.add("SELECCIONA LOS FICHEROS");
-			paraFicheros.add(listaFichs);
-			paraFicheros.add(botonFicheros);
-			paraCorregir.add(tiempoEmpleado);
-			//paraCorregir.add(correctorElegido);
-			paraCorregir.add(listaCorrectores);
-			
-			
-			
-			
-			//--- Montar FRAME ----
-			ventana.setSize(new Dimension(1100, 500));		
-			ventana.setDefaultCloseOperation(ventana.EXIT_ON_CLOSE);
-			
-						
-			ventana.setLayout(new BorderLayout());
-			ventana.getContentPane().add(paraPracticas, BorderLayout.NORTH);
-			ventana.getContentPane().add(paraTests, BorderLayout.WEST);
-			ventana.getContentPane().add(paraFicheros, BorderLayout.CENTER);
-			ventana.getContentPane().add(paraCorregir, BorderLayout.SOUTH);
-			
-			ventana.setTitle("P A C A - Interfaz -- " + nombre);
-			ventana.pack();
-			ventana.setVisible(true);
-			ventana.validate();
-			*/
-			
+					
 			
 		}
 		
@@ -257,32 +225,34 @@ public class lanzaSwing2 {
 		botonPracticas.addMouseListener( new MouseAdapter(){
 			public void mousePressed(MouseEvent e){
 				String practica = (String) listaPract.getSelectedItem();
-				System.out.println("salida: "+practica+"**");
-				
-				Testigo testigo = new Testigo();
-				agent.swingPideTests(testigo, practica);
-				while(!testigo.isRelleno()){
-				}
-				
-				String [] tests = (String [])testigo.getResultado();
-				
-				int tamano = tests.length / 2;
-				
-				String[] tests2 = new String[tamano];
-				for (int i = 0; i < tests2.length; i++) {
+				if (practica!=null){
+					System.out.println("salida: "+practica+"**");
+
+					Testigo testigo = new Testigo();
+					agent.swingPideTests(testigo, practica);
+					while(!testigo.isRelleno()){
+					}
+
+					String [] tests = (String [])testigo.getResultado();
+
+					int tamano = tests.length / 2;
+
+					String[] tests2 = new String[tamano];
+					for (int i = 0; i < tests2.length; i++) {
 						tests2[i]=tests[i*2];
+					}
+
+
+					for (int i = 0; i < tests2.length; i++) {
+						listaTests.add(tests2[i]);						
+					}
+
+					listaTests.setMultipleMode(true);
+					paraTests.add(listaTests);
+					paraTests.add(botonTests);
+					ventana.getContentPane().add(paraTests, BorderLayout.WEST);
+					ventana.validate();
 				}
-				
-						
-				for (int i = 0; i < tests2.length; i++) {
-					listaTests.add(tests2[i]);						
-				}
-				
-				listaTests.setMultipleMode(true);
-				paraTests.add(listaTests);
-				paraTests.add(botonTests);
-				ventana.getContentPane().add(paraTests, BorderLayout.WEST);
-				ventana.validate();
 			}
 		} );
 		
@@ -290,24 +260,26 @@ public class lanzaSwing2 {
 		//Selecciona Tests
 		botonTests.addMouseListener( new MouseAdapter(){
 			public void mousePressed(MouseEvent e){
-				String [] testss  =  listaTests.getSelectedItems();
-											
-				Testigo testigo = new Testigo();
-				agent.swingPideFicheros(testigo, testss);
-				
-				while(!testigo.isRelleno()){
+				String [] testss = (String []) listaTests.getSelectedItems();
+
+				if (testss!=null){
+					Testigo testigo = new Testigo();
+					agent.swingPideFicheros(testigo, testss);
+
+					while(!testigo.isRelleno()){
+					}
+
+					String [] fichs = (String [])testigo.getResultado();
+
+					for (int i = 0; i < fichs.length; i++) {
+						listaFichs.add(fichs[i]);
+					}
+					listaFichs.setMultipleMode(true);
+					paraFicheros.add(listaFichs);
+					paraFicheros.add(botonFicheros);
+					ventana.getContentPane().add(paraFicheros, BorderLayout.CENTER);
+					ventana.validate();
 				}
-				
-				String [] fichs = (String [])testigo.getResultado();
-				
-				for (int i = 0; i < fichs.length; i++) {
-					listaFichs.add(fichs[i]);
-				}
-				listaFichs.setMultipleMode(true);
-				paraFicheros.add(listaFichs);
-				paraFicheros.add(botonFicheros);
-				ventana.getContentPane().add(paraFicheros, BorderLayout.CENTER);
-				ventana.validate();
 			}
 		} );
 		

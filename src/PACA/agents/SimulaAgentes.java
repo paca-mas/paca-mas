@@ -62,19 +62,7 @@ public class SimulaAgentes implements Runnable{
 		}
 	}
 	
-	/*
-	static String [] pract = null;
-	static int numPract;
-	static int eleccion;
-	static String [] tests = null;
-	static int tamano;
-	static String[] tests2 = null;
-	static int numTests;
-	static String [] listaTests = null;
-	static String [] fichs = null;
-	static String [] cont = null;
-	static String nombreCorto;*/
-	
+		
 	
 	//public static void main(String[] args) {
 	public void run(){
@@ -126,25 +114,26 @@ public class SimulaAgentes implements Runnable{
 		//System.out.println("autenticado: "+autenticado);
 		
 		
-		testigo = new Testigo();
+		Testigo testigo1 = new Testigo();
 
 
-		agent.swingPideCorrector(testigo);
-		while(!testigo.isRelleno()){
+		agent.swingPideCorrector(testigo1);
+		while(!testigo1.isRelleno()){
 		}
-
-		GeneraRetardo(1000);
+		
+		
+		//GeneraRetardo(1000);
 
 
 		//---------------------- PRACTICAS -----------------------------
-		testigo = new Testigo();
+		Testigo testigo2 = new Testigo();
 
 
-		agent.swingPidePracticas(testigo);
-		while(!testigo.isRelleno()){
+		agent.swingPidePracticas(testigo2);
+		while(!testigo2.isRelleno()){
 		}
 
-		String [] pract = (String [])testigo.getResultado();
+		String [] pract = (String [])testigo2.getResultado();
 		//pract = (String [])testigo.getResultado();
 
 		int numPract = pract.length;
@@ -153,7 +142,6 @@ public class SimulaAgentes implements Runnable{
 
 		Aleatorio rand = new Aleatorio();
 		int eleccion = rand.nextInt(0, numPract-1);
-		//eleccion = rand.nextInt(0, numPract-1);
 		//System.out.println("Resultado aleatorio para practicas: "+eleccion);
 
 		//try {
@@ -162,35 +150,32 @@ public class SimulaAgentes implements Runnable{
 		// TODO Auto-generated catch block
 		//e.printStackTrace();
 		//}
-		GeneraRetardo(2000);
+		
+		//GeneraRetardo(2000);
 
 		//---------------------- FIN PRACTICAS -----------------------------
 
 
 		//-------------------------- TESTS ---------------------------------
-		testigo = new Testigo();
+		Testigo testigo3 = new Testigo();
 
 		System.out.println("------------------------------------------------------");
 
 		System.out.println("Practica elegida: "+pract[eleccion].toString());
-		agent.swingPideTests(testigo, pract[eleccion]);
-		while(!testigo.isRelleno()){
+		agent.swingPideTests(testigo3, pract[eleccion]);
+		while(!testigo3.isRelleno()){
 		}
 
-		String [] tests = (String [])testigo.getResultado();
-		//tests = (String [])testigo.getResultado();
-
+		String [] tests = (String [])testigo3.getResultado();
+		
 		int tamano = tests.length / 2;
-		//tamano = tests.length / 2;
 
 		String[] tests2 = new String[tamano];
-		//tests2 = new String[tamano];
 		for (int i = 0; i < tests2.length; i++) {
 			tests2[i]=tests[i*2];
 		}
 
 		int numTests = tests2.length;
-		//numTests = tests2.length;
 		//System.out.println("Numero de Tests: "+numTests);
 
 		//Numero de tests a seleccionar
@@ -198,7 +183,6 @@ public class SimulaAgentes implements Runnable{
 		eleccion = rand.nextInt(0, numTests-1);
 		//System.out.println("Resultado aleatorio para tests: "+eleccion);
 		String [] listaTests = new String[eleccion+1];
-		//listaTests = new String[eleccion+1];
 
 		for (int i = 0; i < listaTests.length; i++) {
 			Aleatorio rand2 = new Aleatorio();
@@ -213,7 +197,8 @@ public class SimulaAgentes implements Runnable{
 		// TODO Auto-generated catch block
 		//e.printStackTrace();
 		//}
-		GeneraRetardo(1000);
+		
+		//GeneraRetardo(1000);
 
 
 		//-------------------------- FIN TESTS ---------------------------------
@@ -222,19 +207,17 @@ public class SimulaAgentes implements Runnable{
 
 
 		//-------------------------- FICHEROS ------------------------------
-		testigo = new Testigo();
+		Testigo testigo4 = new Testigo();
 
 
 
-		agent.swingPideFicheros(testigo, listaTests);
+		agent.swingPideFicheros(testigo4, listaTests);
 
-		while(!testigo.isRelleno()){
+		while(!testigo4.isRelleno()){
 		}
-		String [] fichs = (String [])testigo.getResultado();
-		//fichs = (String [])testigo.getResultado();
+		String [] fichs = (String [])testigo4.getResultado();
 
 		String []cont = new String[fichs.length];
-		//cont = new String[fichs.length];
 
 		//System.out.println("------------------------------------------------------");
 
@@ -251,7 +234,8 @@ public class SimulaAgentes implements Runnable{
 		// TODO Auto-generated catch block
 		//e.printStackTrace();
 		//}
-		GeneraRetardo(4000);
+		
+		//GeneraRetardo(4000);
 
 
 
@@ -259,30 +243,31 @@ public class SimulaAgentes implements Runnable{
 		Date comienzo = new Date();
 		Long enMilisegundos = comienzo.getTime();
 
-		testigo = new Testigo();
+		
+		Testigo testigo5 = new Testigo();
 
 
-		agent.swingPideCorrector(testigo);
-		while(!testigo.isRelleno()){
+		agent.swingPideCorrector(testigo5);
+		while(!testigo5.isRelleno()){
 		}
 
-		AID nombreC = (AID) testigo.getResultado();
+		AID nombreC = (AID) testigo5.getResultado();
 		String nombreCorto = nombreC.getName();
 		//nombreCorto = nombreC.getName();
 		System.out.println("Corrector: "+nombreCorto);
 
-		GeneraRetardo(500);
+		//GeneraRetardo(500);
 
 
-		testigo = new Testigo();
+		Testigo testigo6 = new Testigo();
 
 
 
-		agent.swingPideCorreccion(testigo, cont);
-		while(!testigo.isRelleno()){
+		agent.swingPideCorreccion(testigo6, cont);
+		while(!testigo6.isRelleno()){
 		}
 
-		String salida = (String) testigo.getResultado();
+		String salida = (String) testigo6.getResultado();
 
 		int posicion = salida.indexOf("terminacion_incorrecta");
 
@@ -315,7 +300,6 @@ public class SimulaAgentes implements Runnable{
 			bw.newLine();
 			bw.write("Tiempo necesitado: "+duraAux);
 			bw.newLine();
-
 			bw.close();
 
 		} catch (IOException e) {
