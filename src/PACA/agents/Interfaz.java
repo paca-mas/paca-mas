@@ -113,7 +113,7 @@ public class Interfaz extends Agent {
 	Nombre del agente corrector
 	 */
 	//private String AgenteCorrector = "corrector";
-	private AID AgenteCorrector;
+	public AID AgenteCorrector;
 
 	/**
        Nombre del agente autenticador
@@ -672,10 +672,7 @@ public class Interfaz extends Agent {
 			
 			int tamano = result.length;
 			AID[] agentesCorrectores = new AID[result.length];
-			
-	
-			
-			
+					
 			for (int i = 0; i < result.length; ++i) {
 				
 				//Para buscar propiedades
@@ -718,6 +715,7 @@ public class Interfaz extends Agent {
 					
 			setAgenteCorrector(agenteCorr);
 			
+				
 		} 
 		catch (FIPAException e) {
 			// TODO Auto-generated catch block
@@ -932,8 +930,7 @@ public class Interfaz extends Agent {
 			try {
 				Corrector correc = new Corrector();
 				correc.setId(agentCorrec.getName());
-				
-				
+								
 				//Convertimos la practica a un objecto abstracto
 				AbsConcept absPract = (AbsConcept) PACAOntology.fromObject(pract);
 				
@@ -1050,7 +1047,7 @@ public class Interfaz extends Agent {
 			Practica pract = new Practica();
 			pract.setId(IdPractica);
 			pract.setDescripcion("");
-			PACA.ontology.Corrector correc = new PACA.ontology.Corrector();
+			Corrector correc = new Corrector();
 			correc.setId(agentCorrec.getName());
 			cor.setPractica(pract);
 			cor.setCorrector(correc);
@@ -1095,6 +1092,10 @@ public class Interfaz extends Agent {
 				send(solicitud);
 						
 			}
+			catch (NullPointerException ex){
+				ex.printStackTrace();
+			}
+			
 			catch (OntologyException e1) {
 				// TODO Auto-generated catch block
 				e1.printStackTrace();
@@ -1167,14 +1168,14 @@ public class Interfaz extends Agent {
 		}
 		
 		public void action(){
-						
+			
 			String IdPractica  = ultimaPractica;
 
 			// Y nos guardamos los �ltimos test solicitados
 			TestUltimaPractica = IdTest;
 			
 			AID agentCorrec = getAgenteCorrector();
-
+			
 			ACLMessage solicitud = new ACLMessage(ACLMessage.QUERY_REF);
 			solicitud.addReceiver(agentCorrec);
 			solicitud.setLanguage(codec.getName());
@@ -1190,7 +1191,7 @@ public class Interfaz extends Agent {
 				pract.setId(IdPractica);
 				pract.setDescripcion("");
 
-				PACA.ontology.Corrector correc = new PACA.ontology.Corrector();
+				Corrector correc = new Corrector();
 				correc.setId(agentCorrec.getName());
 				cor.setPractica(pract);
 				cor.setCorrector(correc);
@@ -1240,6 +1241,10 @@ public class Interfaz extends Agent {
 				send(solicitud);
 
 			}
+			catch (NullPointerException en) {
+				// TODO Auto-generated catch block
+				en.printStackTrace();
+			} 
 			
 			catch (OntologyException e) {
 				// TODO Auto-generated catch block
@@ -1318,7 +1323,7 @@ public class Interfaz extends Agent {
 			pract.setId(ultimaPractica);
 			pract.setDescripcion("");
 
-			PACA.ontology.Corrector correc = new PACA.ontology.Corrector();
+			Corrector correc = new Corrector();
 			correc.setId(agentCorrec.getName());
 			
 			Test te = new Test();
@@ -1364,6 +1369,10 @@ public class Interfaz extends Agent {
 				send(solicitud);
 								
 			} 
+			
+			catch (NullPointerException ex){
+				ex.printStackTrace();
+			}
 			catch (OntologyException e) {
 				// TODO Auto-generated catch block
 				e.printStackTrace();
@@ -1465,7 +1474,10 @@ public class Interfaz extends Agent {
 						}
 
 					}
-
+				} catch (IndexOutOfBoundsException ei) {
+					// TODO Auto-generated catch block
+					ei.printStackTrace();	
+					
 				} catch (CodecException e) {
 					// TODO Auto-generated catch block
 					e.printStackTrace();

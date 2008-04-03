@@ -68,7 +68,8 @@ alumnos realizan.
 public class Corrector extends Agent {
 
 	// Modo de ejecuci√≥n en pruebas
-	private boolean ejecucionEnPruebas = true;
+	private boolean ejecucionEnPruebas = false;
+	private boolean ejecucionEnPruebas2 = true;
 	//	Nombre de la ontologia
 	private Ontology ontologia = pacaOntology.getInstance();
 	//Codec
@@ -440,7 +441,7 @@ public class Corrector extends Agent {
 			try {
 				
 				//AÒadido para realizar pruebas
-				if (ejecucionEnPruebas){
+				if (ejecucionEnPruebas2){
 					Aleatorio rand = new Aleatorio();
 					int retardo = rand.nextInt(500, 3000);
 					try {
@@ -1184,7 +1185,7 @@ public class Corrector extends Agent {
 		Alumno al,
 		String agente) {
 
-		if (this.ejecucionEnPruebas) {
+		if (this.ejecucionEnPruebas2) {
 
 			EvaluacionPractica EvaP = new EvaluacionPractica();
 			
