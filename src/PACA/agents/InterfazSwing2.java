@@ -9,7 +9,7 @@ public class InterfazSwing2 extends Interfaz{
 	@Override
 	protected void setup(){
 		super.setup();
-		System.out.println("Creada Interfaz SWING");
+		//System.out.println("Creada Interfaz SWING");
 		FinSetup=true;
 	}
 	
@@ -17,28 +17,28 @@ public class InterfazSwing2 extends Interfaz{
 		return FinSetup;
 	}
 	
-	public void swingAutentica(String usu, String pass, Testigo tes){
+	public void swingAutentica(String usu, String pass, Resultado tes){
 		addBehaviour(new EnviaAutenticaBehaviour(this, tes, usu, pass));
 	}
 	
-	public void swingPideCorrector(Testigo tes){
+	public void swingPideCorrector(Resultado tes){
 		addBehaviour(new CorrectorBehaviour(this, tes));
 	}
 	
-	public void swingPidePracticas(Testigo tes){
+	public void swingPidePracticas(Resultado tes){
 		addBehaviour(new PidePracticasBehavior(this, tes));
 	}
 	
-	public void swingPideTests(Testigo tes, String practica){
+	public void swingPideTests(Resultado tes, String practica){
 		addBehaviour(new PideTestBeha(this, tes, practica));
 	}
 	
-	public void swingPideFicheros(Testigo tes, String[] ficheros){
+	public void swingPideFicheros(Resultado tes, String[] ficheros){
 		addBehaviour(new PideFicherosBeha(this, tes, ficheros));
 	}
 	
-	public void swingPideCorreccion(Testigo tes, String[] contenido){
-		addBehaviour(new PideCorreccionBeha(this, tes, contenido));
+	public void swingPideCorreccion(Resultado testigo6, String[] contenido){
+		addBehaviour(new PideCorreccionBeha(this, testigo6, contenido));
 	}
 	
 

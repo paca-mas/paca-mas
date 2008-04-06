@@ -17,6 +17,7 @@ import java.util.Date;
 import java.util.Random;
 
 import PACA.agents.lanzaSwing2.Aleatorio;
+import PACA.util.Resultado;
 import PACA.util.Testigo;
 
 //public class SimulaAgentes extends Thread{
@@ -30,7 +31,6 @@ public class SimulaAgentes implements Runnable{
 			return(i);
 		}
 	}
-	
 	
 	//Metodo para generar contenido aleatorio entre 5K y 20K
 	static String generaContenido(){
@@ -46,26 +46,34 @@ public class SimulaAgentes implements Runnable{
 	}
 	
 	//	Variables para crear el Agente Interfaz
-	static Runtime rt;
-	static Profile p;
-	static ContainerController cc;
-	static AgentController agentInterfaz=null;
-	static InterfazSwing2 agent=null;
+	ContainerController cc;
+	AgentController agentInterfaz=null;
+	InterfazSwing2 agent=null;
+	lanzador todosJuntos;
     //Fin Variables Agente Interfaz
 	
-	static void GeneraRetardo(int ret){
+/*	static void GeneraRetardo(int ret){
 		try {
 			Thread.sleep(ret);
 		} catch (InterruptedException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
-	}
+	}*/
 	
+	int numeroThread=0;
+	
+	public SimulaAgentes(ContainerController cc, int num){
+		super();
+		this.cc = cc;
+		numeroThread = num;
+		//this.todosJuntos=lanz;
+	}
 		
 	
 	//public static void main(String[] args) {
 	public void run(){
+	
 		
 		Date ahora = new Date();
 		long lnMilisegundos = ahora.getTime();
@@ -75,13 +83,13 @@ public class SimulaAgentes implements Runnable{
 		String texto = "csimon";
 		String passw = "admin";
 					       
-		String nombre = texto + lnMilisegundos;
+		String nombre = texto + lnMilisegundos+"-"+numeroThread;
 		
 		
 		try {
-			rt = Runtime.instance();
-			p = new ProfileImpl(false);
-			cc = rt.createAgentContainer(p);
+			//rt = Runtime.instance();
+			//p = new ProfileImpl(false);
+			//cc = rt.createAgentContainer(p);
 			agent = new InterfazSwing2();
 			agentInterfaz = cc.acceptNewAgent(nombre, agent);
 			if (agentInterfaz != null) {
@@ -99,11 +107,12 @@ public class SimulaAgentes implements Runnable{
 			ex.printStackTrace();
 		}
 		
-		
+		//while(!todosJuntos.getBol()){
+		//}
 		
 		boolean autenticado = false;
 		
-		Testigo testigo = new Testigo();
+		Resultado testigo = new Resultado();
 		agent.swingAutentica(texto, passw, testigo);
 		//System.out.println("--------------------");
 						
@@ -114,7 +123,7 @@ public class SimulaAgentes implements Runnable{
 		//System.out.println("autenticado: "+autenticado);
 		
 		
-		Testigo testigo1 = new Testigo();
+		Resultado testigo1 = new Resultado();
 
 
 		agent.swingPideCorrector(testigo1);
@@ -126,7 +135,7 @@ public class SimulaAgentes implements Runnable{
 
 
 		//---------------------- PRACTICAS -----------------------------
-		Testigo testigo2 = new Testigo();
+		Resultado testigo2 = new Resultado();
 
 
 		agent.swingPidePracticas(testigo2);
@@ -157,11 +166,11 @@ public class SimulaAgentes implements Runnable{
 
 
 		//-------------------------- TESTS ---------------------------------
-		Testigo testigo3 = new Testigo();
+		Resultado testigo3 = new Resultado();
 
-		System.out.println("------------------------------------------------------");
+		//System.out.println("------------------------------------------------------");
 
-		System.out.println("Practica elegida: "+pract[eleccion].toString());
+		//System.out.println("Practica elegida: "+pract[eleccion].toString());
 		agent.swingPideTests(testigo3, pract[eleccion]);
 		while(!testigo3.isRelleno()){
 		}
@@ -207,7 +216,7 @@ public class SimulaAgentes implements Runnable{
 
 
 		//-------------------------- FICHEROS ------------------------------
-		Testigo testigo4 = new Testigo();
+		Resultado testigo4 = new Resultado();
 
 
 
@@ -224,7 +233,7 @@ public class SimulaAgentes implements Runnable{
 		for(int i = 0; i < cont.length; i++) {
 			String contenido3 = generaContenido();
 			cont[i]=contenido3;
-			System.out.println("Tamano del fichero: "+cont[i].length());
+			//System.out.println("Tamano del fichero: "+cont[i].length());
 		}
 
 
@@ -244,7 +253,7 @@ public class SimulaAgentes implements Runnable{
 		Long enMilisegundos = comienzo.getTime();
 
 		
-		Testigo testigo5 = new Testigo();
+		Resultado testigo5 = new Resultado();
 
 
 		agent.swingPideCorrector(testigo5);
@@ -254,12 +263,12 @@ public class SimulaAgentes implements Runnable{
 		AID nombreC = (AID) testigo5.getResultado();
 		String nombreCorto = nombreC.getName();
 		//nombreCorto = nombreC.getName();
-		System.out.println("Corrector: "+nombreCorto);
+		//System.out.println("Corrector: "+nombreCorto);
 
 		//GeneraRetardo(500);
 
 
-		Testigo testigo6 = new Testigo();
+		Resultado testigo6 = new Resultado();
 
 
 
@@ -279,27 +288,31 @@ public class SimulaAgentes implements Runnable{
 			textoEva = "Practica Aceptada";
 		} 
 
-		System.out.println("Resultado de la correccion: "+textoEva);
+		//System.out.println("Resultado de la correccion: "+textoEva);
 
 		Date finalizado = new Date();
 		Long enMilisegundos2 = finalizado.getTime();
 
 		Long duracion = enMilisegundos2 - enMilisegundos;
 		String duraAux = duracion.toString();
-		System.out.println("Tiempo necesitado: "+duraAux);
-		System.out.println("Interfaz: "+nombre); 
-		System.out.println("------------------------------------------------------");
+		//System.out.println("Tiempo necesitado: "+duraAux);
+		//System.out.println("Interfaz: "+nombre); 
+		//System.out.println("------------------------------------------------------");
 
 		String sFichero = "C:\\Documents and Settings\\Carlos\\Escritorio\\Resultados\\"+nombre+".txt";
 		File fichero = new File(sFichero);
 		try {
 			BufferedWriter bw = new BufferedWriter(new FileWriter(fichero));
+			
 			bw.write("Interfaz: "+nombre);
 			bw.newLine();
 			bw.write("Corrector: "+nombreCorto);
 			bw.newLine();
 			bw.write("Tiempo necesitado: "+duraAux);
+			/*bw.newLine();
+			bw.write("Hora de comienzo: "+ahora);
 			bw.newLine();
+			bw.write("Hora de finalizacion: "+finalizado);*/
 			bw.close();
 
 		} catch (IOException e) {
