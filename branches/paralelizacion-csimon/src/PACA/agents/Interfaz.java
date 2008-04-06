@@ -208,6 +208,9 @@ public class Interfaz extends Agent {
 	 **/
 	
 	public AID getAgenteCorrector(){
+		while (this.AgenteCorrector==null){
+			
+		}
 		return this.AgenteCorrector;
 	}
 

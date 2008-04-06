@@ -20,6 +20,7 @@ import jade.content.onto.basic.Action;
 import jade.content.onto.basic.Done;
 import jade.core.AID;
 import jade.core.Agent;
+import jade.core.behaviours.Behaviour;
 import jade.core.behaviours.CyclicBehaviour;
 import jade.core.behaviours.OneShotBehaviour;
 import jade.domain.DFService;
@@ -68,7 +69,7 @@ alumnos realizan.
 public class Corrector extends Agent {
 
 	// Modo de ejecuciÃ³n en pruebas
-	private boolean ejecucionEnPruebas = false;
+	private boolean ejecucionEnPruebas = true;
 	private boolean ejecucionEnPruebas2 = true;
 	//	Nombre de la ontologia
 	private Ontology ontologia = pacaOntology.getInstance();
@@ -425,11 +426,13 @@ public class Corrector extends Agent {
 	}
 	
 	
-	public class CorrigePractBehaviour extends OneShotBehaviour{
+	public class CorrigePractBehaviour extends Behaviour{
 		
 		private AbsContentElement mensaje;
 		private ACLMessage respuesta;
 		private String quien1;
+		
+		boolean done = false;
 		
 		public CorrigePractBehaviour(Agent _a, ACLMessage resp1, AbsContentElement msg1, String quien){
 			super(_a);
@@ -441,16 +444,19 @@ public class Corrector extends Agent {
 			try {
 				
 				//Añadido para realizar pruebas
-				if (ejecucionEnPruebas2){
+				/*if (ejecucionEnPruebas2){
 					Aleatorio rand = new Aleatorio();
-					int retardo = rand.nextInt(500, 3000);
-					try {
-						Thread.sleep(retardo);
-					} catch (InterruptedException e) {
-						// TODO Auto-generated catch block
-						e.printStackTrace();
-					} 
-				}
+					long retardo = rand.nextInt(500, 3000);
+					Date fechaActual = new Date();
+					Date fechaLimite = new Date(fechaActual.getTime() + retardo);
+					
+					while ((new Date()).before(fechaLimite)){
+						long bloqueo = fechaLimite.getTime()-(new Date()).getTime();
+						block(bloqueo);
+					}
+				}*/
+				
+				
 				//Fin añadido pruebas				
 				
 				
@@ -499,14 +505,22 @@ public class Corrector extends Agent {
 				getContentManager().fillContent(respuesta,qrr);
 				myAgent.send(respuesta);
 				
+				
+				
 			} catch (CodecException e) {
 				// TODO Auto-generated catch block
 				e.printStackTrace();
+				
 			} catch (OntologyException e) {
 				// TODO Auto-generated catch block
 				e.printStackTrace();
+				
 			}
+			done = true;
 						
+		}
+		public final boolean done(){
+			return done;
 		}
 	}
 	
@@ -588,7 +602,7 @@ public class Corrector extends Agent {
 								if (requestedInfoName.equals(SL2Vocabulary.IOTA)) {
 									// If QUERY-REF (iota  
 									// --> EnvioCorrecionAlumno <--------------------------------------------------
-									printError("Dentro de EnvioCorrecionAlumno");
+									//printError("Dentro de EnvioCorrecionAlumno");
 									numeroCorrecciones++;
 									ActualizacionDF();
 									addBehaviour(new CorrigePractBehaviour(this.myAgent, reply, l_in, msg.getSender().getLocalName()));
@@ -1511,7 +1525,7 @@ public class Corrector extends Agent {
 	Imprime el mensaje de error en caso de que estï¿½ activo el modo depuraciï¿½n.
 	 */
 	private void printError(String error) {
-		System.out.println(error);
+		//System.out.println(error);
 		if (debugMode) {
 
 			ACLMessage aclmen = new ACLMessage(ACLMessage.INFORM);
