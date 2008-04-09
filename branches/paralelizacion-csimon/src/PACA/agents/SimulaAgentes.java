@@ -13,6 +13,7 @@ import java.io.FileInputStream;
 import java.io.FileWriter;
 import java.io.IOException;
 import java.io.PrintStream;
+import java.io.PrintWriter;
 import java.util.Date;
 import java.util.Random;
 
@@ -23,7 +24,7 @@ import PACA.util.Testigo;
 //public class SimulaAgentes extends Thread{
 public class SimulaAgentes implements Runnable{
 //public class SimulaAgentes{
-	static class Aleatorio extends Random {
+	private class Aleatorio extends Random {
 		public int nextInt(int inferior, int superior) {
 			int i;
 			i=nextInt();
@@ -33,7 +34,7 @@ public class SimulaAgentes implements Runnable{
 	}
 	
 	//Metodo para generar contenido aleatorio entre 5K y 20K
-	static String generaContenido(){
+	private String generaContenido(){
 		
 		Aleatorio rand = new Aleatorio();
 		int tamano = rand.nextInt(5000, 20000);
@@ -44,6 +45,23 @@ public class SimulaAgentes implements Runnable{
 		String contenido2 = String.valueOf(contAux);
 		return contenido2;
 	}
+	
+	private synchronized void EscribeFichero(String sFicher, String duraAux){
+		File fichero = new File(sFicher);
+		try {
+			FileWriter ficheroA = new FileWriter(fichero,true);
+			PrintWriter pw = new PrintWriter(ficheroA);
+			pw.print(duraAux);
+			pw.print(";");
+			pw.close();
+
+		} catch (IOException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+		
+	}
+	
 	
 	//	Variables para crear el Agente Interfaz
 	ContainerController cc;
@@ -299,26 +317,36 @@ public class SimulaAgentes implements Runnable{
 		//System.out.println("Interfaz: "+nombre); 
 		//System.out.println("------------------------------------------------------");
 
-		String sFichero = "C:\\Documents and Settings\\Carlos\\Escritorio\\Resultados\\"+nombre+".txt";
-		File fichero = new File(sFichero);
-		try {
-			BufferedWriter bw = new BufferedWriter(new FileWriter(fichero));
+		//String sFichero = "C:\\Documents and Settings\\Carlos\\Escritorio\\Resultados\\"+nombre+".txt";
+		String sFichero = "C:\\Documents and Settings\\Carlos\\Escritorio\\Resultados\\Resultados.csv";
 			
-			bw.write("Interfaz: "+nombre);
+		//File fichero = new File(sFichero);
+		
+		EscribeFichero(sFichero, duraAux);
+		
+		
+		/*try {
+			//BufferedWriter bw = new BufferedWriter(new FileWriter(fichero,true));
+			FileWriter ficheroA = new FileWriter(fichero,true);
+			PrintWriter pw = new PrintWriter(ficheroA);
+			//bw.write("Interfaz: "+nombre);
+			//bw.newLine();
+			//bw.write("Corrector: "+nombreCorto);
+			//bw.newLine();
+			//bw.write("Tiempo necesitado: "+duraAux);
+			pw.print(duraAux);
+			pw.print(";");
 			bw.newLine();
-			bw.write("Corrector: "+nombreCorto);
-			bw.newLine();
-			bw.write("Tiempo necesitado: "+duraAux);
-			/*bw.newLine();
 			bw.write("Hora de comienzo: "+ahora);
 			bw.newLine();
-			bw.write("Hora de finalizacion: "+finalizado);*/
-			bw.close();
+			bw.write("Hora de finalizacion: "+finalizado);
+			//bw.close();
+			pw.close();
 
 		} catch (IOException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
-		}
+		}*/
 		//try {
 		//Thread.sleep(30000);
 		//System.exit(0);

@@ -207,9 +207,14 @@ public class Interfaz extends Agent {
 	 * Este m�todo devuelve el Agente Corrector que hemos elegido
 	 **/
 	
-	public AID getAgenteCorrector(){
+	public synchronized AID getAgenteCorrector(){
 		while (this.AgenteCorrector==null){
-			
+			try {
+				wait();
+			} catch (InterruptedException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			}
 		}
 		return this.AgenteCorrector;
 	}
@@ -217,8 +222,9 @@ public class Interfaz extends Agent {
 	/**
 	 * Este m�todo asigna el Agente Corrector que hemos elegido 
 	 */
-	public void setAgenteCorrector(AID agenteCorr){
+	public synchronized void setAgenteCorrector(AID agenteCorr){
 		this.AgenteCorrector=agenteCorr;
+		notify();
 	}
 	
 	/**

@@ -137,6 +137,11 @@ public class Corrector extends Agent {
 	
 	
 	private Integer numeroCorrecciones = 0;
+	private Integer numeroCorrecionesActual = 0;
+	//intervalo es el tiempo entre actualizaciones del df
+	private long intervalo = 3000;
+	private Date fechaActual = new Date();
+	Date fechaLimite = new Date(fechaActual.getTime() + intervalo);
 	
 
 	/**
@@ -457,7 +462,18 @@ public class Corrector extends Agent {
 				}*/
 				
 				
-				//Fin añadido pruebas				
+				//Fin añadido pruebas	
+				
+				//Actualizamos el DF
+				numeroCorrecciones++;
+				
+				if ((new Date()).after(fechaLimite)){
+					numeroCorrecciones = numeroCorrecciones - numeroCorrecionesActual;
+					ActualizacionDF();
+					numeroCorrecionesActual = numeroCorrecciones;
+				}
+				
+				
 				
 				
 				AbsIRE iotaPred = (AbsIRE) mensaje;
@@ -505,6 +521,10 @@ public class Corrector extends Agent {
 				getContentManager().fillContent(respuesta,qrr);
 				myAgent.send(respuesta);
 				
+				//Actualizamos fechas
+				fechaActual = new Date();
+				fechaLimite = new Date(fechaActual.getTime() + intervalo);
+				
 				
 				
 			} catch (CodecException e) {
@@ -543,7 +563,7 @@ public class Corrector extends Agent {
 			printError("Creada CorrectorBehaviour");
 		}
 
-		/**
+		/**	
 		Mï¿½todo que se ejecuta cada vez que se inicia el comportamiento.
 		 */
 		public void action() {
@@ -603,10 +623,17 @@ public class Corrector extends Agent {
 									// If QUERY-REF (iota  
 									// --> EnvioCorrecionAlumno <--------------------------------------------------
 									//printError("Dentro de EnvioCorrecionAlumno");
-									numeroCorrecciones++;
-									ActualizacionDF();
-									addBehaviour(new CorrigePractBehaviour(this.myAgent, reply, l_in, msg.getSender().getLocalName()));
+									/*numeroCorrecciones++;
 									
+									if ((new Date()).after(fechaLimite)){
+										numeroCorrecciones = numeroCorrecciones - numeroCorrecionesActual;
+										ActualizacionDF();
+										numeroCorrecionesActual = numeroCorrecciones;
+									}*/
+									
+									addBehaviour(new CorrigePractBehaviour(this.myAgent, reply, l_in, msg.getSender().getLocalName()));
+									/*fechaActual = new Date();
+									fechaLimite = new Date(fechaActual.getTime() + intervalo);*/
 									
 
 								} else {
