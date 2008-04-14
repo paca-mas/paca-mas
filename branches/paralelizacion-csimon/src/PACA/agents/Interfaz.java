@@ -44,6 +44,7 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.Random;
 
+import PACA.agents.lanzaSwing2.Aleatorio;
 import PACA.ontology.Alumno;
 import PACA.ontology.Corrector;
 import PACA.ontology.Corrige;
@@ -665,6 +666,8 @@ public class Interfaz extends Agent {
 	
 	//Método que nos devuelve el corrector al que pediremos la correción
 	public AID doBuscarCorrector(){
+		
+		
 						
 		DFAgentDescription template = new DFAgentDescription();
 		ServiceDescription sd = new ServiceDescription();
@@ -690,25 +693,21 @@ public class Interfaz extends Agent {
 				ServiceDescription sd2 = (ServiceDescription) sd1.next();
 				Iterator propiedades = sd2.getAllProperties();
 				Property prop2 = (Property) propiedades.next();
-				//System.out.println("Corrector... "+result[i].getName());
-				//System.out.println("prop:"+prop2.getName());
-				//System.out.println("ValorProp: "+prop2.getValue());
-				//System.out.println("===============================================");
-				
+				Integer prop3 = Integer.valueOf((String) prop2.getValue());
+				//System.out.println("Prop3: "+prop3);
+								
 				agentesCorrectores[i]=result[i].getName();
 				//Fin para buscar propiedades
 			}
 			
 			
-			/*
-			for (int i = 0; i < result.length; ++i) {
-            	agentesCorrectores[i] = result[i].getName();
-            }*/
-			
+						
 			Random rand = new Random();
 			int indiceCorrector = rand.nextInt(100);
 					
 			int politica=indiceCorrector%tamano;
+			
+			agenteCorr = politicaMinimos(result);
 					
 			agenteCorr=agentesCorrectores[politica];
 		
@@ -720,6 +719,8 @@ public class Interfaz extends Agent {
 			else{
 				almacenCorrec.put(agenteCorr, new Integer(1));
 			}
+			
+			//agenteCorr = politicaAleatoria(agentesCorrectores);
 			
 					
 			setAgenteCorrector(agenteCorr);
@@ -733,6 +734,75 @@ public class Interfaz extends Agent {
 		
 		return agenteCorr;
 	}
+	
+	
+	//---------------------- POLITICAS PARA ELECCION DE CORRECTOR
+	
+	//--------------------- ALEATORIA -------------------------------
+	public AID politicaAleatoria(AID [] agentesCorrectores1){
+		Random rand = new Random();
+		AID agenteCorr;
+		int indiceCorrector = rand.nextInt(100);
+
+		int politica = indiceCorrector%agentesCorrectores1.length;
+
+		agenteCorr = agentesCorrectores1[politica];
+
+		if (almacenCorrec.containsKey(agenteCorr)){
+			usado = almacenCorrec.get(agenteCorr);
+			usado++;
+			almacenCorrec.put(agenteCorr, usado);
+		}
+		else{
+			almacenCorrec.put(agenteCorr, new Integer(1));
+		}
+
+
+		return agenteCorr;
+
+	}
+	
+	public AID politicaMinimos (DFAgentDescription[] result1){
+		AID agenteCorr = null;
+		AID [] agentesCorrectores1 = new AID [result1.length];
+		
+		
+		for (int i = 0; i < result1.length; ++i) {
+			
+			//Para buscar propiedades
+			DFAgentDescription dfd = result1[i];
+			Iterator sd1 = dfd.getAllServices();
+			ServiceDescription sd2 = (ServiceDescription) sd1.next();
+			Iterator propiedades = sd2.getAllProperties();
+			Property prop = (Property) propiedades.next();
+			Integer valorProp = Integer.valueOf((String) prop.getValue());
+			System.out.println("Prop3: "+valorProp);
+			
+			if (almacenCorrec.containsKey(result1[i].getName())){
+				almacenCorrec.put(result1[i].getName(), valorProp);
+			}
+			else{
+				almacenCorrec.put(result1[i].getName(), valorProp);
+			}
+			
+			
+			//Fin para buscar propiedades
+		}
+		
+		Collection<Integer> coleccion = almacenCorrec.values();
+		List<Integer> lista = new ArrayList<Integer>();
+		for(Integer l:coleccion){
+			lista.add(l);
+		}
+		
+		System.out.println("Lista: "+lista.toString());
+		
+		agenteCorr = agentesCorrectores1[0];
+				
+		return agenteCorr;
+	}
+	
+
 	
 	
 	
