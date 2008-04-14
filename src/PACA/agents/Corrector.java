@@ -298,12 +298,15 @@ public class Corrector extends Agent {
 		private ACLMessage mens1;
 		private List<AbsPredicate> pred1;
 		private AbsIRE ire1;
+		private AndBuilder predicado;
 
-		public TestsCorrecBehaviour(Agent _a, ACLMessage msg1, List<AbsPredicate> pred, AbsIRE ire) {
+		//public TestsCorrecBehaviour(Agent _a, ACLMessage msg1, List<AbsPredicate> pred, AbsIRE ire) {
+		public TestsCorrecBehaviour(Agent _a, ACLMessage msg1, AndBuilder predicado1, AbsIRE ire) {	
 			super(_a);
 			this.mens1 = msg1;
-			this.pred1 = pred;
+			//this.pred1 = pred;
 			this.ire1 = ire;
+			this.predicado = predicado1;
 		}
 
 		public void action() {
@@ -311,7 +314,12 @@ public class Corrector extends Agent {
 			//Obtenemos el predicado TESTS
 			Tests tes;
 			try {
-				Iterator<AbsPredicate> it = pred1.iterator();
+				List<AbsPredicate> listaT = new ArrayList<AbsPredicate>();
+				listaT = predicado.getPredicateList(pacaOntology.TESTS);
+				
+				
+				//Iterator<AbsPredicate> it = pred1.iterator();
+				Iterator<AbsPredicate> it = listaT.iterator();
 				tes = (Tests) ontologia.toObject(it.next());
 				
 				Test[] te;
@@ -359,12 +367,15 @@ public class Corrector extends Agent {
 		private List<AbsPredicate> lCorrige;
 		private List<AbsPredicate> ltests;
 		private AbsIRE ire1;
+		private AndBuilder predicado;
 
-		public FicherosCorrBehaviour(Agent _a, ACLMessage msg1, List<AbsPredicate> lCorrige1, List<AbsPredicate> predDcha, AbsIRE ire) {
+		//public FicherosCorrBehaviour(Agent _a, ACLMessage msg1, List<AbsPredicate> lCorrige1, List<AbsPredicate> predDcha, AbsIRE ire) {
+		public FicherosCorrBehaviour(Agent _a, ACLMessage msg1, AndBuilder predicado1, AbsIRE ire) {
 			super(_a);
 			this.mens1 = msg1;
-			this.lCorrige = lCorrige1;
-			this.ltests = predDcha;
+			//this.lCorrige = lCorrige1;
+			//this.ltests = predDcha;
+			this.predicado = predicado1;
 			this.ire1 = ire;
 		}
 
@@ -372,13 +383,21 @@ public class Corrector extends Agent {
 			
 			Corrige corr;
 			try {
-				Iterator<AbsPredicate> itCor = lCorrige.iterator();
+				
+				List<AbsPredicate> lisCorrige = predicado.getPredicateList(pacaOntology.CORRIGE);
+				List<AbsPredicate> listTests = predicado.getPredicateList(pacaOntology.TESTS);
+				
+				
+				//Iterator<AbsPredicate> itCor = lCorrige.iterator();
+				Iterator<AbsPredicate> itCor = lisCorrige.iterator();
+				
 				corr = (Corrige) ontologia.toObject(itCor.next());
 				Practica pract = corr.getPractica();
 				
 				//Guardamos todos los Test que nos han pedido
-				Test[] testAux3 = ExtraeTestsPedidos(ltests);
-
+				//Test[] testAux3 = ExtraeTestsPedidos(ltests);
+				Test[] testAux3 = ExtraeTestsPedidos(listTests);
+				
 				//Obtenemos los ficheros fuentes necesarios para cada Test
 				FuentesPrograma[] fp = FicheroParaPractica(pract.getId(), testAux3);
 
@@ -657,17 +676,19 @@ public class Corrector extends Agent {
 										
 										if (predicado.existsPredicate(pacaOntology.FICHEROFUENTES)){
 											
-											List<AbsPredicate> lisCorrige = predicado.getPredicateList(pacaOntology.CORRIGE);
-											List<AbsPredicate> listTests = predicado.getPredicateList(pacaOntology.TESTS);
-											addBehaviour(new FicherosCorrBehaviour(this.myAgent, reply, lisCorrige, listTests, allPred));
+											//List<AbsPredicate> lisCorrige = predicado.getPredicateList(pacaOntology.CORRIGE);
+											//List<AbsPredicate> listTests = predicado.getPredicateList(pacaOntology.TESTS);
+											//addBehaviour(new FicherosCorrBehaviour(this.myAgent, reply, lisCorrige, listTests, allPred));
+											addBehaviour(new FicherosCorrBehaviour(this.myAgent, reply, predicado, allPred));
 
 
 										} else {
 											// --> TestPorPractica <-------------------------------------------------------
 																						
-											List<AbsPredicate> listaT = new ArrayList<AbsPredicate>();
-											listaT=predicado.getPredicateList(pacaOntology.TESTS);
-											addBehaviour(new TestsCorrecBehaviour(this.myAgent, reply, listaT, allPred));
+											//List<AbsPredicate> listaT = new ArrayList<AbsPredicate>();
+											//listaT=predicado.getPredicateList(pacaOntology.TESTS);
+											//addBehaviour(new TestsCorrecBehaviour(this.myAgent, reply, listaT, allPred));
+											addBehaviour(new TestsCorrecBehaviour(this.myAgent, reply, predicado, allPred));
 										}
 									}
 
