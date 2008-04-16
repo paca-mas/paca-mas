@@ -4,8 +4,6 @@ package PACA.agents;
 
 
 //Paquetes JAVA.
-import jade.content.AgentAction;
-import jade.content.Concept;
 import jade.content.abs.AbsAgentAction;
 import jade.content.abs.AbsAggregate;
 import jade.content.abs.AbsConcept;
@@ -35,16 +33,18 @@ import jade.domain.FIPAAgentManagement.Property;
 import jade.domain.FIPAAgentManagement.ServiceDescription;
 import jade.lang.acl.ACLMessage;
 import jade.lang.acl.MessageTemplate;
-import jade.util.leap.Serializable;
+import jade.util.leap.Collection;
 
 import java.util.ArrayList;
-import java.util.Collection;
+import java.util.Collections;
+import java.util.Comparator;
 import java.util.Hashtable;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Random;
 
-import PACA.agents.lanzaSwing2.Aleatorio;
+import sun.misc.Sort;
+
 import PACA.ontology.Alumno;
 import PACA.ontology.Corrector;
 import PACA.ontology.Corrige;
@@ -57,12 +57,12 @@ import PACA.ontology.Test;
 import PACA.ontology.Tests;
 import PACA.ontology.pacaOntology;
 import PACA.ontology.Fichero.FuentesPrograma;
+import PACA.util.AndBuilder;
+import PACA.util.EstadoCorrector;
+import PACA.util.Resultado;
 import auth.ontology.Autenticado;
 import auth.ontology.AuthOntology;
 import auth.ontology.Usuario;
-import PACA.util.Testigo;
-
-import PACA.util.*;
 
 
 
@@ -232,6 +232,7 @@ public class Interfaz extends Agent {
 	 * Creamos la tabla Hash "almacenCorrec" para guardar los correctores que hemos utilizado
 	 */
 	public Hashtable<AID,Integer> almacenCorrec = new Hashtable<AID,Integer>();
+	
 	
 	
 	/**
@@ -687,7 +688,7 @@ public class Interfaz extends Agent {
 					
 			for (int i = 0; i < result.length; ++i) {
 				
-				//Para buscar propiedades
+				/*//Para buscar propiedades
 				DFAgentDescription dfd = result[i];
 				Iterator sd1 = dfd.getAllServices();
 				ServiceDescription sd2 = (ServiceDescription) sd1.next();
@@ -695,21 +696,21 @@ public class Interfaz extends Agent {
 				Property prop2 = (Property) propiedades.next();
 				Integer prop3 = Integer.valueOf((String) prop2.getValue());
 				//System.out.println("Prop3: "+prop3);
-								
+*/								
 				agentesCorrectores[i]=result[i].getName();
 				//Fin para buscar propiedades
 			}
 			
 			
 						
-			Random rand = new Random();
+			/*Random rand = new Random();
 			int indiceCorrector = rand.nextInt(100);
 					
 			int politica=indiceCorrector%tamano;
 			
-			agenteCorr = politicaMinimos(result);
+			
 					
-			agenteCorr=agentesCorrectores[politica];
+			agenteCorr = agentesCorrectores[politica];
 		
 			if (almacenCorrec.containsKey(agenteCorr)){
 				usado = almacenCorrec.get(agenteCorr);
@@ -718,7 +719,9 @@ public class Interfaz extends Agent {
 			}
 			else{
 				almacenCorrec.put(agenteCorr, new Integer(1));
-			}
+			}*/
+			
+			agenteCorr = politicaMinimos(result);
 			
 			//agenteCorr = politicaAleatoria(agentesCorrectores);
 			
@@ -735,8 +738,19 @@ public class Interfaz extends Agent {
 		return agenteCorr;
 	}
 	
-	
+			
 	//---------------------- POLITICAS PARA ELECCION DE CORRECTOR
+	public Integer getCorrecciones(DFAgentDescription dfAux){
+		Iterator sd1 = dfAux.getAllServices();
+		ServiceDescription sd2 = (ServiceDescription) sd1.next();
+		Iterator propiedades = sd2.getAllProperties();
+		Property prop = (Property) propiedades.next();
+		Integer valorProp = Integer.valueOf((String) prop.getValue());
+		
+		return valorProp;
+		
+	}
+	
 	
 	//--------------------- ALEATORIA -------------------------------
 	public AID politicaAleatoria(AID [] agentesCorrectores1){
@@ -762,43 +776,52 @@ public class Interfaz extends Agent {
 
 	}
 	
+	
+	
+	public static void pintaLista(List lista) {
+        for(int i=0;i<lista.size();i++) {
+            System.out.println(lista.get(i).toString());
+        }
+    } 
+	
+		
+	
 	public AID politicaMinimos (DFAgentDescription[] result1){
+				
 		AID agenteCorr = null;
 		AID [] agentesCorrectores1 = new AID [result1.length];
+		List almacen = new ArrayList();
+		
+		Random rand = new Random();
+		int indiceCorrector = rand.nextInt(2);
 		
 		
 		for (int i = 0; i < result1.length; ++i) {
 			
 			//Para buscar propiedades
 			DFAgentDescription dfd = result1[i];
-			Iterator sd1 = dfd.getAllServices();
-			ServiceDescription sd2 = (ServiceDescription) sd1.next();
-			Iterator propiedades = sd2.getAllProperties();
-			Property prop = (Property) propiedades.next();
-			Integer valorProp = Integer.valueOf((String) prop.getValue());
-			System.out.println("Prop3: "+valorProp);
+			Integer valorProp = getCorrecciones(dfd);
 			
 			if (almacenCorrec.containsKey(result1[i].getName())){
-				almacenCorrec.put(result1[i].getName(), valorProp);
+				EstadoCorrector estadoAux = new EstadoCorrector(result1[i].getName(),valorProp);
+				almacen.add(estadoAux);
+				
 			}
 			else{
-				almacenCorrec.put(result1[i].getName(), valorProp);
+				almacenCorrec.put(result1[i].getName(), i);
+				EstadoCorrector estadoAux = new EstadoCorrector(result1[i].getName(),valorProp);
+				almacen.add(estadoAux);
 			}
 			
-			
-			//Fin para buscar propiedades
 		}
 		
-		Collection<Integer> coleccion = almacenCorrec.values();
-		List<Integer> lista = new ArrayList<Integer>();
-		for(Integer l:coleccion){
-			lista.add(l);
-		}
 		
-		System.out.println("Lista: "+lista.toString());
-		
-		agenteCorr = agentesCorrectores1[0];
+		Collections.sort(almacen);
+		//pintaLista(almacen);
 				
+		EstadoCorrector correctorElegido = (EstadoCorrector) almacen.get(indiceCorrector);
+		agenteCorr = correctorElegido.getIdentificador();
+						
 		return agenteCorr;
 	}
 	
