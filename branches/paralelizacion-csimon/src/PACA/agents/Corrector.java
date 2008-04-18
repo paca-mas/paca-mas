@@ -484,15 +484,15 @@ public class Corrector extends Agent {
 				//Fin añadido pruebas	
 				
 				//Actualizamos el DF
-				numeroCorrecciones++;
+				/*numeroCorrecciones++;
 				
 				if ((new Date()).after(fechaLimite)){
 					numeroCorrecciones = numeroCorrecciones - numeroCorrecionesActual;
 					ActualizacionDF();
 					numeroCorrecionesActual = numeroCorrecciones;
-				}
+				}*/
 				
-				
+				numeroCorrecciones++;
 				
 				
 				AbsIRE iotaPred = (AbsIRE) mensaje;
@@ -540,9 +540,9 @@ public class Corrector extends Agent {
 				getContentManager().fillContent(respuesta,qrr);
 				myAgent.send(respuesta);
 				
-				//Actualizamos fechas
+				/*//Actualizamos fechas
 				fechaActual = new Date();
-				fechaLimite = new Date(fechaActual.getTime() + intervalo);
+				fechaLimite = new Date(fechaActual.getTime() + intervalo);*/
 				
 				
 				
@@ -562,6 +562,34 @@ public class Corrector extends Agent {
 			return done;
 		}
 	}
+	
+	public class ActualizaCorrecciones extends Behaviour{
+		
+		boolean finalizado = false;
+		
+		public void action(){
+			if ((new Date()).after(fechaLimite)){
+				numeroCorrecciones = numeroCorrecciones - numeroCorrecionesActual;
+				System.out.println(myAgent.getName()+": "+numeroCorrecciones);
+				ActualizacionDF();
+				numeroCorrecionesActual = numeroCorrecciones;
+				//Actualizamos fechas
+				fechaActual = new Date();
+				fechaLimite = new Date(fechaActual.getTime() + intervalo);
+				
+			}
+			finalizado = true;
+			
+		}
+
+		@Override
+		public boolean done() {
+			// TODO Auto-generated method stub
+			return finalizado;
+		}
+	}
+	
+	
 	
 
 	/**
@@ -589,6 +617,7 @@ public class Corrector extends Agent {
 
 			// Start
 			
+						
 			ACLMessage msg = receive();
 
 			if (msg != null) {
@@ -636,26 +665,18 @@ public class Corrector extends Agent {
 								reply.setPerformative(ACLMessage.NOT_UNDERSTOOD);
 								String content = "(" + msg.toString() + ")";
 								reply.setContent(content);
-							} else {
+							} 
+							else {
 
 								if (requestedInfoName.equals(SL2Vocabulary.IOTA)) {
 									// If QUERY-REF (iota  
 									// --> EnvioCorrecionAlumno <--------------------------------------------------
 									//printError("Dentro de EnvioCorrecionAlumno");
-									/*numeroCorrecciones++;
-									
-									if ((new Date()).after(fechaLimite)){
-										numeroCorrecciones = numeroCorrecciones - numeroCorrecionesActual;
-										ActualizacionDF();
-										numeroCorrecionesActual = numeroCorrecciones;
-									}*/
-									
+																	
 									addBehaviour(new CorrigePractBehaviour(this.myAgent, reply, l_in, msg.getSender().getLocalName()));
-									/*fechaActual = new Date();
-									fechaLimite = new Date(fechaActual.getTime() + intervalo);*/
 									
-
-								} else {
+								} 
+								else {
 									// Here, is QUERY-REF (all
 
 									AbsIRE allPred = (AbsIRE) l_in;
@@ -669,25 +690,16 @@ public class Corrector extends Agent {
 									if (requestedInfo2Name.equals(pacaOntology.CORRIGE)) {
 										// --> PracticasDisponibles <--------------------------------------------------
 										addBehaviour(new PracCorrecBehaviour(this.myAgent, reply, allPred));
-									} else {
-
+									} 
+									else {
 										AndBuilder predicado = new AndBuilder();
 										predicado.addPredicate(qall);
-										
+									
 										if (predicado.existsPredicate(pacaOntology.FICHEROFUENTES)){
-											
-											//List<AbsPredicate> lisCorrige = predicado.getPredicateList(pacaOntology.CORRIGE);
-											//List<AbsPredicate> listTests = predicado.getPredicateList(pacaOntology.TESTS);
-											//addBehaviour(new FicherosCorrBehaviour(this.myAgent, reply, lisCorrige, listTests, allPred));
 											addBehaviour(new FicherosCorrBehaviour(this.myAgent, reply, predicado, allPred));
-
-
-										} else {
+										} 
+										else {
 											// --> TestPorPractica <-------------------------------------------------------
-																						
-											//List<AbsPredicate> listaT = new ArrayList<AbsPredicate>();
-											//listaT=predicado.getPredicateList(pacaOntology.TESTS);
-											//addBehaviour(new TestsCorrecBehaviour(this.myAgent, reply, listaT, allPred));
 											addBehaviour(new TestsCorrecBehaviour(this.myAgent, reply, predicado, allPred));
 										}
 									}
@@ -822,6 +834,8 @@ public class Corrector extends Agent {
 				
 			} //============================== cambios para el receive no bloqueante ==========
 			else {
+				
+				addBehaviour(new ActualizaCorrecciones());
 				block();
 			}
 			//============================== fin cambios receive no bloqueante ==============
@@ -884,6 +898,7 @@ public class Corrector extends Agent {
 
 		// Add the behaviour to the agent
 		addBehaviour(Principal);
+		addBehaviour(new ActualizaCorrecciones());
 	}
 
 

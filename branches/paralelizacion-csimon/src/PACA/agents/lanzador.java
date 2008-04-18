@@ -3,7 +3,9 @@ package PACA.agents;
 import jade.core.Profile;
 import jade.core.ProfileImpl;
 import jade.core.Runtime;
+import jade.wrapper.AgentController;
 import jade.wrapper.ContainerController;
+import jade.wrapper.StaleProxyException;
 
 import java.awt.BorderLayout;
 import java.awt.Dimension;
@@ -23,6 +25,10 @@ import javax.swing.JComboBox;
 import javax.swing.JFrame;
 import javax.swing.JPanel;
 
+import sun.management.resources.agent;
+
+import PACA.util.Resultado;
+
 import com.sun.corba.se.spi.orbutil.threadpool.ThreadPool;
 
 public class lanzador {
@@ -31,9 +37,14 @@ public class lanzador {
 	static JPanel panel = new JPanel();
 	static JPanel panel2 = new JPanel();
 	static List listaThreads = new List();
-	static JComboBox caja = new JComboBox();
+	static String [] numAgents = {"1", "5" ,"10" ,"20" ,"40"};
+	static String [] politicas = {"aleatoria", "minimos"};
+	//static JComboBox caja = new JComboBox();
+	static JComboBox caja = null;
+	static JComboBox cajaPoliticas = null;
 	static int numero = 50;
 	static JButton botonLanza = new JButton("Numero de Agentes"); 
+	static JButton botonPolitica = new JButton("Politica");
 	static JButton botonTermina = new JButton("Termina Thread");
 	static JButton botonTerminaTodos = new JButton("Termina Todos");
 	static boolean terminado = false;
@@ -43,6 +54,11 @@ public class lanzador {
 	static ContainerController cc = null;
 	
 	Boolean bol;
+	//	Variables para crear el Agente Interfaz
+	
+	//static String politica = "minimos";
+	
+	static String politica;
 	
 	
 	
@@ -70,17 +86,22 @@ public class lanzador {
 		Profile p = new ProfileImpl(false);
 		cc = rt.createAgentContainer(p);
 		
-		lanz.setBol(false);
+		//lanz.setBol(false);
 		
-		for (int i = 1; i <= numero; i++) {
-			caja.addItem(Integer.toString(i));
-		}
+		caja = new JComboBox(numAgents);
+		cajaPoliticas = new JComboBox(politicas);
 
-		panel.add(caja);
+		/*panel.add(caja);
 		panel.add(botonLanza);
 		panel2.add(listaThreads);
 		panel2.add(botonTermina);
-		panel2.add(botonTerminaTodos);
+		panel2.add(botonTerminaTodos);*/
+		
+		panel.add(cajaPoliticas);
+		panel.add(botonPolitica);
+		
+		panel2.add(caja);
+		panel2.add(botonLanza);
 
 		ventana.setSize(new Dimension(600, 300));	
 
@@ -93,7 +114,11 @@ public class lanzador {
 		ventana.setVisible(true);
 
 
-
+		botonLanza.addMouseListener( new MouseAdapter(){
+			public void mousePressed(MouseEvent e){
+				politica = (String) cajaPoliticas.getSelectedItem();
+			}
+		} );	
 
 
 
@@ -104,40 +129,25 @@ public class lanzador {
 				String numero  =  (String) caja.getSelectedItem();
 				//System.out.println("Agentes para lanzar: "+numero);
 
-				Thread[] hilos = new Thread[Integer.valueOf(numero)];
-
-				Thread t1;
+				//Thread[] hilos = new Thread[Integer.valueOf(numero)];
+				//Thread t1;
+				int numThreads = Integer.valueOf(numero);
 				
-				Executor pool = Executors.newFixedThreadPool(hilos.length);
-
-				for (int i = 0; i < hilos.length; i++) {
-					//try {
-					//Runtime rt = Runtime.getRuntime();
-					//System.out.println("Intentamos lanzar el comando");
-					//rt.exec("java PACA.agents.lanzaSwing2");
-					//try {
-						//rt.exec("java PACA.agents.SimulaAgentes");
-						//rt.exec("java PACA.agents.lanzaSwing2");
-					//} catch (IOException e1) {
-					 //TODO Auto-generated catch block
-					//e1.printStackTrace();
-					//}
-
-					//t1 = new Thread(new SimulaAgentes(cc, i));
-					//new Thread(new SimulaAgentes()).start();
-					SimulaAgentes sim1 = new SimulaAgentes(cc, i);
-					pool.execute(sim1);
-					//t1 = new SimulaAgentes();
-
-					//t1.start();
-					//listaThreads.add(t1.getName());
-					//hilos[i] = t1;
-					//t1.start();
+				Executor pool = Executors.newFixedThreadPool(numThreads);
+				
+				for (int i = 0; i < numThreads; i++) {
+									
 					
-					GeneraRetardo(1000);
+					//------------------ NO BORRAR -----------------
+					SimulaAgentes sim1 = new SimulaAgentes(cc, i, politica);
+					pool.execute(sim1);
+					//------------------ FIN NO BORRAR -------------
+									
+					GeneraRetardo(750);
 
 				}
 				
+										
 				/*listaThreads.setMultipleMode(true);
 				panel2.add(listaThreads);
 				panel2.add(botonTermina);

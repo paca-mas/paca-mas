@@ -69,6 +69,8 @@ public class lanzaSwing2 {
     static ContainerController cc;
     static AgentController agentInterfaz=null;
     static InterfazSwing2 agent=null;
+    
+    static String politica = "minimos";
     //Fin Variables Agente Interfaz
             
 	static void repintar(JFrame frame1, JPanel panel1){
@@ -193,7 +195,7 @@ public class lanzaSwing2 {
 		
 		if (autenticado){
 			testigo = new Testigo();
-			agent.swingPideCorrector(testigo);
+			agent.swingPideCorrector(testigo, politica);
 			while(!testigo.isRelleno()){
 			}
 								
@@ -315,7 +317,7 @@ public class lanzaSwing2 {
 				}
 				
 					
-				agent.swingPideCorrector(testigo);
+				agent.swingPideCorrector(testigo, politica);
 				while(!testigo.isRelleno()){
 				}
 				
