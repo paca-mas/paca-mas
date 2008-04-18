@@ -36,7 +36,7 @@ public class SimulaAgentes implements Runnable{
 				try{wait();
 			}
 				catch (InterruptedException e){
-					//keep trying
+					e.printStackTrace();
 				}
 			}
 			count--;
@@ -44,7 +44,7 @@ public class SimulaAgentes implements Runnable{
 		
 		public synchronized void SIGNAL(){
 			count++;
-			notify();//alert a thread that's blocking the semaphore
+			notify();
 		}
 	} 
 //public class SimulaAgentes{
@@ -70,7 +70,8 @@ public class SimulaAgentes implements Runnable{
 		return contenido2;
 	}
 	
-	private synchronized void EscribeFichero(String sFicher, String duraAux, String nombre, String nombreCorto, String practica){
+	private synchronized void EscribeFichero(String sFicher, String duraAux,
+			String nombre, String nombreCorto, String practica, String politica) {
 		
 		File fichero = new File(sFicher);
 		try {
@@ -84,6 +85,8 @@ public class SimulaAgentes implements Runnable{
 			pw.print(duraAux);
 			pw.print(";");
 			pw.print(practica);
+			pw.print(";");
+			pw.print(politica);
 			pw.print(";");
 			pw.println();
 			pw.close();
@@ -117,12 +120,14 @@ public class SimulaAgentes implements Runnable{
 	
 	
 	
-	int numeroThread=0;
+	int numeroThread;
+	String politica;
 	
-	public SimulaAgentes(ContainerController cc, int num){
+	public SimulaAgentes(ContainerController cc, int num, String politica){
 		super();
 		this.cc = cc;
-		numeroThread = num;
+		this.numeroThread = num;
+		this.politica = politica;
 		//this.todosJuntos=lanz;
 	}
 		
@@ -172,7 +177,7 @@ public class SimulaAgentes implements Runnable{
 				
 		
 		Resultado testigo1 = new Resultado();
-		agent.swingPideCorrector(testigo1);
+		agent.swingPideCorrector(testigo1, politica);
 		while(!testigo1.isRelleno()){
 		}
 
@@ -253,7 +258,7 @@ public class SimulaAgentes implements Runnable{
 
 			Resultado testigo5 = new Resultado();
 
-			agent.swingPideCorrector(testigo5);
+			agent.swingPideCorrector(testigo5, politica);
 			while(!testigo5.isRelleno()){
 			}
 
@@ -287,7 +292,7 @@ public class SimulaAgentes implements Runnable{
 			//String sFichero = "C:\\Documents and Settings\\Carlos\\Escritorio\\Resultados\\"+nombre+".txt";
 			String sFichero = "C:\\Documents and Settings\\Carlos\\Escritorio\\Resultados\\Resultados.csv";
 
-			EscribeFichero(sFichero, duraAux, nombre, nombreCorto, practica);
+			EscribeFichero(sFichero, duraAux, nombre, nombreCorto, practica, politica);
 		}
 	}
 

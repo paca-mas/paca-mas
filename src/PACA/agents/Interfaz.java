@@ -666,7 +666,7 @@ public class Interfaz extends Agent {
 	
 	
 	//Método que nos devuelve el corrector al que pediremos la correción
-	public AID doBuscarCorrector(){
+	public AID doBuscarCorrector(String politica){
 		
 		
 						
@@ -721,7 +721,14 @@ public class Interfaz extends Agent {
 				almacenCorrec.put(agenteCorr, new Integer(1));
 			}*/
 			
-			agenteCorr = politicaMinimos(result);
+					
+			if (politica.equals("aleatoria")){
+				agenteCorr = politicaAleatoria(agentesCorrectores);
+			}
+			else{
+				agenteCorr = politicaMinimos(result);
+			}
+			//agenteCorr = politicaMinimos(result);
 			
 			//agenteCorr = politicaAleatoria(agentesCorrectores);
 			
@@ -771,7 +778,6 @@ public class Interfaz extends Agent {
 			almacenCorrec.put(agenteCorr, new Integer(1));
 		}
 
-
 		return agenteCorr;
 
 	}
@@ -786,6 +792,7 @@ public class Interfaz extends Agent {
 	
 		
 	
+	@SuppressWarnings("unchecked")
 	public AID politicaMinimos (DFAgentDescription[] result1){
 				
 		AID agenteCorr = null;
@@ -821,7 +828,7 @@ public class Interfaz extends Agent {
 				
 		EstadoCorrector correctorElegido = (EstadoCorrector) almacen.get(indiceCorrector);
 		agenteCorr = correctorElegido.getIdentificador();
-						
+								
 		return agenteCorr;
 	}
 	
@@ -907,12 +914,14 @@ public class Interfaz extends Agent {
 		
 	public class CorrectorBehaviour extends OneShotBehaviour{
 		private Resultado tes1;
-		public CorrectorBehaviour(Agent _a, Resultado test){
+		private String politica;
+		public CorrectorBehaviour(Agent _a, Resultado test, String poli1){
 			super(_a);
 			this.tes1 = test;
+			this.politica = poli1;
 		}
 		public void action(){
-			tes1.setResultado(doBuscarCorrector());
+			tes1.setResultado(doBuscarCorrector(politica));
 		}
 	}
 	

@@ -21,8 +21,8 @@ public class InterfazSwing2 extends Interfaz{
 		addBehaviour(new EnviaAutenticaBehaviour(this, tes, usu, pass));
 	}
 	
-	public void swingPideCorrector(Resultado tes){
-		addBehaviour(new CorrectorBehaviour(this, tes));
+	public void swingPideCorrector(Resultado tes, String politica){
+		addBehaviour(new CorrectorBehaviour(this, tes, politica));
 	}
 	
 	public void swingPidePracticas(Resultado tes){
