@@ -228,7 +228,7 @@ public class lanzaSwing2 {
 			public void mousePressed(MouseEvent e){
 				String practica = (String) listaPract.getSelectedItem();
 				if (practica!=null){
-					System.out.println("salida: "+practica+"**");
+					//System.out.println("salida: "+practica+"**");
 
 					Testigo testigo = new Testigo();
 					agent.swingPideTests(testigo, practica);
@@ -303,17 +303,17 @@ public class lanzaSwing2 {
 					for(int i = 0; i < cont.length; i++) {
 						String contenido3 = generaContenido();
 						cont[i]=contenido3;
-						System.out.println("Tamano del fichero: "+cont[i].length());
+						//System.out.println("Tamano del fichero: "+cont[i].length());
 						cont2[i]=contenido3;
-						System.out.println("Tamano del fichero de backup: "+cont2[i].length());
+						//System.out.println("Tamano del fichero de backup: "+cont2[i].length());
 						primeraCorreccion = false;
 					}
 				}
 				else{
 					cont = cont2;
-					for (int i = 0; i < cont.length; i++) {
-						System.out.println("Tamano del fichero sin modificar: "+cont[i].length());
-					}
+					//for (int i = 0; i < cont.length; i++) {
+						//System.out.println("Tamano del fichero sin modificar: "+cont[i].length());
+					//}
 				}
 				
 					
@@ -323,7 +323,6 @@ public class lanzaSwing2 {
 				
 				AID nombre = (AID) testigo.getResultado();
 				String nombreCorto = nombre.getName();
-				System.out.println("Corrector: "+nombreCorto);
 				
 				testigo = new Testigo();
 				agent.swingPideCorreccion(testigo, cont);
@@ -347,8 +346,9 @@ public class lanzaSwing2 {
 				
 				Long duracion = enMilisegundos2 - enMilisegundos;
 				String duraAux = duracion.toString();
-				System.out.println("Tiempo necesitado: "+duraAux);
+				
 				String resultado = nombreCorto + "   " +duraAux;
+				agent.almacenCorrec.put(nombre, duracion);
 				
 				listaCorrectores.add(resultado);
 				paraCorregir.add(listaCorrectores);

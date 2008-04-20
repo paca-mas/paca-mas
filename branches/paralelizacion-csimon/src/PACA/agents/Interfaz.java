@@ -43,6 +43,8 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.Random;
 
+import com.sun.image.codec.jpeg.TruncatedFileException;
+
 import sun.misc.Sort;
 
 import PACA.ontology.Alumno;
@@ -231,7 +233,7 @@ public class Interfaz extends Agent {
 	/**
 	 * Creamos la tabla Hash "almacenCorrec" para guardar los correctores que hemos utilizado
 	 */
-	public Hashtable<AID,Integer> almacenCorrec = new Hashtable<AID,Integer>();
+	public Hashtable<AID,Long> almacenCorrec = new Hashtable<AID,Long>();
 	
 	
 	
@@ -769,14 +771,14 @@ public class Interfaz extends Agent {
 
 		agenteCorr = agentesCorrectores1[politica];
 
-		if (almacenCorrec.containsKey(agenteCorr)){
+		/*if (almacenCorrec.containsKey(agenteCorr)){
 			usado = almacenCorrec.get(agenteCorr);
 			usado++;
 			almacenCorrec.put(agenteCorr, usado);
 		}
 		else{
 			almacenCorrec.put(agenteCorr, new Integer(1));
-		}
+		}*/
 
 		return agenteCorr;
 
@@ -796,39 +798,62 @@ public class Interfaz extends Agent {
 	public AID politicaMinimos (DFAgentDescription[] result1){
 				
 		AID agenteCorr = null;
-		AID [] agentesCorrectores1 = new AID [result1.length];
+		
 		List almacen = new ArrayList();
 		
 		Random rand = new Random();
-		int indiceCorrector = rand.nextInt(2);
 		
 		
+		int porcentaje = 70;
+		
+		int correcAelegir = ((result1.length * porcentaje) / 100);
+				
+				
 		for (int i = 0; i < result1.length; ++i) {
 			
 			//Para buscar propiedades
 			DFAgentDescription dfd = result1[i];
 			Integer valorProp = getCorrecciones(dfd);
 			
-			if (almacenCorrec.containsKey(result1[i].getName())){
-				EstadoCorrector estadoAux = new EstadoCorrector(result1[i].getName(),valorProp);
-				almacen.add(estadoAux);
+			EstadoCorrector estadoAux = new EstadoCorrector(result1[i].getName(),valorProp);
+			almacen.add(estadoAux);
 				
-			}
-			else{
-				almacenCorrec.put(result1[i].getName(), i);
-				EstadoCorrector estadoAux = new EstadoCorrector(result1[i].getName(),valorProp);
-				almacen.add(estadoAux);
-			}
-			
 		}
 		
+		long loQueTarda;
+		long loQueTardaAnterior = 10000000;
+		
+		boolean seDeTodos = true;
 		
 		Collections.sort(almacen);
 		//pintaLista(almacen);
-				
-		EstadoCorrector correctorElegido = (EstadoCorrector) almacen.get(indiceCorrector);
-		agenteCorr = correctorElegido.getIdentificador();
-								
+		
+		int i = 0;
+		while((seDeTodos) && (i < correcAelegir))  {
+			System.out.println("Estamos en el bucle");
+			System.out.println(seDeTodos);
+			EstadoCorrector correctorElegido = (EstadoCorrector) almacen.get(i);
+			if (almacenCorrec.containsKey(correctorElegido.getIdentificador())){
+				loQueTarda = almacenCorrec.get(correctorElegido.getIdentificador());
+				System.out.println("lo que tarda: "+loQueTarda);
+				if (loQueTarda <= loQueTardaAnterior){
+					agenteCorr = correctorElegido.getIdentificador();
+					loQueTardaAnterior = loQueTarda;
+				}
+			}
+			else{
+				seDeTodos = false;
+			}
+			i++;
+		}
+			
+		if (!seDeTodos){
+			System.out.println("Todavia no sabemos de todos");
+			int indiceCorrector = rand.nextInt(correcAelegir);
+			EstadoCorrector correctorElegido = (EstadoCorrector) almacen.get(indiceCorrector);
+			agenteCorr = correctorElegido.getIdentificador();
+		}
+										
 		return agenteCorr;
 	}
 	

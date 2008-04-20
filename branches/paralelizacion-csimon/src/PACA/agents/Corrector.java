@@ -493,6 +493,7 @@ public class Corrector extends Agent {
 				}*/
 				
 				numeroCorrecciones++;
+				ActualizacionDF();
 				
 				
 				AbsIRE iotaPred = (AbsIRE) mensaje;
@@ -835,7 +836,7 @@ public class Corrector extends Agent {
 			} //============================== cambios para el receive no bloqueante ==========
 			else {
 				
-				addBehaviour(new ActualizaCorrecciones());
+				//addBehaviour(new ActualizaCorrecciones());
 				block();
 			}
 			//============================== fin cambios receive no bloqueante ==============
