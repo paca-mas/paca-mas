@@ -289,6 +289,8 @@ public class SimulaAgentes implements Runnable{
 			Long duracion = enMilisegundos2 - enMilisegundos;
 			String duraAux = duracion.toString();
 			
+			agent.almacenCorrec.put(nombreC,duracion);
+			
 			//String sFichero = "C:\\Documents and Settings\\Carlos\\Escritorio\\Resultados\\"+nombre+".txt";
 			String sFichero = "C:\\Documents and Settings\\Carlos\\Escritorio\\Resultados\\Resultados.csv";
 
