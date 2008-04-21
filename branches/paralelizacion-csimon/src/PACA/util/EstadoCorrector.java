@@ -2,6 +2,7 @@ package PACA.util;
 
 import jade.core.AID;
 
+//Clase que crea un objeto con el nombre del corrector y el numero de correciones
 public class EstadoCorrector implements Comparable{
 
 	private AID identificador;
@@ -19,6 +20,8 @@ public class EstadoCorrector implements Comparable{
 		numeroCorrecciones = 0;
 	}
 
+	
+	
 	public AID getIdentificador() {
 		return identificador;
 	}

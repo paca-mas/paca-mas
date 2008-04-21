@@ -29,7 +29,7 @@ y un password que identifica de forma inequ�voca a un usuario en el sistema.
 public class AuthAgent extends Agent {
 
     private boolean ejecucionEnPruebas = true;
-    public boolean debug = true;
+    public boolean debug = false;
 
     //A�adido Carlos
     private Codec codec = new SLCodec();
