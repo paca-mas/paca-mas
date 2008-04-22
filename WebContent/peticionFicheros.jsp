@@ -149,7 +149,7 @@
         <br><br><br><p align="right">
     	  <input type="submit" value="Evaluar" name="botonEnviar" onclick="javascript:salida=false;"></p>
       </form>
-    </p>  
+    </P>  
 
     <%    
      } //del else
