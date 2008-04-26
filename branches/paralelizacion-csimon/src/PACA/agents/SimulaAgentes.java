@@ -71,7 +71,8 @@ public class SimulaAgentes implements Runnable{
 	}
 	
 	private synchronized void EscribeFichero(String sFicher, String duraAux,
-			String nombre, String nombreCorto, String practica, String politica) {
+			String nombre, String nombreCorto, String practica, String politica,
+			Integer numTests,String inicio, String terminacion) {
 		
 		File fichero = new File(sFicher);
 		try {
@@ -86,7 +87,13 @@ public class SimulaAgentes implements Runnable{
 			pw.print(";");
 			pw.print(practica);
 			pw.print(";");
+			pw.print(numTests);
+			pw.print(";");
 			pw.print(politica);
+			pw.print(";");
+			pw.print(inicio);
+			pw.print(";");
+			pw.print(terminacion);
 			pw.print(";");
 			pw.println();
 			pw.close();
@@ -218,8 +225,8 @@ public class SimulaAgentes implements Runnable{
 
 		//Numero de tests a seleccionar
 		rand = new Aleatorio();
-		eleccion = rand.nextInt(0, numTests-1);
-		String [] listaTests = new String[eleccion+1];
+		eleccion = rand.nextInt(1, numTests);
+		String [] listaTests = new String[eleccion];
 
 		for (int i = 0; i < listaTests.length; i++) {
 			Aleatorio rand2 = new Aleatorio();
@@ -248,7 +255,7 @@ public class SimulaAgentes implements Runnable{
 		}
 
 		Aleatorio randC = new Aleatorio();
-		int numCorrec = randC.nextInt(1, 4);
+		int numCorrec = randC.nextInt(1, 20);
 		
 		for (int i = 0; i < numCorrec; i++) {
 			//Guardamos la hora de la peticion de correccion 
@@ -294,8 +301,12 @@ public class SimulaAgentes implements Runnable{
 			//String sFichero = "C:\\Documents and Settings\\Carlos\\Escritorio\\Resultados\\"+nombre+".txt";
 			String sFichero = "C:\\Documents and Settings\\Carlos\\Escritorio\\Resultados\\Resultados.csv";
 
-			EscribeFichero(sFichero, duraAux, nombre, nombreCorto, practica, politica);
+			String inicio = enMilisegundos.toString();
+			String terminacion = enMilisegundos2.toString();
+			EscribeFichero(sFichero, duraAux, nombre, nombreCorto, practica, politica, eleccion, inicio, terminacion);
 		}
+		
+		agent.doDelete();
 	}
 
 }

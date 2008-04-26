@@ -141,7 +141,7 @@ public class Corrector extends Agent {
 	//intervalo es el tiempo entre actualizaciones del df
 	private long intervalo = 3000;
 	private Date fechaActual = new Date();
-	Date fechaLimite = new Date(fechaActual.getTime() + intervalo);
+	private Date fechaLimite = new Date(fechaActual.getTime() + intervalo);
 	
 
 	/**
@@ -564,14 +564,15 @@ public class Corrector extends Agent {
 		}
 	}
 	
-	public class ActualizaCorrecciones extends Behaviour{
-		
+	//public class ActualizaCorrecciones extends Behaviour{
+	public class ActualizaCorrecciones extends CyclicBehaviour{
+	 
 		boolean finalizado = false;
 		
 		public void action(){
 			if ((new Date()).after(fechaLimite)){
 				numeroCorrecciones = numeroCorrecciones - numeroCorrecionesActual;
-				System.out.println(myAgent.getName()+": "+numeroCorrecciones);
+				//System.out.println(myAgent.getName()+": "+numeroCorrecciones);
 				ActualizacionDF();
 				numeroCorrecionesActual = numeroCorrecciones;
 				//Actualizamos fechas
@@ -579,15 +580,19 @@ public class Corrector extends Agent {
 				fechaLimite = new Date(fechaActual.getTime() + intervalo);
 				
 			}
+			else{
+				block(3000);
+			}
 			finalizado = true;
 			
 		}
 
-		@Override
+		/*@Override
 		public boolean done() {
 			// TODO Auto-generated method stub
 			return finalizado;
-		}
+		}*/
+		
 	}
 	
 	
@@ -899,7 +904,7 @@ public class Corrector extends Agent {
 
 		// Add the behaviour to the agent
 		addBehaviour(Principal);
-		addBehaviour(new ActualizaCorrecciones());
+		//addBehaviour(new ActualizaCorrecciones());
 	}
 
 

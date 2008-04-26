@@ -734,7 +734,7 @@ public class Interfaz extends Agent {
 			
 			//agenteCorr = politicaAleatoria(agentesCorrectores);
 			
-					
+			//System.out.println(agenteCorr);
 			setAgenteCorrector(agenteCorr);
 			
 				
@@ -804,7 +804,7 @@ public class Interfaz extends Agent {
 		Random rand = new Random();
 		
 		
-		int porcentaje = 70;
+		int porcentaje = 50;
 		
 		int correcAelegir = ((result1.length * porcentaje) / 100);
 				
@@ -830,12 +830,12 @@ public class Interfaz extends Agent {
 		
 		int i = 0;
 		while((seDeTodos) && (i < correcAelegir))  {
-			System.out.println("Estamos en el bucle");
-			System.out.println(seDeTodos);
+			//System.out.println("Estamos en el bucle");
+			//System.out.println(seDeTodos);
 			EstadoCorrector correctorElegido = (EstadoCorrector) almacen.get(i);
 			if (almacenCorrec.containsKey(correctorElegido.getIdentificador())){
 				loQueTarda = almacenCorrec.get(correctorElegido.getIdentificador());
-				System.out.println("lo que tarda: "+loQueTarda);
+				//System.out.println("lo que tarda: "+loQueTarda);
 				if (loQueTarda <= loQueTardaAnterior){
 					agenteCorr = correctorElegido.getIdentificador();
 					loQueTardaAnterior = loQueTarda;
@@ -848,7 +848,7 @@ public class Interfaz extends Agent {
 		}
 			
 		if (!seDeTodos){
-			System.out.println("Todavia no sabemos de todos");
+			//System.out.println("Todavia no sabemos de todos");
 			int indiceCorrector = rand.nextInt(correcAelegir);
 			EstadoCorrector correctorElegido = (EstadoCorrector) almacen.get(indiceCorrector);
 			agenteCorr = correctorElegido.getIdentificador();
