@@ -98,7 +98,7 @@ public class lanzador {
 		panel2.add(botonTerminaTodos);*/
 		
 		panel.add(cajaPoliticas);
-		panel.add(botonPolitica);
+		//panel.add(botonPolitica);
 		
 		panel2.add(caja);
 		panel2.add(botonLanza);
@@ -114,7 +114,7 @@ public class lanzador {
 		ventana.setVisible(true);
 
 
-		botonLanza.addMouseListener( new MouseAdapter(){
+		botonPolitica.addMouseListener( new MouseAdapter(){
 			public void mousePressed(MouseEvent e){
 				politica = (String) cajaPoliticas.getSelectedItem();
 			}
@@ -126,6 +126,7 @@ public class lanzador {
 		botonLanza.addMouseListener( new MouseAdapter(){
 			public void mousePressed(MouseEvent e){
 				//la propiedad getselecteditem() regresa un objeto
+				politica = (String) cajaPoliticas.getSelectedItem();
 				String numero  =  (String) caja.getSelectedItem();
 				//System.out.println("Agentes para lanzar: "+numero);
 
