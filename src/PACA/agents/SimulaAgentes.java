@@ -70,9 +70,20 @@ public class SimulaAgentes implements Runnable{
 		return contenido2;
 	}
 	
+	private String generaContenido2(int tam){
+		
+		char[] contAux = new char[tam];
+		for (int i = 0; i < contAux.length; i++) {
+			contAux[i]='a';
+		}
+		String contenido2 = String.valueOf(contAux);
+		//System.out.println(contenido2);
+		return contenido2;
+	}
+	
 	private synchronized void EscribeFichero(String sFicher, String duraAux,
 			String nombre, String nombreCorto, String practica, String politica,
-			Integer numTests,String inicio, String terminacion) {
+			Integer numTests,String inicio, String terminacion, int tamanoF) {
 		
 		File fichero = new File(sFicher);
 		try {
@@ -94,6 +105,8 @@ public class SimulaAgentes implements Runnable{
 			pw.print(inicio);
 			pw.print(";");
 			pw.print(terminacion);
+			pw.print(";");
+			pw.print(tamanoF);
 			pw.print(";");
 			pw.println();
 			pw.close();
@@ -129,12 +142,21 @@ public class SimulaAgentes implements Runnable{
 	
 	int numeroThread;
 	String politica;
+	int numCorrecionesPedidas;
+	int practica_;
+	int tests_;
+	int tamano_;
 	
-	public SimulaAgentes(ContainerController cc, int num, String politica){
+	public SimulaAgentes(ContainerController cc, int num, String politica,
+						 int correcionesPedidas, int practica_1, int tests_1, int tamano_1){
 		super();
 		this.cc = cc;
 		this.numeroThread = num;
 		this.politica = politica;
+		this.numCorrecionesPedidas = correcionesPedidas;
+		this.practica_ = practica_1;
+		this.tests_ = tests_1;
+		this.tamano_ = tamano_1;
 		//this.todosJuntos=lanz;
 	}
 		
@@ -198,7 +220,8 @@ public class SimulaAgentes implements Runnable{
 		int numPract = pract.length;
 
 		Aleatorio rand = new Aleatorio();
-		int eleccion = rand.nextInt(0, numPract-1);
+		//int eleccion = rand.nextInt(0, numPract-1);
+		int eleccion = practica_ - 1;
 		
 		String practica = pract[eleccion];
 
@@ -226,12 +249,20 @@ public class SimulaAgentes implements Runnable{
 		//Numero de tests a seleccionar
 		rand = new Aleatorio();
 		eleccion = rand.nextInt(1, numTests);
-		String [] listaTests = new String[eleccion];
+		
+		int ntests = tests_ - 1;
+		
+		//String [] listaTests = new String[eleccion];
+		String [] listaTests = new String[tests_];
 
-		for (int i = 0; i < listaTests.length; i++) {
+		/*for (int i = 0; i < listaTests.length; i++) {
 			Aleatorio rand2 = new Aleatorio();
 			int eleccion2 = rand2.nextInt(0, numTests-1);
 			listaTests[i] = tests2[eleccion2];
+		}*/
+		
+		for (int i = 0; i < listaTests.length; i++){
+			listaTests[i] = tests2[ntests];
 		}
 
 		//-------------------------- FIN TESTS ---------------------------------
@@ -250,14 +281,15 @@ public class SimulaAgentes implements Runnable{
 		String []cont = new String[fichs.length];
 
 		for(int i = 0; i < cont.length; i++) {
-			String contenido3 = generaContenido();
+			//String contenido3 = generaContenido();
+			String contenido3 = generaContenido2(tamano_);
 			cont[i]=contenido3;
 		}
 
 		Aleatorio randC = new Aleatorio();
 		int numCorrec = randC.nextInt(1, 20);
 		
-		for (int i = 0; i < numCorrec; i++) {
+		for (int i = 0; i < numCorrecionesPedidas; i++) {
 			//Guardamos la hora de la peticion de correccion 
 			Date comienzo = new Date();
 			Long enMilisegundos = comienzo.getTime();
@@ -303,7 +335,8 @@ public class SimulaAgentes implements Runnable{
 
 			String inicio = enMilisegundos.toString();
 			String terminacion = enMilisegundos2.toString();
-			EscribeFichero(sFichero, duraAux, nombre, nombreCorto, practica, politica, eleccion, inicio, terminacion);
+			EscribeFichero(sFichero, duraAux, nombre, nombreCorto, practica, politica, 
+					ntests, inicio, terminacion, tamano_);
 		}
 		
 		agent.doDelete();
