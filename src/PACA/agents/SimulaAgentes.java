@@ -86,6 +86,7 @@ public class SimulaAgentes implements Runnable{
 			Integer numTests,String inicio, String terminacion, int tamanoF) {
 		
 		File fichero = new File(sFicher);
+
 		try {
 			mutex.WAIT();
 			FileWriter ficheroA = new FileWriter(fichero,true);
@@ -330,9 +331,12 @@ public class SimulaAgentes implements Runnable{
 			
 			agent.almacenCorrec.put(nombreC,duracion);
 			
+			
+			
 			//String sFichero = "C:\\Documents and Settings\\Carlos\\Escritorio\\Resultados\\"+nombre+".txt";
-			String sFichero = "C:\\Documents and Settings\\Carlos\\Escritorio\\Resultados\\Resultados.csv";
-
+			//String sFichero = "C:\\Documents and Settings\\Carlos\\Escritorio\\Resultados\\Resultados.csv";
+			String sFichero = "Resultados.csv";
+			
 			String inicio = enMilisegundos.toString();
 			String terminacion = enMilisegundos2.toString();
 			EscribeFichero(sFichero, duraAux, nombre, nombreCorto, practica, politica, 
