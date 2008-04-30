@@ -44,6 +44,8 @@ public class LanzadorCli {
 		Executor pool = Executors.newFixedThreadPool(numThreads);
 		
 		for (int i = 0; i < numThreads; i++) {
+			
+			System.out.println("Lanzamos: "+i);
 							
 			
 			//------------------ NO BORRAR -----------------
@@ -52,7 +54,7 @@ public class LanzadorCli {
 			pool.execute(sim1);
 			//------------------ FIN NO BORRAR -------------
 							
-			GeneraRetardo(150);
+			GeneraRetardo(750);
 
 		}
 	}

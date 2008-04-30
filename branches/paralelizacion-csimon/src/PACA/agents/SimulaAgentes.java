@@ -10,6 +10,8 @@ import jade.wrapper.ContainerController;
 import java.io.BufferedWriter;
 import java.io.File;
 import java.io.FileInputStream;
+import java.io.FileNotFoundException;
+import java.io.FileOutputStream;
 import java.io.FileWriter;
 import java.io.IOException;
 import java.io.PrintStream;
@@ -85,12 +87,20 @@ public class SimulaAgentes implements Runnable{
 			String nombre, String nombreCorto, String practica, String politica,
 			Integer numTests,String inicio, String terminacion, int tamanoF) {
 		
-		File fichero = new File(sFicher);
-
+		String dir1 = System.getProperty("user.dir");
+		System.out.println("DIR: "+dir1);
+		String separador = System.getProperty("file.separator");
+		System.out.println("SEPARADOR: "+separador);
+		String rutaCompleta = dir1 + separador + sFicher;
+		System.out.println("RUTA COMPLETA: "+rutaCompleta);
+		
+		
+		FileOutputStream fichero;
 		try {
 			mutex.WAIT();
-			FileWriter ficheroA = new FileWriter(fichero,true);
-			PrintWriter pw = new PrintWriter(ficheroA);
+			fichero = new FileOutputStream(System.getProperty("user.dir")+System.getProperty("file.separator")
+					+sFicher,true);
+			PrintWriter pw = new PrintWriter(fichero);
 			pw.print(nombre);
 			pw.print(";");
 			pw.print(nombreCorto);
@@ -118,6 +128,37 @@ public class SimulaAgentes implements Runnable{
 			e.printStackTrace();
 		}
 		
+		/*try {
+			mutex.WAIT();
+			//FileWriter ficheroA = new FileWriter(fichero,true);
+			PrintWriter pw = new PrintWriter(fichero);
+			pw.print(nombre);
+			pw.print(";");
+			pw.print(nombreCorto);
+			pw.print(";");
+			pw.print(duraAux);
+			pw.print(";");
+			pw.print(practica);
+			pw.print(";");
+			pw.print(numTests);
+			pw.print(";");
+			pw.print(politica);
+			pw.print(";");
+			pw.print(inicio);
+			pw.print(";");
+			pw.print(terminacion);
+			pw.print(";");
+			pw.print(tamanoF);
+			pw.print(";");
+			pw.println();
+			pw.close();
+			mutex.SIGNAL();
+
+		} catch (IOException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}*/
+		
 	}
 	
 	private void GeneraRetardo(int ret){
@@ -134,7 +175,7 @@ public class SimulaAgentes implements Runnable{
 	ContainerController cc;
 	AgentController agentInterfaz=null;
 	InterfazSwing2 agent=null;
-	lanzador todosJuntos;
+	//lanzador todosJuntos;
 	private Semaphore mutex = new Semaphore(1);
     //Fin Variables Agente Interfaz
 	
@@ -164,6 +205,8 @@ public class SimulaAgentes implements Runnable{
 	
 	//public static void main(String[] args) {
 	public void run(){
+		
+		System.out.println("Empezamos... ");
 	
 		
 		Date ahora = new Date();
@@ -204,6 +247,9 @@ public class SimulaAgentes implements Runnable{
 		}
 		
 		autenticado = testigo.isResultadoB();
+		
+		
+		System.out.println("Politicas... ");
 				
 		
 		Resultado testigo1 = new Resultado();
@@ -230,6 +276,9 @@ public class SimulaAgentes implements Runnable{
 
 
 		//-------------------------- TESTS ---------------------------------
+		
+		System.out.println("Tests... ");
+		
 		Resultado testigo3 = new Resultado();
 
 		agent.swingPideTests(testigo3, practica);
@@ -290,6 +339,8 @@ public class SimulaAgentes implements Runnable{
 		Aleatorio randC = new Aleatorio();
 		int numCorrec = randC.nextInt(1, 20);
 		
+		System.out.println("Corregimos... ");
+		
 		for (int i = 0; i < numCorrecionesPedidas; i++) {
 			//Guardamos la hora de la peticion de correccion 
 			Date comienzo = new Date();
@@ -339,6 +390,8 @@ public class SimulaAgentes implements Runnable{
 			
 			String inicio = enMilisegundos.toString();
 			String terminacion = enMilisegundos2.toString();
+			
+			System.out.println("Escribimos... ");
 			EscribeFichero(sFichero, duraAux, nombre, nombreCorto, practica, politica, 
 					ntests, inicio, terminacion, tamano_);
 		}
