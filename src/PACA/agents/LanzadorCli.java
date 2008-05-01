@@ -1,6 +1,7 @@
 package PACA.agents;
 
 import java.util.concurrent.Executor;
+import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 
 import jade.core.Profile;
@@ -41,7 +42,7 @@ public class LanzadorCli {
 		int ntests = Integer.valueOf(tests);
 		int ntamano = Integer.valueOf(tamano);
 		
-		Executor pool = Executors.newFixedThreadPool(numThreads);
+		ExecutorService pool = Executors.newFixedThreadPool(numThreads);
 		
 		for (int i = 0; i < numThreads; i++) {
 			
@@ -53,10 +54,10 @@ public class LanzadorCli {
 													ntests, ntamano);
 			pool.execute(sim1);
 			//------------------ FIN NO BORRAR -------------
-							
-			GeneraRetardo(750);
+			GeneraRetardo(150);
 
 		}
+			
 	}
 }  
 
