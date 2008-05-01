@@ -733,8 +733,9 @@ public class Interfaz extends Agent {
 			//agenteCorr = politicaMinimos(result);
 			
 			//agenteCorr = politicaAleatoria(agentesCorrectores);
-			
-			//System.out.println(agenteCorr);
+			/*System.out.println(" -------------------------------------------- ");
+			System.out.println(agenteCorr);
+			System.out.println(" -------------------------------------------- ");*/
 			setAgenteCorrector(agenteCorr);
 			
 				
@@ -790,6 +791,7 @@ public class Interfaz extends Agent {
         for(int i=0;i<lista.size();i++) {
             System.out.println(lista.get(i).toString());
         }
+        System.out.println(" ================================================================= ");
     } 
 	
 		
@@ -807,6 +809,10 @@ public class Interfaz extends Agent {
 		int porcentaje = 50;
 		
 		int correcAelegir = ((result1.length * porcentaje) / 100);
+		
+		if (correcAelegir < 1){
+			correcAelegir = 1;
+		}
 				
 				
 		for (int i = 0; i < result1.length; ++i) {
@@ -843,6 +849,7 @@ public class Interfaz extends Agent {
 			}
 			else{
 				seDeTodos = false;
+				System.out.println("Nos salimos porque no conocemos... ");
 			}
 			i++;
 		}

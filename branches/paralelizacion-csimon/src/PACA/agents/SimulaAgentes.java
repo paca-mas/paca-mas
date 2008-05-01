@@ -199,15 +199,12 @@ public class SimulaAgentes implements Runnable{
 		this.practica_ = practica_1;
 		this.tests_ = tests_1;
 		this.tamano_ = tamano_1;
-		//this.todosJuntos=lanz;
+		
 	}
 		
 	
 	//public static void main(String[] args) {
 	public void run(){
-		
-		System.out.println("Empezamos... ");
-	
 		
 		Date ahora = new Date();
 		long lnMilisegundos = ahora.getTime();
@@ -235,9 +232,7 @@ public class SimulaAgentes implements Runnable{
 			ex.printStackTrace();
 		}
 		
-		//while(!todosJuntos.getBol()){
-		//}
-		
+				
 		boolean autenticado = false;
 		
 		Resultado testigo = new Resultado();
@@ -247,11 +242,7 @@ public class SimulaAgentes implements Runnable{
 		}
 		
 		autenticado = testigo.isResultadoB();
-		
-		
-		System.out.println("Politicas... ");
 				
-		
 		Resultado testigo1 = new Resultado();
 		agent.swingPideCorrector(testigo1, politica);
 		while(!testigo1.isRelleno()){
@@ -276,8 +267,6 @@ public class SimulaAgentes implements Runnable{
 
 
 		//-------------------------- TESTS ---------------------------------
-		
-		System.out.println("Tests... ");
 		
 		Resultado testigo3 = new Resultado();
 
@@ -339,8 +328,6 @@ public class SimulaAgentes implements Runnable{
 		Aleatorio randC = new Aleatorio();
 		int numCorrec = randC.nextInt(1, 20);
 		
-		System.out.println("Corregimos... ");
-		
 		for (int i = 0; i < numCorrecionesPedidas; i++) {
 			//Guardamos la hora de la peticion de correccion 
 			Date comienzo = new Date();
@@ -391,7 +378,6 @@ public class SimulaAgentes implements Runnable{
 			String inicio = enMilisegundos.toString();
 			String terminacion = enMilisegundos2.toString();
 			
-			System.out.println("Escribimos... ");
 			EscribeFichero(sFichero, duraAux, nombre, nombreCorto, practica, politica, 
 					ntests, inicio, terminacion, tamano_);
 		}
