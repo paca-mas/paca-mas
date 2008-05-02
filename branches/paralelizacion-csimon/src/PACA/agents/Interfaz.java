@@ -78,7 +78,8 @@ import auth.ontology.Usuario;
  */
 public class Interfaz extends Agent {
 
-		
+	private boolean debug = true;
+	
 	private Codec codec = new SLCodec();
 	
 	//	Nombre de la ontologia
@@ -1044,7 +1045,15 @@ public class Interfaz extends Agent {
 				resultado = false;
 				tes1.setResultadoB(resultado);
 			}
+			
+			if (debug){
+				System.out.println("Interfaz - Autenticar: " + resultado);
+			}
+			
 			tes1.setResultadoB(resultado);
+			if (debug){
+				System.out.println("Rellenamos el testigo " + tes1.isRelleno());
+			}
 		}
 	}
 	//-------------- FIN COMPORTAMIENTOS PARA LA AUTENTICACION ----------------------------

@@ -88,11 +88,15 @@ public class SimulaAgentes implements Runnable{
 			Integer numTests,String inicio, String terminacion, int tamanoF) {
 		
 		String dir1 = System.getProperty("user.dir");
-		System.out.println("DIR: "+dir1);
 		String separador = System.getProperty("file.separator");
-		System.out.println("SEPARADOR: "+separador);
 		String rutaCompleta = dir1 + separador + sFicher;
-		System.out.println("RUTA COMPLETA: "+rutaCompleta);
+		
+		
+		if (debug){
+			System.out.println("DIR: "+dir1);
+			System.out.println("SEPARADOR: "+separador);
+			System.out.println("RUTA COMPLETA: "+rutaCompleta);
+		}
 		
 		
 		FileOutputStream fichero;
@@ -174,10 +178,12 @@ public class SimulaAgentes implements Runnable{
 	//	Variables para crear el Agente Interfaz
 	ContainerController cc;
 	AgentController agentInterfaz=null;
-	InterfazSwing2 agent=null;
+	InterfazSwing2 agent = null;
 	//lanzador todosJuntos;
 	private Semaphore mutex = new Semaphore(1);
     //Fin Variables Agente Interfaz
+	
+	private boolean debug = true;
 	
 	
 	
@@ -189,6 +195,7 @@ public class SimulaAgentes implements Runnable{
 	int tests_;
 	int tamano_;
 	
+		
 	public SimulaAgentes(ContainerController cc, int num, String politica,
 						 int correcionesPedidas, int practica_1, int tests_1, int tamano_1){
 		super();
@@ -216,12 +223,21 @@ public class SimulaAgentes implements Runnable{
 		
 		
 		try {
+
 			agent = new InterfazSwing2();
 			agentInterfaz = cc.acceptNewAgent(nombre, agent);
 			if (agentInterfaz != null) {
 				agentInterfaz.start();
+				agent.setup();
+				if (debug){
+					System.out.println("Agente Arrancado: " + agentInterfaz.getState().getName());
+				}
 				
 				while (!agent.isFinSetup()) {
+				}
+				
+				if (debug){
+					System.out.println("Agente Arrancado Nuevo estado: " + agentInterfaz.getState().getName());
 				}
 			} 
 			else {
@@ -237,20 +253,34 @@ public class SimulaAgentes implements Runnable{
 		
 		Resultado testigo = new Resultado();
 		agent.swingAutentica(texto, passw, testigo);
+		
+		if (debug){
+			System.out.println("Intentamos autenticarnos");
+			System.out.println("Testigo: "+testigo.isResultadoB());
+		}
 						
 		while(!testigo.isRelleno()){
+			
 		}
 		
 		autenticado = testigo.isResultadoB();
 				
 		Resultado testigo1 = new Resultado();
 		agent.swingPideCorrector(testigo1, politica);
+		if (debug){
+			System.out.println("Intentamos buscar un corrector");
+		}
+		
 		while(!testigo1.isRelleno()){
 		}
 
 		//---------------------- PRACTICAS -----------------------------
 		Resultado testigo2 = new Resultado();
 		agent.swingPidePracticas(testigo2);
+		if (debug){
+			System.out.println("Intentamos pedir las practicas");
+		}
+		
 		while(!testigo2.isRelleno()){
 		}
 
@@ -271,6 +301,10 @@ public class SimulaAgentes implements Runnable{
 		Resultado testigo3 = new Resultado();
 
 		agent.swingPideTests(testigo3, practica);
+		if (debug){
+			System.out.println("Intentamos pedir los tests");
+		}
+				
 		while(!testigo3.isRelleno()){
 		}
 
@@ -312,6 +346,9 @@ public class SimulaAgentes implements Runnable{
 		//-------------------------- FICHEROS ------------------------------
 		Resultado testigo4 = new Resultado();
 		agent.swingPideFicheros(testigo4, listaTests);
+		if (debug){
+			System.out.println("Intentamos mandar los ficheros");
+		}
 
 		while(!testigo4.isRelleno()){
 		}
@@ -337,6 +374,10 @@ public class SimulaAgentes implements Runnable{
 			Resultado testigo5 = new Resultado();
 
 			agent.swingPideCorrector(testigo5, politica);
+			if (debug){
+				System.out.println("Intentamos buscar un corrector");
+			}
+			
 			while(!testigo5.isRelleno()){
 			}
 
@@ -346,6 +387,10 @@ public class SimulaAgentes implements Runnable{
 			Resultado testigo6 = new Resultado();
 
 			agent.swingPideCorreccion(testigo6, cont);
+			if (debug){
+				System.out.println("Intentamos corregir algo..");
+			}
+			
 			while(!testigo6.isRelleno()){
 			}
 
@@ -377,6 +422,10 @@ public class SimulaAgentes implements Runnable{
 			
 			String inicio = enMilisegundos.toString();
 			String terminacion = enMilisegundos2.toString();
+			
+			if (debug){
+				System.out.println("Intentamos escribir algo... ");
+			}
 			
 			EscribeFichero(sFichero, duraAux, nombre, nombreCorto, practica, politica, 
 					ntests, inicio, terminacion, tamano_);
