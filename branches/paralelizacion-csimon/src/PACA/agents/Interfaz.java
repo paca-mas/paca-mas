@@ -78,7 +78,7 @@ import auth.ontology.Usuario;
  */
 public class Interfaz extends Agent {
 
-	private boolean debug = true;
+	private boolean debug = false;
 	
 	private Codec codec = new SLCodec();
 	
@@ -850,7 +850,9 @@ public class Interfaz extends Agent {
 			}
 			else{
 				seDeTodos = false;
-				System.out.println("Nos salimos porque no conocemos... ");
+				if (debug){
+					System.out.println("Nos salimos porque no conocemos... ");
+				}
 			}
 			i++;
 		}

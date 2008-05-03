@@ -168,6 +168,7 @@ public class lanzaSwing2 {
 				agentInterfaz = cc.acceptNewAgent(nombre, agent);
 				if (agentInterfaz != null) {
 					agentInterfaz.start();
+					agent.setup();
 					
 					while (!agent.isFinSetup()) {
 						System.out.println("Esperando al fin... ");
@@ -187,8 +188,8 @@ public class lanzaSwing2 {
 		agent.swingAutentica(texto, passw, testigo);
 		System.out.println("--------------------");
 						
-		while(!testigo.isRelleno()){
-		}
+		/*while(!testigo.isRelleno()){
+		}*/
 		
 		autenticado = testigo.isResultadoB();
 		System.out.println("autenticado: "+autenticado);
@@ -202,8 +203,8 @@ public class lanzaSwing2 {
 			testigo = new Testigo();
 			
 			agent.swingPidePracticas(testigo);
-			while(!testigo.isRelleno()){
-			}
+			/*while(!testigo.isRelleno()){
+			}*/
 			
 			String [] pract = (String [])testigo.getResultado();
 						
@@ -232,8 +233,8 @@ public class lanzaSwing2 {
 
 					Testigo testigo = new Testigo();
 					agent.swingPideTests(testigo, practica);
-					while(!testigo.isRelleno()){
-					}
+					/*while(!testigo.isRelleno()){
+					}*/
 
 					String [] tests = (String [])testigo.getResultado();
 
@@ -268,8 +269,8 @@ public class lanzaSwing2 {
 					Testigo testigo = new Testigo();
 					agent.swingPideFicheros(testigo, testss);
 
-					while(!testigo.isRelleno()){
-					}
+					/*while(!testigo.isRelleno()){
+					}*/
 
 					String [] fichs = (String [])testigo.getResultado();
 
@@ -318,16 +319,16 @@ public class lanzaSwing2 {
 				
 					
 				agent.swingPideCorrector(testigo, politica);
-				while(!testigo.isRelleno()){
-				}
+				/*while(!testigo.isRelleno()){
+				}*/
 				
 				AID nombre = (AID) testigo.getResultado();
 				String nombreCorto = nombre.getName();
 				
 				testigo = new Testigo();
 				agent.swingPideCorreccion(testigo, cont);
-				while(!testigo.isRelleno()){
-				}
+				/*while(!testigo.isRelleno()){
+				}*/
 				
 				String salida = (String) testigo.getResultado();
 								
