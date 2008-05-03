@@ -12,23 +12,41 @@ public class Resultado {
 		//relleno=false;
 	//}
 	
-	public Object getResultado() {
+	public synchronized Object getResultado() {
+		while (!this.isRelleno()){
+			try {
+				this.wait();
+			} catch (InterruptedException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			}
+		}
 		return resultado;
 	}
 	
-	public void setResultado(Object resultado) {
+	public synchronized void setResultado(Object resultado) {
 		this.resultado = resultado;
 		this.relleno=true;
+		this.notify();
 	}
 	
-	public boolean isResultadoB() {
+	public synchronized boolean isResultadoB() {
+		while (!this.isRelleno()){
+			try {
+				this.wait();
+			} catch (InterruptedException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			}
+		}
 		return resultadoB;
 	}
 
 
-	public void setResultadoB(boolean resultadoB) {
+	public synchronized void setResultadoB(boolean resultadoB) {
 		this.resultadoB = resultadoB;
 		this.relleno=true;
+		this.notify();
 	}
 	
 	public boolean isRelleno(){
