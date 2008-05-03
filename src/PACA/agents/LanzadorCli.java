@@ -46,7 +46,7 @@ public class LanzadorCli {
 		
 		for (int i = 0; i < numThreads; i++) {
 			
-			System.out.println("Lanzamos: "+i);
+			//System.out.println("Lanzamos: "+i);
 							
 			
 			//------------------ NO BORRAR -----------------
@@ -54,7 +54,7 @@ public class LanzadorCli {
 													ntests, ntamano);
 			pool.execute(sim1);
 			//------------------ FIN NO BORRAR -------------
-			GeneraRetardo(150);
+			//GeneraRetardo(150);
 
 		}
 			

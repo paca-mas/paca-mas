@@ -183,7 +183,7 @@ public class SimulaAgentes implements Runnable{
 	private Semaphore mutex = new Semaphore(1);
     //Fin Variables Agente Interfaz
 	
-	private boolean debug = true;
+	private boolean debug = false;
 	
 	
 	
@@ -259,11 +259,14 @@ public class SimulaAgentes implements Runnable{
 			System.out.println("Testigo: "+testigo.isResultadoB());
 		}
 						
-		while(!testigo.isRelleno()){
+		/*while(!testigo.isRelleno()){
 			
-		}
+		}*/
 		
 		autenticado = testigo.isResultadoB();
+		if (debug){
+			System.out.println("AUTENTICADO: "+autenticado);
+		}
 				
 		Resultado testigo1 = new Resultado();
 		agent.swingPideCorrector(testigo1, politica);
@@ -271,8 +274,8 @@ public class SimulaAgentes implements Runnable{
 			System.out.println("Intentamos buscar un corrector");
 		}
 		
-		while(!testigo1.isRelleno()){
-		}
+		/*while(!testigo1.isRelleno()){
+		}*/
 
 		//---------------------- PRACTICAS -----------------------------
 		Resultado testigo2 = new Resultado();
@@ -281,8 +284,8 @@ public class SimulaAgentes implements Runnable{
 			System.out.println("Intentamos pedir las practicas");
 		}
 		
-		while(!testigo2.isRelleno()){
-		}
+		/*while(!testigo2.isRelleno()){
+		}*/
 
 		String [] pract = (String [])testigo2.getResultado();
 		int numPract = pract.length;
@@ -305,8 +308,8 @@ public class SimulaAgentes implements Runnable{
 			System.out.println("Intentamos pedir los tests");
 		}
 				
-		while(!testigo3.isRelleno()){
-		}
+		/*while(!testigo3.isRelleno()){
+		}*/
 
 		String [] tests = (String [])testigo3.getResultado();
 		
@@ -350,8 +353,8 @@ public class SimulaAgentes implements Runnable{
 			System.out.println("Intentamos mandar los ficheros");
 		}
 
-		while(!testigo4.isRelleno()){
-		}
+		/*while(!testigo4.isRelleno()){
+		}*/
 		String [] fichs = (String [])testigo4.getResultado();
 
 		String []cont = new String[fichs.length];
@@ -378,8 +381,8 @@ public class SimulaAgentes implements Runnable{
 				System.out.println("Intentamos buscar un corrector");
 			}
 			
-			while(!testigo5.isRelleno()){
-			}
+			/*while(!testigo5.isRelleno()){
+			}*/
 
 			AID nombreC = (AID) testigo5.getResultado();
 			String nombreCorto = nombreC.getName();
@@ -391,8 +394,8 @@ public class SimulaAgentes implements Runnable{
 				System.out.println("Intentamos corregir algo..");
 			}
 			
-			while(!testigo6.isRelleno()){
-			}
+			/*while(!testigo6.isRelleno()){
+			}*/
 
 			String salida = (String) testigo6.getResultado();
 
