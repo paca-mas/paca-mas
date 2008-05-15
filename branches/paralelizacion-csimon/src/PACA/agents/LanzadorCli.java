@@ -34,6 +34,8 @@ public class LanzadorCli {
 		String practica = args[3];
 		String tests = args[4];
 		String tamano = args[5];
+		String nombreFichero = args[6];
+		String porcentaje = args[7];
 		
 		int numThreads = Integer.valueOf(numero);
 		int numeroCorreciones = Integer.valueOf(nCorreciones);
@@ -41,6 +43,7 @@ public class LanzadorCli {
 		int npract = Integer.valueOf(practica);
 		int ntests = Integer.valueOf(tests);
 		int ntamano = Integer.valueOf(tamano);
+		int nporcentaje = Integer.valueOf(porcentaje);
 		
 		ExecutorService pool = Executors.newFixedThreadPool(numThreads);
 		
@@ -51,10 +54,10 @@ public class LanzadorCli {
 			
 			//------------------ NO BORRAR -----------------
 			SimulaAgentes sim1 = new SimulaAgentes(cc, i, politica, totalCorrec, npract,
-													ntests, ntamano);
+													ntests, ntamano, nombreFichero, nporcentaje);
 			pool.execute(sim1);
 			//------------------ FIN NO BORRAR -------------
-			//GeneraRetardo(150);
+			//GeneraRetardo(50);
 
 		}
 			

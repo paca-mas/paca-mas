@@ -669,7 +669,7 @@ public class Interfaz extends Agent {
 	
 	
 	//Método que nos devuelve el corrector al que pediremos la correción
-	public AID doBuscarCorrector(String politica){
+	public AID doBuscarCorrector(String politica, int porcentaje){
 		
 		
 						
@@ -729,7 +729,7 @@ public class Interfaz extends Agent {
 				agenteCorr = politicaAleatoria(agentesCorrectores);
 			}
 			else{
-				agenteCorr = politicaMinimos(result);
+				agenteCorr = politicaMinimos(result, porcentaje);
 			}
 			//agenteCorr = politicaMinimos(result);
 			
@@ -798,7 +798,7 @@ public class Interfaz extends Agent {
 		
 	
 	@SuppressWarnings("unchecked")
-	public AID politicaMinimos (DFAgentDescription[] result1){
+	public AID politicaMinimos (DFAgentDescription[] result1, int porcentaje){
 				
 		AID agenteCorr = null;
 		
@@ -807,10 +807,10 @@ public class Interfaz extends Agent {
 		Random rand = new Random();
 		
 		
-		int porcentaje = 50;
+		//int porcentaje = 50;
 		
 		int correcAelegir = ((result1.length * porcentaje) / 100);
-		
+				
 		if (correcAelegir < 1){
 			correcAelegir = 1;
 		}
@@ -950,13 +950,15 @@ public class Interfaz extends Agent {
 	public class CorrectorBehaviour extends OneShotBehaviour{
 		private Resultado tes1;
 		private String politica;
-		public CorrectorBehaviour(Agent _a, Resultado test, String poli1){
+		private int porcentaje;
+		public CorrectorBehaviour(Agent _a, Resultado test, String poli1, int porcentaje_){
 			super(_a);
 			this.tes1 = test;
 			this.politica = poli1;
+			this.porcentaje = porcentaje_;
 		}
 		public void action(){
-			tes1.setResultado(doBuscarCorrector(politica));
+			tes1.setResultado(doBuscarCorrector(politica, porcentaje));
 		}
 	}
 	
