@@ -194,10 +194,13 @@ public class SimulaAgentes implements Runnable{
 	int practica_;
 	int tests_;
 	int tamano_;
+	String nombreFich;
+	int porcentaje;
 	
 		
 	public SimulaAgentes(ContainerController cc, int num, String politica,
-						 int correcionesPedidas, int practica_1, int tests_1, int tamano_1){
+						 int correcionesPedidas, int practica_1, int tests_1, 
+						 int tamano_1, String nombreFich_, int porcentaje_){
 		super();
 		this.cc = cc;
 		this.numeroThread = num;
@@ -206,6 +209,8 @@ public class SimulaAgentes implements Runnable{
 		this.practica_ = practica_1;
 		this.tests_ = tests_1;
 		this.tamano_ = tamano_1;
+		this.nombreFich = nombreFich_;
+		this.porcentaje = porcentaje_;
 		
 	}
 		
@@ -269,7 +274,7 @@ public class SimulaAgentes implements Runnable{
 		}
 				
 		Resultado testigo1 = new Resultado();
-		agent.swingPideCorrector(testigo1, politica);
+		agent.swingPideCorrector(testigo1, politica, porcentaje);
 		if (debug){
 			System.out.println("Intentamos buscar un corrector");
 		}
@@ -376,7 +381,7 @@ public class SimulaAgentes implements Runnable{
 
 			Resultado testigo5 = new Resultado();
 
-			agent.swingPideCorrector(testigo5, politica);
+			agent.swingPideCorrector(testigo5, politica, porcentaje);
 			if (debug){
 				System.out.println("Intentamos buscar un corrector");
 			}
@@ -421,7 +426,8 @@ public class SimulaAgentes implements Runnable{
 			
 			//String sFichero = "C:\\Documents and Settings\\Carlos\\Escritorio\\Resultados\\"+nombre+".txt";
 			//String sFichero = "C:\\Documents and Settings\\Carlos\\Escritorio\\Resultados\\Resultados.csv";
-			String sFichero = "Resultados.csv";
+			//String sFichero = "Resultados.csv";
+			String sFichero = nombreFich;
 			
 			String inicio = enMilisegundos.toString();
 			String terminacion = enMilisegundos2.toString();
