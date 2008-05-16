@@ -47,6 +47,7 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.Random;
 
+
 import PACA.ontology.Alumno;
 import PACA.ontology.Corrige;
 import PACA.ontology.EntregarPractica;
@@ -142,6 +143,8 @@ public class Corrector extends Agent {
 	private long intervalo = 3000;
 	private Date fechaActual = new Date();
 	private Date fechaLimite = new Date(fechaActual.getTime() + intervalo);
+	private int tiempo_minimo = 1;
+	private int tiempo_maximo = 10;
 	
 
 	/**
@@ -491,6 +494,17 @@ public class Corrector extends Agent {
 					ActualizacionDF();
 					numeroCorrecionesActual = numeroCorrecciones;
 				}*/
+				
+				
+				Aleatorio rand = new Aleatorio();
+				long retardo = rand.nextInt(tiempo_minimo, tiempo_maximo);
+				
+				Date fechaActual = new Date();
+				Date fechaLimite = new Date(fechaActual.getTime() + retardo);
+				
+				while ((new Date()).before(fechaLimite)){
+					
+				}
 				
 				numeroCorrecciones++;
 				ActualizacionDF();
@@ -859,6 +873,24 @@ public class Corrector extends Agent {
 			this.InicializaDatosPruebas();
 		}
 
+		AID nombreAgente = getAID();
+		
+		String nombreC = nombreAgente.getLocalName();
+		
+		int ultimaPos = nombreC.length()-1;
+		
+		char ultimaletra = nombreC.charAt(ultimaPos);
+		
+		if (java.lang.Character.getNumericValue(ultimaletra)%2!=0){
+			tiempo_maximo = 6;
+			tiempo_minimo = 3;
+		}
+		else{ // Si el nombre termina en par...
+			tiempo_maximo = 15;
+			tiempo_minimo = 10;
+		}
+		
+		
 		// Register the codec for the SL0 language
 		getContentManager().registerLanguage(codec);
 
@@ -866,6 +898,8 @@ public class Corrector extends Agent {
 		getContentManager().registerOntology(ontologia);
 		
 		RegistroDF();
+		
+		
 
 		/*
 		//DFService
