@@ -1,0 +1,6 @@
+<?xml version="1.0"?>
+<project name="PFC_Carlos" default="compila">
+        <target name="compila">
+                <javac srcdir="." destdir="../build/classes"/>
+        </target>
+</project>
