@@ -881,13 +881,20 @@ public class Corrector extends Agent {
 		
 		char ultimaletra = nombreC.charAt(ultimaPos);
 		
-		if (java.lang.Character.getNumericValue(ultimaletra)%2!=0){
-			tiempo_maximo = 6;
-			tiempo_minimo = 3;
+		if (java.lang.Character.toString(ultimaletra).equals("x")){
+			tiempo_maximo = 5000;
+			tiempo_minimo = 1000;
 		}
-		else{ // Si el nombre termina en par...
-			tiempo_maximo = 15;
-			tiempo_minimo = 10;
+		else{
+
+			if (java.lang.Character.getNumericValue(ultimaletra)%2!=0){
+				tiempo_maximo = 2000;
+				tiempo_minimo = 1000;
+			}
+			else{ // Si el nombre termina en par...
+				tiempo_maximo = 5000;
+				tiempo_minimo = 3000;
+			}
 		}
 		
 		
