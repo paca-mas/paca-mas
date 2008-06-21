@@ -251,7 +251,7 @@ public class InterfazJSP extends Interfaz {
 
 					case buscarCorrector:
 						//System.out.println("Operacion BuscarCorrector");
-						addBehaviour(new CorrectorBehaviour(agent, testigo));
+						addBehaviour(new CorrectorBehaviour(agent, testigo, "minimos", 100));
 						break;
 
 					case autenticar:
