@@ -43,7 +43,7 @@
 				interfaz.setAgentInterfaz(agent);
 				interfaz.setAgentController(agentInterfaz);
 				while (!agent.isFinSetup()) {
-					System.out.println("Esperando al fin... ");
+					
 				}
 				
 				
@@ -99,27 +99,14 @@
 
   <%
   
-  	
-  
-  
-  
-
   	boolean autenticado = false;
   
-	//autenticado = interfaz.doAutenticacionRequest(request);
-  	//autenticado=false;
-  	Testigo resultado=new Testigo();
+	Testigo resultado=new Testigo();
   	resultado.setOperacion(Testigo.Operaciones.autenticar);
   	resultado.setParametro((HttpServletRequest) request);
   	 
-
-  	//interfaz.getAtributo().putO2AObject(resultado,AgentController.SYNC);
-	interfaz.sendTestigo(resultado);
+  	interfaz.sendTestigo(resultado);
 	
-
-  	while(!resultado.isRelleno()){
-  	 	}
-  	
   	autenticado = resultado.isResultadoB();
   	 	
   	%>
@@ -147,8 +134,7 @@
 <%
   }
   else {
-      //interfaz.setAlumnoID(request.getParameter("user_id"));
-      //interfaz.setAlumnoPass(request.getParameter("password"));
+      
 %>
 
 <br><br><br>
@@ -159,13 +145,9 @@
     // Aquí hacemos la petición de las prácticas disponibles y las
     // mostramos en un formulario
 	
-    //String[] pract = interfaz.doPeticion();
-
-
-	Testigo resultado3=new Testigo();
+    Testigo resultado3=new Testigo();
 	resultado3.setOperacion(Testigo.Operaciones.buscarCorrector);
 
-	//interfaz.getAtributo().putO2AObject(resultado3,AgentController.SYNC);
 	interfaz.sendTestigo(resultado3);
 	
 	while(!resultado3.isRelleno()){
@@ -178,11 +160,8 @@
 	Testigo resultado2=new Testigo();
 	resultado2.setOperacion(Testigo.Operaciones.pedirPracticas);
 		
-	//interfaz.getAtributo().putO2AObject(resultado2,AgentController.SYNC);
 	interfaz.sendTestigo(resultado2);
 	
-	while(!resultado2.isRelleno()){
-	}
 	
 	String [] pract = (String [])resultado2.getResultado();
 		

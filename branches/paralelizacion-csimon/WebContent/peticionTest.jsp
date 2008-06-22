@@ -69,17 +69,11 @@
 <%
   // Hacemos la consulta de los tests necesarios y rellenamos el formulario
 	  
-  //String[] tests = interfaz.doPeticionTestPracticaRequest(request);  
-	
-	Testigo resultado2=new Testigo();
+  	Testigo resultado2=new Testigo();
 	resultado2.setOperacion(Testigo.Operaciones.pedirTests);
 	resultado2.setParametro((HttpServletRequest)request);
 	
-	//interfaz.getAtributo().putO2AObject(resultado2,AgentController.SYNC);
 	interfaz.sendTestigo(resultado2);
-
-	while(!resultado2.isRelleno()){
-		}
 
 	String [] tests = (String [])resultado2.getResultado();
   

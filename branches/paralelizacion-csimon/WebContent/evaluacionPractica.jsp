@@ -38,24 +38,12 @@
   // Hacemos la evaluación de la práctica con los fichero leidos del
   // formulario anterior.	
 	
-  //String[] contenidoFicheros = new String[interfaz.ficherosUltimaPractica.length];
-
-  //for (int i=0; i < interfaz.ficherosUltimaPractica.length; i++) {
-
-    //contenidoFicheros[i] = request.getParameter(interfaz.ficherosUltimaPractica[i]);
-  //}
-	
-	 
-   	
+    	
   	Testigo resultado=new Testigo();
 	resultado.setOperacion(Testigo.Operaciones.corregir);
 	resultado.setParametro((HttpServletRequest)request);
 	
-	//interfaz.getAtributo().putO2AObject(resultado,AgentController.SYNC);
 	interfaz.sendTestigo(resultado);
-
-	while(!resultado.isRelleno()){
-		}
 
 	String eval1 = (String)resultado.getResultado();
 	
@@ -65,11 +53,7 @@
 	resultado2.setOperacion(Testigo.Operaciones.parsear);
 	resultado2.setParametro(eval1);
 	
-	//interfaz.getAtributo().putO2AObject(resultado2,AgentController.SYNC);
 	interfaz.sendTestigo(resultado2);
-
-	while(!resultado2.isRelleno()){
-		}
 
 	String eval = (String)resultado2.getResultado();	
   

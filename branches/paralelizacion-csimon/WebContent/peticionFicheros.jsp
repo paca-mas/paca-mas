@@ -68,17 +68,13 @@
     <br>
 
       <% 
-      //String[] testSeleccionados = interfaz.doTestPracticasRequest(request);
       	Testigo resultado=new Testigo();
   		resultado.setOperacion(Testigo.Operaciones.pedirFicheros);
   		resultado.setParametro(request);
   		
-  		//interfaz.getAtributo().putO2AObject(resultado,AgentController.SYNC);
-		interfaz.sendTestigo(resultado);
+  		interfaz.sendTestigo(resultado);
 
-  		while(!resultado.isRelleno()){
-  			}
-
+  		
   		String [] testSeleccionados = (String [])resultado.getResultado();
       
        
@@ -103,18 +99,14 @@
 
      <%
       // Hacemos la consulta de los ficheros necesarios y rellenamos el formulario
-      	//String[] ficheros = interfaz.doFicherosPractica(testSeleccionados);
-     	
+      	
 		Testigo resultado2=new Testigo();
 		resultado2.setOperacion(Testigo.Operaciones.insertarFicheros);
 		resultado2.setParametro(testSeleccionados); 
 		
-		//interfaz.getAtributo().putO2AObject(resultado2,AgentController.SYNC);
 		interfaz.sendTestigo(resultado2);
 
-		while(!resultado2.isRelleno()){
-			}
-
+		
 		String [] ficheros = (String [])resultado2.getResultado();
      %>
 
