@@ -691,52 +691,17 @@ public class Interfaz extends Agent {
 					
 			for (int i = 0; i < result.length; ++i) {
 				
-				/*//Para buscar propiedades
-				DFAgentDescription dfd = result[i];
-				Iterator sd1 = dfd.getAllServices();
-				ServiceDescription sd2 = (ServiceDescription) sd1.next();
-				Iterator propiedades = sd2.getAllProperties();
-				Property prop2 = (Property) propiedades.next();
-				Integer prop3 = Integer.valueOf((String) prop2.getValue());
-				//System.out.println("Prop3: "+prop3);
-*/								
 				agentesCorrectores[i]=result[i].getName();
-				//Fin para buscar propiedades
+				
 			}
 			
-			
-						
-			/*Random rand = new Random();
-			int indiceCorrector = rand.nextInt(100);
-					
-			int politica=indiceCorrector%tamano;
-			
-			
-					
-			agenteCorr = agentesCorrectores[politica];
-		
-			if (almacenCorrec.containsKey(agenteCorr)){
-				usado = almacenCorrec.get(agenteCorr);
-				usado++;
-				almacenCorrec.put(agenteCorr, usado);
-			}
-			else{
-				almacenCorrec.put(agenteCorr, new Integer(1));
-			}*/
-			
-					
 			if (politica.equals("aleatoria")){
 				agenteCorr = politicaAleatoria(agentesCorrectores);
 			}
 			else{
 				agenteCorr = politicaMinimos(result, porcentaje);
 			}
-			//agenteCorr = politicaMinimos(result);
 			
-			//agenteCorr = politicaAleatoria(agentesCorrectores);
-			/*System.out.println(" -------------------------------------------- ");
-			System.out.println(agenteCorr);
-			System.out.println(" -------------------------------------------- ");*/
 			setAgenteCorrector(agenteCorr);
 			
 				
@@ -773,15 +738,7 @@ public class Interfaz extends Agent {
 
 		agenteCorr = agentesCorrectores1[politica];
 
-		/*if (almacenCorrec.containsKey(agenteCorr)){
-			usado = almacenCorrec.get(agenteCorr);
-			usado++;
-			almacenCorrec.put(agenteCorr, usado);
-		}
-		else{
-			almacenCorrec.put(agenteCorr, new Integer(1));
-		}*/
-
+		
 		return agenteCorr;
 
 	}
@@ -807,8 +764,7 @@ public class Interfaz extends Agent {
 		Random rand = new Random();
 		
 		
-		//int porcentaje = 50;
-		
+				
 		int correcAelegir = ((result1.length * porcentaje) / 100);
 				
 		if (correcAelegir < 1){
@@ -837,12 +793,9 @@ public class Interfaz extends Agent {
 		
 		int i = 0;
 		while((seDeTodos) && (i < correcAelegir))  {
-			//System.out.println("Estamos en el bucle");
-			//System.out.println(seDeTodos);
 			EstadoCorrector correctorElegido = (EstadoCorrector) almacen.get(i);
 			if (almacenCorrec.containsKey(correctorElegido.getIdentificador())){
 				loQueTarda = almacenCorrec.get(correctorElegido.getIdentificador());
-				//System.out.println("lo que tarda: "+loQueTarda);
 				if (loQueTarda <= loQueTardaAnterior){
 					agenteCorr = correctorElegido.getIdentificador();
 					loQueTardaAnterior = loQueTarda;
@@ -858,7 +811,6 @@ public class Interfaz extends Agent {
 		}
 			
 		if (!seDeTodos){
-			//System.out.println("Todavia no sabemos de todos");
 			int indiceCorrector = rand.nextInt(correcAelegir);
 			EstadoCorrector correctorElegido = (EstadoCorrector) almacen.get(indiceCorrector);
 			agenteCorr = correctorElegido.getIdentificador();
@@ -868,10 +820,6 @@ public class Interfaz extends Agent {
 	}
 	
 
-	
-	
-	
-	
 	
 	private List<AbsPredicate> ConstruiListaTests (String [] TestsAux, AbsConcept practAux){
 		List <AbsPredicate> listaAux = new ArrayList<AbsPredicate>();
@@ -905,9 +853,6 @@ public class Interfaz extends Agent {
 		List <AbsPredicate> listaAux = new ArrayList<AbsPredicate>();
 		FuentesPrograma fp = new FuentesPrograma();
 		for (int contador = 0; contador < conjFich.length; contador++) {
-			
-			//fp.setNombre(conjFich[contador]);
-			//fp.setContenido(contFich[contador]);
 		
 			AbsConcept AbsFP;
 			try {
@@ -968,7 +913,6 @@ public class Interfaz extends Agent {
 	public class EnviaAutenticaBehaviour extends OneShotBehaviour{
 		private String usuAux;
 		private String passAux;
-		//private Testigo tes1;
 		private Resultado tes1;
 		public EnviaAutenticaBehaviour(Agent _a, Resultado tes, String usuario, String passw){
 			super(_a);
@@ -1062,6 +1006,7 @@ public class Interfaz extends Agent {
 	}
 	//-------------- FIN COMPORTAMIENTOS PARA LA AUTENTICACION ----------------------------
 	
+	
 	//-------------- COMPORTAMIENTOS PARA PEDIR LAS PRACTICAS ----------------------------
 	public class PidePracticasBehavior extends OneShotBehaviour{
 		private Resultado tes;
@@ -1080,8 +1025,6 @@ public class Interfaz extends Agent {
 			Practica pract = new Practica();
 			pract.setId("?practica");
 			pract.setDescripcion("");
-			//Corrector correc = new Corrector();
-			//correc.setId(agentCorrec.getName());
 			
 			try {
 				Corrector correc = new Corrector();

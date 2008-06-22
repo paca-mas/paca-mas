@@ -23,7 +23,7 @@ import PACA.agents.lanzaSwing2.Aleatorio;
 import PACA.util.Resultado;
 import PACA.util.Testigo;
 
-//public class SimulaAgentes extends Thread{
+
 public class SimulaAgentes implements Runnable{
 	
 	private class Semaphore {
@@ -131,40 +131,10 @@ public class SimulaAgentes implements Runnable{
 			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
-		
-		/*try {
-			mutex.WAIT();
-			//FileWriter ficheroA = new FileWriter(fichero,true);
-			PrintWriter pw = new PrintWriter(fichero);
-			pw.print(nombre);
-			pw.print(";");
-			pw.print(nombreCorto);
-			pw.print(";");
-			pw.print(duraAux);
-			pw.print(";");
-			pw.print(practica);
-			pw.print(";");
-			pw.print(numTests);
-			pw.print(";");
-			pw.print(politica);
-			pw.print(";");
-			pw.print(inicio);
-			pw.print(";");
-			pw.print(terminacion);
-			pw.print(";");
-			pw.print(tamanoF);
-			pw.print(";");
-			pw.println();
-			pw.close();
-			mutex.SIGNAL();
-
-		} catch (IOException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		}*/
-		
+					
 	}
 	
+	//Generar retardo
 	private void GeneraRetardo(int ret){
 		try {
 			Thread.sleep(ret);
@@ -215,7 +185,7 @@ public class SimulaAgentes implements Runnable{
 	}
 		
 	
-	//public static void main(String[] args) {
+	
 	public void run(){
 		
 		Date ahora = new Date();
@@ -264,10 +234,6 @@ public class SimulaAgentes implements Runnable{
 			System.out.println("Testigo: "+testigo.isResultadoB());
 		}
 						
-		/*while(!testigo.isRelleno()){
-			
-		}*/
-		
 		autenticado = testigo.isResultadoB();
 		if (debug){
 			System.out.println("AUTENTICADO: "+autenticado);
@@ -279,9 +245,7 @@ public class SimulaAgentes implements Runnable{
 			System.out.println("Intentamos buscar un corrector");
 		}
 		
-		/*while(!testigo1.isRelleno()){
-		}*/
-
+		
 		//---------------------- PRACTICAS -----------------------------
 		Resultado testigo2 = new Resultado();
 		agent.swingPidePracticas(testigo2);
@@ -289,9 +253,7 @@ public class SimulaAgentes implements Runnable{
 			System.out.println("Intentamos pedir las practicas");
 		}
 		
-		/*while(!testigo2.isRelleno()){
-		}*/
-
+		
 		String [] pract = (String [])testigo2.getResultado();
 		int numPract = pract.length;
 
@@ -313,9 +275,7 @@ public class SimulaAgentes implements Runnable{
 			System.out.println("Intentamos pedir los tests");
 		}
 				
-		/*while(!testigo3.isRelleno()){
-		}*/
-
+		
 		String [] tests = (String [])testigo3.getResultado();
 		
 		int tamano = tests.length / 2;
@@ -336,12 +296,7 @@ public class SimulaAgentes implements Runnable{
 		//String [] listaTests = new String[eleccion];
 		String [] listaTests = new String[tests_];
 
-		/*for (int i = 0; i < listaTests.length; i++) {
-			Aleatorio rand2 = new Aleatorio();
-			int eleccion2 = rand2.nextInt(0, numTests-1);
-			listaTests[i] = tests2[eleccion2];
-		}*/
-		
+				
 		for (int i = 0; i < listaTests.length; i++){
 			listaTests[i] = tests2[ntests];
 		}
@@ -358,8 +313,6 @@ public class SimulaAgentes implements Runnable{
 			System.out.println("Intentamos mandar los ficheros");
 		}
 
-		/*while(!testigo4.isRelleno()){
-		}*/
 		String [] fichs = (String [])testigo4.getResultado();
 
 		String []cont = new String[fichs.length];
@@ -386,9 +339,7 @@ public class SimulaAgentes implements Runnable{
 				System.out.println("Intentamos buscar un corrector");
 			}
 			
-			/*while(!testigo5.isRelleno()){
-			}*/
-
+			
 			AID nombreC = (AID) testigo5.getResultado();
 			String nombreCorto = nombreC.getName();
 
@@ -399,9 +350,7 @@ public class SimulaAgentes implements Runnable{
 				System.out.println("Intentamos corregir algo..");
 			}
 			
-			/*while(!testigo6.isRelleno()){
-			}*/
-
+			
 			String salida = (String) testigo6.getResultado();
 
 			int posicion = salida.indexOf("terminacion_incorrecta");
@@ -423,10 +372,6 @@ public class SimulaAgentes implements Runnable{
 			agent.almacenCorrec.put(nombreC,duracion);
 			
 			
-			
-			//String sFichero = "C:\\Documents and Settings\\Carlos\\Escritorio\\Resultados\\"+nombre+".txt";
-			//String sFichero = "C:\\Documents and Settings\\Carlos\\Escritorio\\Resultados\\Resultados.csv";
-			//String sFichero = "Resultados.csv";
 			String sFichero = nombreFich;
 			
 			String inicio = enMilisegundos.toString();

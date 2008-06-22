@@ -470,32 +470,7 @@ public class Corrector extends Agent {
 		public void action(){
 			try {
 				
-				//Añadido para realizar pruebas
-				/*if (ejecucionEnPruebas2){
-					Aleatorio rand = new Aleatorio();
-					long retardo = rand.nextInt(500, 3000);
-					Date fechaActual = new Date();
-					Date fechaLimite = new Date(fechaActual.getTime() + retardo);
-					
-					while ((new Date()).before(fechaLimite)){
-						long bloqueo = fechaLimite.getTime()-(new Date()).getTime();
-						block(bloqueo);
-					}
-				}*/
-				
-				
-				//Fin añadido pruebas	
-				
-				//Actualizamos el DF
-				/*numeroCorrecciones++;
-				
-				if ((new Date()).after(fechaLimite)){
-					numeroCorrecciones = numeroCorrecciones - numeroCorrecionesActual;
-					ActualizacionDF();
-					numeroCorrecionesActual = numeroCorrecciones;
-				}*/
-				
-				
+								
 				Aleatorio rand = new Aleatorio();
 				long retardo = rand.nextInt(tiempo_minimo, tiempo_maximo);
 				
@@ -547,19 +522,12 @@ public class Corrector extends Agent {
 
 				absEvap = (AbsConcept) ontologia.fromObject(rEvap);
 
-
 				AbsPredicate qrr = new AbsPredicate(SL1Vocabulary.EQUALS);
 				qrr.set(SL1Vocabulary.EQUALS_LEFT, iotaPred);
 				qrr.set(SL1Vocabulary.EQUALS_RIGHT, absEvap);
 
 				getContentManager().fillContent(respuesta,qrr);
 				myAgent.send(respuesta);
-				
-				/*//Actualizamos fechas
-				fechaActual = new Date();
-				fechaLimite = new Date(fechaActual.getTime() + intervalo);*/
-				
-				
 				
 			} catch (CodecException e) {
 				// TODO Auto-generated catch block
@@ -577,6 +545,9 @@ public class Corrector extends Agent {
 			return done;
 		}
 	}
+
+	
+	
 	
 	//public class ActualizaCorrecciones extends Behaviour{
 	public class ActualizaCorrecciones extends CyclicBehaviour{
@@ -906,40 +877,6 @@ public class Corrector extends Agent {
 		
 		RegistroDF();
 		
-		
-
-		/*
-		//DFService
-		DFAgentDescription dfd = new DFAgentDescription();
-		AID nombreAgente = getAID();
-		
-		Property prop = new Property();
-		prop.setName("Correciones");
-		prop.setValue(numeroCorrecciones);
-		
-		dfd.setName(nombreAgente);
-		if (debug) {
-			System.out.println(nombreAgente.toString() + " quiere registrarse");
-		}
-
-		ServiceDescription sd = new ServiceDescription();
-		sd.setType("Corrector");
-		sd.setName("Agente-Corrector");
-		sd.addProperties(prop);
-		dfd.addServices(sd);
-		try {
-			DFService.register(this, dfd);
-		} catch (FIPAException fe) {
-			System.out.println("Excepcion al registrar Corrector");
-			fe.printStackTrace();
-		}
-
-		if (debug) {
-			System.out.println(nombreAgente.toString() + " se ha registrado correctamente");
-		}
-		*/
-
-
 		// Create the FSMEBehaviour
 		CorrectorBehaviour Principal = new CorrectorBehaviour(this);
 
