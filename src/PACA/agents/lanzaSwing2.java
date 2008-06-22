@@ -71,6 +71,7 @@ public class lanzaSwing2 {
     static InterfazSwing2 agent=null;
     
     static String politica = "minimos";
+    static int porcentaje = 100;
     //Fin Variables Agente Interfaz
             
 	static void repintar(JFrame frame1, JPanel panel1){
@@ -188,23 +189,19 @@ public class lanzaSwing2 {
 		agent.swingAutentica(texto, passw, testigo);
 		System.out.println("--------------------");
 						
-		/*while(!testigo.isRelleno()){
-		}*/
-		
+				
 		autenticado = testigo.isResultadoB();
 		System.out.println("autenticado: "+autenticado);
 		
 		if (autenticado){
 			testigo = new Testigo();
-			agent.swingPideCorrector(testigo, politica);
+			agent.swingPideCorrector(testigo, politica, porcentaje);
 			while(!testigo.isRelleno()){
 			}
 								
 			testigo = new Testigo();
 			
 			agent.swingPidePracticas(testigo);
-			/*while(!testigo.isRelleno()){
-			}*/
 			
 			String [] pract = (String [])testigo.getResultado();
 						
@@ -229,13 +226,10 @@ public class lanzaSwing2 {
 			public void mousePressed(MouseEvent e){
 				String practica = (String) listaPract.getSelectedItem();
 				if (practica!=null){
-					//System.out.println("salida: "+practica+"**");
-
+					
 					Testigo testigo = new Testigo();
 					agent.swingPideTests(testigo, practica);
-					/*while(!testigo.isRelleno()){
-					}*/
-
+					
 					String [] tests = (String [])testigo.getResultado();
 
 					int tamano = tests.length / 2;
@@ -269,9 +263,7 @@ public class lanzaSwing2 {
 					Testigo testigo = new Testigo();
 					agent.swingPideFicheros(testigo, testss);
 
-					/*while(!testigo.isRelleno()){
-					}*/
-
+					
 					String [] fichs = (String [])testigo.getResultado();
 
 					for (int i = 0; i < fichs.length; i++) {
@@ -304,32 +296,24 @@ public class lanzaSwing2 {
 					for(int i = 0; i < cont.length; i++) {
 						String contenido3 = generaContenido();
 						cont[i]=contenido3;
-						//System.out.println("Tamano del fichero: "+cont[i].length());
 						cont2[i]=contenido3;
-						//System.out.println("Tamano del fichero de backup: "+cont2[i].length());
 						primeraCorreccion = false;
 					}
 				}
 				else{
 					cont = cont2;
-					//for (int i = 0; i < cont.length; i++) {
-						//System.out.println("Tamano del fichero sin modificar: "+cont[i].length());
-					//}
+					
 				}
 				
 					
-				agent.swingPideCorrector(testigo, politica);
-				/*while(!testigo.isRelleno()){
-				}*/
-				
+				agent.swingPideCorrector(testigo, politica, porcentaje);
+								
 				AID nombre = (AID) testigo.getResultado();
 				String nombreCorto = nombre.getName();
 				
 				testigo = new Testigo();
 				agent.swingPideCorreccion(testigo, cont);
-				/*while(!testigo.isRelleno()){
-				}*/
-				
+								
 				String salida = (String) testigo.getResultado();
 								
 				int posicion = salida.indexOf("terminacion_incorrecta");

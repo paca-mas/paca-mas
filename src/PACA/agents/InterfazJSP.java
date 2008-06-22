@@ -246,41 +246,33 @@ public class InterfazJSP extends Interfaz {
 
 			if (this.testigo != null) {
 
-				System.out.println("Que operacion es? " + testigo.getOperacion());
 				switch (testigo.getOperacion()) {
 
 					case buscarCorrector:
-						//System.out.println("Operacion BuscarCorrector");
 						addBehaviour(new CorrectorBehaviour(agent, testigo, "minimos", 100));
 						break;
 
 					case autenticar:
-						//System.out.println("Operacion autenticar");
 						addBehaviour(new AutenticaRequestBeha(agent, testigo));
 						break;
 
 					case pedirPracticas:
-						//System.out.println("Operacion pedirPracticas");
 						addBehaviour(new PidePracticasBehavior(agent, testigo));
 						break;
 
 					case pedirTests:
-						//System.out.println("Operacion pedirTests");
 						addBehaviour(new PideTestRequestBeha(agent, testigo));
 						break;
 
 					case pedirFicheros:
-						//System.out.println("Operacion pedirFicheros");
 						testigo.setResultado(agent.doTestPracticasRequest((HttpServletRequest) testigo.getParametro()));
 						break;
 
 					case insertarFicheros:
-						//System.out.println("Operacion InsertarFicheros");
 						addBehaviour(new PideFicherosBeha(agent, testigo, (String[]) testigo.getParametro()));
 						break;
 
 					case corregir:
-						//System.out.println("Operacion corregir algo... ");
 						try {
 							String[] contenido = doObtieneContenidoRequest((HttpServletRequest) testigo.getParametro());
 							addBehaviour(new PideCorreccionBeha(agent, testigo, contenido));
@@ -292,17 +284,14 @@ public class InterfazJSP extends Interfaz {
 						break;
 
 					case parsear:
-						//System.out.println("Operacion parseo XML ");
 						testigo.setResultado(ParseaSalida((String) testigo.getParametro()));
 						break;
 
 					case pedirFicherosFinal:
-						//System.out.println("Operacion pedir Ficheros final");
 						testigo.setResultado((agent.doTestEntregaFinal((HttpServletRequest) testigo.getParametro())));
 						break;
 
 					case entregarPractica:
-						//System.out.println("Operacion entregar Practica");
 						try {
 							testigo.setResultado((agent.doEntregaFinalRequest((HttpServletRequest) testigo.getParametro())));
 						} catch (IOException e) {
@@ -341,7 +330,6 @@ public class InterfazJSP extends Interfaz {
 	@Override
 	protected void setup(){
 		super.setup();
-		//this.setEnabledO2ACommunication(true, 0);
 		FinSetup=true;
 	}
 	

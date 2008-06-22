@@ -49,16 +49,12 @@ public class LanzadorCli {
 		
 		for (int i = 0; i < numThreads; i++) {
 			
-			//System.out.println("Lanzamos: "+i);
-							
-			
 			//------------------ NO BORRAR -----------------
 			SimulaAgentes sim1 = new SimulaAgentes(cc, i, politica, totalCorrec, npract,
 													ntests, ntamano, nombreFichero, nporcentaje);
 			pool.execute(sim1);
 			//------------------ FIN NO BORRAR -------------
-			//GeneraRetardo(50);
-
+			
 		}
 			
 	}
