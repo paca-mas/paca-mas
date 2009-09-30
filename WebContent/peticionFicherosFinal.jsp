@@ -4,9 +4,9 @@
   <%@ page import="java.util.*"%>
   <%@ page import="jade.core.Runtime"%>
   <%@ page import="jade.wrapper.*"%>
-  <%@ page import="PACA.util.*"%>
+  <%@ page import="es.urjc.ia.paca.util.*"%>
 
-  <jsp:useBean id="interfaz" class="PACA.util.AgentBean" scope="session"/>
+  <jsp:useBean id="interfaz" class="es.urjc.ia.paca.util.AgentBean" scope="session"/>
 
   
 <html>

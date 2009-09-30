@@ -1,1 +1,0 @@
-java -cp lib/cos.jar:lib/http.jar:lib/iiop.jar:lib/jade.jar:lib/jadeTools.jar:lib/commons-codec-1.3.jar:build/web/WEB-INF/classes/ jade.Boot -gui corrector:PACA.agents.Corrector autenticador:auth.agents.AuthAgent
