@@ -1,0 +1,10 @@
+<?xml version='1.0' encoding="iso-8859-1"?>
+
+
+<!ELEMENT users (user+)>
+
+<!ELEMENT user (#PCDATA)>
+<!ATTLIST user username CDATA #REQUIRED
+               pass     CDATA #REQUIRED>
+
+
