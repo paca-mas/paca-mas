@@ -3,37 +3,42 @@ package es.urjc.ia.paca.ontology.Fichero;
 import jade.content.Concept;
 
 /**
- *  Modificado Carlos Sim�n Garc�a
+ *  Modificado Alvaro Blazquez Montero
  *
  */
 public class Fichero implements Concept {
 
-	private String Nombre;
-	private String Contenido;
+    private String Nombre;
+    private String Contenido;
 
-	public Fichero() {
-		Nombre = "";
-		this.Contenido = "";
-	}
+    public Fichero() {
+        Nombre = "";
+        this.Contenido = "";
+    }
 
-	public Fichero(String n) {
-		Nombre = n;
-		this.Contenido = "";
-	}
+    public Fichero(String n) {
+        Nombre = n;
+        this.Contenido = "";
+    }
 
-	public String getNombre() {
-		return Nombre;
-	}
+    public Fichero(String n, String j) {
+        Nombre = n;
+        this.Contenido = j;
+    }
 
-	public String getContenido() {
-		return Contenido;
-	}
+    public String getNombre() {
+        return Nombre;
+    }
 
-	public void setContenido(String contenido) {
-		Contenido = contenido;
-	}
+    public String getContenido() {
+        return Contenido;
+    }
 
-	public void setNombre(String nombre) {
-		Nombre = nombre;
-	}
+    public void setContenido(String contenido) {
+        Contenido = contenido;
+    }
+
+    public void setNombre(String nombre) {
+        Nombre = nombre;
+    }
 }
