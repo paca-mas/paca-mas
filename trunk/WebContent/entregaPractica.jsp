@@ -2,10 +2,10 @@
 <%@ page import="javax.servlet.jsp.*"%>
 <%@ page import="javax.servlet.*"%>
 <%@ page import="java.util.*"%>
-<%@ page import="PACA.util.*"%>
+<%@ page import="es.urjc.ia.paca.util.*"%>
 <%@page import="jade.wrapper.*"%>
 
-<jsp:useBean id="interfaz" class="PACA.util.AgentBean" scope="session"/>
+<jsp:useBean id="interfaz" class="es.urjc.ia.paca.util.AgentBean" scope="session"/>
 
 
 <!doctype html public "-//w3c//dtd html 4.0 transitional//en">

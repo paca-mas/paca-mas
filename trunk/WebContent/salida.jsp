@@ -3,9 +3,9 @@
 <%@ page import="javax.servlet.jsp.*"%>
 <%@ page import="javax.servlet.*"%>
 <%@ page import="java.util.*"%>
-<%@ page import="PACA.util.*"%>
+<%@ page import="es.urjc.ia.paca.util.*"%>
 
-<jsp:useBean id="interfaz" class="PACA.util.AgentBean" scope="session"/>
+<jsp:useBean id="interfaz" class="es.urjc.ia.paca.util.AgentBean" scope="session"/>
 
 <!doctype html public "-//w3c//dtd html 4.0 transitional//en">
 <html>
@@ -14,7 +14,7 @@
 		<title>
 			Fin de la aplicaci&oacute;n
 		</title>
-		<LINK REL=STYLESHEET TYPE="text/css" HREF="http://platon.escet.urjc.es/estilos/estiloPaca.css">
+		<LINK REL=STYLESHEET TYPE="text/css" HREF="/estilos/estiloPaca.css">
 		
 	</head>
 	<body>
