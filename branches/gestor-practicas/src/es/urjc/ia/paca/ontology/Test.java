@@ -19,6 +19,11 @@ public class Test implements Concept{
         this.Id = "";
         this.Descripcion = "";
     }
+
+    public Test(String id){
+        this.Id=id;
+        this.Descripcion = "";
+    }
     
     public Test(String _id, String _description) {
         this.Id = _id;
