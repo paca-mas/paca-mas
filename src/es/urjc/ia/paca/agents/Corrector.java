@@ -244,7 +244,7 @@ public class Corrector extends Agent {
 	}
 
 	//Comportamiento que obtiene las practicas disponibles para corregir
-	public class PracCorrecBehaviour extends OneShotBehaviour {
+	/*public class PracCorrecBehaviour extends OneShotBehaviour {
 
 		private ACLMessage resp1;
 		private AbsIRE ire1;
@@ -450,7 +450,7 @@ public class Corrector extends Agent {
 			}
 
 		}
-	}
+	}*/
 	
 	
 	public class CorrigePractBehaviour extends Behaviour{
@@ -667,7 +667,7 @@ public class Corrector extends Agent {
 									addBehaviour(new CorrigePractBehaviour(this.myAgent, reply, l_in, msg.getSender().getLocalName()));
 									
 								} 
-								else {
+								/*else {
 									// Here, is QUERY-REF (all
 
 									AbsIRE allPred = (AbsIRE) l_in;
@@ -695,7 +695,7 @@ public class Corrector extends Agent {
 										}
 									}
 
-								}
+								}*/
 							}
 						} // The message was REQUEST
 						else {
@@ -891,7 +891,7 @@ public class Corrector extends Agent {
 	/**
 	Obtiene las pr�cticas disponibles en el sistema.
 	 */
-	private Practica[] PracticasDisponibles() {
+	/*private Practica[] PracticasDisponibles() {
 
 
 		if (this.ejecucionEnPruebas) {
@@ -950,7 +950,7 @@ public class Corrector extends Agent {
 	/**
 	Obtiene los tests para una pr�ctica concreta.
 	 */
-	private Test[] TestParaPractica(String practica) {
+	/*private Test[] TestParaPractica(String practica) {
 
 
 		if (this.ejecucionEnPruebas) {
@@ -1012,7 +1012,7 @@ public class Corrector extends Agent {
 	/**
 	Obtiene todos los fuentes necesarios para los tests de una pr�ctica.
 	 */
-	private FuentesPrograma[] FicheroParaPractica(String practica,
+	/*private FuentesPrograma[] FicheroParaPractica(String practica,
 		Test[] ListaTest) {
 
 		if (this.ejecucionEnPruebas) {
@@ -1059,7 +1059,7 @@ public class Corrector extends Agent {
 
 			/* Create the FuentesPrograma object with the
 			 * names
-			 */
+			 *//*
 			FP = new FuentesPrograma[NamesAr.length];
 
 			for (int i = 0; i < NamesAr.length; i++) {
