@@ -737,7 +737,7 @@ public class GestorPracticas extends Agent {
 
     private void IniciarBaseDatos() throws SQLException, ClassNotFoundException {
         Class.forName("org.sqlite.JDBC");
-        conn = DriverManager.getConnection("jdbc:sqlite:/home/alvaro/datos.db"); //Esto seria el fichero donde guardar los datos
+        conn = DriverManager.getConnection("jdbc:sqlite:datos.db"); //Esto seria el fichero donde guardar los datos
         stat = conn.createStatement();
     }
 
