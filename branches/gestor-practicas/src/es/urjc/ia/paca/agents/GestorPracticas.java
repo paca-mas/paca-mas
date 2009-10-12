@@ -51,7 +51,7 @@ public class GestorPracticas extends Agent {
 
             try {
 
-                
+
                 ACLMessage msg = receive();
 
                 if (msg != null) {
@@ -406,16 +406,28 @@ public class GestorPracticas extends Agent {
                 AbsAggregate absPracticas = new AbsAggregate(BasicOntology.SET);
 
 
-
-                for (int i = 0; i < lpractn.size(); i++) {
-                    //Creamos un objecto abstracto por cada practica y la a�adimos al aggregate
+                //Si no hay practicas en la base de datos envia esta practica
+                if (lpractn.isEmpty()) {
+                    Practica p = new Practica("No hay practicas");
                     AbsConcept elem;
                     try {
-                        elem = (AbsConcept) ontology.fromObject(lpractn.get(i));
+                        elem = (AbsConcept) ontology.fromObject(p);
                         absPracticas.add(elem);
-                    } catch (OntologyException e) {
-                        // TODO Auto-generated catch block
-                        e.printStackTrace();
+                    } catch (OntologyException ex) {
+                        Logger.getLogger(GestorPracticas.class.getName()).log(Level.SEVERE, null, ex);
+                    }
+
+                } else {
+                    for (int i = 0; i < lpractn.size(); i++) {
+                        //Creamos un objecto abstracto por cada practica y la a�adimos al aggregate
+                        AbsConcept elem;
+                        try {
+                            elem = (AbsConcept) ontology.fromObject(lpractn.get(i));
+                            absPracticas.add(elem);
+                        } catch (OntologyException e) {
+                            // TODO Auto-generated catch block
+                            e.printStackTrace();
+                        }
                     }
                 }
                 //Creamos el predicado abstracto EQUALS
@@ -445,7 +457,6 @@ public class GestorPracticas extends Agent {
         private ACLMessage mens1;
         private AbsIRE ire1;
         private AndBuilder predicado;
-
 
         public TestsCorrecBehaviour(Agent _a, ACLMessage msg1, AndBuilder predicado1, AbsIRE ire) {
             super(_a);
@@ -514,7 +525,7 @@ public class GestorPracticas extends Agent {
         private AbsIRE ire1;
         private AndBuilder predicado;
 
-       public FicherosCorrBehaviour(Agent _a, ACLMessage msg1, AndBuilder predicado1, AbsIRE ire) {
+        public FicherosCorrBehaviour(Agent _a, ACLMessage msg1, AndBuilder predicado1, AbsIRE ire) {
             super(_a);
             this.mens1 = msg1;
             this.predicado = predicado1;
@@ -621,66 +632,86 @@ public class GestorPracticas extends Agent {
     /*-----------BUSQUEDA DE PRACTICAS DISPONIBLES---------------*/
     private ArrayList<Practica> PracticasDisponibles() throws SQLException {
         String frase = "select * from Practica;";
-        ResultSet rs = stat.executeQuery(frase);
-        Practica pt;
         ArrayList<Practica> aux = new ArrayList();
-        while (rs.next()) {
-            pt = new Practica(rs.getString("id"), rs.getString("descripcion"), rs.getString("fechaEntrega"));
-            aux.add(pt);
+        try {
+            ResultSet rs = stat.executeQuery(frase);
+            Practica pt;
+            while (rs.next()) {
+                pt = new Practica(rs.getString("id"), rs.getString("descripcion"), rs.getString("fechaEntrega"));
+                aux.add(pt);
+            }
+            rs.close();
+        } catch (Exception e) {
+            //Salta esta excepcion si hay algun fallo en la base de datos
+        } finally {
+
+            return aux;
         }
-        rs.close();
-        return aux;
 
     }
     /*-----------BUSQUEDA DE TEST DISPONIBLES---------------*/
+
     private ArrayList<Test> TestDisponibles(String id_Practica) throws SQLException {
 
         String frase = "select * from Test where id_Practica='" + id_Practica + "';";
-        ResultSet rs = stat.executeQuery(frase);
-        Test ts;
         ArrayList<Test> aux = new ArrayList();
-        while (rs.next()) {
-            ts = new Test(rs.getString("id"), rs.getString("descripcion"));
-            aux.add(ts);
+        try {
+            ResultSet rs = stat.executeQuery(frase);
+            Test ts;
+
+            while (rs.next()) {
+                ts = new Test(rs.getString("id"), rs.getString("descripcion"));
+                aux.add(ts);
+            }
+            rs.close();
+        } catch (Exception e) {
+        } finally {
+            return aux;
         }
-        rs.close();
-        return aux;
 
     }
 
-        /*-----------BUSQUEDA DE FICHEROS ALUMNO DISPONIBLES---------------*/
+    /*-----------BUSQUEDA DE FICHEROS ALUMNO DISPONIBLES---------------*/
     private ArrayList<FicheroAlumno> FicherosAlumnoDisponibles(String id_Practica, Test[] t) throws SQLException {
 
         ArrayList<FicheroAlumno> aux = new ArrayList();
         ResultSet rs = null;
-        for (int i = 0; i<t.length; i++) {
-            String frase = "select * from FicherosAlumno where id_Practica='" + id_Practica + "' and id_Test='"+t[i].getId()+"';";
-            rs = stat.executeQuery(frase);
-            FicheroAlumno fa;
+        try {
+            for (int i = 0; i < t.length; i++) {
+                String frase = "select * from FicherosAlumno where id_Practica='" + id_Practica + "' and id_Test='" + t[i].getId() + "';";
+                rs = stat.executeQuery(frase);
+                FicheroAlumno fa;
 
-            while (rs.next()) {
-                fa = new FicheroAlumno(rs.getString("id"));
-                aux.add(fa);
+                while (rs.next()) {
+                    fa = new FicheroAlumno(rs.getString("id"));
+                    aux.add(fa);
+                }
             }
+            rs.close();
+        } catch (Exception e) {
+        } finally {
+            return aux;
         }
-        rs.close();
-        return aux;
 
     }
 
-        /*-----------BUSQUEDA DE FICHEROS PROPIOS DISPONIBLES---------------*/
+    /*-----------BUSQUEDA DE FICHEROS PROPIOS DISPONIBLES---------------*/
     private ArrayList<FicheroPropio> BuscarFicherosPropios(String id_Test, String id_Practica) throws SQLException {
-
-        String frase = "select * from FicherosPropios where id_Test='" + id_Test + "' and id_Practica='" + id_Practica + "';";
-        ResultSet rs = stat.executeQuery(frase);
-        FicheroPropio fp;
         ArrayList<FicheroPropio> aux = new ArrayList();
-        while (rs.next()) {
-            fp = new FicheroPropio(rs.getString("id"), rs.getString("codigo"));
-            aux.add(fp);
+        String frase = "select * from FicherosPropios where id_Test='" + id_Test + "' and id_Practica='" + id_Practica + "';";
+        try {
+            ResultSet rs = stat.executeQuery(frase);
+            FicheroPropio fp;
+
+            while (rs.next()) {
+                fp = new FicheroPropio(rs.getString("id"), rs.getString("codigo"));
+                aux.add(fp);
+            }
+            rs.close();
+        } catch (Exception e) {
+        } finally {
+            return aux;
         }
-        rs.close();
-        return aux;
 
     }
 
@@ -689,32 +720,41 @@ public class GestorPracticas extends Agent {
     private ArrayList<Caso> BuscarCasos(String id_Test, String id_Practica) throws SQLException {
 
         String frase = "select * from Caso where id_Test='" + id_Test + "' and id_Practica='" + id_Practica + "';";
-        ResultSet rs = stat.executeQuery(frase);
-        Caso ca;
         ArrayList<Caso> aux = new ArrayList();
-        while (rs.next()) {
-            ca = new Caso(rs.getString("id"));
-            aux.add(ca);
+        try {
+            ResultSet rs = stat.executeQuery(frase);
+            Caso ca;
+
+            while (rs.next()) {
+                ca = new Caso(rs.getString("id"));
+                aux.add(ca);
+            }
+            rs.close();
+        } catch (Exception e) {
+        } finally {
+            return aux;
         }
-        rs.close();
-        return aux;
 
     }
 
 
     /*-----------BUSQUEDA DE FICHEROS IN---------------*/
     private ArrayList<FicheroIN> BuscarFicherosIN(String id_caso, String id_Test, String id_Practica) throws SQLException {
-
-        String frase = "select * from FIcherosIN where id_Test='" + id_Test + "' and id_Practica='" + id_Practica + "' and id_Caso='" + id_caso + "';";
-        ResultSet rs = stat.executeQuery(frase);
-        FicheroIN fi;
         ArrayList<FicheroIN> aux = new ArrayList();
-        while (rs.next()) {
-            fi = new FicheroIN(rs.getString("id"), rs.getString("contenido"));
-            aux.add(fi);
+        String frase = "select * from FIcherosIN where id_Test='" + id_Test + "' and id_Practica='" + id_Practica + "' and id_Caso='" + id_caso + "';";
+        try {
+            ResultSet rs = stat.executeQuery(frase);
+            FicheroIN fi;
+
+            while (rs.next()) {
+                fi = new FicheroIN(rs.getString("id"), rs.getString("contenido"));
+                aux.add(fi);
+            }
+            rs.close();
+        } catch (Exception e) {
+        } finally {
+            return aux;
         }
-        rs.close();
-        return aux;
 
     }
 
@@ -722,16 +762,22 @@ public class GestorPracticas extends Agent {
     /*-----------BUSQUEDA DE FICHEROS OUT---------------*/
     private ArrayList<FicheroOUT> BuscarFicherosOUT(String id_caso, String id_Test, String id_Practica) throws SQLException {
 
-        String frase = "select * from FicherosOUT where id_Test='" + id_Test + "' and id_Practica='" + id_Practica + "' and id_Caso='" + id_caso + "';";
-        ResultSet rs = stat.executeQuery(frase);
-        FicheroOUT fout;
+
         ArrayList<FicheroOUT> aux = new ArrayList();
-        while (rs.next()) {
-            fout = new FicheroOUT(rs.getString("id"), rs.getString("contenido"));
-            aux.add(fout);
+        String frase = "select * from FicherosOUT where id_Test='" + id_Test + "' and id_Practica='" + id_Practica + "' and id_Caso='" + id_caso + "';";
+        try {
+            ResultSet rs = stat.executeQuery(frase);
+            FicheroOUT fout;
+
+            while (rs.next()) {
+                fout = new FicheroOUT(rs.getString("id"), rs.getString("contenido"));
+                aux.add(fout);
+            }
+            rs.close();
+        } catch (Exception e) {
+        } finally {
+            return aux;
         }
-        rs.close();
-        return aux;
 
     }
 
