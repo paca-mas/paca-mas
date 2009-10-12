@@ -65,7 +65,7 @@ import es.urjc.ia.paca.auth.ontology.Usuario;
 import es.urjc.ia.paca.ontology.FicheroAlumno;
 import es.urjc.ia.paca.ontology.FicherosAlumno;
 
-/** 
+/**
 Este agente contiene la comunicaci�n necesaria que debe tener un agente usuario
 humano para interaccionar con el resto de agentes de �sta plataforma. Es decir,
 este agente encapsula los protocolos definidos para el sistema.
@@ -130,6 +130,8 @@ public class Interfaz extends Agent {
     public String[] TestPosiblesPractica;
     /**Identifica al agente gestor de practicas**/
     public String gestorPracticas = "gestor";
+    public Practica[] auxPracticas;
+    public Test[] auxTest;
 
     /**
     Constructor.
@@ -440,7 +442,8 @@ public class Interfaz extends Agent {
             //Interactua inter = new Interactua();
             //FormaGrupoCon formg = new FormaGrupoCon();
 
-            List<AbsPredicate> listaTest = ConstruiListaTests(TestUltimaPractica, AbsPract);
+            Test[] ts = EncontrarTest();
+            List<AbsPredicate> listaTest = ConstruiListaTests(ts, AbsPract);
             List<AbsPredicate> listaFF = ConstruirListaFF(ficherosUltimaPractica, contenidoFicheros, te);
 
             System.out.println("Listas de Tests y ficheros");
@@ -759,17 +762,16 @@ public class Interfaz extends Agent {
         return agenteCorr;
     }
 
-    private List<AbsPredicate> ConstruiListaTests(String[] TestsAux, AbsConcept practAux) {
+    private List<AbsPredicate> ConstruiListaTests(Test[] TestsAux, AbsConcept practAux) {
         List<AbsPredicate> listaAux = new ArrayList<AbsPredicate>();
 
         for (int contador = 0; contador < TestsAux.length; contador++) {
-            Test te = new Test();
+
             AbsConcept AbsTest;
-            te.setId(TestsAux[contador]);
-            te.setDescripcion("");
+
 
             try {
-                AbsTest = (AbsConcept) PACAOntology.fromObject(te);
+                AbsTest = (AbsConcept) PACAOntology.fromObject(TestsAux[contador]);
                 AbsPredicate AbsTests = new AbsPredicate(pacaOntology.TESTS);
                 AbsTests.set(pacaOntology.TEST, AbsTest);
                 AbsTests.set(pacaOntology.PRACTICA, practAux);
@@ -1018,12 +1020,24 @@ public class Interfaz extends Agent {
 
                 Practica p = new Practica();
                 retornable = new String[practicas1.size()];
+                Practica[] aux = new Practica[practicas1.size()];
+
                 for (int i = 0; i < practicas1.size(); i++) {
                     //Pasamos de concepto abstracto a objeto "real", en este caso son practicas
                     p = (Practica) PACAOntology.toObject(practicas1.get(i));
-
-                    retornable[i] = p.getId();
+                    
+                    //Comprobamos que haya practicas disponibles
+                    if (!(p.getId().equalsIgnoreCase("No hay practicas"))) {
+                        retornable[i] = p.getId();
+                        //Guardamos todas la practicas para despues saber cual es
+                        //la descripcion y la fecha de entrega de la practica elegida
+                        aux[i] = p;
+                    }
+                    else{
+                        retornable = new String[0];
+                    }
                 }
+                auxPracticas = aux;
             } catch (OntologyException oe) {
                 //printError(myAgent.getLocalName()+" getRoleName() unsucceeded. Reason:" + oe.getMessage());
                 System.out.println("Excepcion en ontologia");
@@ -1150,6 +1164,7 @@ public class Interfaz extends Agent {
                 Test t = new Test();
                 retornable = new String[tests1.size() * 2];
                 posiblesID = new String[tests1.size()];
+                Test[] aux = new Test[tests1.size()];
                 int j = 0;
                 for (int i = 0; i < tests1.size(); i++) {
                     //Pasamos de concepto abstracto a objeto "real", en este caso son tests
@@ -1158,8 +1173,12 @@ public class Interfaz extends Agent {
                     retornable[j++] = t.getId();
                     posiblesID[i] = t.getId();
                     retornable[j++] = t.getDescripcion();
-                }
 
+                    //Guardamos todos los test de la practica para posteriormente saber
+                    //la descripcion de los test elegidos
+                    aux[i] = t;
+                }
+                auxTest = aux;
             } catch (Exception e) {
                 // Si obtenemos alguna excepci�n de error, directamente no
                 // ofrecemos los tests ...
@@ -1236,18 +1255,20 @@ public class Interfaz extends Agent {
                 absCorrige.set(pacaOntology.PRACTICA, absPract);
                 absCorrige.set(pacaOntology.CORRECTOR, absCorrec);
 
+
+                Test[] ts = EncontrarTest();
                 //FicheroFuentes ff = new FicheroFuentes();
                 FicherosAlumno fas = new FicherosAlumno();
-                Test te1 = new Test();
-                te1.setId(IdTest[0]);
-                te1.setDescripcion("");
-                fas.setTest(te1);
+                //Test te1 = new Test();
+                //te1.setId(IdTest[0]);
+                //te1.setDescripcion("");
+                fas.setTest(ts[0]);
                 fas.setFicheroAlumno(fa);
 
                 //Pasamos el predicado FicheroFuentes a predicado abstracto
                 AbsPredicate absff = (AbsPredicate) PACAOntology.fromObject(fas);
 
-                List<AbsPredicate> listaTest = ConstruiListaTests(IdTest, absPract);
+                List<AbsPredicate> listaTest = ConstruiListaTests(ts, absPract);
 
                 AndBuilder constructor = new AndBuilder();
 
@@ -1338,9 +1359,12 @@ public class Interfaz extends Agent {
             solicitud.setOntology(pacaOntology.NAME);
 
             String retornable = new String("Evaluaci�n no efectuada");
-            Practica pract = new Practica();
-            pract.setId(ultimaPractica);
-            pract.setDescripcion("");
+
+
+            //Buscamos la practica a traves de su Id, para obtener su descripcion y su fecha de entrega
+            Practica pract = EncontrarPractica();
+            //pract.setId(ultimaPractica);
+            //pract.setDescripcion("");
 
             Corrector correc = new Corrector();
             correc.setId(agentCorrec.getName());
@@ -1368,7 +1392,8 @@ public class Interfaz extends Agent {
                 absCorrige.set(pacaOntology.PRACTICA, absPract);
                 absCorrige.set(pacaOntology.CORRECTOR, absCorrec);
 
-                List<AbsPredicate> listaTest = ConstruiListaTests(TestUltimaPractica, absPract);
+                Test ts[] = EncontrarTest();
+                List<AbsPredicate> listaTest = ConstruiListaTests(ts, absPract);
                 List<AbsPredicate> listaFF = ConstruirListaFF(ficherosUltimaPractica, contFichAux, te);
 
                 AndBuilder predicado = new AndBuilder();
@@ -1506,6 +1531,28 @@ public class Interfaz extends Agent {
         }
     }
     //-------------------- FIN COMPORTAMIENTO QUE RECIBE MENSAJES ---------------------------
-}
 
+    public Practica EncontrarPractica() {
+
+        int i = 0;
+        while (!(ultimaPractica.equalsIgnoreCase(auxPracticas[i].getId()))) {
+            i++;
+        }
+
+        return auxPracticas[i];
+    }
+
+    public Test[] EncontrarTest() {
+        int j;
+        Test t[] = new Test[TestUltimaPractica.length];
+        for (int i = 0; i < TestUltimaPractica.length; i++) {
+            j = 0;
+            while (!(TestUltimaPractica[i].equalsIgnoreCase(auxTest[j].getId()))) {
+                j++;
+            }
+            t[i] = auxTest[j];
+        }
+        return t;
+    }
+}
 

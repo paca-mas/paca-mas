@@ -47,7 +47,7 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.Random;
 
-
+import jade.content.onto.BasicOntology;
 import es.urjc.ia.paca.ontology.Alumno;
 import es.urjc.ia.paca.ontology.Corrige;
 import es.urjc.ia.paca.ontology.EntregarPractica;
@@ -76,7 +76,7 @@ import java.util.logging.Level;
 import java.util.logging.Logger;
 
 /**
-Este agente se encarga de realizar la correcci�n de las pr�cticas y tambi�n deposita las entregas que los 
+Este agente se encarga de realizar la correcci�n de las pr�cticas y tambi�n deposita las entregas que los
 alumnos realizan.
  */
 public class Corrector extends Agent {
@@ -86,6 +86,7 @@ public class Corrector extends Agent {
     private boolean ejecucionEnPruebas2 = true;
     //	Nombre de la ontologia
     private Ontology ontologia = pacaOntology.getInstance();
+    private Ontology basicOntologia = BasicOntology.getInstance();
     //Codec
     private Codec codec = new SLCodec();
     //Debug
@@ -311,8 +312,9 @@ public class Corrector extends Agent {
                 Alumno al = eva1.getAlumno();
 
 
-                addBehaviour(new PedirFicherosPropiosBehaviour(this.myAgent, Te, pract));
-                CrearCarpetas(pract, FP, Te);
+
+                addBehaviour(new PedirFicherosPropiosBehaviour(this.myAgent, Te, pract, al, quien1));
+                CrearCarpetas(pract, FP, Te, quien1);
 
 
                 //A partir de aqui ya no seria necesario nada, pero lo dejo para que termine bien el programa
@@ -437,18 +439,29 @@ public class Corrector extends Agent {
                         Tests tss = (Tests) ontologia.toObject(itCor.next());
                         Practica p = tss.getPractica();
                         Test t = tss.getTest();
+                        List<AbsPredicate> preint = predicado.getPredicateList(pacaOntology.INTERACTUA);
+                        Iterator<AbsPredicate> itCorI = preint.iterator();
+                        Interactua intc = (Interactua) ontologia.toObject(itCorI.next());
+                        AID interfaz = intc.getInterfaz();
+                        String rutaInterfaz = interfaz.getLocalName();
+                        Alumno al = intc.getAlumno();
+
+
+
+
                         if (tipo.equals(pacaOntology.FICHEROPROPIO)) {
 
-                            CrearFicherosPropios(p, t, listaElementos);
-                            addBehaviour(new PedirCasosBehaviour(this.myAgent, p, t));
+
+                            CrearFicherosPropios(p, t, listaElementos, rutaInterfaz);
+                            addBehaviour(new PedirCasosBehaviour(this.myAgent, p, t, al, rutaInterfaz));
 
                         } else {
                             if (tipo.equals(pacaOntology.CASO)) {
 
 
-                                CrearCasos(p, t, listaElementos);
-                                addBehaviour(new PedirFicherosINBehaviour(this.myAgent, listaElementos, p, t));
-                                addBehaviour(new PedirFicherosOUTBehaviour(this.myAgent, listaElementos, p, t));
+                                CrearCasos(p, t, listaElementos, rutaInterfaz);
+                                addBehaviour(new PedirFicherosINBehaviour(this.myAgent, listaElementos, p, t, al, rutaInterfaz));
+                                addBehaviour(new PedirFicherosOUTBehaviour(this.myAgent, listaElementos, p, t, al, rutaInterfaz));
                             } else {
 
 
@@ -457,13 +470,13 @@ public class Corrector extends Agent {
                                     Iterator<AbsPredicate> itCorC = precas.iterator();
                                     FicherosIN cas = (FicherosIN) ontologia.toObject(itCorC.next());
                                     Caso ca = cas.getCaso();
-                                    CrearFicherosIN(p, t, ca, listaElementos);
+                                    CrearFicherosIN(p, t, ca, listaElementos, rutaInterfaz);
                                 } else {
                                     List<AbsPredicate> precas = predicado.getPredicateList(pacaOntology.FICHEROSOUT);
                                     Iterator<AbsPredicate> itCorC = precas.iterator();
                                     FicherosOUT cas = (FicherosOUT) ontologia.toObject(itCorC.next());
                                     Caso ca = cas.getCaso();
-                                    CrearFicherosOUT(p, t, ca, listaElementos);
+                                    CrearFicherosOUT(p, t, ca, listaElementos, rutaInterfaz);
                                 }
 
                             }
@@ -1341,24 +1354,35 @@ public class Corrector extends Agent {
 
 
     /*----------METODOS PARA PEDIR COSAS AL GESTOR--------------*/
-
-
     /*-----------Pide los ficheros propios del Test--------------*/
     class PedirFicherosPropiosBehaviour extends OneShotBehaviour {
 
         private Test[] t;
         private Practica p;
+        private Alumno al;
+        private String interfaz;
 
-        public PedirFicherosPropiosBehaviour(Agent a, Test[] t, Practica p) {
+        public PedirFicherosPropiosBehaviour(Agent a, Test[] t, Practica p, Alumno al, String interfaz) {
             super(a);
             this.t = t;
             this.p = p;
+            this.al = al;
+            this.interfaz = interfaz;
 
         }
 
         public void action() {
 
             try {
+                //CREAMOS EL PREDICADO INTERACTUA PARA SABER LOS DATOS DEL ALUMNO
+                //Y EL NOMBRE EL AID DEL INTERFAZ QUE HA PEDIDO LA CORRECCION
+                AbsConcept absal = (AbsConcept) ontologia.fromObject(al);
+                AID aidInterfaz = new AID(interfaz, AID.ISLOCALNAME);
+                AbsConcept absaid = (AbsConcept) basicOntologia.fromObject(aidInterfaz);
+
+                AbsPredicate absint = new AbsPredicate(pacaOntology.INTERACTUA);
+                absint.set(pacaOntology.INTERFAZ, absaid);
+                absint.set(pacaOntology.ALUMNO, absal);
 
                 for (int i = 0; i < t.length; i++) {
                     //CREAMOS EL MENSAJE
@@ -1392,6 +1416,7 @@ public class Corrector extends Agent {
                     AndBuilder constructor = new AndBuilder();
                     constructor.addPredicate(abstss);
                     constructor.addPredicate(absfps);
+                    constructor.addPredicate(absint);
 
                     //CREAMOS EL IRE CON LA VARIABLE X Y ENVIAMOS TODO
                     AbsVariable x =
@@ -1418,11 +1443,15 @@ public class Corrector extends Agent {
 
         private Practica pract;
         private Test ts;
+        private Alumno al;
+        private String interfaz;
 
-        public PedirCasosBehaviour(Agent a, Practica pract, Test ts) {
+        public PedirCasosBehaviour(Agent a, Practica pract, Test ts, Alumno al, String interfaz) {
             super(a);
             this.pract = pract;
             this.ts = ts;
+            this.al = al;
+            this.interfaz = interfaz;
         }
 
         @Override
@@ -1445,6 +1474,15 @@ public class Corrector extends Agent {
                 AbsPredicate abstss = new AbsPredicate(pacaOntology.TESTS);
                 abstss.set(pacaOntology.TEST, absts);
                 abstss.set(pacaOntology.PRACTICA, abspract);
+                //CREAMOS EL PREDICADO INTERACTUA PARA SABER LOS DATOS DEL ALUMNO
+                //Y EL NOMBRE EL AID DEL INTERFAZ QUE HA PEDIDO LA CORRECCION
+                AbsConcept absal = (AbsConcept) ontologia.fromObject(al);
+                AID aidInterfaz = new AID(interfaz, AID.ISLOCALNAME);
+                AbsConcept absaid = (AbsConcept) basicOntologia.fromObject(aidInterfaz);
+
+                AbsPredicate absint = new AbsPredicate(pacaOntology.INTERACTUA);
+                absint.set(pacaOntology.INTERFAZ, absaid);
+                absint.set(pacaOntology.ALUMNO, absal);
 
 
                 //CREAMOS EL PREDICADO PARA PEDIR LOS CASOS
@@ -1459,6 +1497,7 @@ public class Corrector extends Agent {
                 AndBuilder constructor = new AndBuilder();
                 constructor.addPredicate(abstss);
                 constructor.addPredicate(abscss);
+                constructor.addPredicate(absint);
 
                 //CREAMOS EL IRE CON LA VARIABLE X Y ENVIAMOS TODO
                 AbsVariable x =
@@ -1484,12 +1523,16 @@ public class Corrector extends Agent {
         AbsAggregate listaCasos;
         private Practica pract;
         private Test ts;
+        private Alumno al;
+        private String interfaz;
 
-        public PedirFicherosINBehaviour(Agent a, AbsAggregate listaCasos, Practica pract, Test ts) {
+        public PedirFicherosINBehaviour(Agent a, AbsAggregate listaCasos, Practica pract, Test ts, Alumno al, String interfaz) {
             super(a);
             this.listaCasos = listaCasos;
             this.pract = pract;
             this.ts = ts;
+            this.al = al;
+            this.interfaz = interfaz;
         }
 
         @Override
@@ -1502,6 +1545,16 @@ public class Corrector extends Agent {
                 AbsPredicate abstss = new AbsPredicate(pacaOntology.TESTS);
                 abstss.set(pacaOntology.TEST, absts);
                 abstss.set(pacaOntology.PRACTICA, abspract);
+
+                //CREAMOS EL PREDICADO INTERACTUA PARA SABER LOS DATOS DEL ALUMNO
+                //Y EL NOMBRE EL AID DEL INTERFAZ QUE HA PEDIDO LA CORRECCION
+                AbsConcept absal = (AbsConcept) ontologia.fromObject(al);
+                AID aidInterfaz = new AID(interfaz, AID.ISLOCALNAME);
+                AbsConcept absaid = (AbsConcept) basicOntologia.fromObject(aidInterfaz);
+
+                AbsPredicate absint = new AbsPredicate(pacaOntology.INTERACTUA);
+                absint.set(pacaOntology.INTERFAZ, absaid);
+                absint.set(pacaOntology.ALUMNO, absal);
 
 
                 //PEDIMOS LOS FICHEROSIN DE CADA CASO UNO POR UNO
@@ -1527,6 +1580,7 @@ public class Corrector extends Agent {
                     AndBuilder constructor = new AndBuilder();
                     constructor.addPredicate(abstss);
                     constructor.addPredicate(absfis);
+                    constructor.addPredicate(absint);
 
                     //CREAMOS EL IRE CON LA VARIABLE X Y ENVIAMOS TODO
                     AbsVariable x =
@@ -1553,12 +1607,16 @@ public class Corrector extends Agent {
         AbsAggregate listaCasos;
         private Practica pract;
         private Test ts;
+        private Alumno al;
+        private String interfaz;
 
-        public PedirFicherosOUTBehaviour(Agent a, AbsAggregate listaCasos, Practica pract, Test ts) {
+        public PedirFicherosOUTBehaviour(Agent a, AbsAggregate listaCasos, Practica pract, Test ts, Alumno al, String interfaz) {
             super(a);
             this.listaCasos = listaCasos;
             this.pract = pract;
             this.ts = ts;
+            this.al = al;
+            this.interfaz = interfaz;
         }
 
         @Override
@@ -1572,6 +1630,16 @@ public class Corrector extends Agent {
                 AbsPredicate abstss = new AbsPredicate(pacaOntology.TESTS);
                 abstss.set(pacaOntology.TEST, absts);
                 abstss.set(pacaOntology.PRACTICA, abspract);
+
+                //CREAMOS EL PREDICADO INTERACTUA PARA SABER LOS DATOS DEL ALUMNO
+                //Y EL NOMBRE EL AID DEL INTERFAZ QUE HA PEDIDO LA CORRECCION
+                AbsConcept absal = (AbsConcept) ontologia.fromObject(al);
+                AID aidInterfaz = new AID(interfaz, AID.ISLOCALNAME);
+                AbsConcept absaid = (AbsConcept) basicOntologia.fromObject(aidInterfaz);
+
+                AbsPredicate absint = new AbsPredicate(pacaOntology.INTERACTUA);
+                absint.set(pacaOntology.INTERFAZ, absaid);
+                absint.set(pacaOntology.ALUMNO, absal);
 
                 //PEDIMOS LOS FICHEROS OUT DE CADA CASO UNO POR UNO
                 for (int i = 0; listaCasos.size() > i; i++) {
@@ -1596,6 +1664,7 @@ public class Corrector extends Agent {
                     AndBuilder constructor = new AndBuilder();
                     constructor.addPredicate(abstss);
                     constructor.addPredicate(absfos);
+                    constructor.addPredicate(absint);
 
                     //CREAMOS EL IRE CON LA VARIABLE X Y ENVIAMOS TO
                     AbsVariable x =
@@ -1618,18 +1687,33 @@ public class Corrector extends Agent {
 
 
     /*-------METODOS PARA CREAR CARPETAS Y FICHEROS--------------*/
-    private void CrearCarpetas(Practica pract, FuentesPrograma[] FP, Test[] Te) throws IOException {
-        File dir = new File("/tmp/" + pract.getId());
+    private void CrearCarpetas(Practica pract, FuentesPrograma[] FP, Test[] Te, String alumno) throws IOException {
+        //Creo la carpeta de la practica
+        File dir = new File("/tmp/" + pract.getId() + alumno);
         dir.mkdir();
-        for (int i = 0; Te.length > i; i++) {
-            dir = new File("/tmp/" + pract.getId() + "/" + Te[i].getId());
-            dir.mkdir();
-        }
 
+        //Creo el fichero descripcion de la practica
         FileWriter fichero;
         PrintWriter pw;
+        fichero = new FileWriter("/tmp/" + pract.getId() + alumno + "/FPractica");
+        pw = new PrintWriter(fichero);
+        pw.println(pract.getDescripcion());
+        pw.println(pract.getFechaEntrega());
+        pw.close();
+
+        //Creo las carpetas de los test y sus descripciones
+        for (int i = 0; Te.length > i; i++) {
+            dir = new File("/tmp/" + pract.getId() + alumno + "/" + Te[i].getId());
+            dir.mkdir();
+            fichero = new FileWriter("/tmp/" + pract.getId() + alumno + "/" + Te[i].getId() + "/FTest");
+            pw = new PrintWriter(fichero);
+            pw.println(Te[i].getDescripcion());
+            pw.close();
+        }
+
+        //Creo los ficheros que ha entregado el alumno
         for (int i = 0; FP.length > i; i++) {
-            fichero = new FileWriter("/tmp/" + pract.getId() + "/" + FP[i].getNombre());
+            fichero = new FileWriter("/tmp/" + pract.getId() + alumno + "/" + FP[i].getNombre());
             pw = new PrintWriter(fichero);
             pw.println(FP[i].getContenido());
             pw.close();
@@ -1637,13 +1721,13 @@ public class Corrector extends Agent {
         }
     }
 
-    private void CrearFicherosPropios(Practica p, Test t, AbsAggregate listaElementos) throws OntologyException, IOException {
+    private void CrearFicherosPropios(Practica p, Test t, AbsAggregate listaElementos, String alumno) throws OntologyException, IOException {
         FileWriter fichero;
         PrintWriter pw;
         for (int i = 0; listaElementos.size() > i; i++) {
 
             FicheroPropio fp = (FicheroPropio) ontologia.toObject(listaElementos.get(i));
-            fichero = new FileWriter("/tmp/" + p.getId() + "/" + t.getId() + "/" + fp.getNombre());
+            fichero = new FileWriter("/tmp/" + p.getId() + alumno + "/" + t.getId() + "/" + fp.getNombre());
             pw = new PrintWriter(fichero);
             pw.println(fp.getCodigo());
             pw.close();
@@ -1651,24 +1735,24 @@ public class Corrector extends Agent {
         }
     }
 
-    private void CrearCasos(Practica p, Test t, AbsAggregate listaElementos) throws OntologyException, IOException {
+    private void CrearCasos(Practica p, Test t, AbsAggregate listaElementos, String alumno) throws OntologyException, IOException {
         File dir;
 
         for (int i = 0; listaElementos.size() > i; i++) {
 
             Caso ca = (Caso) ontologia.toObject(listaElementos.get(i));
-            dir = new File("/tmp/" + p.getId() + "/" + t.getId() + "/" + ca.getId());
+            dir = new File("/tmp/" + p.getId() + alumno + "/" + t.getId() + "/" + ca.getId());
             dir.mkdir();
         }
     }
 
-    private void CrearFicherosIN(Practica p, Test t, Caso c, AbsAggregate listaElementos) throws OntologyException, IOException {
+    private void CrearFicherosIN(Practica p, Test t, Caso c, AbsAggregate listaElementos, String alumno) throws OntologyException, IOException {
         FileWriter fichero;
         PrintWriter pw;
         for (int i = 0; listaElementos.size() > i; i++) {
 
             FicheroIN fi = (FicheroIN) ontologia.toObject(listaElementos.get(i));
-            fichero = new FileWriter("/tmp/" + p.getId() + "/" + t.getId() + "/" + c.getId() + "/" + fi.getNombre());
+            fichero = new FileWriter("/tmp/" + p.getId() + alumno + "/" + t.getId() + "/" + c.getId() + "/" + fi.getNombre());
             pw = new PrintWriter(fichero);
             pw.println(fi.getContenido());
             pw.close();
@@ -1676,13 +1760,13 @@ public class Corrector extends Agent {
         }
     }
 
-    private void CrearFicherosOUT(Practica p, Test t, Caso c, AbsAggregate listaElementos) throws OntologyException, IOException {
+    private void CrearFicherosOUT(Practica p, Test t, Caso c, AbsAggregate listaElementos, String alumno) throws OntologyException, IOException {
         FileWriter fichero;
         PrintWriter pw;
         for (int i = 0; listaElementos.size() > i; i++) {
 
             FicheroOUT fo = (FicheroOUT) ontologia.toObject(listaElementos.get(i));
-            fichero = new FileWriter("/tmp/" + p.getId() + "/" + t.getId() + "/" + c.getId() + "/" + fo.getNombre());
+            fichero = new FileWriter("/tmp/" + p.getId() + alumno + "/" + t.getId() + "/" + c.getId() + "/" + fo.getNombre());
             pw = new PrintWriter(fichero);
             pw.println(fo.getContenido());
             pw.close();
@@ -1690,7 +1774,6 @@ public class Corrector extends Agent {
         }
     }
 }
-
 
 
 

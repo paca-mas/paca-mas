@@ -202,7 +202,13 @@
 <BR>
 </div>
 <BR><BR><BR>
+<%
+if (pract.length!=0){
+%>
 	<p align="right"><input type="submit" name="seleccionar" value="Seleccionar" onclick="javascript:salida=false;"></p>
+        <%
+}
+%>
     </form>
 
 
