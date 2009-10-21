@@ -5,8 +5,8 @@ public class Testigo extends Resultado{
 	//Operaciones es un tipo enumerado en donde definimos las operaciones que queremos realizar
 	public enum Operaciones {
 		autenticar, pedirPracticas, pedirTests, pedirFicheros,insertarFicheros,
-		buscarCorrector, corregir, parsear, entregarPractica, pedirFicherosFinal
-		
+		buscarCorrector, corregir, parsear, entregarPractica, pedirFicherosFinal, descripcionPractica,
+		modificarPractica
 	}
 	
 	private Object resultado;

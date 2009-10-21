@@ -11,6 +11,8 @@ import jade.content.onto.OntologyException;
 import jade.core.Agent;
 import jade.lang.acl.ACLMessage;
 import es.urjc.ia.paca.util.AndBuilder;
+import jade.content.AgentAction;
+import jade.content.ContentElement;
 import jade.content.abs.AbsAggregate;
 import jade.content.abs.AbsConcept;
 import jade.content.abs.AbsContentElement;
@@ -21,6 +23,7 @@ import jade.content.lang.sl.SL2Vocabulary;
 import jade.content.lang.sl.SLVocabulary;
 import jade.content.onto.BasicOntology;
 import jade.content.onto.UngroundedException;
+import jade.content.onto.basic.Action;
 import jade.core.behaviours.CyclicBehaviour;
 import jade.core.behaviours.OneShotBehaviour;
 import java.io.File;
@@ -124,10 +127,22 @@ public class GestorPracticas extends Agent {
 
 
                     } else {
-                        System.out.println("[" + getLocalName() + "] El mensaje no se ajusta a lo esperadoo.");
-                        ACLMessage respuesta = new ACLMessage(ACLMessage.NOT_UNDERSTOOD);
-                        respuesta.addReceiver(msg.getSender());
-                        send(respuesta);
+                        if (msg.getPerformative() == ACLMessage.REQUEST) {
+                            ContentElement p = manager.extractContent(msg);
+                            if (p instanceof Action) {
+                                AgentAction a = (AgentAction) ((Action) p).getAction();
+                                if (a instanceof ModificaPractica) {
+                                    ModificaPractica mdp = (ModificaPractica) a;
+                                    Practica pt = mdp.getPractica();
+                                    ModificarPracticas(pt);
+                                }
+                            }
+                        } else {
+                            System.out.println("[" + getLocalName() + "] El mensaje no se ajusta a lo esperadoo.");
+                            ACLMessage respuesta = new ACLMessage(ACLMessage.NOT_UNDERSTOOD);
+                            respuesta.addReceiver(msg.getSender());
+                            send(respuesta);
+                        }
                     }
 
                 } else {
@@ -779,6 +794,13 @@ public class GestorPracticas extends Agent {
             return aux;
         }
 
+    }
+
+    private void ModificarPracticas(Practica pt) throws SQLException {
+        String frase = "update Practica set descripcion='"+pt.getDescripcion()+"' where id='"+pt.getId()+"';";
+        String frase2 = "update Practica set fechaEntrega='"+pt.getFechaEntrega()+"' where id='"+pt.getId()+"';";
+        stat.executeUpdate(frase);
+        stat.executeUpdate(frase2);
     }
 
     private void IniciarBaseDatos() throws SQLException, ClassNotFoundException {
