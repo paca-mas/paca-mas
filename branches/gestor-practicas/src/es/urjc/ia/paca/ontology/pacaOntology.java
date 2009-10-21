@@ -101,6 +101,7 @@ public class pacaOntology extends Ontology {
     public static final String ENTREGA = "Entrega";
     //AgentAction
     public static final String ACTIONENTREGAR = "ActionEntregar";
+    public static final String MODIFICAPRACTICA = "ModificaPractica";
     /**
     Instancia de la ontolog�a. Sigue un patr�n de dise�o SINGLETON.
      */
@@ -292,6 +293,10 @@ public class pacaOntology extends Ontology {
             ps5.add(CORRECTOR, (ConceptSchema) getSchema(CORRECTOR));
             ps5.add(PRACTICA, (ConceptSchema) getSchema(PRACTICA));
             ps5.add(ENTREGA, (PredicateSchema) getSchema(SL1Vocabulary.AND));
+
+            add(new AgentActionSchema(MODIFICAPRACTICA), ModificaPractica.class);
+            AgentActionSchema ps12 = (AgentActionSchema) getSchema(MODIFICAPRACTICA);
+            ps12.add(PRACTICA, (ConceptSchema) getSchema(PRACTICA));
 
 
         } catch (OntologyException oe) {

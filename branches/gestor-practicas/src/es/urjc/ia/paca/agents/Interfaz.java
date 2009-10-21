@@ -42,6 +42,8 @@ import java.util.Random;
 
 import com.sun.image.codec.jpeg.TruncatedFileException;
 
+import java.util.logging.Level;
+import java.util.logging.Logger;
 import sun.misc.Sort;
 
 import es.urjc.ia.paca.ontology.Alumno;
@@ -62,8 +64,10 @@ import es.urjc.ia.paca.util.Resultado;
 import es.urjc.ia.paca.auth.ontology.Autenticado;
 import es.urjc.ia.paca.auth.ontology.AuthOntology;
 import es.urjc.ia.paca.auth.ontology.Usuario;
+import es.urjc.ia.paca.ontology.EntregarPractica;
 import es.urjc.ia.paca.ontology.FicheroAlumno;
 import es.urjc.ia.paca.ontology.FicherosAlumno;
+import es.urjc.ia.paca.ontology.ModificaPractica;
 
 /**
 Este agente contiene la comunicaci�n necesaria que debe tener un agente usuario
@@ -1025,15 +1029,14 @@ public class Interfaz extends Agent {
                 for (int i = 0; i < practicas1.size(); i++) {
                     //Pasamos de concepto abstracto a objeto "real", en este caso son practicas
                     p = (Practica) PACAOntology.toObject(practicas1.get(i));
-                    
+
                     //Comprobamos que haya practicas disponibles
                     if (!(p.getId().equalsIgnoreCase("No hay practicas"))) {
                         retornable[i] = p.getId();
                         //Guardamos todas la practicas para despues saber cual es
                         //la descripcion y la fecha de entrega de la practica elegida
                         aux[i] = p;
-                    }
-                    else{
+                    } else {
                         retornable = new String[0];
                     }
                 }
@@ -1553,6 +1556,73 @@ public class Interfaz extends Agent {
             t[i] = auxTest[j];
         }
         return t;
+    }
+
+    /*********COMPORTAMIENTS PARA LA MODIFICACION DE PRACTICAS************/
+    public class PideDescPractica extends OneShotBehaviour {
+
+        private Resultado tes1;
+        private String IdPractica;
+
+        public PideDescPractica(Agent _a, Resultado tes, String practica) {
+            super(_a);
+            this.tes1 = tes;
+            this.IdPractica = practica;
+        }
+
+        public void action() {
+            ultimaPractica = IdPractica;
+            Practica p = EncontrarPractica();
+            tes1.setResultado(p);
+        }
+    }
+
+    public class ModificarPractica extends OneShotBehaviour {
+
+        private Resultado tes1;
+        private String descripcion;
+        private String fechaEntrega;
+
+        public ModificarPractica(Agent _a, Resultado tes, String descripcion, String fechaEntrega) {
+            super(_a);
+            this.tes1 = tes;
+            this.descripcion = descripcion;
+            this.fechaEntrega = fechaEntrega;
+        }
+
+        public void action() {
+            try {
+                /*ultimaPractica = IdPractica;
+                Practica p = EncontrarPractica();
+                tes1.setResultado(p);*/
+                AID receiver = new AID(gestorPracticas, AID.ISLOCALNAME);
+                ACLMessage solicitud = new ACLMessage(ACLMessage.REQUEST);
+                solicitud.addReceiver(receiver);
+                solicitud.setLanguage(codec.getName());
+                solicitud.setOntology(pacaOntology.NAME);
+
+
+                Practica pt = new Practica(ultimaPractica, descripcion, fechaEntrega);
+                //AbsConcept Abspt = (AbsConcept) PACAOntology.fromObject(pt);
+                //AbsAgentAction AbsEntp = new AbsAgentAction(pacaOntology.MODIFICAPRACTICA);
+                ModificaPractica mdp = new ModificaPractica();
+                mdp.setPractica(pt);
+
+                Action act = new Action();
+                act.setAction(mdp);
+                act.setActor(receiver);
+
+                //AbsEntp.set(pacaOntology.PRACTICA, Abspt);
+                
+                
+                getContentManager().fillContent(solicitud, act);
+                send(solicitud);
+            } catch (CodecException ex) {
+                Logger.getLogger(Interfaz.class.getName()).log(Level.SEVERE, null, ex);
+            } catch (OntologyException ex) {
+                Logger.getLogger(Interfaz.class.getName()).log(Level.SEVERE, null, ex);
+            }
+        }
     }
 }
 
