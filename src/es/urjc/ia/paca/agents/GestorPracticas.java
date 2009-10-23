@@ -1,7 +1,6 @@
 package es.urjc.ia.paca.agents;
 
 import es.urjc.ia.paca.ontology.*;
-import es.urjc.ia.paca.ontology.Fichero.FuentesPrograma;
 import jade.content.ContentManager;
 import jade.content.lang.Codec;
 import jade.content.lang.Codec.CodecException;
@@ -135,6 +134,17 @@ public class GestorPracticas extends Agent {
                                     ModificaPractica mdp = (ModificaPractica) a;
                                     Practica pt = mdp.getPractica();
                                     ModificarPracticas(pt);
+                                } else if (a instanceof ModificaTest) {
+                                    ModificaTest mts = (ModificaTest) a;
+                                    Test ts = mts.getTest();
+                                    Practica pt = mts.getPractica();
+                                    ModificarTest(pt, ts);
+                                } else if (a instanceof ModificaFicheroPropio) {
+                                    ModificaFicheroPropio mfp = (ModificaFicheroPropio) a;
+                                    Test ts = mfp.getTest();
+                                    FicheroPropio fp = mfp.getFicheroPropio();
+                                    Practica pt = mfp.getPractica();
+                                    ModificarFicheroPropio(pt, ts, fp);
                                 }
                             }
                         } else {
@@ -797,10 +807,21 @@ public class GestorPracticas extends Agent {
     }
 
     private void ModificarPracticas(Practica pt) throws SQLException {
-        String frase = "update Practica set descripcion='"+pt.getDescripcion()+"' where id='"+pt.getId()+"';";
-        String frase2 = "update Practica set fechaEntrega='"+pt.getFechaEntrega()+"' where id='"+pt.getId()+"';";
+        String frase = "update Practica set descripcion='" + pt.getDescripcion() + "' where id='" + pt.getId() + "';";
+        String frase2 = "update Practica set fechaEntrega='" + pt.getFechaEntrega() + "' where id='" + pt.getId() + "';";
         stat.executeUpdate(frase);
         stat.executeUpdate(frase2);
+    }
+
+    private void ModificarTest(Practica pt, Test ts) throws SQLException {
+
+        String frase = "update Test set descripcion='" + ts.getDescripcion() + "' where id='" + ts.getId() + "' and id_practica='" + pt.getId() + "';";
+        stat.executeUpdate(frase);
+    }
+
+    private void ModificarFicheroPropio(Practica pt, Test ts, FicheroPropio fp) throws SQLException {
+        String frase = "update FicherosPropios set codigo='" + fp.getCodigo() + "' where id='"+fp.getNombre()+"' and id_test='" + ts.getId() + "' and id_practica='" + pt.getId() + "';";
+        stat.executeUpdate(frase);
     }
 
     private void IniciarBaseDatos() throws SQLException, ClassNotFoundException {

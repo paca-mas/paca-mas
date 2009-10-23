@@ -37,35 +37,40 @@
     </head>
     <body onUnload="exit();">
         <%@ include file="cab.html"%>
-        <%@ include file="barra1.html"%> 
+        <%@ include file="barra1.html"%>
 
         <%
 
             //boolean autenticado = false;
 
             Testigo resultado = new Testigo();
-            resultado.setOperacion(Testigo.Operaciones.modificarPractica);
+            resultado.setOperacion(Testigo.Operaciones.modificarTest);
             resultado.setParametro((HttpServletRequest) request);
 
             interfaz.sendTestigo(resultado);
+
+            Testigo resultado2 = new Testigo();
+            resultado2.setOperacion(Testigo.Operaciones.modificarFicherosPropios);
+            resultado2.setParametro((HttpServletRequest) request);
+            interfaz.sendTestigo(resultado2);
 
             //autenticado = resultado.isResultadoB();
 
         %>
 
 
-        <br><br><br>  
+        <br><br><br>
         <p class="center"  class="color">
-			Practica modificada correctamente.
+			Test modificado correctamente.
         </p>
         <br>
         <p align="center" class="color">
-            Seleccione el test a modificar.  </p><br>
-
+            Seleccione el Caso del test a modificar.  </p><br>
+        <%--
         <%
 // Hacemos la consulta de los tests necesarios y rellenamos el formulario
 
-//String[] tests = interfaz.doPeticionTestPracticaRequest(request);  
+//String[] tests = interfaz.doPeticionTestPracticaRequest(request);
 
     Testigo resultado2 = new Testigo();
     resultado2.setOperacion(Testigo.Operaciones.pedirTests);
@@ -119,6 +124,6 @@
             <p align="right"><input type="submit" name="seleccionar" value="Seleccionar" onclick="javascript:salida=false;"></p>
                 <%            }
                 %>
-        </form>
+        </form> --%>
     </body>
 </html>

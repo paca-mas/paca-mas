@@ -102,6 +102,8 @@ public class pacaOntology extends Ontology {
     //AgentAction
     public static final String ACTIONENTREGAR = "ActionEntregar";
     public static final String MODIFICAPRACTICA = "ModificaPractica";
+    public static final String MODIFICATEST = "ModificaTest";
+    public static final String MODIFICAFICHEROPROPIO = "ModificaFicheroPropio";
     /**
     Instancia de la ontolog�a. Sigue un patr�n de dise�o SINGLETON.
      */
@@ -297,6 +299,18 @@ public class pacaOntology extends Ontology {
             add(new AgentActionSchema(MODIFICAPRACTICA), ModificaPractica.class);
             AgentActionSchema ps12 = (AgentActionSchema) getSchema(MODIFICAPRACTICA);
             ps12.add(PRACTICA, (ConceptSchema) getSchema(PRACTICA));
+
+            add(new AgentActionSchema(MODIFICATEST), ModificaTest.class);
+            AgentActionSchema ps13 = (AgentActionSchema) getSchema(MODIFICATEST);
+            ps13.add(TEST, (ConceptSchema) getSchema(TEST));
+            ps13.add(PRACTICA, (ConceptSchema) getSchema(PRACTICA));
+
+            add(new AgentActionSchema(MODIFICAFICHEROPROPIO), ModificaFicheroPropio.class);
+            AgentActionSchema ps14 = (AgentActionSchema) getSchema(MODIFICAFICHEROPROPIO);
+            ps14.add(TEST, (ConceptSchema) getSchema(TEST));
+            ps14.add(PRACTICA, (ConceptSchema) getSchema(PRACTICA));
+            ps14.add(FICHEROPROPIO, (ConceptSchema) getSchema(FICHEROPROPIO));
+
 
 
         } catch (OntologyException oe) {
