@@ -236,7 +236,7 @@ public class InterfazJSP extends Interfaz {
         }
     }
 
-        public class ModificarTestBeha extends OneShotBehaviour {
+    public class ModificarTestBeha extends OneShotBehaviour {
 
         private Testigo tes2;
 
@@ -252,7 +252,7 @@ public class InterfazJSP extends Interfaz {
         }
     }
 
-                public class ModificarFicherosPropiosBeha extends OneShotBehaviour {
+    public class ModificarFicherosPropiosBeha extends OneShotBehaviour {
 
         private Testigo tes2;
 
@@ -263,9 +263,45 @@ public class InterfazJSP extends Interfaz {
 
         public void action() {
             HttpServletRequest param1 = (HttpServletRequest) tes2.getParametro();
-            for (int i=0; i<FicherosPropiosDisponibles.length; i++){
-            String descripcion = param1.getParameter(FicherosPropiosDisponibles[i].getNombre());
-            addBehaviour(new ModificarFicherosPropios(this.myAgent, tes2, descripcion, FicherosPropiosDisponibles[i].getNombre()));
+            for (int i = 0; i < FicherosPropiosDisponibles.length; i++) {
+                String descripcion = param1.getParameter(FicherosPropiosDisponibles[i].getNombre());
+                addBehaviour(new ModificarFicherosPropios(this.myAgent, tes2, descripcion, FicherosPropiosDisponibles[i].getNombre()));
+            }
+        }
+    }
+
+    public class ModificarFicherosINBeha extends OneShotBehaviour {
+
+        private Testigo tes2;
+
+        public ModificarFicherosINBeha(Agent _a, Testigo tes1) {
+            super(_a);
+            this.tes2 = tes1;
+        }
+
+        public void action() {
+            HttpServletRequest param1 = (HttpServletRequest) tes2.getParametro();
+            for (int i = 0; i < FicherosINDisponibles.length; i++) {
+                String descripcion = param1.getParameter(FicherosINDisponibles[i].getNombre());
+                addBehaviour(new ModificarFicherosIN(this.myAgent, tes2, descripcion, FicherosINDisponibles[i].getNombre()));
+            }
+        }
+    }
+
+    public class ModificarFicherosOUTBeha extends OneShotBehaviour {
+
+        private Testigo tes2;
+
+        public ModificarFicherosOUTBeha(Agent _a, Testigo tes1) {
+            super(_a);
+            this.tes2 = tes1;
+        }
+
+        public void action() {
+            HttpServletRequest param1 = (HttpServletRequest) tes2.getParametro();
+            for (int i = 0; i < FicherosOUTDisponibles.length; i++) {
+                String descripcion = param1.getParameter(FicherosOUTDisponibles[i].getNombre());
+                addBehaviour(new ModificarFicherosOUT(this.myAgent, tes2, descripcion, FicherosOUTDisponibles[i].getNombre()));
             }
         }
     }
@@ -286,7 +322,7 @@ public class InterfazJSP extends Interfaz {
         }
     }
 
-        public class PideFicherosPropiosBeha extends OneShotBehaviour {
+    public class PideFicherosPropiosBeha extends OneShotBehaviour {
 
         private Testigo tes2;
 
@@ -299,6 +335,38 @@ public class InterfazJSP extends Interfaz {
             HttpServletRequest param1 = (HttpServletRequest) tes2.getParametro();
             String test = param1.getParameter("test");
             addBehaviour(new PideFicherosPropios(this.myAgent, tes2, test));
+        }
+    }
+
+    public class PideFicherosINBeha extends OneShotBehaviour {
+
+        private Testigo tes2;
+
+        public PideFicherosINBeha(Agent _a, Testigo tes1) {
+            super(_a);
+            this.tes2 = tes1;
+        }
+
+        public void action() {
+            HttpServletRequest param1 = (HttpServletRequest) tes2.getParametro();
+            String caso = param1.getParameter("caso");
+            addBehaviour(new PideFicherosIN(this.myAgent, tes2, caso));
+        }
+    }
+
+    public class PideFicherosOUTBeha extends OneShotBehaviour {
+
+        private Testigo tes2;
+
+        public PideFicherosOUTBeha(Agent _a, Testigo tes1) {
+            super(_a);
+            this.tes2 = tes1;
+        }
+
+        public void action() {
+            HttpServletRequest param1 = (HttpServletRequest) tes2.getParametro();
+            String caso = param1.getParameter("caso");
+            addBehaviour(new PideFicherosOUT(this.myAgent, tes2, caso));
         }
     }
 
@@ -401,8 +469,28 @@ public class InterfazJSP extends Interfaz {
                         break;
 
                     case modificarFicherosPropios:
-                            addBehaviour(new ModificarFicherosPropiosBeha(agent, testigo));
-                            break;
+                        addBehaviour(new ModificarFicherosPropiosBeha(agent, testigo));
+                        break;
+
+                    case pedirCasos:
+                        addBehaviour(new PideCasos(agent, testigo));
+                        break;
+
+                    case pedirFicherosIN:
+                        addBehaviour(new PideFicherosINBeha(agent, testigo));
+                        break;
+
+                    case pedirFicherosOUT:
+                        addBehaviour(new PideFicherosOUTBeha(agent, testigo));
+                        break;
+
+                    case modificarFicherosIN:
+                        addBehaviour(new ModificarFicherosINBeha(agent, testigo));
+                        break;
+
+                    case modificarFicherosOUT:
+                        addBehaviour(new ModificarFicherosOUTBeha(agent, testigo));
+                        break;
 
 
 

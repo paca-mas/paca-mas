@@ -6,7 +6,8 @@ public class Testigo extends Resultado{
 	public enum Operaciones {
 		autenticar, pedirPracticas, pedirTests, pedirFicheros,insertarFicheros,
 		buscarCorrector, corregir, parsear, entregarPractica, pedirFicherosFinal, descripcionPractica,
-		modificarPractica, descripcionTest, pedirFicherosPropios, modificarTest, modificarFicherosPropios
+		modificarPractica, descripcionTest, pedirFicherosPropios, modificarTest, modificarFicherosPropios,
+                pedirCasos, pedirFicherosIN, pedirFicherosOUT, modificarFicherosIN, modificarFicherosOUT
 	}
 	
 	private Object resultado;
