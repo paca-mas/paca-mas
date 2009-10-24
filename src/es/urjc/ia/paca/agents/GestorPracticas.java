@@ -1,6 +1,7 @@
 package es.urjc.ia.paca.agents;
 
 import es.urjc.ia.paca.ontology.*;
+import es.urjc.ia.paca.ontology.FicheroIN;
 import jade.content.ContentManager;
 import jade.content.lang.Codec;
 import jade.content.lang.Codec.CodecException;
@@ -145,6 +146,20 @@ public class GestorPracticas extends Agent {
                                     FicheroPropio fp = mfp.getFicheroPropio();
                                     Practica pt = mfp.getPractica();
                                     ModificarFicheroPropio(pt, ts, fp);
+                                } else if (a instanceof ModificaFicheroIN) {
+                                    ModificaFicheroIN mfi = (ModificaFicheroIN) a;
+                                    Practica pt = mfi.getPractica();
+                                    Test ts = mfi.getTest();
+                                    Caso ca = mfi.getCaso();
+                                    FicheroIN fi = mfi.getFicheroIN();
+                                    ModificarFicheroIN(pt, ts, ca, fi);
+                                } else if (a instanceof ModificaFicheroOUT) {
+                                    ModificaFicheroOUT mfo = (ModificaFicheroOUT) a;
+                                    Practica pt = mfo.getPractica();
+                                    Test ts = mfo.getTest();
+                                    Caso ca = mfo.getCaso();
+                                    FicheroOUT fo = mfo.getFicheroOUT();
+                                    ModificarFicheroOUT(pt, ts, ca, fo);
                                 }
                             }
                         } else {
@@ -820,7 +835,21 @@ public class GestorPracticas extends Agent {
     }
 
     private void ModificarFicheroPropio(Practica pt, Test ts, FicheroPropio fp) throws SQLException {
-        String frase = "update FicherosPropios set codigo='" + fp.getCodigo() + "' where id='"+fp.getNombre()+"' and id_test='" + ts.getId() + "' and id_practica='" + pt.getId() + "';";
+        String frase = "update FicherosPropios set codigo='" + fp.getCodigo() + "' where id='" + fp.getNombre() + "' and id_test='" + ts.getId() + "' and id_practica='" + pt.getId() + "';";
+        stat.executeUpdate(frase);
+    }
+
+    private void ModificarFicheroIN(Practica pt, Test ts, Caso ca, FicheroIN fi) throws SQLException {
+        String frase = "update FicherosIN set contenido='" + fi.getContenido() + "' where id='"
+                     + fi.getNombre() + "' and id_test='" + ts.getId() + "' and id_practica='" + pt.getId() +
+                     "' and id_caso='"+ca.getId()+"' ;";
+        stat.executeUpdate(frase);
+    }
+
+        private void ModificarFicheroOUT(Practica pt, Test ts, Caso ca, FicheroOUT fo) throws SQLException {
+        String frase = "update FicherosOUT set contenido='" + fo.getContenido() + "' where id='"
+                     + fo.getNombre() + "' and id_test='" + ts.getId() + "' and id_practica='" + pt.getId() +
+                     "' and id_caso='"+ca.getId()+"' ;";
         stat.executeUpdate(frase);
     }
 

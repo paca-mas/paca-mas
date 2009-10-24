@@ -5,6 +5,7 @@
 <%@ page import="jade.core.Runtime"%>
 <%@ page import="jade.wrapper.*"%>
 <%@ page import="es.urjc.ia.paca.util.*"%>
+<%@ page import="es.urjc.ia.paca.ontology.Caso"%>
 
 <jsp:useBean id="interfaz" class="es.urjc.ia.paca.util.AgentBean" scope="session"/>
 <!doctype html public "-//w3c//dtd html 4.0 transitional//en">
@@ -66,29 +67,29 @@
         <br>
         <p align="center" class="color">
             Seleccione el Caso del test a modificar.  </p><br>
-        <%--
+
         <%
 // Hacemos la consulta de los tests necesarios y rellenamos el formulario
 
 //String[] tests = interfaz.doPeticionTestPracticaRequest(request);
 
-    Testigo resultado2 = new Testigo();
-    resultado2.setOperacion(Testigo.Operaciones.pedirTests);
-    resultado2.setParametro((HttpServletRequest) request);
+            Testigo resultado3 = new Testigo();
+            resultado3.setOperacion(Testigo.Operaciones.pedirCasos);
+            resultado3.setParametro((HttpServletRequest) request);
 
 //interfaz.getAtributo().putO2AObject(resultado2,AgentController.SYNC);
-    interfaz.sendTestigo(resultado2);
+            interfaz.sendTestigo(resultado3);
 
-    while (!resultado2.isRelleno()) {
-    }
+            while (!resultado3.isRelleno()) {
+            }
 
-    String[] tests = (String[]) resultado2.getResultado();
+            Caso[] caso = (Caso[]) resultado3.getResultado();
 
 
         %>
 
         <p  align="center">
-        <form method="post" name="formpracticas" action="modificarTest.jsp" onsubmit="desactivarBoton();">
+        <form method="post" name="formpracticas" action="modificarCasos.jsp" onsubmit="desactivarBoton();">
             <div class="form"><BR>
                 <table width="100%" border="0" cellspacing="0" cellpadding="0" class="color" align="center">
                     <tr>
@@ -97,15 +98,15 @@
                             &nbsp;
                         </td>
                         <td width="60%" align="center">
-                            <SELECT size=1 NAME=test>
+                            <SELECT size=1 NAME=caso>
                                 <%
-                                            // Rellenamos todas las opciones
+            // Rellenamos todas las opciones
 
-                                            for (int i = 0; i < tests.length; i += 2) {
+            for (int i = 0; i < caso.length; i++) {
                                 %>
-                                <OPTION value=<%= tests[i]%>> <%= tests[i]%>
+                                <OPTION value=<%= caso[i].getId() %>> <%= caso[i].getId() %>
                                     <%
-                                                }
+            }
                                     %>
 
                             </SELECT>
@@ -119,11 +120,11 @@
             </div>
             <BR><BR><BR>
             <%
-                        if (tests.length != 0) {
+            if (caso.length != 0) {
             %>
             <p align="right"><input type="submit" name="seleccionar" value="Seleccionar" onclick="javascript:salida=false;"></p>
                 <%            }
                 %>
-        </form> --%>
+        </form>
     </body>
 </html>

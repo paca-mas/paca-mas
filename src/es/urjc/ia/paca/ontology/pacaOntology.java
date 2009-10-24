@@ -104,6 +104,8 @@ public class pacaOntology extends Ontology {
     public static final String MODIFICAPRACTICA = "ModificaPractica";
     public static final String MODIFICATEST = "ModificaTest";
     public static final String MODIFICAFICHEROPROPIO = "ModificaFicheroPropio";
+    public static final String MODIFICAFICHEROIN = "ModificaFicheroIN";
+    public static final String MODIFICAFICHEROOUT = "ModificaFicheroOUT";
     /**
     Instancia de la ontolog�a. Sigue un patr�n de dise�o SINGLETON.
      */
@@ -310,6 +312,21 @@ public class pacaOntology extends Ontology {
             ps14.add(TEST, (ConceptSchema) getSchema(TEST));
             ps14.add(PRACTICA, (ConceptSchema) getSchema(PRACTICA));
             ps14.add(FICHEROPROPIO, (ConceptSchema) getSchema(FICHEROPROPIO));
+
+            add(new AgentActionSchema(MODIFICAFICHEROIN), ModificaFicheroIN.class);
+            AgentActionSchema ps15 = (AgentActionSchema) getSchema(MODIFICAFICHEROIN);
+            ps15.add(TEST, (ConceptSchema) getSchema(TEST));
+            ps15.add(PRACTICA, (ConceptSchema) getSchema(PRACTICA));
+            ps15.add(CASO, (ConceptSchema) getSchema(CASO));
+            ps15.add(FICHEROIN, (ConceptSchema) getSchema(FICHEROIN));
+
+
+                        add(new AgentActionSchema(MODIFICAFICHEROOUT), ModificaFicheroOUT.class);
+            AgentActionSchema ps16 = (AgentActionSchema) getSchema(MODIFICAFICHEROOUT);
+            ps16.add(TEST, (ConceptSchema) getSchema(TEST));
+            ps16.add(PRACTICA, (ConceptSchema) getSchema(PRACTICA));
+            ps16.add(CASO, (ConceptSchema) getSchema(CASO));
+            ps16.add(FICHEROOUT, (ConceptSchema) getSchema(FICHEROOUT));
 
 
 

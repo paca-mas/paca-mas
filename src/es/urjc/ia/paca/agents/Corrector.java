@@ -1672,11 +1672,8 @@ public class Corrector extends Agent {
                     AbsIRE qrall = new AbsIRE(SL2Vocabulary.ALL);
                     qrall.setVariable(x);
                     qrall.setProposition(constructor.getAnd());
-                    System.out.println("[" + getLocalName() + "] Le pido todos los FicherosOUT:");
-                    System.out.println("[" + getLocalName() + "] Enviando mensaje...");
                     getContentManager().fillContent(msg, qrall);
                     myAgent.send(msg);
-                    System.out.println("[" + getLocalName() + "] Mensaje enviado.");
 
                 }
             } catch (Exception e) {
