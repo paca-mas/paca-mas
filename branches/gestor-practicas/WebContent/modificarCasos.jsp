@@ -35,19 +35,6 @@
             }
 
 
-            function comprobar_entrega(form){
-
-                if (!form.EntregaFin.checked){
-                    alert("Por favor, seleccione la casilla de entrega de práctica.");
-                    salida = true;
-                }
-                else{
-                    desactivarBoton();
-                    salida = false;
-                }
-                return form.EntregaFin.checked;
-            }
-
 
 
             function desactivarBoton() {
@@ -61,7 +48,7 @@
     </head>
     <body onUnload="exit();">
         <%@ include file="cab.html"%>
-        <%@ include file="barra1.html"%>
+        <%@ include file="barraModificarCasos.html"%>
 
         <br><br><br>
         <p class="center"  class="color">
@@ -70,7 +57,7 @@
         <br>
 
         <p class="center">
-        <form method="post" name="formpractica" action="finModificacion.jsp" onsubmit="desactivarBoton();">
+        <form method="post" name="formpractica" action="finModificacion.jsp">
             <P class="form"><BR>
             <table style="width: 100%;" class="color">
                 <%
@@ -97,24 +84,24 @@
             }
 
             FicheroOUT[] fo = (FicheroOUT[]) resultado3.getResultado();
-            
+
 
                 %>
                 <tr>
                     <td>
                         <p> FicherosIN a modificar </p>
-                        <% for (int i=0; i< fi.length; i++){ %>
-                        <p> <%= fi[i].getNombre() %> </p>
-                        <TEXTAREA NAME="<%= fi[i].getNombre()%>" ROWS=1 COLS=20> <%= fi[i].getContenido() %></TEXTAREA>
-                        <% } %>
+                        <% for (int i = 0; i < fi.length; i++) { %>
+                        <p> <%= fi[i].getNombre() %>
+                            <input type="text" name="<%= fi[i].getNombre() %>" size="25" value="<%= fi[i].getContenido() %>"></p>
+                            <% } %>
                         <br>
                         <br>
                         <br>
                         <p> FicherosOUT a modificar </p>
-                        <% for (int i=0; i< fo.length; i++){ %>
-                        <p> <%= fo[i].getNombre() %> </p>
-                        <TEXTAREA NAME="<%= fo[i].getNombre()%>" ROWS=1 COLS=20> <%= fo[i].getContenido() %></TEXTAREA>
-                        <% } %>
+                        <% for (int i = 0; i < fo.length; i++) {%>
+                        <p> <%= fo[i].getNombre()%>
+                            <input type="text" name="<%= fo[i].getNombre() %>" size="25" value="<%= fo[i].getContenido() %>"></p>
+                            <% } %>
                     </td>
                 </tr>
             </table><BR>

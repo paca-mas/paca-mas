@@ -31,22 +31,7 @@
             }
 
 
-            function comprobar_entrega(form){
-
-                if (!form.EntregaFin.checked){
-                    alert("Por favor, seleccione la casilla de entrega de práctica.");
-                    salida = true;
-                }
-                else{
-                    desactivarBoton();
-                    salida = false;
-                }
-                return form.EntregaFin.checked;
-            }
-
-
-
-            function desactivarBoton() {
+           function desactivarBoton() {
                 document.formentregar.entregar.disabled=true;
                 document.formseleccionar.seleccionar.disabled=true;
             }

@@ -1190,13 +1190,20 @@ public class Interfaz extends Agent {
                     //Pasamos de concepto abstracto a objeto "real", en este caso son tests
                     t = (Test) PACAOntology.toObject(tests1.get(i));
 
-                    retornable[j++] = t.getId();
-                    posiblesID[i] = t.getId();
-                    retornable[j++] = t.getDescripcion();
+                    if (!(t.getId().equalsIgnoreCase("No hay Tests"))) {
 
-                    //Guardamos todos los test de la practica para posteriormente saber
-                    //la descripcion de los test elegidos
-                    aux[i] = t;
+                        retornable[j++] = t.getId();
+                        posiblesID[i] = t.getId();
+                        retornable[j++] = t.getDescripcion();
+
+                        //Guardamos todos los test de la practica para posteriormente saber
+                        //la descripcion de los test elegidos
+                        aux[i] = t;
+                    } else {
+                        retornable = new String[0];
+                        posiblesID = new String[0];
+                        aux = new Test[0];
+                    }
                 }
                 auxTest = aux;
             } catch (Exception e) {
@@ -1342,7 +1349,12 @@ public class Interfaz extends Agent {
                 retornable = new String[ficheros1.size()];
                 for (int i = 0; i < ficheros1.size(); i++) {
                     fp = (FicheroAlumno) PACAOntology.toObject(ficheros1.get(i));
-                    retornable[i] = fp.getNombre();
+
+                    if (!(fp.getNombre().equalsIgnoreCase("No hay ficherosAlumno"))) {
+                        retornable[i] = fp.getNombre();
+                    } else {
+                        retornable = new String[0];
+                    }
                 }
 
             } catch (Exception e) {
@@ -1494,48 +1506,62 @@ public class Interfaz extends Agent {
 
             if (respuesta != null) {
                 try {
-                    AbsContentElement listaAbs = null;
-                    listaAbs = getContentManager().extractAbsContent(respuesta);
-                    String tipoMensaje = listaAbs.getTypeName();
-
-                    if (tipoMensaje.equals("autenticado") | tipoMensaje.equals("not")) {
-                        addBehaviour(new RecibeAutenticacion(myAgent, tes1, listaAbs));
+                    if (respuesta.getPerformative() == ACLMessage.AGREE) {
+                        addBehaviour(new RecibeMensajes(myAgent, tes1));
                         finalizado = true;
-                    } else if (tipoMensaje.equals("=")) {
-                        if (listaAbs.getAbsObject(SL1Vocabulary.EQUALS_RIGHT).getTypeName().equals(pacaOntology.RESULTADOEVALUACION)) {
-                            ResultadoEvaluacion resultadoEv = (ResultadoEvaluacion) PACAOntology.toObject(listaAbs.getAbsObject(SLVocabulary.EQUALS_RIGHT));
-                            addBehaviour(new RecibeCorrecBeha(myAgent, tes1, resultadoEv));
+                    } else {
+                        if (respuesta.getPerformative() == ACLMessage.FAILURE) {
+                            tes1.setResultadoB(false);
                             finalizado = true;
                         } else {
-
-                            AbsAggregate listaElementos = (AbsAggregate) listaAbs.getAbsObject(SLVocabulary.EQUALS_RIGHT);
-
-                            //Cogemos el primer elemento de la lista
-                            AbsConcept primerElem = (AbsConcept) listaElementos.get(0);
-
-                            //Miramos el tipo del primer elemento
-                            String tipo = primerElem.getTypeName();
-                            if (tipo.equals(pacaOntology.PRACTICA)) {
-                                addBehaviour(new RecibePracticasBeh(myAgent, tes1, listaElementos));
-                                finalizado = true;
-                            } else if (tipo.equals(pacaOntology.TEST)) {
-                                addBehaviour(new RecibeTestBeha(myAgent, tes1, listaElementos));
-                                finalizado = true;
-                            } else if (tipo.equals(pacaOntology.FICHEROPROPIO)) {
-                                addBehaviour(new RecibeFicherosPropiosBeha(myAgent, tes1, listaElementos));
-                                finalizado = true;
-                            } else if (tipo.equals(pacaOntology.CASO)) {
-                                addBehaviour(new RecibeCasosBeha(myAgent, tes1, listaElementos));
-                                finalizado = true;
-                            } else if (tipo.equals(pacaOntology.FICHEROIN)) {
-                                addBehaviour(new RecibeFicherosINBeha(myAgent, tes1, listaElementos));
-                                finalizado = true;
-                            } else if (tipo.equals(pacaOntology.FICHEROOUT)) {
-                                addBehaviour(new RecibeFicherosOUTBeha(myAgent, tes1, listaElementos));
+                            if (respuesta.getContent().equalsIgnoreCase("DONE")) {
+                                tes1.anadirResultado();
                                 finalizado = true;
                             } else {
-                                addBehaviour(new RecibeFicherosBeha(myAgent, tes1, listaElementos));
-                                finalizado = true;
+                                AbsContentElement listaAbs = null;
+                                listaAbs = getContentManager().extractAbsContent(respuesta);
+                                String tipoMensaje = listaAbs.getTypeName();
+
+                                if (tipoMensaje.equals("autenticado") | tipoMensaje.equals("not")) {
+                                    addBehaviour(new RecibeAutenticacion(myAgent, tes1, listaAbs));
+                                    finalizado = true;
+                                } else if (tipoMensaje.equals("=")) {
+                                    if (listaAbs.getAbsObject(SL1Vocabulary.EQUALS_RIGHT).getTypeName().equals(pacaOntology.RESULTADOEVALUACION)) {
+                                        ResultadoEvaluacion resultadoEv = (ResultadoEvaluacion) PACAOntology.toObject(listaAbs.getAbsObject(SLVocabulary.EQUALS_RIGHT));
+                                        addBehaviour(new RecibeCorrecBeha(myAgent, tes1, resultadoEv));
+                                        finalizado = true;
+                                    } else {
+                                        AbsAggregate listaElementos = (AbsAggregate) listaAbs.getAbsObject(SLVocabulary.EQUALS_RIGHT);
+
+                                        //Cogemos el primer elemento de la lista
+                                        AbsConcept primerElem = (AbsConcept) listaElementos.get(0);
+
+                                        //Miramos el tipo del primer elemento
+                                        String tipo = primerElem.getTypeName();
+                                        if (tipo.equals(pacaOntology.PRACTICA)) {
+                                            addBehaviour(new RecibePracticasBeh(myAgent, tes1, listaElementos));
+                                            finalizado = true;
+                                        } else if (tipo.equals(pacaOntology.TEST)) {
+                                            addBehaviour(new RecibeTestBeha(myAgent, tes1, listaElementos));
+                                            finalizado = true;
+                                        } else if (tipo.equals(pacaOntology.FICHEROPROPIO)) {
+                                            addBehaviour(new RecibeFicherosPropiosBeha(myAgent, tes1, listaElementos));
+                                            finalizado = true;
+                                        } else if (tipo.equals(pacaOntology.CASO)) {
+                                            addBehaviour(new RecibeCasosBeha(myAgent, tes1, listaElementos));
+                                            finalizado = true;
+                                        } else if (tipo.equals(pacaOntology.FICHEROIN)) {
+                                            addBehaviour(new RecibeFicherosINBeha(myAgent, tes1, listaElementos));
+                                            finalizado = true;
+                                        } else if (tipo.equals(pacaOntology.FICHEROOUT)) {
+                                            addBehaviour(new RecibeFicherosOUTBeha(myAgent, tes1, listaElementos));
+                                            finalizado = true;
+                                        } else {
+                                            addBehaviour(new RecibeFicherosBeha(myAgent, tes1, listaElementos));
+                                            finalizado = true;
+                                        }
+                                    }
+                                }
                             }
                         }
 
@@ -1562,7 +1588,7 @@ public class Interfaz extends Agent {
             return finalizado;
         }
     }
-    //-------------------- FIN COMPORTAMIENTO QUE RECIBE MENSAJES ---------------------------
+//-------------------- FIN COMPORTAMIENTO QUE RECIBE MENSAJES ---------------------------
 
     public Practica EncontrarPractica() {
 
@@ -1577,13 +1603,16 @@ public class Interfaz extends Agent {
     public Test[] EncontrarTest() {
         int j;
         Test t[] = new Test[TestUltimaPractica.length];
-        for (int i = 0; i < TestUltimaPractica.length; i++) {
+        for (int i = 0; i <
+                TestUltimaPractica.length; i++) {
             j = 0;
             while (!(TestUltimaPractica[i].equalsIgnoreCase(auxTest[j].getId()))) {
                 j++;
             }
+
             t[i] = auxTest[j];
         }
+
         return t;
     }
 
@@ -1715,7 +1744,11 @@ public class Interfaz extends Agent {
                 retornable = new FicheroPropio[ficheros1.size()];
                 for (int i = 0; i < ficheros1.size(); i++) {
                     fp = (FicheroPropio) PACAOntology.toObject(ficheros1.get(i));
-                    retornable[i] = fp;
+                    if (!(fp.getNombre().equalsIgnoreCase("No hay FicherosPropios"))) {
+                        retornable[i] = fp;
+                    } else {
+                        retornable = new FicheroPropio[0];
+                    }
                 }
 
 
@@ -1818,7 +1851,12 @@ public class Interfaz extends Agent {
                 retornable = new Caso[ficheros1.size()];
                 for (int i = 0; i < ficheros1.size(); i++) {
                     ca = (Caso) PACAOntology.toObject(ficheros1.get(i));
-                    retornable[i] = ca;
+                    if (!(ca.getId().equalsIgnoreCase("No hay casos"))) {
+                        retornable[i] = ca;
+                    } else {
+                        retornable = new Caso[0];
+                    }
+
                 }
 
 
@@ -1925,7 +1963,11 @@ public class Interfaz extends Agent {
                 retornable = new FicheroIN[ficheros1.size()];
                 for (int i = 0; i < ficheros1.size(); i++) {
                     fi = (FicheroIN) PACAOntology.toObject(ficheros1.get(i));
-                    retornable[i] = fi;
+                    if (!(fi.getNombre().equalsIgnoreCase("No hay FicherosIN"))) {
+                        retornable[i] = fi;
+                    } else {
+                        retornable = new FicheroIN[0];
+                    }
                 }
 
 
@@ -1934,9 +1976,8 @@ public class Interfaz extends Agent {
                 //ficherosUltimaPractica = retornable;
                 //tes2.setResultado(retornable);
             }
+
             FicherosINDisponibles = retornable;
-            //FicherosPropiosDisponibles = retornable;
-            //ficherosUltimaPractica = retornable;
             tes2.setResultado(retornable);
 
         }
@@ -2034,7 +2075,12 @@ public class Interfaz extends Agent {
                 retornable = new FicheroOUT[ficheros1.size()];
                 for (int i = 0; i < ficheros1.size(); i++) {
                     fo = (FicheroOUT) PACAOntology.toObject(ficheros1.get(i));
-                    retornable[i] = fo;
+                    if (!(fo.getNombre().equalsIgnoreCase("No hay FicherosOUT"))) {
+                        retornable[i] = fo;
+                    } else {
+                        retornable = new FicheroOUT[0];
+                    }
+
                 }
 
 
@@ -2090,6 +2136,7 @@ public class Interfaz extends Agent {
 
 
                 getContentManager().fillContent(solicitud, act);
+                addBehaviour(new RecibeMensajes(myAgent, tes1));
                 send(solicitud);
             } catch (CodecException ex) {
                 Logger.getLogger(Interfaz.class.getName()).log(Level.SEVERE, null, ex);
@@ -2140,6 +2187,7 @@ public class Interfaz extends Agent {
 
 
                 getContentManager().fillContent(solicitud, act);
+                addBehaviour(new RecibeMensajes(myAgent, tes1));
                 send(solicitud);
             } catch (CodecException ex) {
                 Logger.getLogger(Interfaz.class.getName()).log(Level.SEVERE, null, ex);
@@ -2195,6 +2243,7 @@ public class Interfaz extends Agent {
 
 
                 getContentManager().fillContent(solicitud, act);
+                addBehaviour(new RecibeMensajes(myAgent, tes1));
                 send(solicitud);
             } catch (CodecException ex) {
                 Logger.getLogger(Interfaz.class.getName()).log(Level.SEVERE, null, ex);
@@ -2203,7 +2252,6 @@ public class Interfaz extends Agent {
             }
         }
     }
-
 
     public class ModificarFicherosIN extends OneShotBehaviour {
 
@@ -2252,6 +2300,7 @@ public class Interfaz extends Agent {
 
 
                 getContentManager().fillContent(solicitud, act);
+                addBehaviour(new RecibeMensajes(myAgent, tes1));
                 send(solicitud);
             } catch (CodecException ex) {
                 Logger.getLogger(Interfaz.class.getName()).log(Level.SEVERE, null, ex);
@@ -2308,6 +2357,7 @@ public class Interfaz extends Agent {
 
 
                 getContentManager().fillContent(solicitud, act);
+                addBehaviour(new RecibeMensajes(myAgent, tes1));
                 send(solicitud);
             } catch (CodecException ex) {
                 Logger.getLogger(Interfaz.class.getName()).log(Level.SEVERE, null, ex);

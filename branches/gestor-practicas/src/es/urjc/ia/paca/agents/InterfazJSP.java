@@ -232,6 +232,7 @@ public class InterfazJSP extends Interfaz {
             HttpServletRequest param1 = (HttpServletRequest) tes2.getParametro();
             String descripcion = param1.getParameter("descripcion");
             String fechaEntrega = param1.getParameter("fechaEntrega");
+            tes2.setContador(1);
             addBehaviour(new ModificarPractica(this.myAgent, tes2, descripcion, fechaEntrega));
         }
     }
@@ -248,6 +249,7 @@ public class InterfazJSP extends Interfaz {
         public void action() {
             HttpServletRequest param1 = (HttpServletRequest) tes2.getParametro();
             String descripcion = param1.getParameter("descripcion");
+            tes2.setContador(1);
             addBehaviour(new ModificarTest(this.myAgent, tes2, descripcion));
         }
     }
@@ -262,10 +264,15 @@ public class InterfazJSP extends Interfaz {
         }
 
         public void action() {
-            HttpServletRequest param1 = (HttpServletRequest) tes2.getParametro();
-            for (int i = 0; i < FicherosPropiosDisponibles.length; i++) {
-                String descripcion = param1.getParameter(FicherosPropiosDisponibles[i].getNombre());
-                addBehaviour(new ModificarFicherosPropios(this.myAgent, tes2, descripcion, FicherosPropiosDisponibles[i].getNombre()));
+            if (FicherosPropiosDisponibles.length == 0) {
+                tes2.setResultadoB(true);
+            } else {
+                HttpServletRequest param1 = (HttpServletRequest) tes2.getParametro();
+                tes2.setContador(FicherosPropiosDisponibles.length);
+                for (int i = 0; i < FicherosPropiosDisponibles.length; i++) {
+                    String descripcion = param1.getParameter(FicherosPropiosDisponibles[i].getNombre());
+                    addBehaviour(new ModificarFicherosPropios(this.myAgent, tes2, descripcion, FicherosPropiosDisponibles[i].getNombre()));
+                }
             }
         }
     }
@@ -280,10 +287,15 @@ public class InterfazJSP extends Interfaz {
         }
 
         public void action() {
-            HttpServletRequest param1 = (HttpServletRequest) tes2.getParametro();
-            for (int i = 0; i < FicherosINDisponibles.length; i++) {
-                String descripcion = param1.getParameter(FicherosINDisponibles[i].getNombre());
-                addBehaviour(new ModificarFicherosIN(this.myAgent, tes2, descripcion, FicherosINDisponibles[i].getNombre()));
+            if (FicherosINDisponibles.length == 0) {
+                tes2.setResultadoB(true);
+            } else {
+                HttpServletRequest param1 = (HttpServletRequest) tes2.getParametro();
+                tes2.setContador(FicherosINDisponibles.length);
+                for (int i = 0; i < FicherosINDisponibles.length; i++) {
+                    String descripcion = param1.getParameter(FicherosINDisponibles[i].getNombre());
+                    addBehaviour(new ModificarFicherosIN(this.myAgent, tes2, descripcion, FicherosINDisponibles[i].getNombre()));
+                }
             }
         }
     }
@@ -298,10 +310,15 @@ public class InterfazJSP extends Interfaz {
         }
 
         public void action() {
-            HttpServletRequest param1 = (HttpServletRequest) tes2.getParametro();
-            for (int i = 0; i < FicherosOUTDisponibles.length; i++) {
-                String descripcion = param1.getParameter(FicherosOUTDisponibles[i].getNombre());
-                addBehaviour(new ModificarFicherosOUT(this.myAgent, tes2, descripcion, FicherosOUTDisponibles[i].getNombre()));
+            if (FicherosOUTDisponibles.length == 0) {
+                tes2.setResultadoB(true);
+            } else {
+                HttpServletRequest param1 = (HttpServletRequest) tes2.getParametro();
+                tes2.setContador(FicherosOUTDisponibles.length);
+                for (int i = 0; i < FicherosOUTDisponibles.length; i++) {
+                    String descripcion = param1.getParameter(FicherosOUTDisponibles[i].getNombre());
+                    addBehaviour(new ModificarFicherosOUT(this.myAgent, tes2, descripcion, FicherosOUTDisponibles[i].getNombre()));
+                }
             }
         }
     }

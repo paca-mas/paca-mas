@@ -33,21 +33,6 @@
             }
 
 
-            function comprobar_entrega(form){
-
-                if (!form.EntregaFin.checked){
-                    alert("Por favor, seleccione la casilla de entrega de práctica.");
-                    salida = true;
-                }
-                else{
-                    desactivarBoton();
-                    salida = false;
-                }
-                return form.EntregaFin.checked;
-            }
-
-
-
             function desactivarBoton() {
                 document.formentregar.entregar.disabled=true;
                 document.formseleccionar.seleccionar.disabled=true;
@@ -59,7 +44,7 @@
     </head>
     <body onUnload="exit();">
         <%@ include file="cab.html"%>
-        <%@ include file="barra1.html"%>
+        <%@ include file="barraModificarTest.html"%>
 
         <br><br><br>
         <p class="center"  class="color">
@@ -104,7 +89,7 @@
                         <p> Ficheros Propios a modificar </p>
                         <% for (int i=0; i< fp.length; i++){ %>
                         <p> <%= fp[i].getNombre() %> </p>
-                        <TEXTAREA NAME="<%= fp[i].getNombre()%>" ROWS=3 COLS=40> <%= fp[i].getCodigo() %></TEXTAREA>
+                        <TEXTAREA NAME="<%= fp[i].getNombre()%>" ROWS=3 COLS=40><%= fp[i].getCodigo() %></TEXTAREA>
 
                         <% } %>
                     </td>

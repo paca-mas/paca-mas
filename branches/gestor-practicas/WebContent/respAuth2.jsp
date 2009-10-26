@@ -138,7 +138,7 @@
 
 <br><br><br>
   <p align="center" class="color">
-     Seleccione la práctica a modificar.  </p><br>
+      Seleccione la pr&aacute;ctica a modificar.  </p><br>
 
 <%
     // Aquí hacemos la petición de las prácticas disponibles y las
@@ -172,7 +172,7 @@
 
 %>
   <p  align="center">
-    <form method="post" name="formpracticas" action="modificarPractica.jsp" onsubmit="desactivarBoton();">
+    <form method="post" name="formpracticas" action="modificarPractica.jsp">
 <div class="form"><BR>
     <table width="100%" border="0" cellspacing="0" cellpadding="0" class="color" align="center">
     <tr>
