@@ -5,6 +5,8 @@ public class Resultado {
 	private Object resultado;
 	private boolean relleno;
 	private boolean resultadoB;
+        private int contador;
+        private int limite;
 	
 	
 	//public Resultado(){
@@ -52,5 +54,19 @@ public class Resultado {
 	public synchronized boolean isRelleno(){
 		return relleno;
 	}
+
+        public synchronized void setContador(int i){
+            contador = i;
+            limite = 0;
+        }
+        
+        public synchronized void anadirResultado(){
+            limite = limite +1;
+            if (limite==contador){
+                setResultadoB(true);
+            }
+        }
+
+
 
 }

@@ -37,11 +37,11 @@
     </head>
     <body onUnload="exit();">
         <%@ include file="cab.html"%>
-        <%@ include file="barra1.html"%> 
+        <%@ include file="barraPeticionTest.html"%>
 
         <%
 
-            //boolean autenticado = false;
+            boolean autenticado = false;
 
             Testigo resultado = new Testigo();
             resultado.setOperacion(Testigo.Operaciones.modificarPractica);
@@ -49,10 +49,16 @@
 
             interfaz.sendTestigo(resultado);
 
-            //autenticado = resultado.isResultadoB();
+            autenticado = resultado.isResultadoB();
+
+
 
         %>
 
+
+        <% if(autenticado){
+
+            %>
 
         <br><br><br>  
         <p class="center"  class="color">
@@ -66,7 +72,7 @@
 // Hacemos la consulta de los tests necesarios y rellenamos el formulario
 
 //String[] tests = interfaz.doPeticionTestPracticaRequest(request);  
-
+    
     Testigo resultado2 = new Testigo();
     resultado2.setOperacion(Testigo.Operaciones.pedirTests);
     resultado2.setParametro((HttpServletRequest) request);
@@ -83,7 +89,7 @@
         %>
 
         <p  align="center">
-        <form method="post" name="formpracticas" action="modificarTest.jsp" onsubmit="desactivarBoton();">
+        <form method="post" name="formpracticas" action="modificarTest.jsp">
             <div class="form"><BR>
                 <table width="100%" border="0" cellspacing="0" cellpadding="0" class="color" align="center">
                     <tr>
@@ -120,5 +126,23 @@
                 <%            }
                 %>
         </form>
+
+                <% }
+
+            else {
+            %>
+
+              <h2 class="error" align="center">
+     ERROR!!! En la base de datos </h2>
+<br>
+  <p class="error" align="center">
+    Ha ocurrido un problema en la base de datos al intentar modificar la practica.
+  </p>
+	<br>
+	<br>
+
+
+  <% }
+            %>
     </body>
 </html>

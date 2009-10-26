@@ -77,6 +77,7 @@ public class GestorPracticas extends Agent {
                             //EL MENSAJE DE RESPUESTA SERA UN INFORM
                             reply.setPerformative(ACLMessage.INFORM);
 
+
                             //QUERY-REF DEL INTERFAZ
                             if (requestedInfoName2.equals(pacaOntology.CORRIGE)) {
 
@@ -129,37 +130,55 @@ public class GestorPracticas extends Agent {
                     } else {
                         if (msg.getPerformative() == ACLMessage.REQUEST) {
                             ContentElement p = manager.extractContent(msg);
+
                             if (p instanceof Action) {
                                 AgentAction a = (AgentAction) ((Action) p).getAction();
-                                if (a instanceof ModificaPractica) {
-                                    ModificaPractica mdp = (ModificaPractica) a;
-                                    Practica pt = mdp.getPractica();
-                                    ModificarPracticas(pt);
-                                } else if (a instanceof ModificaTest) {
-                                    ModificaTest mts = (ModificaTest) a;
-                                    Test ts = mts.getTest();
-                                    Practica pt = mts.getPractica();
-                                    ModificarTest(pt, ts);
-                                } else if (a instanceof ModificaFicheroPropio) {
-                                    ModificaFicheroPropio mfp = (ModificaFicheroPropio) a;
-                                    Test ts = mfp.getTest();
-                                    FicheroPropio fp = mfp.getFicheroPropio();
-                                    Practica pt = mfp.getPractica();
-                                    ModificarFicheroPropio(pt, ts, fp);
-                                } else if (a instanceof ModificaFicheroIN) {
-                                    ModificaFicheroIN mfi = (ModificaFicheroIN) a;
-                                    Practica pt = mfi.getPractica();
-                                    Test ts = mfi.getTest();
-                                    Caso ca = mfi.getCaso();
-                                    FicheroIN fi = mfi.getFicheroIN();
-                                    ModificarFicheroIN(pt, ts, ca, fi);
-                                } else if (a instanceof ModificaFicheroOUT) {
-                                    ModificaFicheroOUT mfo = (ModificaFicheroOUT) a;
-                                    Practica pt = mfo.getPractica();
-                                    Test ts = mfo.getTest();
-                                    Caso ca = mfo.getCaso();
-                                    FicheroOUT fo = mfo.getFicheroOUT();
-                                    ModificarFicheroOUT(pt, ts, ca, fo);
+                                if ((!(a instanceof ModificaPractica) && (!(a instanceof ModificaTest)) && (!(a instanceof ModificaFicheroPropio)) && (!(a instanceof ModificaFicheroIN)) && (!(a instanceof ModificaFicheroOUT)))) {
+                                    reply.setPerformative(ACLMessage.REFUSE);
+                                    send(reply);
+                                } else {
+                                    reply.setPerformative(ACLMessage.AGREE);
+                                    send(reply);
+                                    boolean salida = false;
+                                    if (a instanceof ModificaPractica) {
+                                        ModificaPractica mdp = (ModificaPractica) a;
+                                        Practica pt = mdp.getPractica();
+                                        salida = ModificarPracticas(pt);
+                                    } else if (a instanceof ModificaTest) {
+                                        ModificaTest mts = (ModificaTest) a;
+                                        Test ts = mts.getTest();
+                                        Practica pt = mts.getPractica();
+                                        salida = ModificarTest(pt, ts);
+                                    } else if (a instanceof ModificaFicheroPropio) {
+                                        ModificaFicheroPropio mfp = (ModificaFicheroPropio) a;
+                                        Test ts = mfp.getTest();
+                                        FicheroPropio fp = mfp.getFicheroPropio();
+                                        Practica pt = mfp.getPractica();
+                                        salida = ModificarFicheroPropio(pt, ts, fp);
+                                    } else if (a instanceof ModificaFicheroIN) {
+                                        ModificaFicheroIN mfi = (ModificaFicheroIN) a;
+                                        Practica pt = mfi.getPractica();
+                                        Test ts = mfi.getTest();
+                                        Caso ca = mfi.getCaso();
+                                        FicheroIN fi = mfi.getFicheroIN();
+                                        salida = ModificarFicheroIN(pt, ts, ca, fi);
+                                    } else if (a instanceof ModificaFicheroOUT) {
+                                        ModificaFicheroOUT mfo = (ModificaFicheroOUT) a;
+                                        Practica pt = mfo.getPractica();
+                                        Test ts = mfo.getTest();
+                                        Caso ca = mfo.getCaso();
+                                        FicheroOUT fo = mfo.getFicheroOUT();
+                                        salida = ModificarFicheroOUT(pt, ts, ca, fo);
+                                    }
+                                    if (salida) {
+                                        reply.setPerformative(ACLMessage.INFORM);
+                                        reply.setContent("DONE");
+                                        send(reply);
+                                    } else {
+                                        reply.setPerformative(ACLMessage.FAILURE);
+                                        reply.setContent("Fallo en la base de datos");
+                                        send(reply);
+                                    }
                                 }
                             }
                         } else {
@@ -212,9 +231,16 @@ public class GestorPracticas extends Agent {
                 //CREAMOS EL AGGREGATE PARA ENVIAR TODOS LOS FICHEROS PROPIOS
                 AbsAggregate absFicheros = new AbsAggregate(BasicOntology.SET);
                 AbsConcept elem;
-                for (int i = 0; i < fp.size(); i++) {
-                    elem = (AbsConcept) ontology.fromObject(fp.get(i));
+
+                if (fp.isEmpty()) {
+                    FicheroPropio f = new FicheroPropio("No hay FicherosPropios");
+                    elem = (AbsConcept) ontology.fromObject(f);
                     absFicheros.add(elem);
+                } else {
+                    for (int i = 0; i < fp.size(); i++) {
+                        elem = (AbsConcept) ontology.fromObject(fp.get(i));
+                        absFicheros.add(elem);
+                    }
                 }
 
                 //CREAMOS EL EQUALS PARA ENVIAR
@@ -269,9 +295,16 @@ public class GestorPracticas extends Agent {
                 //CREAMOS EL AGGREGATE PARA ENVIAR TODOS LOS CASOS
                 AbsAggregate absCasos = new AbsAggregate(BasicOntology.SET);
                 AbsConcept elem;
-                for (int i = 0; i < ca.size(); i++) {
-                    elem = (AbsConcept) ontology.fromObject(ca.get(i));
+
+                if (ca.isEmpty()) {
+                    Caso c = new Caso("No hay casos");
+                    elem = (AbsConcept) ontology.fromObject(c);
                     absCasos.add(elem);
+                } else {
+                    for (int i = 0; i < ca.size(); i++) {
+                        elem = (AbsConcept) ontology.fromObject(ca.get(i));
+                        absCasos.add(elem);
+                    }
                 }
 
                 //CREAMOS EL EQUALS PARA ENVIAR
@@ -332,9 +365,16 @@ public class GestorPracticas extends Agent {
                 //CREAMOS EL AGGREGATE PARA ENVIAR TODOS LOS FICHEROS IN
                 AbsAggregate absFicherosIN = new AbsAggregate(BasicOntology.SET);
                 AbsConcept elem;
-                for (int i = 0; i < listaFin.size(); i++) {
-                    elem = (AbsConcept) ontology.fromObject(listaFin.get(i));
+
+                if (listaFin.isEmpty()) {
+                    FicheroIN fi = new FicheroIN("No hay FicherosIN");
+                    elem = (AbsConcept) ontology.fromObject(fi);
                     absFicherosIN.add(elem);
+                } else {
+                    for (int i = 0; i < listaFin.size(); i++) {
+                        elem = (AbsConcept) ontology.fromObject(listaFin.get(i));
+                        absFicherosIN.add(elem);
+                    }
                 }
 
                 //CREAMOS EL EQUALS PARA ENVIAR
@@ -397,11 +437,17 @@ public class GestorPracticas extends Agent {
                 //CREAMOS EL AGGREGATE PARA ENVIAR TODOS LOS FICHEROSOUT
                 AbsAggregate absFicherosOUT = new AbsAggregate(BasicOntology.SET);
                 AbsConcept elem;
-                for (int i = 0; i < listaFout.size(); i++) {
-                    elem = (AbsConcept) ontology.fromObject(listaFout.get(i));
-                    absFicherosOUT.add(elem);
-                }
 
+                if (listaFout.isEmpty()) {
+                    FicheroOUT fo = new FicheroOUT("No hay FicherosOUT");
+                    elem = (AbsConcept) ontology.fromObject(fo);
+                    absFicherosOUT.add(elem);
+                } else {
+                    for (int i = 0; i < listaFout.size(); i++) {
+                        elem = (AbsConcept) ontology.fromObject(listaFout.get(i));
+                        absFicherosOUT.add(elem);
+                    }
+                }
                 //CREAMOS EL EQUALS PARA ENVIAR
                 AbsPredicate equalPred = new AbsPredicate(SLVocabulary.EQUALS);
                 equalPred.set(SLVocabulary.EQUALS_LEFT, ire);
@@ -525,11 +571,17 @@ public class GestorPracticas extends Agent {
                 AbsAggregate absTests = new AbsAggregate(BasicOntology.SET);
 
 
-                // Adds the Test
-                //Pasamos los tests a objectos abstractos
-                for (int i = 0; i < te.size(); i++) {
-                    AbsConcept elem = (AbsConcept) ontology.fromObject(te.get(i));
+                if (te.isEmpty()) {
+                    Test t = new Test("No hay Tests");
+                    AbsConcept elem = (AbsConcept) ontology.fromObject(t);
                     absTests.add(elem);
+                } else {
+                    // Adds the Test
+                    //Pasamos los tests a objectos abstractos
+                    for (int i = 0; i < te.size(); i++) {
+                        AbsConcept elem = (AbsConcept) ontology.fromObject(te.get(i));
+                        absTests.add(elem);
+                    }
                 }
 
                 //Modifificacion Carlos
@@ -598,20 +650,26 @@ public class GestorPracticas extends Agent {
                 // Creamos el listado de ficheros de forma abstracta
                 AbsAggregate absFicheros = new AbsAggregate(BasicOntology.SET);
 
-                for (int i = 0; i < fp.size(); i++) {
-                    //Creamos un objecto abstracto por cada fichero y la a�adimos al aggregate
-                    AbsConcept elem;
-                    try {
-                        elem = (AbsConcept) ontology.fromObject(fp.get(i));
+                if (fp.isEmpty()) {
+                    FicheroAlumno f = new FicheroAlumno("No hay ficherosAlumno");
+                    AbsConcept elem = (AbsConcept) ontology.fromObject(f);
+                    absFicheros.add(elem);
+                } else {
+                    for (int i = 0; i < fp.size(); i++) {
+                        //Creamos un objecto abstracto por cada fichero y la a�adimos al aggregate
+                        AbsConcept elem;
+                        try {
+                            elem = (AbsConcept) ontology.fromObject(fp.get(i));
 
-                        // Work Around: rormartin
-                        // TODO: FicheroParaPracticas work fine?
-                        if (elem != null) {
-                            absFicheros.add(elem);
+                            // Work Around: rormartin
+                            // TODO: FicheroParaPracticas work fine?
+                            if (elem != null) {
+                                absFicheros.add(elem);
+                            }
+                        } catch (OntologyException e) {
+                            // TODO Auto-generated catch block
+                            e.printStackTrace();
                         }
-                    } catch (OntologyException e) {
-                        // TODO Auto-generated catch block
-                        e.printStackTrace();
                     }
 
                 }
@@ -821,36 +879,56 @@ public class GestorPracticas extends Agent {
 
     }
 
-    private void ModificarPracticas(Practica pt) throws SQLException {
-        String frase = "update Practica set descripcion='" + pt.getDescripcion() + "' where id='" + pt.getId() + "';";
-        String frase2 = "update Practica set fechaEntrega='" + pt.getFechaEntrega() + "' where id='" + pt.getId() + "';";
-        stat.executeUpdate(frase);
-        stat.executeUpdate(frase2);
+    private boolean ModificarPracticas(Practica pt) {
+        try {
+            String frase = "update Practica set descripcion='" + pt.getDescripcion() + "' where id='" + pt.getId() + "';";
+            String frase2 = "update Practica set fechaEntrega='" + pt.getFechaEntrega() + "' where id='" + pt.getId() + "';";
+            stat.executeUpdate(frase);
+            stat.executeUpdate(frase2);
+        } catch (SQLException ex) {
+            return false;
+        }
+        return true;
     }
 
-    private void ModificarTest(Practica pt, Test ts) throws SQLException {
-
-        String frase = "update Test set descripcion='" + ts.getDescripcion() + "' where id='" + ts.getId() + "' and id_practica='" + pt.getId() + "';";
-        stat.executeUpdate(frase);
+    private boolean ModificarTest(Practica pt, Test ts) {
+        try {
+            String frase = "update Test set descripcion='" + ts.getDescripcion() + "' where id='" + ts.getId() + "' and id_practica='" + pt.getId() + "';";
+            stat.executeUpdate(frase);
+        } catch (SQLException ex) {
+            return false;
+        }
+        return true;
     }
 
-    private void ModificarFicheroPropio(Practica pt, Test ts, FicheroPropio fp) throws SQLException {
-        String frase = "update FicherosPropios set codigo='" + fp.getCodigo() + "' where id='" + fp.getNombre() + "' and id_test='" + ts.getId() + "' and id_practica='" + pt.getId() + "';";
-        stat.executeUpdate(frase);
+    private boolean ModificarFicheroPropio(Practica pt, Test ts, FicheroPropio fp) {
+        try {
+            String frase = "update FicherosPropios set codigo='" + fp.getCodigo() + "' where id='" + fp.getNombre() + "' and id_test='" + ts.getId() + "' and id_practica='" + pt.getId() + "';";
+            stat.executeUpdate(frase);
+        } catch (SQLException ex) {
+            return false;
+        }
+        return true;
     }
 
-    private void ModificarFicheroIN(Practica pt, Test ts, Caso ca, FicheroIN fi) throws SQLException {
-        String frase = "update FicherosIN set contenido='" + fi.getContenido() + "' where id='"
-                     + fi.getNombre() + "' and id_test='" + ts.getId() + "' and id_practica='" + pt.getId() +
-                     "' and id_caso='"+ca.getId()+"' ;";
-        stat.executeUpdate(frase);
+    private boolean ModificarFicheroIN(Practica pt, Test ts, Caso ca, FicheroIN fi) {
+        try {
+            String frase = "update FicherosIN set contenido='" + fi.getContenido() + "' where id='" + fi.getNombre() + "' and id_test='" + ts.getId() + "' and id_practica='" + pt.getId() + "' and id_caso='" + ca.getId() + "' ;";
+            stat.executeUpdate(frase);
+        } catch (SQLException ex) {
+            return false;
+        }
+        return true;
     }
 
-        private void ModificarFicheroOUT(Practica pt, Test ts, Caso ca, FicheroOUT fo) throws SQLException {
-        String frase = "update FicherosOUT set contenido='" + fo.getContenido() + "' where id='"
-                     + fo.getNombre() + "' and id_test='" + ts.getId() + "' and id_practica='" + pt.getId() +
-                     "' and id_caso='"+ca.getId()+"' ;";
-        stat.executeUpdate(frase);
+    private boolean ModificarFicheroOUT(Practica pt, Test ts, Caso ca, FicheroOUT fo) {
+        try {
+            String frase = "update FicherosOUT set contenido='" + fo.getContenido() + "' where id='" + fo.getNombre() + "' and id_test='" + ts.getId() + "' and id_practica='" + pt.getId() + "' and id_caso='" + ca.getId() + "' ;";
+            stat.executeUpdate(frase);
+        } catch (SQLException ex) {
+            return false;
+        }
+        return true;
     }
 
     private void IniciarBaseDatos() throws SQLException, ClassNotFoundException {
