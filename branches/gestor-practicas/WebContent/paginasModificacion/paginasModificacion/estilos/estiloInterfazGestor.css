@@ -1,0 +1,79 @@
+body{
+    background: #FAFAFA;
+    color: blue;
+}
+body.eval{
+}
+
+body.cab{
+    background: white;
+    color: blue;
+}
+
+.error{
+    color: white;
+    background: red;
+}
+
+.center {
+    text-align: center;
+}
+
+.derecha {
+	text-align: right;
+}
+.color {
+    background: #FFFFEE;
+    color: blue;
+    border-top-style: none;
+    border-bottom-style: none;
+    border-left-style: none;
+    border-right-style: none;
+    text-align: center;
+    width: 50%;
+}
+
+#cabecera {
+    text-align: center;
+
+}
+
+
+A:link{
+    text-decoration: none
+}
+
+A:visited{
+    text-decoration: none;
+}
+A:active{
+    text-decoration: none
+}
+
+div.form{
+    text-align: center;
+    border: 1px solid #000;
+    background: rgb(255,255,238);
+}
+
+#cuerpo{
+margin-top: 50px;
+background: #FFFFEE;
+width: 100%;
+height: 100%;
+text-align: center;
+font-size: 14px;
+}
+
+#central{
+    position:relative;
+    top: 10px;
+    left: 36%;
+    width:25%;
+}
+
+#enlaces{
+	position: relative;
+	top: 30px;
+}
+
