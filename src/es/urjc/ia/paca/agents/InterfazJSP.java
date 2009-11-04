@@ -39,7 +39,6 @@ public class InterfazJSP extends Interfaz {
                 lista.add(this.TestPosiblesPractica[i]);
             }
         }
-        ;
 
         // Ahora los insertamos en el array de salida.
         String[] output = new String[lista.size()];
