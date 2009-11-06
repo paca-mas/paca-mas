@@ -90,35 +90,38 @@ public class GestorPracticas extends Agent {
                                 List<AbsPredicate> pract = predicado.getPredicateList(pacaOntology.TESTS);
 
                                 //QUERY-REF DEL INTERFAZ
-                                if (predicado.existsPredicate(pacaOntology.FICHEROSALUMNO)) {
+                                if (predicado.existsPredicate(pacaOntology.FICHEROSALUMNO) && predicado.existsPredicate(pacaOntology.CORRIGE)) {
                                     addBehaviour(new FicherosCorrBehaviour(this.myAgent, reply, predicado, allPred));
                                 } else {
                                     //QUERY-REF DEL INTERFAZ
                                     if (predicado.existsPredicate(pacaOntology.CORRIGE)) {
                                         addBehaviour(new TestsCorrecBehaviour(this.myAgent, reply, predicado, allPred));
                                     } else {
-
-                                        //TODOS LOS QUERY-REF SIGUIENTES SERAN DEL CORRECTOR
-                                        if (predicado.existsPredicate(pacaOntology.FICHEROSIN)) {
-                                            //SACAMOS EL OTRO PREDICADO DEL ANDBUILDER QUE SERA UN FICHEROSIN
-                                            List<AbsPredicate> fin = predicado.getPredicateList(pacaOntology.FICHEROSIN);
-                                            addBehaviour(new EnviarFicherosINBehaviour(this.myAgent, reply, pract, fin, allPred));
+                                        if (predicado.existsPredicate(pacaOntology.FICHEROSALUMNO)) {
+                                            addBehaviour(new EnviaFicherosAlumnoBehaviour(this.myAgent, reply, pract, allPred));
                                         } else {
-                                            if (predicado.existsPredicate(pacaOntology.FICHEROSOUT)) {
-                                                //SACAMOS EL OTRO PREDICADO DEL ANDBUILER QUE SERA UN FICHEROSOUT
-                                                List<AbsPredicate> fout = predicado.getPredicateList(pacaOntology.FICHEROSOUT);
-                                                addBehaviour(new EnviarFicherosOUTBehaviour(this.myAgent, reply, pract, fout, allPred));
-
+                                            //TODOS LOS QUERY-REF SIGUIENTES SERAN DEL CORRECTOR
+                                            if (predicado.existsPredicate(pacaOntology.FICHEROSIN)) {
+                                                //SACAMOS EL OTRO PREDICADO DEL ANDBUILDER QUE SERA UN FICHEROSIN
+                                                List<AbsPredicate> fin = predicado.getPredicateList(pacaOntology.FICHEROSIN);
+                                                addBehaviour(new EnviarFicherosINBehaviour(this.myAgent, reply, pract, fin, allPred));
                                             } else {
-                                                if (predicado.existsPredicate(pacaOntology.CASOS)) {
-                                                    //ENVIAMOS LOS CASOS
-                                                    addBehaviour(new EnviarCasosBehaviour(this.myAgent, reply, pract, allPred));
-                                                } else {
-                                                    //ENVIAMOS LOS FICHEROS PROPIOS
-                                                    addBehaviour(new EnviaFicherosPropiosBehaviour(this.myAgent, reply, pract, allPred));
-                                                }
-                                            }
+                                                if (predicado.existsPredicate(pacaOntology.FICHEROSOUT)) {
+                                                    //SACAMOS EL OTRO PREDICADO DEL ANDBUILER QUE SERA UN FICHEROSOUT
+                                                    List<AbsPredicate> fout = predicado.getPredicateList(pacaOntology.FICHEROSOUT);
+                                                    addBehaviour(new EnviarFicherosOUTBehaviour(this.myAgent, reply, pract, fout, allPred));
 
+                                                } else {
+                                                    if (predicado.existsPredicate(pacaOntology.CASOS)) {
+                                                        //ENVIAMOS LOS CASOS
+                                                        addBehaviour(new EnviarCasosBehaviour(this.myAgent, reply, pract, allPred));
+                                                    } else {
+                                                        //ENVIAMOS LOS FICHEROS PROPIOS
+                                                        addBehaviour(new EnviaFicherosPropiosBehaviour(this.myAgent, reply, pract, allPred));
+                                                    }
+                                                }
+
+                                            }
                                         }
                                     }
                                 }
@@ -265,6 +268,77 @@ public class GestorPracticas extends Agent {
         }
     }
 
+
+    /*-------------Envia Todos los ficheros Alumno de un test----------------*/
+    private class EnviaFicherosAlumnoBehaviour extends OneShotBehaviour {
+
+        private ACLMessage msg;
+        private AbsIRE ire;
+        private List<AbsPredicate> pract;
+
+        public EnviaFicherosAlumnoBehaviour(Agent a, ACLMessage msg, List<AbsPredicate> pract, AbsIRE ire) {
+            super(a);
+            this.msg = msg;
+            this.ire = ire;
+            this.pract = pract;
+        }
+
+        @Override
+        public void action() {
+            try {
+
+                //OBTEMOS EL TEST Y LA PRACTICA DEL PREDICADO
+                Iterator<AbsPredicate> itCor = pract.iterator();
+                Tests corr = (Tests) ontology.toObject(itCor.next());
+                Practica p = corr.getPractica();
+                Test t = corr.getTest();
+                Test[] taux = new Test[1];
+                taux[0] = t;
+
+                //BUSCAMOS EN LA BASE DE DATOS LOS FICHEROS PROPIOS
+                ArrayList<FicheroAlumno> fp = FicherosAlumnoDisponibles(p.getId(), taux);
+
+                //CREAMOS EL AGGREGATE PARA ENVIAR TODOS LOS FICHEROS PROPIOS
+                AbsAggregate absFicheros = new AbsAggregate(BasicOntology.SET);
+                AbsConcept elem;
+
+                if (fp.isEmpty()) {
+                    FicheroAlumno f = new FicheroAlumno("No hay FicherosAlumno");
+                    elem = (AbsConcept) ontology.fromObject(f);
+                    absFicheros.add(elem);
+                } else {
+                    for (int i = 0; i < fp.size(); i++) {
+
+                        elem = (AbsConcept) ontology.fromObject(fp.get(i));
+                        // Work Around: rormartin
+                        // TODO: FicheroParaPracticas work fine?
+                        if (elem != null) {
+                            absFicheros.add(elem);
+                        }
+                    }
+                }
+
+                //CREAMOS EL EQUALS PARA ENVIAR
+                AbsPredicate equalPred = new AbsPredicate(SLVocabulary.EQUALS);
+                equalPred.set(SLVocabulary.EQUALS_LEFT, ire);
+                equalPred.set(SLVocabulary.EQUALS_RIGHT, absFicheros);
+                try {
+                    manager.fillContent(msg, equalPred);
+                    send(msg);
+
+                } catch (CodecException ex) {
+                    Logger.getLogger(GestorPracticas.class.getName()).log(Level.SEVERE, null, ex);
+                }
+
+
+            } catch (SQLException ex) {
+                Logger.getLogger(GestorPracticas.class.getName()).log(Level.SEVERE, null, ex);
+            } catch (OntologyException ex) {
+                Logger.getLogger(GestorPracticas.class.getName()).log(Level.SEVERE, null, ex);
+            }
+
+        }
+    }
 
     /*-------------Envia Todos los Casos de un test----------------*/
     private class EnviarCasosBehaviour extends OneShotBehaviour {

@@ -19,6 +19,8 @@ import com.oreilly.servlet.multipart.MultipartParser;
 import com.oreilly.servlet.multipart.ParamPart;
 import com.oreilly.servlet.multipart.Part;
 
+import es.urjc.ia.paca.ontology.Practica;
+import es.urjc.ia.paca.ontology.Test;
 import es.urjc.ia.paca.parser.EvaluacionParser;
 import es.urjc.ia.paca.util.Testigo;
 
@@ -60,6 +62,88 @@ public class InterfazJSPGestor extends InterfazGestor {
         }
     }
 
+    public class PideFicherosPropiosBeha extends OneShotBehaviour {
+
+        private Testigo tes2;
+
+        public PideFicherosPropiosBeha(Agent _a, Testigo tes1) {
+            super(_a);
+            this.tes2 = tes1;
+        }
+
+        public void action() {
+            String test = (String) tes2.getParametro();
+            addBehaviour(new PideFicherosPropios(this.myAgent, tes2, test));
+        }
+    }
+
+    public class PideFicherosAlumnoBeha extends OneShotBehaviour {
+
+        private Testigo tes2;
+
+        public PideFicherosAlumnoBeha(Agent _a, Testigo tes1) {
+            super(_a);
+            this.tes2 = tes1;
+        }
+
+        public void action() {
+            String test = (String) tes2.getParametro();
+            addBehaviour(new PideFicherosAlumno(this.myAgent, tes2, test));
+        }
+    }
+
+    public class PideCasosBeha extends OneShotBehaviour {
+
+        private Testigo tes2;
+
+        public PideCasosBeha(Agent _a, Testigo tes1) {
+            super(_a);
+            this.tes2 = tes1;
+        }
+
+        public void action() {
+            String test = (String) tes2.getParametro();
+            addBehaviour(new PideCasos(this.myAgent, tes2, test));
+        }
+    }
+
+    public class ModificarPracticaBeha extends OneShotBehaviour {
+
+        private Testigo tes2;
+
+        public ModificarPracticaBeha(Agent _a, Testigo tes1) {
+            super(_a);
+            this.tes2 = tes1;
+        }
+
+        public void action() {
+            HttpServletRequest param1 = (HttpServletRequest) tes2.getParametro();
+            String descripcion = param1.getParameter("descripcion");
+            String fechaEntrega = param1.getParameter("fechaEntrega");
+            String nombre = param1.getParameter("nombrePractica");
+            Practica pt = new Practica(nombre, descripcion, fechaEntrega);
+            addBehaviour(new ModificarPractica(this.myAgent, tes2, pt));
+        }
+    }
+
+    public class ModificarTestBeha extends OneShotBehaviour {
+
+        private Testigo tes2;
+
+        public ModificarTestBeha(Agent _a, Testigo tes1) {
+            super(_a);
+            this.tes2 = tes1;
+        }
+
+        public void action() {
+            HttpServletRequest param1 = (HttpServletRequest) tes2.getParametro();
+            String descripcion = param1.getParameter("descripcion");
+            String nombre = param1.getParameter("nombreTest");
+            Test te = new Test(nombre, descripcion);
+            addBehaviour(new ModificarTest(this.myAgent, tes2, te));
+        }
+    }
+
     public class ProcesaTestigo extends OneShotBehaviour {
 
         private Testigo testigo;
@@ -94,9 +178,30 @@ public class InterfazJSPGestor extends InterfazGestor {
                         addBehaviour(new PidePracticasBehavior(agent, testigo));
                         break;
 
+                    case modificarPractica:
+                        addBehaviour(new ModificarPracticaBeha(agent, testigo));
+                        break;
+
                     case pedirTests:
                         addBehaviour(new PideTestRequestBeha(agent, testigo));
                         break;
+
+                    case modificarTest:
+                        addBehaviour(new ModificarTestBeha(agent, testigo));
+                        break;
+
+                    case pedirFicherosPropios:
+                        addBehaviour(new PideFicherosPropiosBeha(agent, testigo));
+                        break;
+
+                    case pedirCasos:
+                        addBehaviour(new PideCasosBeha(agent, testigo));
+                        break;
+
+                    case pedirFicherosAlumno:
+                        addBehaviour(new PideFicherosAlumnoBeha(agent, testigo));
+                        break;
+
                     /*
                     case pedirFicheros:
                     testigo.setResultado(agent.doTestPracticasRequest((HttpServletRequest) testigo.getParametro()));
@@ -158,9 +263,7 @@ public class InterfazJSPGestor extends InterfazGestor {
                     addBehaviour(new ModificarFicherosPropiosBeha(agent, testigo));
                     break;
 
-                    case pedirCasos:
-                    addBehaviour(new PideCasos(agent, testigo));
-                    break;
+
 
                     case pedirFicherosIN:
                     addBehaviour(new PideFicherosINBeha(agent, testigo));
