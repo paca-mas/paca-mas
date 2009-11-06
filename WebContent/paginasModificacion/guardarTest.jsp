@@ -213,9 +213,9 @@
                         <tr>
                             <td> <%= fps[i].getNombre()%></td>
                             <td>
-                                <form method="post" name="formVer" action="modificarTest.jsp" onsubmit="return valida();">
-                                    <input  type="hidden" value=<%= fps[i].getNombre()%> name="NombreTest">
-                                    <input  type="hidden" value=<%= fps[i].getCodigo()%> name="DescripcionTest">
+                                <form method="post" name="formVer" action="modificarFicherosPropios.jsp" onsubmit="return valida();">
+                                    <input  type="hidden" value=<%= fps[i].getNombre()%> name="NombreFichero">
+                                    <input  type="hidden" value=<%= fps[i].getCodigo()%> name="CodigoFichero">
                                     <input type="submit" name="Ver" value="Ver" onclick="javascript:salida=false;">
                                 </form>
                             </td>
@@ -242,7 +242,7 @@
                         <tr>
                             <td> <%= cas[i].getId()%></td>
                             <td>
-                                <form method="post" name="formVer" action="modificarTest.jsp" onsubmit="return valida();">
+                                <form method="post" name="formVer" action="modificarCasos.jsp" onsubmit="return valida();">
                                     <input  type="hidden" value=<%= cas[i].getId()%> name="NombreCaso">
                                     <input type="submit" name="Ver" value="Ver" onclick="javascript:salida=false;">
                                 </form>

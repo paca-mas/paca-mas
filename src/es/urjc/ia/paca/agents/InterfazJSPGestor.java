@@ -12,6 +12,8 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.io.StringWriter;
 
+import java.util.logging.Level;
+import java.util.logging.Logger;
 import javax.servlet.http.HttpServletRequest;
 
 import com.oreilly.servlet.multipart.FilePart;
@@ -19,10 +21,12 @@ import com.oreilly.servlet.multipart.MultipartParser;
 import com.oreilly.servlet.multipart.ParamPart;
 import com.oreilly.servlet.multipart.Part;
 
+import es.urjc.ia.paca.ontology.FicheroPropio;
 import es.urjc.ia.paca.ontology.Practica;
 import es.urjc.ia.paca.ontology.Test;
 import es.urjc.ia.paca.parser.EvaluacionParser;
 import es.urjc.ia.paca.util.Testigo;
+import java.util.StringTokenizer;
 
 /**
  *
@@ -144,6 +148,29 @@ public class InterfazJSPGestor extends InterfazGestor {
         }
     }
 
+    public class ModificarFicherosPropiosBeha extends OneShotBehaviour {
+
+        private Testigo tes2;
+
+        public ModificarFicherosPropiosBeha(Agent _a, Testigo tes1) {
+            super(_a);
+            this.tes2 = tes1;
+        }
+
+        public void action() {
+                String param1 = (String) tes2.getParametro();
+
+                StringTokenizer tokenizer= new StringTokenizer(param1, "#");
+                 String nombre = tokenizer.nextToken();
+                 String codigo = tokenizer.nextToken();
+
+
+                FicheroPropio fp = new FicheroPropio(nombre, codigo);
+                addBehaviour(new ModificarFicherosPropios(this.myAgent, tes2, fp));
+
+        }
+    }
+
     public class ProcesaTestigo extends OneShotBehaviour {
 
         private Testigo testigo;
@@ -194,6 +221,10 @@ public class InterfazJSPGestor extends InterfazGestor {
                         addBehaviour(new PideFicherosPropiosBeha(agent, testigo));
                         break;
 
+                    case modificarFicherosPropios:
+                        addBehaviour(new ModificarFicherosPropiosBeha(agent, testigo));
+                        break;
+
                     case pedirCasos:
                         addBehaviour(new PideCasosBeha(agent, testigo));
                         break;
@@ -201,6 +232,8 @@ public class InterfazJSPGestor extends InterfazGestor {
                     case pedirFicherosAlumno:
                         addBehaviour(new PideFicherosAlumnoBeha(agent, testigo));
                         break;
+
+                        
 
                     /*
                     case pedirFicheros:
@@ -259,19 +292,11 @@ public class InterfazJSPGestor extends InterfazGestor {
                     addBehaviour(new ModificarTestBeha(agent, testigo));
                     break;
 
-                    case modificarFicherosPropios:
-                    addBehaviour(new ModificarFicherosPropiosBeha(agent, testigo));
-                    break;
 
 
 
-                    case pedirFicherosIN:
-                    addBehaviour(new PideFicherosINBeha(agent, testigo));
-                    break;
 
-                    case pedirFicherosOUT:
-                    addBehaviour(new PideFicherosOUTBeha(agent, testigo));
-                    break;
+
 
                     case modificarFicherosIN:
                     addBehaviour(new ModificarFicherosINBeha(agent, testigo));
