@@ -1147,4 +1147,57 @@ public class InterfazGestor extends Agent {
             }
         }
     }
+
+    public class ModificarFicherosPropios extends OneShotBehaviour {
+
+        private Resultado tes1;
+        private FicheroPropio fp;
+
+        public ModificarFicherosPropios(Agent _a, Resultado tes, FicheroPropio fp) {
+            super(_a);
+            this.tes1 = tes;
+            this.fp=fp;
+        }
+
+        public void action() {
+            try {
+                /*ultimaPractica = IdPractica;
+                Practica p = EncontrarPractica();
+                tes1.setResultado(p);*/
+                AID receiver = new AID(gestorPracticas, AID.ISLOCALNAME);
+                ACLMessage solicitud = new ACLMessage(ACLMessage.REQUEST);
+                solicitud.addReceiver(receiver);
+                solicitud.setLanguage(codec.getName());
+                solicitud.setOntology(pacaOntology.NAME);
+
+
+                Practica pt = new Practica(ultimaPractica);
+                Test ts = new Test(ultimoTest);
+
+
+
+                //AbsConcept Abspt = (AbsConcept) PACAOntology.fromObject(pt);
+                //AbsAgentAction AbsEntp = new AbsAgentAction(pacaOntology.MODIFICAPRACTICA);
+                ModificaFicheroPropio mfp = new ModificaFicheroPropio();
+                mfp.setTest(ts);
+                mfp.setFicheroPropio(fp);
+                mfp.setPractica(pt);
+
+                Action act = new Action();
+                act.setAction(mfp);
+                act.setActor(receiver);
+
+                //AbsEntp.set(pacaOntology.PRACTICA, Abspt);
+
+
+                getContentManager().fillContent(solicitud, act);
+                addBehaviour(new RecibeMensajes(myAgent, tes1));
+                send(solicitud);
+            } catch (CodecException ex) {
+                Logger.getLogger(Interfaz.class.getName()).log(Level.SEVERE, null, ex);
+            } catch (OntologyException ex) {
+                Logger.getLogger(Interfaz.class.getName()).log(Level.SEVERE, null, ex);
+            }
+        }
+    }
 }
