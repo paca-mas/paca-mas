@@ -338,21 +338,7 @@ public class InterfazJSP extends Interfaz {
         }
     }
 
-    public class PideFicherosPropiosBeha extends OneShotBehaviour {
 
-        private Testigo tes2;
-
-        public PideFicherosPropiosBeha(Agent _a, Testigo tes1) {
-            super(_a);
-            this.tes2 = tes1;
-        }
-
-        public void action() {
-            HttpServletRequest param1 = (HttpServletRequest) tes2.getParametro();
-            String test = param1.getParameter("test");
-            addBehaviour(new PideFicherosPropios(this.myAgent, tes2, test));
-        }
-    }
 
     public class PideFicherosINBeha extends OneShotBehaviour {
 
@@ -468,17 +454,12 @@ public class InterfazJSP extends Interfaz {
                         addBehaviour(new PideDescripcionPracticaBeha(agent, testigo));
                         break;
 
-                    case modificarPractica:
-                        addBehaviour(new ModificarPracticaBeha(agent, testigo));
-                        break;
 
                     case descripcionTest:
                         addBehaviour(new PideDescripcionTestBeha(agent, testigo));
                         break;
 
-                    case pedirFicherosPropios:
-                        addBehaviour(new PideFicherosPropiosBeha(agent, testigo));
-                        break;
+
 
                     case modificarTest:
                         addBehaviour(new ModificarTestBeha(agent, testigo));

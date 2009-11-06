@@ -15,9 +15,9 @@
 
 <jsp:useBean id="fake" class="java.util.Random" scope="application">
     <%
-       //String[] args = {"-container"};
-       //jade.Boot.main(args);
-       //System.out.println("Contenedor Jade Iniciado.");
+            //String[] args = {"-container"};
+            //jade.Boot.main(args);
+            //System.out.println("Contenedor Jade Iniciado.");
 
     %>
 </jsp:useBean>
@@ -145,11 +145,11 @@
 
         <p class="derecha" > <a href="salida.jsp" class="menu"  onclick="javascript:salida=false;">[Salir]</a> </p>
 
-        <p class="center" class="color">
-            Listado de pr&aacute;cticas.  </p>
+        <h1 class="center" class="color">
+            Listado de pr&aacute;cticas.  </h1>
         <div id="cuerpo">
-            <div id="central">
-                <table border="4" cellspacing="4" cellpadding="4" width="380" class="center">
+            <div id="central2">
+                <table border="6" cellspacing="6" cellpadding="6" width="380" class="center">
                     <tbody>
 
                         <% for (int i = 0; i < pract.length; i++) {%>
@@ -157,17 +157,17 @@
                         <tr>
                             <td> <%= pract[i].getId()%></td>
                             <td>
-                                    <form method="post" name="formpracticas" action="modificarPractica.jsp" onclick="javascript:salida=false;">
-                                    <p> <input  type="hidden" value=<%= pract[i].getId() %> name="NombrePractica">
-                                    <input  type="hidden" value=<%= pract[i].getDescripcion() %> name="DescripcionPractica">
-                                    <input  type="hidden" value=<%= pract[i].getFechaEntrega() %> name="FechaPractica">
-                                    <input type="submit" name="Ver" value="Ver" onclick="javascript:salida=false;"> </p>
+                                <form method="post" name="formpracticas" action="modificarPractica.jsp" onsubmit="desactivarBoton();">
+                                    <input  type="hidden" value=<%= pract[i].getId()%> name="NombrePractica">
+                                    <input  type="hidden" value=<%= pract[i].getDescripcion()%> name="DescripcionPractica">
+                                    <input  type="hidden" value=<%= pract[i].getFechaEntrega()%> name="FechaPractica">
+                                    <input type="submit" name="Ver" value="Ver" onclick="javascript:salida=false;">
                                 </form>
                             </td>
                             <td>
                                 <form method="post" name="formpracticas" action="eliminarPractica.jsp" onclick="javascript:salida=false;">
-                                    <p> <input  type="hidden" value=<%= pract[i].getId()%> name="NombrePractica">
-                                    <input type="submit" name="Eliminar" value="Eliminar" onclick="javascript:salida=false;"> </p>
+                                    <input  type="hidden" value=<%= pract[i].getId()%> name="NombrePractica">
+                                    <input type="submit" name="Eliminar" value="Eliminar" onclick="javascript:salida=false;">
                                 </form>
                             </td>
                         </tr>
@@ -177,18 +177,17 @@
                     </tbody>
                 </table>
             </div>
-            <div id="enlaces">
-                <form method="post" name="formpracticas" action="crearPractica.jsp" onclick="javascript:salida=false;">
+            <form method="post" name="formpracticas" action="crearPractica.jsp" onclick="javascript:salida=false;">
                 <p class="center">  <input type="submit" name="Crear" value="Crear Nueva Practica"> </p>
-                </form>
-            </div>
+            </form>
+
         </div>
 
-                    <%
-                        }
-                    %>
+        <%
+}
+        %>
 
 
-</body>
+    </body>
 </html>
 

@@ -81,6 +81,7 @@ import es.urjc.ia.paca.ontology.ModificaFicheroPropio;
 import es.urjc.ia.paca.ontology.ModificaTest;
 import es.urjc.ia.paca.ontology.ModificaFicheroIN;
 import es.urjc.ia.paca.ontology.ModificaFicheroOUT;
+import jade.core.behaviours.CyclicBehaviour;
 
 /**
  *
@@ -127,6 +128,7 @@ public class InterfazGestor extends Agent {
     El identificador de la �ltima pr�ctica solicitada
      */
     public String ultimaPractica;
+    public String ultimoTest;
     /**
     Array con los nombres de los ficheros de la �ltima
     pr�ctica solicitada
@@ -147,6 +149,7 @@ public class InterfazGestor extends Agent {
     public Practica[] auxPracticas;
     public Test[] auxTest;
     public FicheroPropio[] FicherosPropiosDisponibles;
+    public FicheroAlumno[] FicherosAlumnoDisponibles;
     public FicheroIN[] FicherosINDisponibles;
     public FicheroOUT[] FicherosOUTDisponibles;
     public Caso ultimoCaso;
@@ -205,40 +208,68 @@ public class InterfazGestor extends Agent {
         return this.alumnoPass;
     }
 
-    /**
-     * Este m�todo devuelve el Agente Corrector que hemos elegido
-     **/
-    public synchronized AID getAgenteCorrector() {
-        while (this.AgenteCorrector == null) {
-            try {
-                wait();
-            } catch (InterruptedException e) {
-                // TODO Auto-generated catch block
-                e.printStackTrace();
-            }
+    /* Encapsula la comunicaci�n necesaria para realizar el protocolo de autenticaci�n definido.
+    @return True o False dependiendo de si se ha producido de forma exitosa o no la autenticacion.
+     */
+    /*public final boolean doAutenticacion(String user, String pass) {
+
+        // Cerrojo para que no se ejecute antes de que termine el setup
+        while (!terminadoSetup) {
         }
-        return this.AgenteCorrector;
-    }
 
-    /**
-     * Este m�todo asigna el Agente Corrector que hemos elegido
-     */
-    public synchronized void setAgenteCorrector(AID agenteCorr) {
-        this.AgenteCorrector = agenteCorr;
-        notify();
-    }
-    /**
-     * Creamos la tabla Hash "almacenCorrec" para guardar los correctores que hemos utilizado
-     */
-    public Hashtable<AID, Long> almacenCorrec = new Hashtable<AID, Long>();
-    /**
-     * Usado guarda el numero de veces que se ha utilizado un corrector
-     */
-    public Integer usado;
+        ACLMessage respuesta = new ACLMessage(ACLMessage.QUERY_IF);
+        respuesta.setLanguage(codec.getName());
+        respuesta.setOntology(AuthOntology.ONTOLOGY_NAME);
+        respuesta.addReceiver(new AID(AgenteAutenticador, AID.ISLOCALNAME));
 
-    /**
-    Este m�todo se ejecuta al iniciar el agente y es el encargado de configurarlo.
-     */
+
+        // Creamos el predicado.
+        Autenticado aut = new Autenticado();
+        Usuario user2 = new Usuario();
+
+        // Creamos el usuario
+        user2.setUser_id(user);
+        user2.setPassword(pass);
+
+
+        aut.setUsuario(user2);
+
+
+        try {
+            //Mandamos el predicado "aut"
+            getContentManager().fillContent(respuesta, aut);
+            send(respuesta);
+        } catch (CodecException e) {
+            // TODO Auto-generated catch block
+            e.printStackTrace();
+        } catch (OntologyException e) {
+            // TODO Auto-generated catch block
+            e.printStackTrace();
+        }
+
+        // Esperamos la respuesta.
+        respuesta = blockingReceive();
+
+        try {
+
+            // Ahora iremos cogiendo los objetos creados de la ontologia.
+            AbsContentElement listaObj2 = null;
+            listaObj2 = getContentManager().extractAbsContent(respuesta);
+            String tipoObjetoContenido = listaObj2.getTypeName();
+
+            if (tipoObjetoContenido.equals(SL1Vocabulary.NOT)) {
+                return (false);
+            } else {
+                setAlumnoID(user);
+                setAlumnoPass(pass);
+                return (true);
+            }
+        } catch (Exception ex) {
+            return (false);
+        }
+
+    }*/
+
     @Override
     protected void setup() {
 
@@ -608,6 +639,346 @@ public class InterfazGestor extends Agent {
     }
     //-------------------------- FIN COMPORTAMIENTOS PARA TESTS ---------------------------
 
+    //----------------------COMPORTAMIENTOS PARA FICHEROS PROPIOS-----------------------
+
+    class PideFicherosPropios extends OneShotBehaviour {
+
+        private Resultado tes;
+        private String IdTest;
+
+        public PideFicherosPropios(Agent a, Resultado tes, String IdTest) {
+            super(a);
+            this.tes = tes;
+            this.IdTest = IdTest;
+
+        }
+
+        public void action() {
+
+            try {
+
+                //CREAMOS EL MENSAJE
+                ACLMessage msg = new ACLMessage(ACLMessage.QUERY_REF);
+                AID receiver = new AID(gestorPracticas, AID.ISLOCALNAME);
+
+                msg.setSender(getAID());
+                msg.addReceiver(receiver);
+                msg.setLanguage(codec.getName());
+                msg.setOntology(pacaOntology.NAME);
+
+                ultimoTest = IdTest;
+
+
+
+                //CREAMOS EL PREDICADO TESTS PARA SABER CUAL ES LA PRACTICA
+                //Y EL TEST DE LOS FICHEROS PROPIOS QUE VAMOS A PEDIR
+                Practica pt = new Practica(ultimaPractica);
+                Test ts = new Test(IdTest);
+                AbsConcept abspract = (AbsConcept) PACAOntology.fromObject(pt);
+                AbsConcept absts = (AbsConcept) PACAOntology.fromObject(ts);
+                AbsPredicate abstss = new AbsPredicate(pacaOntology.TESTS);
+                abstss.set(pacaOntology.TEST, absts);
+                abstss.set(pacaOntology.PRACTICA, abspract);
+
+
+                //CREAMOS EL PREDICADO PARA PEDIR LOS FICHEROS PROPIOS
+                FicheroPropio fp = new FicheroPropio("?FicheroPropio");
+                AbsConcept absfp = (AbsConcept) PACAOntology.fromObject(fp);
+                AbsPredicate absfps = new AbsPredicate(pacaOntology.FICHEROSPROPIOS);
+                absfps.set(pacaOntology.TEST, absts);
+                absfps.set(pacaOntology.FICHEROPROPIO, absfp);
+
+                //CREAMOS UN ANDBUILDER PARA UNIR LOS DOS PREDICADOS ANTERIORES
+                AndBuilder constructor = new AndBuilder();
+                constructor.addPredicate(abstss);
+                constructor.addPredicate(absfps);
+
+
+                //CREAMOS EL IRE CON LA VARIABLE X Y ENVIAMOS TODO
+                AbsVariable x =
+                        new AbsVariable("ficheroPropio", pacaOntology.FICHEROPROPIO);
+                AbsIRE qrall = new AbsIRE(SL2Vocabulary.ALL);
+                qrall.setVariable(x);
+                qrall.setProposition(constructor.getAnd());
+                getContentManager().fillContent(msg, qrall);
+                addBehaviour(new RecibeMensajes(myAgent, tes));
+                myAgent.send(msg);
+            } catch (CodecException ex) {
+                Logger.getLogger(Interfaz.class.getName()).log(Level.SEVERE, null, ex);
+            } catch (OntologyException ex) {
+                Logger.getLogger(Interfaz.class.getName()).log(Level.SEVERE, null, ex);
+            }
+        }
+    }
+
+    public class RecibeFicherosPropiosBeha extends OneShotBehaviour {
+
+        private Resultado tes2;
+        private AbsAggregate ficheros1;
+
+        public RecibeFicherosPropiosBeha(Agent _a, Resultado tes, AbsAggregate ficheros) {
+            super(_a);
+            this.tes2 = tes;
+            this.ficheros1 = ficheros;
+        }
+
+        public void action() {
+            FicheroPropio[] retornable = new FicheroPropio[0];
+            try {
+                //Sacamos los ficheros que vienen en el mensaje como conceptos abstractos
+
+                // Pasamos la lista a un String[]
+                FicheroPropio fp;
+                retornable = new FicheroPropio[ficheros1.size()];
+                for (int i = 0; i < ficheros1.size(); i++) {
+                    fp = (FicheroPropio) PACAOntology.toObject(ficheros1.get(i));
+                    if (!(fp.getNombre().equalsIgnoreCase("No hay FicherosAlumno"))) {
+                        retornable[i] = fp;
+                    } else {
+                        retornable = new FicheroPropio[0];
+                    }
+                }
+
+
+
+            } catch (Exception e) {
+                //ficherosUltimaPractica = retornable;
+                //tes2.setResultado(retornable);
+            }
+            FicherosPropiosDisponibles = retornable;
+            //ficherosUltimaPractica = retornable;
+            tes2.setResultado(retornable);
+
+        }
+    }
+
+    /***************fin comportamient ficheros propipos************////////
+
+    /**************COMPORTAMIENTOS PARA PEDIR CASOS*******************************/
+    class PideCasos extends OneShotBehaviour {
+
+        private Resultado tes;
+        private String IdTest;
+
+        public PideCasos(Agent a, Resultado tes, String IdTest) {
+            super(a);
+            this.tes = tes;
+            this.IdTest = IdTest;
+
+        }
+
+        public void action() {
+
+            try {
+
+                //CREAMOS EL MENSAJE
+                ACLMessage msg = new ACLMessage(ACLMessage.QUERY_REF);
+                AID receiver = new AID(gestorPracticas, AID.ISLOCALNAME);
+
+                msg.setSender(getAID());
+                msg.addReceiver(receiver);
+                msg.setLanguage(codec.getName());
+                msg.setOntology(pacaOntology.NAME);
+
+                ultimoTest = IdTest;
+
+                //CREAMOS EL PREDICADO TESTS PARA SABER CUAL ES LA PRACTICA
+                //Y EL TEST DE LOS CASOS QUE VAMOS A PEDIR
+                Practica pt = new Practica(ultimaPractica);
+                Test ts = new Test(IdTest);
+                AbsConcept abspract = (AbsConcept) PACAOntology.fromObject(pt);
+                AbsConcept absts = (AbsConcept) PACAOntology.fromObject(ts);
+                AbsPredicate abstss = new AbsPredicate(pacaOntology.TESTS);
+                abstss.set(pacaOntology.TEST, absts);
+                abstss.set(pacaOntology.PRACTICA, abspract);
+
+
+                //CREAMOS EL PREDICADO PARA PEDIR LOS CASOS
+                Caso ca = new Caso("?Caso");
+                AbsConcept absca = (AbsConcept) PACAOntology.fromObject(ca);
+                AbsPredicate abscas = new AbsPredicate(pacaOntology.CASOS);
+                abscas.set(pacaOntology.TEST, absts);
+                abscas.set(pacaOntology.CASO, absca);
+
+                //CREAMOS UN ANDBUILDER PARA UNIR LOS DOS PREDICADOS ANTERIORES
+                AndBuilder constructor = new AndBuilder();
+                constructor.addPredicate(abstss);
+                constructor.addPredicate(abscas);
+
+
+                //CREAMOS EL IRE CON LA VARIABLE X Y ENVIAMOS TODO
+                AbsVariable x =
+                        new AbsVariable("caso", pacaOntology.CASO);
+                AbsIRE qrall = new AbsIRE(SL2Vocabulary.ALL);
+                qrall.setVariable(x);
+                qrall.setProposition(constructor.getAnd());
+                getContentManager().fillContent(msg, qrall);
+                addBehaviour(new RecibeMensajes(myAgent, tes));
+                myAgent.send(msg);
+            } catch (CodecException ex) {
+                Logger.getLogger(Interfaz.class.getName()).log(Level.SEVERE, null, ex);
+            } catch (OntologyException ex) {
+                Logger.getLogger(Interfaz.class.getName()).log(Level.SEVERE, null, ex);
+            }
+        }
+    }
+
+    public class RecibeCasosBeha extends OneShotBehaviour {
+
+        private Resultado tes2;
+        private AbsAggregate ficheros1;
+
+        public RecibeCasosBeha(Agent _a, Resultado tes, AbsAggregate ficheros) {
+            super(_a);
+            this.tes2 = tes;
+            this.ficheros1 = ficheros;
+        }
+
+        public void action() {
+            Caso[] retornable = new Caso[0];
+            try {
+                //Sacamos los ficheros que vienen en el mensaje como conceptos abstractos
+
+                // Pasamos la lista a un String[]
+                Caso ca;
+                retornable = new Caso[ficheros1.size()];
+                for (int i = 0; i < ficheros1.size(); i++) {
+                    ca = (Caso) PACAOntology.toObject(ficheros1.get(i));
+                    if (!(ca.getId().equalsIgnoreCase("No hay casos"))) {
+                        retornable[i] = ca;
+                    } else {
+                        retornable = new Caso[0];
+                    }
+
+                }
+
+
+
+            } catch (Exception e) {
+                //ficherosUltimaPractica = retornable;
+                //tes2.setResultado(retornable);
+            }
+            //FicherosPropiosDisponibles = retornable;
+            //ficherosUltimaPractica = retornable;
+            tes2.setResultado(retornable);
+
+        }
+    }
+    /**********************FIN COMPORTAMIENTOS CASOS***********************/
+
+        //----------------------COMPORTAMIENTOS PARA FICHEROS PROPIOS-----------------------
+
+    class PideFicherosAlumno extends OneShotBehaviour {
+
+        private Resultado tes;
+        private String IdTest;
+
+        public PideFicherosAlumno(Agent a, Resultado tes, String IdTest) {
+            super(a);
+            this.tes = tes;
+            this.IdTest = IdTest;
+
+        }
+
+        public void action() {
+
+            try {
+                //CREAMOS EL MENSAJE
+                ACLMessage msg = new ACLMessage(ACLMessage.QUERY_REF);
+                AID receiver = new AID(gestorPracticas, AID.ISLOCALNAME);
+
+                msg.setSender(getAID());
+                msg.addReceiver(receiver);
+                msg.setLanguage(codec.getName());
+                msg.setOntology(pacaOntology.NAME);
+
+                ultimoTest = IdTest;
+
+
+
+                //CREAMOS EL PREDICADO TESTS PARA SABER CUAL ES LA PRACTICA
+                //Y EL TEST DE LOS FICHEROS PROPIOS QUE VAMOS A PEDIR
+                Practica pt = new Practica(ultimaPractica);
+                Test ts = new Test(IdTest);
+                AbsConcept abspract = (AbsConcept) PACAOntology.fromObject(pt);
+                AbsConcept absts = (AbsConcept) PACAOntology.fromObject(ts);
+                AbsPredicate abstss = new AbsPredicate(pacaOntology.TESTS);
+                abstss.set(pacaOntology.TEST, absts);
+                abstss.set(pacaOntology.PRACTICA, abspract);
+
+
+                //CREAMOS EL PREDICADO PARA PEDIR LOS FICHEROS PROPIOS
+                FicheroAlumno fp = new FicheroAlumno("?FicheroAlumno");
+                AbsConcept absfp = (AbsConcept) PACAOntology.fromObject(fp);
+                AbsPredicate absfps = new AbsPredicate(pacaOntology.FICHEROSALUMNO);
+                absfps.set(pacaOntology.TEST, absts);
+                absfps.set(pacaOntology.FICHEROALUMNO, absfp);
+
+                //CREAMOS UN ANDBUILDER PARA UNIR LOS DOS PREDICADOS ANTERIORES
+                AndBuilder constructor = new AndBuilder();
+                constructor.addPredicate(abstss);
+                constructor.addPredicate(absfps);
+
+
+                //CREAMOS EL IRE CON LA VARIABLE X Y ENVIAMOS TODO
+                AbsVariable x =
+                        new AbsVariable("ficheroAlumno", pacaOntology.FICHEROALUMNO);
+                AbsIRE qrall = new AbsIRE(SL2Vocabulary.ALL);
+                qrall.setVariable(x);
+                qrall.setProposition(constructor.getAnd());
+                getContentManager().fillContent(msg, qrall);
+                addBehaviour(new RecibeMensajes(myAgent, tes));
+                myAgent.send(msg);
+            } catch (CodecException ex) {
+                Logger.getLogger(Interfaz.class.getName()).log(Level.SEVERE, null, ex);
+            } catch (OntologyException ex) {
+                Logger.getLogger(Interfaz.class.getName()).log(Level.SEVERE, null, ex);
+            }
+        }
+    }
+
+    public class RecibeFicherosAlumnoBeha extends OneShotBehaviour {
+
+        private Resultado tes2;
+        private AbsAggregate ficheros1;
+
+        public RecibeFicherosAlumnoBeha(Agent _a, Resultado tes, AbsAggregate ficheros) {
+            super(_a);
+            this.tes2 = tes;
+            this.ficheros1 = ficheros;
+        }
+
+        public void action() {
+            FicheroAlumno[] retornable = new FicheroAlumno[0];
+            try {
+                //Sacamos los ficheros que vienen en el mensaje como conceptos abstractos
+
+                // Pasamos la lista a un String[]
+                FicheroAlumno fp;
+                retornable = new FicheroAlumno[ficheros1.size()];
+                for (int i = 0; i < ficheros1.size(); i++) {
+                    fp = (FicheroAlumno) PACAOntology.toObject(ficheros1.get(i));
+                    if (!(fp.getNombre().equalsIgnoreCase("No hay FicherosPropios"))) {
+                        retornable[i] = fp;
+                    } else {
+                        retornable = new FicheroAlumno[0];
+                    }
+                }
+
+
+
+            } catch (Exception e) {
+                //ficherosUltimaPractica = retornable;
+                //tes2.setResultado(retornable);
+            }
+            FicherosAlumnoDisponibles = retornable;
+            //ficherosUltimaPractica = retornable;
+            tes2.setResultado(retornable);
+
+        }
+    }
+
+    /***************fin comportamient ficheros alumon************////////
     //-------------------------- COMPORTAMIENTO PARA RECIBIR MENSAJES ---------------------
     public class RecibeMensajes extends Behaviour {
 
@@ -620,31 +991,55 @@ public class InterfazGestor extends Agent {
         }
 
         public void action() {
-
-            jade.lang.acl.ACLMessage respuesta = receive();
-
+            ACLMessage respuesta = receive();
             if (respuesta != null) {
                 try {
-                    AbsContentElement listaAbs = null;
-                    listaAbs = getContentManager().extractAbsContent(respuesta);
-                    String tipoMensaje = listaAbs.getTypeName();
-                    if (tipoMensaje.equals("autenticado") | tipoMensaje.equals("not")) {
-                        addBehaviour(new RecibeAutenticacion(myAgent, tes1, listaAbs));
+                    if (respuesta.getPerformative() == ACLMessage.AGREE) {
+
+                        addBehaviour(new RecibeMensajes(myAgent, tes1));
                         finalizado = true;
-                    } else if (tipoMensaje.equals("=")) {
-                        AbsAggregate listaElementos = (AbsAggregate) listaAbs.getAbsObject(SLVocabulary.EQUALS_RIGHT);
+                    } else {
+                        if (respuesta.getPerformative() == ACLMessage.FAILURE) {
 
-                        //Cogemos el primer elemento de la lista
-                        AbsConcept primerElem = (AbsConcept) listaElementos.get(0);
+                            tes1.setResultadoB(false);
+                            finalizado = true;
+                        } else {
+                            if (respuesta.getContent().equalsIgnoreCase("DONE")) {
+                                tes1.setResultadoB(true);
+                                finalizado = true;
+                            } else {
+                                AbsContentElement listaAbs = null;
+                                listaAbs = getContentManager().extractAbsContent(respuesta);
+                                String tipoMensaje = listaAbs.getTypeName();
+                                if (tipoMensaje.equals("autenticado") | tipoMensaje.equals("not")) {
+                                    addBehaviour(new RecibeAutenticacion(myAgent, tes1, listaAbs));
+                                    finalizado = true;
+                                } else if (tipoMensaje.equals("=")) {
+                                    AbsAggregate listaElementos = (AbsAggregate) listaAbs.getAbsObject(SLVocabulary.EQUALS_RIGHT);
 
-                        //Miramos el tipo del primer elemento
-                        String tipo = primerElem.getTypeName();
-                        if (tipo.equals(pacaOntology.PRACTICA)) {
-                            addBehaviour(new RecibePracticasBeh(myAgent, tes1, listaElementos));
-                            finalizado = true;
-                        } else if (tipo.equals(pacaOntology.TEST)) {
-                            addBehaviour(new RecibeTestBeha(myAgent, tes1, listaElementos));
-                            finalizado = true;
+                                    //Cogemos el primer elemento de la lista
+                                    AbsConcept primerElem = (AbsConcept) listaElementos.get(0);
+
+                                    //Miramos el tipo del primer elemento
+                                    String tipo = primerElem.getTypeName();
+                                    if (tipo.equals(pacaOntology.PRACTICA)) {
+                                        addBehaviour(new RecibePracticasBeh(myAgent, tes1, listaElementos));
+                                        finalizado = true;
+                                    } else if (tipo.equals(pacaOntology.TEST)) {
+                                        addBehaviour(new RecibeTestBeha(myAgent, tes1, listaElementos));
+                                        finalizado = true;
+                                    } else if (tipo.equals(pacaOntology.FICHEROPROPIO)) {
+                                        addBehaviour(new RecibeFicherosPropiosBeha(myAgent, tes1, listaElementos));
+                                        finalizado = true;
+                                    } else if (tipo.equals(pacaOntology.CASO)) {
+                                            addBehaviour(new RecibeCasosBeha(myAgent, tes1, listaElementos));
+                                            finalizado = true;
+                                    } else if (tipo.equals(pacaOntology.FICHEROALUMNO)) {
+                                            addBehaviour(new RecibeFicherosAlumnoBeha(myAgent, tes1, listaElementos));
+                                            finalizado = true;
+                                    }
+                                }
+                            }
                         }
                     }
                 } catch (CodecException e) {
@@ -662,8 +1057,94 @@ public class InterfazGestor extends Agent {
 
         @Override
         public boolean done() {
-            // TODO Auto-generated method stub
             return finalizado;
+        }
+    }
+
+    /*----------------COMPORTAMIENTOS PARA MODIFICAR--------------*/
+    /*Modificar Practica*/
+    public class ModificarPractica
+            extends OneShotBehaviour {
+
+        private Resultado tes1;
+        private Practica pt;
+
+        public ModificarPractica(Agent _a, Resultado tes, Practica pt) {
+            super(_a);
+            this.tes1 = tes;
+            this.pt = pt;
+        }
+
+        public void action() {
+            try {
+                AID receiver = new AID(gestorPracticas, AID.ISLOCALNAME);
+                ACLMessage solicitud = new ACLMessage(ACLMessage.REQUEST);
+                solicitud.addReceiver(receiver);
+                solicitud.setLanguage(codec.getName());
+                solicitud.setOntology(pacaOntology.NAME);
+
+
+                ModificaPractica mdp = new ModificaPractica();
+                mdp.setPractica(pt);
+
+                Action act = new Action();
+                act.setAction(mdp);
+                act.setActor(receiver);
+
+
+                getContentManager().fillContent(solicitud, act);
+                addBehaviour(new RecibeMensajes(myAgent, tes1));
+                send(solicitud);
+            } catch (CodecException ex) {
+                Logger.getLogger(Interfaz.class.getName()).log(Level.SEVERE, null, ex);
+            } catch (OntologyException ex) {
+                Logger.getLogger(Interfaz.class.getName()).log(Level.SEVERE, null, ex);
+            }
+        }
+    }
+
+    public class ModificarTest extends OneShotBehaviour {
+
+        private Resultado tes1;
+        private Test te;
+
+        public ModificarTest(Agent _a, Resultado tes, Test te) {
+            super(_a);
+            this.tes1 = tes;
+            this.te = te;
+        }
+
+        public void action() {
+            try {
+
+                AID receiver = new AID(gestorPracticas, AID.ISLOCALNAME);
+                ACLMessage solicitud = new ACLMessage(ACLMessage.REQUEST);
+                solicitud.addReceiver(receiver);
+                solicitud.setLanguage(codec.getName());
+                solicitud.setOntology(pacaOntology.NAME);
+
+
+                Practica pt = new Practica(ultimaPractica);
+
+
+
+                ModificaTest mts = new ModificaTest();
+                mts.setTest(te);
+                mts.setPractica(pt);
+
+                Action act = new Action();
+                act.setAction(mts);
+                act.setActor(receiver);
+
+
+                getContentManager().fillContent(solicitud, act);
+                addBehaviour(new RecibeMensajes(myAgent, tes1));
+                send(solicitud);
+            } catch (CodecException ex) {
+                Logger.getLogger(Interfaz.class.getName()).log(Level.SEVERE, null, ex);
+            } catch (OntologyException ex) {
+                Logger.getLogger(Interfaz.class.getName()).log(Level.SEVERE, null, ex);
+            }
         }
     }
 }

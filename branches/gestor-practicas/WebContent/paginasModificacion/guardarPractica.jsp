@@ -39,10 +39,6 @@
                     return false
                 }
                 else{
-                    document.formTest.seleccionar.disabled=true;
-                    document.formAnadir.seleccionar.disabled=true;
-                    document.formEliminar.seleccionar.disabled=true;
-                    document.formSeleccionar.seleccionar.disabled=true;
                     return true
                 }
             }
@@ -58,12 +54,36 @@
         </h1>
 
 
+        <%
+
+            boolean autenticado = false;
+
+
+
+            Testigo resultado = new Testigo();
+            resultado.setOperacion(Testigo.Operaciones.modificarPractica);
+
+            resultado.setParametro((HttpServletRequest) request);
+
+            interfazGestor.sendTestigo(resultado);
+
+            autenticado = resultado.isResultadoB();
+
+
+
+        %>
+
+        <%
+            if (autenticado) {
+
+        %>
+
 
         <%
 
-            String nombre = request.getParameter("NombrePractica");
-            String descripcion = request.getParameter("DescripcionPractica");
-            String fechaEntrega = request.getParameter("FechaPractica");
+            String nombre = request.getParameter("nombrePractica");
+            String descripcion = request.getParameter("descripcion");
+            String fechaEntrega = request.getParameter("fechaEntrega");
 
             Testigo resultado2 = new Testigo();
             resultado2.setOperacion(Testigo.Operaciones.pedirTests);
@@ -117,7 +137,7 @@
                     <tr>
                         <td> <%= tests[i].getId()%></td>
                         <td>
-                            <form method="post" name="formVer" action="modificarTest.jsp" onsubmit="return valida();">
+                            <form method="post" name="formpracticas" action="modificarTest.jsp" onsubmit="return valida();">
                                 <input  type="hidden" value="<%= tests[i].getId()%>" name="NombreTest">
                                 <input  type="hidden" value="<%= tests[i].getDescripcion()%>" name="DescripcionTest">
                                 <input type="submit" name="Ver" value="Ver" onclick="javascript:salida=false;">
@@ -136,7 +156,24 @@
                 </tbody>
             </table>
         </div>
+             <% }
+
+            else {
+            %>
+
+              <h2 class="error" align="center">
+     ERROR!!! En la base de datos </h2>
+<br>
+  <p class="error" align="center">
+    Ha ocurrido un problema en la base de datos al intentar modificar la practica.
+  </p>
+	<br>
+	<br>
+
+
+  <% }
+            %>
+
     </body>
 </html>
-
 
