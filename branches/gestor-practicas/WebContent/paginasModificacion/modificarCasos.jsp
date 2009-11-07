@@ -67,20 +67,36 @@
     <body onUnload="exit();">
 
 
-        <p class="derecha" > <a href="salida.jsp" class="menu"  onclick="javascript:salida=false;">[Salir]</a> </p>
-        <h1 class="center"  class="color">
+        <p class="derecha" > <a href="mostrarPracticas.jsp" class="menu"  onclick="javascript:salida=false;">[Listado de Practicas]</a> |
+            <a href="modificarPractica.jsp" class="menu" onclick="javascript:salida=false;"> [Practica] |
+                <a href="modificarTest.jsp" class="menu" onclick="javascript:salida=false;"> [Test] |
+                    <a href="salida.jsp" class="menu"  onclick="javascript:salida=false;">[Salir]</a> </p>
+                    <h1 class="center"  class="color">
 			Modificaci&oacute;n del test.
-        </h1>
+                    </h1>
 
 
 
-        <%
+                    <%
 
             String nombre = request.getParameter("NombreCaso");
+            if (nombre == null) {
+                Testigo resultado = new Testigo();
+                resultado.setOperacion(Testigo.Operaciones.ultimoCaso);
+
+                interfazGestor.sendTestigo(resultado);
+
+                while (!resultado.isRelleno()) {
+                }
+
+                Caso ca = (Caso) resultado.getResultado();
+                nombre = ca.getId();
+
+            }
 
             Testigo resultado2 = new Testigo();
             resultado2.setOperacion(Testigo.Operaciones.pedirFicherosIN);
-            resultado2.setParametro(nombre);
+            resultado2.setParametro((HttpServletRequest) request);
 
 
             interfazGestor.sendTestigo(resultado2);
@@ -92,7 +108,7 @@
 
             Testigo resultado3 = new Testigo();
             resultado3.setOperacion(Testigo.Operaciones.pedirFicherosOUT);
-            resultado3.setParametro(nombre);
+            resultado3.setParametro((HttpServletRequest) request);
 
 
             interfazGestor.sendTestigo(resultado3);
@@ -104,109 +120,109 @@
 
 
 
-        %>
-        <div id="cuerpo">
-            <h2> <%= nombre%> </h2>
-            <div id="enlaces">
-                <div id="izquierda">
-                    <table border="0">
-                        <tbody>
-                            <tr>
-                                <td>
-                                    <form method="post" name="formAnadir" action="peticionTest2.jsp" onsubmit="return valida();">
-                                        <input type="submit" name="seleccionar" value="A&ntilde;adir FicheroIN" onclick="javascript:salida=false;">
-                                    </form>
-                                </td>
-                                <td>
-                                    <form method="post" name="formAnadir" action="peticionTest2.jsp" onsubmit="return valida();">
-                                        <input type="submit" name="seleccionar" value="Seleccionar FicheroIN" onclick="javascript:salida=false;">
-                                    </form> </td>
-                            </tr>
+                    %>
+                    <div id="cuerpo">
+                        <h2> <%= nombre%> </h2>
+                        <div id="enlaces">
+                            <div id="izquierda">
+                                <table border="0">
+                                    <tbody>
+                                        <tr>
+                                            <td>
+                                                <form method="post" name="formAnadir" action="peticionTest2.jsp" onsubmit="return valida();">
+                                                    <input type="submit" name="seleccionar" value="A&ntilde;adir FicheroIN" onclick="javascript:salida=false;">
+                                                </form>
+                                            </td>
+                                            <td>
+                                                <form method="post" name="formAnadir" action="peticionTest2.jsp" onsubmit="return valida();">
+                                                    <input type="submit" name="seleccionar" value="Seleccionar FicheroIN" onclick="javascript:salida=false;">
+                                                </form> </td>
+                                        </tr>
 
-                        </tbody>
-                    </table>
-                </div>
+                                    </tbody>
+                                </table>
+                            </div>
 
-                <div id="derecha">
-                    <table border="0">
-                        <tbody>
-                            <tr>
-                                <td>
-                                    <form method="post" name="formAnadir" action="peticionTest2.jsp" onsubmit="return valida();">
-                                        <input type="submit" name="seleccionar" value="A&ntilde;adir FicheroOUT" onclick="javascript:salida=false;">
-                                    </form>
-                                </td>
-                                <td>
-                                    <form method="post" name="formAnadir" action="peticionTest2.jsp" onsubmit="return valida();">
-                                        <input type="submit" name="seleccionar" value="Seleccionar FicheroOUT" onclick="javascript:salida=false;">
-                                    </form> </td>
-                            </tr>
+                            <div id="derecha">
+                                <table border="0">
+                                    <tbody>
+                                        <tr>
+                                            <td>
+                                                <form method="post" name="formAnadir" action="peticionTest2.jsp" onsubmit="return valida();">
+                                                    <input type="submit" name="seleccionar" value="A&ntilde;adir FicheroOUT" onclick="javascript:salida=false;">
+                                                </form>
+                                            </td>
+                                            <td>
+                                                <form method="post" name="formAnadir" action="peticionTest2.jsp" onsubmit="return valida();">
+                                                    <input type="submit" name="seleccionar" value="Seleccionar FicheroOUT" onclick="javascript:salida=false;">
+                                                </form> </td>
+                                        </tr>
 
-                        </tbody>
-                    </table>
-                </div>
-            </div>
-        </div>
-        <div id="central">
+                                    </tbody>
+                                </table>
+                            </div>
+                        </div>
+                    </div>
+                    <div id="central">
 
-            <div id="izquierda2">
-                <table border="4" cellspacing="4" cellpadding="4" width="380" class="center">
-                    <tbody>
+                        <div id="izquierda2">
+                            <table border="4" cellspacing="4" cellpadding="4" width="380" class="center">
+                                <tbody>
 
-                        <% for (int i = 0; i < fis.length; i++) {%>
+                                    <% for (int i = 0; i < fis.length; i++) {%>
 
-                        <tr>
-                            <td> <%= fis[i].getNombre()%></td>
-                            <td>
-                                <form method="post" name="formVer" action="modificarFicherosIN.jsp" onsubmit="return valida();">
-                                    <input  type="hidden" value=<%= fis[i].getNombre()%> name="NombreFichero">
-                                    <input  type="hidden" value=<%= fis[i].getContenido()%> name="ContenidoFichero">
-                                    <input type="submit" name="Ver" value="Ver" onclick="javascript:salida=false;">
-                                </form>
-                            </td>
-                            <td>
-                                <form method="post" name="formEliminar" action="eliminarTest.jsp" onsubmit="return valida();">
-                                    <input  type="hidden" value=<%= fis[i].getNombre()%> name="NombreFichero">
-                                    <input type="submit" name="Eliminar" value="Eliminar" onclick="javascript:salida=false;">
-                                </form>
-                            </td>
-                        </tr>
-                        <%
+                                    <tr>
+                                        <td> <%= fis[i].getNombre()%></td>
+                                        <td>
+                                            <form method="post" name="formVer" action="modificarFicherosIN.jsp" onsubmit="return valida();">
+                                                <input  type="hidden" value=<%= fis[i].getNombre()%> name="NombreFichero">
+                                                <input  type="hidden" value=<%= fis[i].getContenido()%> name="ContenidoFichero">
+                                                <input type="submit" name="Ver" value="Ver" onclick="javascript:salida=false;">
+                                            </form>
+                                        </td>
+                                        <td>
+                                            <form method="post" name="formEliminar" action="eliminarTest.jsp" onsubmit="return valida();">
+                                                <input  type="hidden" value=<%= fis[i].getNombre()%> name="NombreFichero">
+                                                <input type="submit" name="Eliminar" value="Eliminar" onclick="javascript:salida=false;">
+                                            </form>
+                                        </td>
+                                    </tr>
+                                    <%
             }
-                        %>
-                    </tbody>
-                </table>
-            </div>
+                                    %>
+                                </tbody>
+                            </table>
+                        </div>
 
-            <div id="derecha2">
-                <table border="4" cellspacing="4" cellpadding="4" width="380" class="center">
-                    <tbody>
+                        <div id="derecha2">
+                            <table border="4" cellspacing="4" cellpadding="4" width="380" class="center">
+                                <tbody>
 
-                        <% for (int i = 0; i < fos.length; i++) {%>
+                                    <% for (int i = 0; i < fos.length; i++) {%>
 
-                        <tr>
-                            <td> <%= fos[i].getNombre()%></td>
-                            <td>
-                                <form method="post" name="formVer" action="modificarFicherosOUT.jsp" onsubmit="return valida();">
-                                    <input  type="hidden" value=<%= fos[i].getNombre()%> name="NombreFichero">
-                                    <input  type="hidden" value=<%= fos[i].getContenido()%> name="ContenidoFichero">
-                                    <input type="submit" name="Ver" value="Ver" onclick="javascript:salida=false;">
-                                </form>
-                            </td>
-                            <td>
-                                <form method="post" name="formEliminar" action="eliminarTest.jsp" onsubmit="return valida();">
-                                    <input  type="hidden" value=<%= fos[i].getNombre()%> name="NombreFichero">
-                                    <input type="submit" name="Eliminar" value="Eliminar" onclick="javascript:salida=false;">
-                                </form>
-                            </td>
-                        </tr>
-                        <%
+                                    <tr>
+                                        <td> <%= fos[i].getNombre()%></td>
+                                        <td>
+                                            <form method="post" name="formVer" action="modificarFicherosOUT.jsp" onsubmit="return valida();">
+                                                <input  type="hidden" value=<%= fos[i].getNombre()%> name="NombreFichero">
+                                                <input  type="hidden" value=<%= fos[i].getContenido()%> name="ContenidoFichero">
+                                                <input type="submit" name="Ver" value="Ver" onclick="javascript:salida=false;">
+                                            </form>
+                                        </td>
+                                        <td>
+                                            <form method="post" name="formEliminar" action="eliminarTest.jsp" onsubmit="return valida();">
+                                                <input  type="hidden" value=<%= fos[i].getNombre()%> name="NombreFichero">
+                                                <input type="submit" name="Eliminar" value="Eliminar" onclick="javascript:salida=false;">
+                                            </form>
+                                        </td>
+                                    </tr>
+                                    <%
             }
-                        %>
-                    </tbody>
-                </table>
-            </div>
-        </div>
+                                    %>
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
 
-    </body>
-</html>
+                    </body>
+                    </html>

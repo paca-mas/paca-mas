@@ -64,7 +64,9 @@
     <body onUnload="exit();">
 
 
-        <p class="derecha" > <a href="salida.jsp" class="menu"  onclick="javascript:salida=false;">[Salir]</a> </p>
+                <p class="derecha" > <a href="mostrarPracticas.jsp" class="menu"  onclick="javascript:salida=false;">[Listado de Practicas]</a> |
+            <a href="modificarPractica.jsp" class="menu" onclick="javascript:salida=false;"> [Practica] |
+                <a href="salida.jsp" class="menu"  onclick="javascript:salida=false;">[Salir]</a> </p>
         <h1 class="center"  class="color">
 			Modificaci&oacute;n del test.
         </h1>
@@ -99,7 +101,7 @@
 
             Testigo resultado2 = new Testigo();
             resultado2.setOperacion(Testigo.Operaciones.pedirFicherosPropios);
-            resultado2.setParametro(nombre);
+            resultado2.setParametro((HttpServletRequest) request);
 
 //interfaz.getAtributo().putO2AObject(resultado2,AgentController.SYNC);
             interfazGestor.sendTestigo(resultado2);
@@ -111,7 +113,7 @@
 
             Testigo resultado3 = new Testigo();
             resultado3.setOperacion(Testigo.Operaciones.pedirCasos);
-            resultado3.setParametro(nombre);
+            resultado3.setParametro((HttpServletRequest) request);
 
 //interfaz.getAtributo().putO2AObject(resultado2,AgentController.SYNC);
             interfazGestor.sendTestigo(resultado3);
@@ -123,7 +125,7 @@
 
             Testigo resultado4 = new Testigo();
             resultado4.setOperacion(Testigo.Operaciones.pedirFicherosAlumno);
-            resultado4.setParametro(nombre);
+            resultado4.setParametro((HttpServletRequest) request);
 
 //interfaz.getAtributo().putO2AObject(resultado2,AgentController.SYNC);
             interfazGestor.sendTestigo(resultado4);

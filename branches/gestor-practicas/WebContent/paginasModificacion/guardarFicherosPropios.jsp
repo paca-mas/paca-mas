@@ -53,110 +53,112 @@
     <body onUnload="exit();">
 
 
-        <p class="derecha" > <a href="salida.jsp" class="menu"  onclick="javascript:salida=false;">[Salir]</a> </p>
-        <h1 class="center"  class="color">
+        <p class="derecha" > <a href="mostrarPracticas.jsp" class="menu"  onclick="javascript:salida=false;">[Listado de Practicas]</a> |
+            <a href="modificarPractica.jsp" class="menu" onclick="javascript:salida=false;"> [Practica] |
+                <a href="modificarTest.jsp" class="menu" onclick="javascript:salida=false;"> [Test] | 
+                    <a href="salida.jsp" class="menu"  onclick="javascript:salida=false;">[Salir]</a> </p>
+                    <h1 class="center"  class="color">
 			Modificaci&oacute;n del Fichero Propio.
-        </h1>
+                    </h1>
 
 
-        <%
+                    <%
 
-            boolean autenticado = false;
+                        boolean autenticado = false;
 
-            HttpServletRequest param1 = (HttpServletRequest) request;
-            MultipartParser parser = new MultipartParser(param1, 1000000);
-            // Empezamos a leer.
-            Part parte = parser.readNextPart();
-            String nombre = "";
-            String codigo = "";
-            while (parte != null) {
-                if (parte.isFile()) {
-                    //Es un fichero.
-                    
-                    FilePart filepart = (FilePart) parte;
-                    InputStream is = filepart.getInputStream();
-                    StringWriter sw = new StringWriter();
-                    int tempo = is.read();
-                    while (tempo != -1) {
-                        sw.write(tempo);
-                        tempo = is.read();
-                    }
-                    if(!(sw.toString().equalsIgnoreCase(""))){
-                        
-                        codigo = sw.toString();
-                        
-                    }
-                    sw.close();
-                }
-                if (parte.isParam()) {
+                        HttpServletRequest param1 = (HttpServletRequest) request;
+                        MultipartParser parser = new MultipartParser(param1, 1000000);
+                        // Empezamos a leer.
+                        Part parte = parser.readNextPart();
+                        String nombre = "";
+                        String codigo = "";
+                        while (parte != null) {
+                            if (parte.isFile()) {
+                                //Es un fichero.
 
-                    if (parte.getName().equals("NombreFichero")) {
-                        ParamPart parampart = (ParamPart) parte;
-                        nombre = parampart.getStringValue();
-                    } else if (parte.getName().equals("CodigoFichero")) {
-                        if (codigo.equalsIgnoreCase("")) {
+                                FilePart filepart = (FilePart) parte;
+                                InputStream is = filepart.getInputStream();
+                                StringWriter sw = new StringWriter();
+                                int tempo = is.read();
+                                while (tempo != -1) {
+                                    sw.write(tempo);
+                                    tempo = is.read();
+                                }
+                                if (!(sw.toString().equalsIgnoreCase(""))) {
 
-                            ParamPart parampart = (ParamPart) parte;
-                            codigo = parampart.getStringValue();
-                            
+                                    codigo = sw.toString();
+
+                                }
+                                sw.close();
+                            }
+                            if (parte.isParam()) {
+
+                                if (parte.getName().equals("NombreFichero")) {
+                                    ParamPart parampart = (ParamPart) parte;
+                                    nombre = parampart.getStringValue();
+                                } else if (parte.getName().equals("CodigoFichero")) {
+                                    if (codigo.equalsIgnoreCase("")) {
+
+                                        ParamPart parampart = (ParamPart) parte;
+                                        codigo = parampart.getStringValue();
+
+                                    }
+                                }
+
+                            }
+                            parte = parser.readNextPart();
+
                         }
-                    }
 
-                }
-                parte = parser.readNextPart();
+                        if (!codigo.equalsIgnoreCase("")) {
 
-            }
+                            Testigo resultado = new Testigo();
+                            resultado.setOperacion(Testigo.Operaciones.modificarFicherosPropios);
+                            resultado.setParametro(nombre + "#" + codigo);
 
-            if (!codigo.equalsIgnoreCase("")) {
-
-                Testigo resultado = new Testigo();
-                resultado.setOperacion(Testigo.Operaciones.modificarFicherosPropios);
-                resultado.setParametro(nombre + "#" + codigo);
-
-                interfazGestor.sendTestigo(resultado);
+                            interfazGestor.sendTestigo(resultado);
 
 
-                autenticado = resultado.isResultadoB();
-            }
-            else{
-                autenticado = true;
-            }
+                            autenticado = resultado.isResultadoB();
+                        } else {
+                            autenticado = true;
+                        }
 
-        %>
+                    %>
 
-        <%
-            if (autenticado) {
+                    <%
+                        if (autenticado) {
 
-        %>
+                    %>
 
-        <div id="cuerpo">
-            <form method="post" name="formTest" enctype="multipart/form-data" action="guardarFicherosPropios.jsp" onsubmit="desactivarBoton();">
-                <h2> <%= nombre%> </h2>
-                <p> C&oacute;digo: <TEXTAREA NAME="CodigoFichero" ROWS=3 COLS=40><%= codigo%></TEXTAREA>
-                </p>
-                <p> <input type="file" name="LeerFichero" size="30">
-                </p>
-                <input  type="hidden" value="<%= codigo%>" name="CodigoAntiguo">
-                <input  type="hidden" value="<%= nombre%>" name="NombreFichero">
-                <input type="submit" name="seleccionar" value="Guardar Fichero" onclick="javascript:salida=false;">
-            </form>
-        </div>
+                    <div id="cuerpo">
+                        <form method="post" name="formTest" enctype="multipart/form-data" action="guardarFicherosPropios.jsp" onsubmit="desactivarBoton();">
+                            <h2> <%= nombre%> </h2>
+                            <p> C&oacute;digo: <TEXTAREA NAME="CodigoFichero" ROWS=3 COLS=40><%= codigo%></TEXTAREA>
+                            </p>
+                            <p> <input type="file" name="LeerFichero" size="30">
+                            </p>
+                            <input  type="hidden" value="<%= codigo%>" name="CodigoAntiguo">
+                            <input  type="hidden" value="<%= nombre%>" name="NombreFichero">
+                            <input type="submit" name="seleccionar" value="Guardar Fichero" onclick="javascript:salida=false;">
+                        </form>
+                    </div>
 
-        <% } else {
-        %>
+                    <% } else {
+                    %>
 
-        <h2 class="error" align="center">
-            ERROR!!! En la base de datos </h2>
-        <br>
-        <p class="error" align="center">
-            Ha ocurrido un problema en la base de datos al intentar modificar el FicheroPropio.
-        </p>
-        <br>
-        <br>
+                    <h2 class="error" align="center">
+                        ERROR!!! En la base de datos </h2>
+                    <br>
+                    <p class="error" align="center">
+                        Ha ocurrido un problema en la base de datos al intentar modificar el FicheroPropio.
+                    </p>
+                    <br>
+                    <br>
 
 
-        <% }
-        %>
+                    <% }
+                    %>
 
-    </body>
-</html>
+                    </body>
+                    </html>

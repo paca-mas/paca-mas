@@ -52,7 +52,8 @@
     </head>
     <body onUnload="exit();">
 
-        <p class="derecha" > <a href="salida.jsp" class="menu"  onclick="javascript:salida=false;">[Salir]</a> </p>
+        <p class="derecha" > <a href="mostrarPracticas.jsp" class="menu"  onclick="javascript:salida=false;">[Listado de Practicas]</a> |
+            <a href="salida.jsp" class="menu"  onclick="javascript:salida=false;">[Salir]</a> </p>
         <h1 class="center"  class="color">
 			Modificaci&oacute;n de la pr&aacute;ctica.
         </h1>
@@ -65,9 +66,26 @@
             String descripcion = request.getParameter("DescripcionPractica");
             String fechaEntrega = request.getParameter("FechaPractica");
 
+
+            if (nombre==null) {
+                Testigo resultado = new Testigo();
+                resultado.setOperacion(Testigo.Operaciones.ultimaPractica);
+
+                interfazGestor.sendTestigo(resultado);
+
+                while (!resultado.isRelleno()) {
+                }
+
+                Practica pt = (Practica) resultado.getResultado();
+                nombre = pt.getId();
+                descripcion = pt.getDescripcion();
+                fechaEntrega = pt.getFechaEntrega();
+
+            }
+
             Testigo resultado2 = new Testigo();
             resultado2.setOperacion(Testigo.Operaciones.pedirTests);
-            resultado2.setParametro(nombre);
+            resultado2.setParametro((HttpServletRequest) request);
 
 
             interfazGestor.sendTestigo(resultado2);
