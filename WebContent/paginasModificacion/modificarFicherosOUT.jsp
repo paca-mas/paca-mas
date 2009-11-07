@@ -47,7 +47,11 @@
     <body onUnload="exit();">
 
 
-        <p class="derecha" > <a href="salida.jsp" class="menu"  onclick="javascript:salida=false;">[Salir]</a> </p>
+        <p class="derecha" > <a href="mostrarPracticas.jsp" class="menu"  onclick="javascript:salida=false;">[Listado de Practicas]</a> |
+            <a href="modificarPractica.jsp" class="menu" onclick="javascript:salida=false;"> [Practica]</a> |
+                <a href="modificarTest.jsp" class="menu" onclick="javascript:salida=false;"> [Test]</a> |
+                    <a href="modificarCasos.jsp" class="menu" onclick="javascript:salida=false;"> [Caso] </a> |
+                    <a href="salida.jsp" class="menu"  onclick="javascript:salida=false;">[Salir]</a> </p>
         <h1 class="center"  class="color">
 			Modificaci&oacute;n del Fichero OUT.
         </h1>

@@ -127,8 +127,8 @@ public class InterfazGestor extends Agent {
     /**
     El identificador de la �ltima pr�ctica solicitada
      */
-    public String ultimaPractica;
-    public String ultimoTest;
+    public Practica ultimaPractica;
+    public Test ultimoTest;
     /**
     Array con los nombres de los ficheros de la �ltima
     pr�ctica solicitada
@@ -502,22 +502,24 @@ public class InterfazGestor extends Agent {
     public class PideTestBeha extends OneShotBehaviour {
 
         private Resultado tes1;
-        private String IdPractica;
+        private Practica practica;
 
-        public PideTestBeha(Agent _a, Resultado tes, String practica) {
+        public PideTestBeha(Agent _a, Resultado tes, Practica practica) {
             super(_a);
             this.tes1 = tes;
-            this.IdPractica = practica;
+            this.practica = practica;
         }
 
         public void action() {
 
             //Nos guardamos la �ltima pr�ctica solicitada
-            if (IdPractica == null) {
-                IdPractica = ultimaPractica;
-            } else {
-                ultimaPractica = IdPractica;
+            if (practica!=null){
+                ultimaPractica = practica;
             }
+            else{
+                practica = ultimaPractica;
+            }
+
 
             //AID agentCorrec = getAgenteCorrector();
             AID receiver = new AID(gestorPracticas, AID.ISLOCALNAME);
@@ -528,12 +530,9 @@ public class InterfazGestor extends Agent {
 
             // Generamos el mensaje para enviar
             Corrige cor = new Corrige();
-            Practica pract = new Practica();
-            pract.setId(IdPractica);
-            pract.setDescripcion("");
             Corrector correc = new Corrector();
             correc.setId(gestorPracticas);
-            cor.setPractica(pract);
+            cor.setPractica(practica);
             cor.setCorrector(correc);
 
             Test te = new Test();
@@ -543,7 +542,7 @@ public class InterfazGestor extends Agent {
 
             try {
                 //Convertimos la practica a un concepto abstracto
-                AbsConcept absPract = (AbsConcept) PACAOntology.fromObject(pract);
+                AbsConcept absPract = (AbsConcept) PACAOntology.fromObject(practica);
 
                 //Convertimo el corrector a un concepto abstracto
                 AbsConcept absCorrec = (AbsConcept) PACAOntology.fromObject(correc);
@@ -642,18 +641,25 @@ public class InterfazGestor extends Agent {
     class PideFicherosPropios extends OneShotBehaviour {
 
         private Resultado tes;
-        private String IdTest;
+        private Test test;
 
-        public PideFicherosPropios(Agent a, Resultado tes, String IdTest) {
+        public PideFicherosPropios(Agent a, Resultado tes, Test test) {
             super(a);
             this.tes = tes;
-            this.IdTest = IdTest;
+            this.test = test;
 
         }
 
         public void action() {
 
             try {
+
+                if (test == null){
+                    test = ultimoTest;
+                }
+                else{
+                    ultimoTest = test;
+                }
 
                 //CREAMOS EL MENSAJE
                 ACLMessage msg = new ACLMessage(ACLMessage.QUERY_REF);
@@ -664,16 +670,13 @@ public class InterfazGestor extends Agent {
                 msg.setLanguage(codec.getName());
                 msg.setOntology(pacaOntology.NAME);
 
-                ultimoTest = IdTest;
-
 
 
                 //CREAMOS EL PREDICADO TESTS PARA SABER CUAL ES LA PRACTICA
                 //Y EL TEST DE LOS FICHEROS PROPIOS QUE VAMOS A PEDIR
-                Practica pt = new Practica(ultimaPractica);
-                Test ts = new Test(IdTest);
+                Practica pt = ultimaPractica;
                 AbsConcept abspract = (AbsConcept) PACAOntology.fromObject(pt);
-                AbsConcept absts = (AbsConcept) PACAOntology.fromObject(ts);
+                AbsConcept absts = (AbsConcept) PACAOntology.fromObject(test);
                 AbsPredicate abstss = new AbsPredicate(pacaOntology.TESTS);
                 abstss.set(pacaOntology.TEST, absts);
                 abstss.set(pacaOntology.PRACTICA, abspract);
@@ -755,12 +758,12 @@ public class InterfazGestor extends Agent {
     class PideCasos extends OneShotBehaviour {
 
         private Resultado tes;
-        private String IdTest;
+        private Test test;
 
-        public PideCasos(Agent a, Resultado tes, String IdTest) {
+        public PideCasos(Agent a, Resultado tes, Test test) {
             super(a);
             this.tes = tes;
-            this.IdTest = IdTest;
+            this.test = test;
 
         }
 
@@ -768,6 +771,12 @@ public class InterfazGestor extends Agent {
 
             try {
 
+                                if (test == null){
+                    test = ultimoTest;
+                }
+                else{
+                    ultimoTest = test;
+                }
                 //CREAMOS EL MENSAJE
                 ACLMessage msg = new ACLMessage(ACLMessage.QUERY_REF);
                 AID receiver = new AID(gestorPracticas, AID.ISLOCALNAME);
@@ -777,14 +786,13 @@ public class InterfazGestor extends Agent {
                 msg.setLanguage(codec.getName());
                 msg.setOntology(pacaOntology.NAME);
 
-                ultimoTest = IdTest;
+
 
                 //CREAMOS EL PREDICADO TESTS PARA SABER CUAL ES LA PRACTICA
                 //Y EL TEST DE LOS CASOS QUE VAMOS A PEDIR
-                Practica pt = new Practica(ultimaPractica);
-                Test ts = new Test(IdTest);
+                Practica pt = ultimaPractica;
                 AbsConcept abspract = (AbsConcept) PACAOntology.fromObject(pt);
-                AbsConcept absts = (AbsConcept) PACAOntology.fromObject(ts);
+                AbsConcept absts = (AbsConcept) PACAOntology.fromObject(test);
                 AbsPredicate abstss = new AbsPredicate(pacaOntology.TESTS);
                 abstss.set(pacaOntology.TEST, absts);
                 abstss.set(pacaOntology.PRACTICA, abspract);
@@ -867,12 +875,12 @@ public class InterfazGestor extends Agent {
     class PideFicherosAlumno extends OneShotBehaviour {
 
         private Resultado tes;
-        private String IdTest;
+        private Test test;
 
-        public PideFicherosAlumno(Agent a, Resultado tes, String IdTest) {
+        public PideFicherosAlumno(Agent a, Resultado tes, Test test) {
             super(a);
             this.tes = tes;
-            this.IdTest = IdTest;
+            this.test = test;
 
         }
 
@@ -880,6 +888,13 @@ public class InterfazGestor extends Agent {
 
             try {
                 //CREAMOS EL MENSAJE
+
+                                if (test == null){
+                    test = ultimoTest;
+                }
+                else{
+                    ultimoTest = test;
+                }
                 ACLMessage msg = new ACLMessage(ACLMessage.QUERY_REF);
                 AID receiver = new AID(gestorPracticas, AID.ISLOCALNAME);
 
@@ -888,16 +903,15 @@ public class InterfazGestor extends Agent {
                 msg.setLanguage(codec.getName());
                 msg.setOntology(pacaOntology.NAME);
 
-                ultimoTest = IdTest;
+
 
 
 
                 //CREAMOS EL PREDICADO TESTS PARA SABER CUAL ES LA PRACTICA
                 //Y EL TEST DE LOS FICHEROS PROPIOS QUE VAMOS A PEDIR
-                Practica pt = new Practica(ultimaPractica);
-                Test ts = new Test(IdTest);
+                Practica pt = ultimaPractica;
                 AbsConcept abspract = (AbsConcept) PACAOntology.fromObject(pt);
-                AbsConcept absts = (AbsConcept) PACAOntology.fromObject(ts);
+                AbsConcept absts = (AbsConcept) PACAOntology.fromObject(test);
                 AbsPredicate abstss = new AbsPredicate(pacaOntology.TESTS);
                 abstss.set(pacaOntology.TEST, absts);
                 abstss.set(pacaOntology.PRACTICA, abspract);
@@ -979,12 +993,12 @@ public class InterfazGestor extends Agent {
     class PideFicherosIN extends OneShotBehaviour {
 
         private Resultado tes;
-        private String IdCaso;
+        private Caso caso;
 
-        public PideFicherosIN(Agent a, Resultado tes, String IdCaso) {
+        public PideFicherosIN(Agent a, Resultado tes, Caso caso) {
             super(a);
             this.tes = tes;
-            this.IdCaso = IdCaso;
+            this.caso = caso;
 
         }
 
@@ -992,6 +1006,12 @@ public class InterfazGestor extends Agent {
 
             try {
 
+                if (caso==null){
+                    caso = ultimoCaso;
+                }
+                else{
+                    ultimoCaso = caso;
+                }
                 //CREAMOS EL MENSAJE
                 ACLMessage msg = new ACLMessage(ACLMessage.QUERY_REF);
                 AID receiver = new AID(gestorPracticas, AID.ISLOCALNAME);
@@ -1001,14 +1021,12 @@ public class InterfazGestor extends Agent {
                 msg.setLanguage(codec.getName());
                 msg.setOntology(pacaOntology.NAME);
 
-                Caso ca = new Caso(IdCaso);
-                ultimoCaso = ca;
 
 
                 //CREAMOS EL PREDICADO TESTS PARA SABER CUAL ES LA PRACTICA
                 //Y EL TEST DE LOS FICHEROSIN QUE VAMOS A PEDIR
-                Practica pt = new Practica(ultimaPractica);
-                Test ts = new Test(ultimoTest);
+                Practica pt = ultimaPractica;
+                Test ts = ultimoTest;
                 AbsConcept abspract = (AbsConcept) PACAOntology.fromObject(pt);
                 AbsConcept absts = (AbsConcept) PACAOntology.fromObject(ts);
                 AbsPredicate abstss = new AbsPredicate(pacaOntology.TESTS);
@@ -1019,7 +1037,7 @@ public class InterfazGestor extends Agent {
                 //CREAMOS EL PREDICADO PARA PEDIR LOS FICHEROSIN
                 FicheroIN fi = new FicheroIN("?FicheroIN");
 
-                AbsConcept absca = (AbsConcept) PACAOntology.fromObject(ca);
+                AbsConcept absca = (AbsConcept) PACAOntology.fromObject(caso);
                 AbsConcept absfi = (AbsConcept) PACAOntology.fromObject(fi);
                 AbsPredicate absfis = new AbsPredicate(pacaOntology.FICHEROSIN);
                 absfis.set(pacaOntology.CASO, absca);
@@ -1092,19 +1110,24 @@ public class InterfazGestor extends Agent {
     class PideFicherosOUT extends OneShotBehaviour {
 
         private Resultado tes;
-        private String IdCaso;
+        private Caso caso;
 
-        public PideFicherosOUT(Agent a, Resultado tes, String IdCaso) {
+        public PideFicherosOUT(Agent a, Resultado tes, Caso caso) {
             super(a);
             this.tes = tes;
-            this.IdCaso = IdCaso;
+            this.caso = caso;
 
         }
 
         public void action() {
 
             try {
-
+                if (caso==null){
+                    caso = ultimoCaso;
+                }
+                else{
+                    ultimoCaso = caso;
+                }
                 //CREAMOS EL MENSAJE
                 ACLMessage msg = new ACLMessage(ACLMessage.QUERY_REF);
                 AID receiver = new AID(gestorPracticas, AID.ISLOCALNAME);
@@ -1115,12 +1138,11 @@ public class InterfazGestor extends Agent {
                 msg.setOntology(pacaOntology.NAME);
 
 
-                Caso ca = new Caso(IdCaso);
-                ultimoCaso = ca;
+
                 //CREAMOS EL PREDICADO TESTS PARA SABER CUAL ES LA PRACTICA
                 //Y EL TEST DE LOS FICHEROSIN QUE VAMOS A PEDIR
-                Practica pt = new Practica(ultimaPractica);
-                Test ts = new Test(ultimoTest);
+                Practica pt = ultimaPractica;
+                Test ts = ultimoTest;
                 AbsConcept abspract = (AbsConcept) PACAOntology.fromObject(pt);
                 AbsConcept absts = (AbsConcept) PACAOntology.fromObject(ts);
                 AbsPredicate abstss = new AbsPredicate(pacaOntology.TESTS);
@@ -1131,7 +1153,7 @@ public class InterfazGestor extends Agent {
                 //CREAMOS EL PREDICADO PARA PEDIR LOS FICHEROSIN
                 FicheroOUT fo = new FicheroOUT("?FicheroOUT");
 
-                AbsConcept absca = (AbsConcept) PACAOntology.fromObject(ca);
+                AbsConcept absca = (AbsConcept) PACAOntology.fromObject(caso);
                 AbsConcept absfo = (AbsConcept) PACAOntology.fromObject(fo);
                 AbsPredicate absfos = new AbsPredicate(pacaOntology.FICHEROSOUT);
                 absfos.set(pacaOntology.CASO, absca);
@@ -1354,7 +1376,7 @@ public class InterfazGestor extends Agent {
                 solicitud.setOntology(pacaOntology.NAME);
 
 
-                Practica pt = new Practica(ultimaPractica);
+                Practica pt = ultimaPractica;
 
 
 
@@ -1401,8 +1423,8 @@ public class InterfazGestor extends Agent {
                 solicitud.setOntology(pacaOntology.NAME);
 
 
-                Practica pt = new Practica(ultimaPractica);
-                Test ts = new Test(ultimoTest);
+                Practica pt = ultimaPractica;
+                Test ts = ultimoTest;
 
 
 
@@ -1455,8 +1477,8 @@ public class InterfazGestor extends Agent {
                 solicitud.setOntology(pacaOntology.NAME);
 
 
-                Practica pt = new Practica(ultimaPractica);
-                Test ts = new Test(ultimoTest);
+                Practica pt = ultimaPractica;
+                Test ts = ultimoTest;
 
 
 
@@ -1509,8 +1531,8 @@ public class InterfazGestor extends Agent {
                 solicitud.setOntology(pacaOntology.NAME);
 
 
-                Practica pt = new Practica(ultimaPractica);
-                Test ts = new Test(ultimoTest);
+                Practica pt = ultimaPractica;
+                Test ts = ultimoTest;
 
 
 

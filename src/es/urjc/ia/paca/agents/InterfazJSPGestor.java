@@ -21,6 +21,7 @@ import com.oreilly.servlet.multipart.MultipartParser;
 import com.oreilly.servlet.multipart.ParamPart;
 import com.oreilly.servlet.multipart.Part;
 
+import es.urjc.ia.paca.ontology.Caso;
 import es.urjc.ia.paca.ontology.FicheroIN;
 import es.urjc.ia.paca.ontology.FicheroOUT;
 import es.urjc.ia.paca.ontology.FicheroPropio;
@@ -63,7 +64,14 @@ public class InterfazJSPGestor extends InterfazGestor {
         }
 
         public void action() {
-            String practica = (String) tes2.getParametro();
+            HttpServletRequest request = (HttpServletRequest) tes2.getParametro();
+            String nombre = request.getParameter("NombrePractica");
+            Practica practica = null;
+            if (nombre != null) {
+                String descripcion = request.getParameter("DescripcionPractica");
+                String fechaEntrega = request.getParameter("FechaPractica");
+                practica = new Practica(nombre, descripcion, fechaEntrega);
+            }
             addBehaviour(new PideTestBeha(this.myAgent, tes2, practica));
         }
     }
@@ -78,7 +86,13 @@ public class InterfazJSPGestor extends InterfazGestor {
         }
 
         public void action() {
-            String test = (String) tes2.getParametro();
+            HttpServletRequest request = (HttpServletRequest) tes2.getParametro();
+            Test test = null;
+            String nombre = request.getParameter("NombreTest");
+            if (nombre != null) {
+                String descripcion = request.getParameter("DescripcionTest");
+                test = new Test(nombre, descripcion);
+            }
             addBehaviour(new PideFicherosPropios(this.myAgent, tes2, test));
         }
     }
@@ -93,7 +107,13 @@ public class InterfazJSPGestor extends InterfazGestor {
         }
 
         public void action() {
-            String test = (String) tes2.getParametro();
+            HttpServletRequest request = (HttpServletRequest) tes2.getParametro();
+            Test test = null;
+            String nombre = request.getParameter("NombreTest");
+            if (nombre != null) {
+                String descripcion = request.getParameter("DescripcionTest");
+                test = new Test(nombre, descripcion);
+            }
             addBehaviour(new PideFicherosAlumno(this.myAgent, tes2, test));
         }
     }
@@ -108,7 +128,13 @@ public class InterfazJSPGestor extends InterfazGestor {
         }
 
         public void action() {
-            String test = (String) tes2.getParametro();
+            HttpServletRequest request = (HttpServletRequest) tes2.getParametro();
+            Test test = null;
+            String nombre = request.getParameter("NombreTest");
+            if (nombre != null) {
+                String descripcion = request.getParameter("DescripcionTest");
+                test = new Test(nombre, descripcion);
+            }
             addBehaviour(new PideCasos(this.myAgent, tes2, test));
         }
     }
@@ -123,7 +149,12 @@ public class InterfazJSPGestor extends InterfazGestor {
         }
 
         public void action() {
-            String caso = (String) tes2.getParametro();
+            HttpServletRequest request = (HttpServletRequest) tes2.getParametro();
+            Caso caso = null;
+            String nombre = request.getParameter("NombreCaso");
+            if (nombre != null) {
+                caso = new Caso(nombre);
+            }
             addBehaviour(new PideFicherosIN(this.myAgent, tes2, caso));
         }
     }
@@ -138,7 +169,12 @@ public class InterfazJSPGestor extends InterfazGestor {
         }
 
         public void action() {
-            String caso = (String) tes2.getParametro();
+            HttpServletRequest request = (HttpServletRequest) tes2.getParametro();
+            Caso caso = null;
+            String nombre = request.getParameter("NombreCaso");
+            if (nombre != null) {
+                caso = new Caso(nombre);
+            }
             addBehaviour(new PideFicherosOUT(this.myAgent, tes2, caso));
         }
     }
@@ -325,6 +361,18 @@ public class InterfazJSPGestor extends InterfazGestor {
 
                     case modificarFicherosOUT:
                         addBehaviour(new ModificarFicherosOUTBeha(agent, testigo));
+                        break;
+
+                    case ultimaPractica:
+                        testigo.setResultado(ultimaPractica);
+                        break;
+
+                    case ultimoTest:
+                        testigo.setResultado(ultimoTest);
+                        break;
+
+                    case ultimoCaso:
+                        testigo.setResultado(ultimoCaso);
                         break;
 
                     /*
