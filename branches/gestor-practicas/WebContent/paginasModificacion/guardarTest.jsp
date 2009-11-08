@@ -35,7 +35,7 @@
             }
 
             function valida(){
-                if(!(document.formTest.descripcion.value==document.formTest.DescripcionAntigua.value)){
+                if(!(document.formTest.DescripcionTest.value==document.formTest.DescripcionAntigua.value)){
                     alert("Debe guardar la practica antes de continuar")
                     return false
                 }
@@ -50,21 +50,21 @@
             }
 
             function desactivarBoton(){
-            document.formTest.seleccionar.disabled=true;
-                    document.formAnadir.seleccionar.disabled=true;
-                    document.formEliminar.Eliminar.disabled=true;
-                    document.formSeleccionar.seleccionar.disabled=true;
-                    document.formVer.Ver.disabled=true;
+                document.formTest.seleccionar.disabled=true;
+                document.formAnadir.seleccionar.disabled=true;
+                document.formEliminar.Eliminar.disabled=true;
+                document.formSeleccionar.seleccionar.disabled=true;
+                document.formVer.Ver.disabled=true;
             }
 
 
-            //-->
+        //-->
         </SCRIPT>
     </head>
     <body onUnload="exit();">
 
 
-                <p class="derecha" > <a href="mostrarPracticas.jsp" class="menu"  onclick="javascript:salida=false;">[Listado de Practicas]</a> |
+        <p class="derecha" > <a href="mostrarPracticas.jsp" class="menu"  onclick="javascript:salida=false;">[Listado de Practicas]</a> |
             <a href="modificarPractica.jsp" class="menu" onclick="javascript:salida=false;"> [Practica] |
                 <a href="salida.jsp" class="menu"  onclick="javascript:salida=false;">[Salir]</a> </p>
         <h1 class="center"  class="color">
@@ -72,32 +72,36 @@
         </h1>
 
 
-                   <%
+        <%
 
-            boolean autenticado = false;
+ boolean autenticado = false;
 
-            Testigo resultado = new Testigo();
-            resultado.setOperacion(Testigo.Operaciones.modificarTest);
-            resultado.setParametro((HttpServletRequest) request);
+ Testigo resultado = new Testigo();
+ if (request.getParameter("operacion").equalsIgnoreCase("crear")) {
+     resultado.setOperacion(Testigo.Operaciones.crearTest);
+ } else {
+     resultado.setOperacion(Testigo.Operaciones.modificarTest);
+ }
+ resultado.setParametro((HttpServletRequest) request);
 
-            interfazGestor.sendTestigo(resultado);
+ interfazGestor.sendTestigo(resultado);
 
 
-            autenticado = resultado.isResultadoB();
-            
-            %>
+ autenticado = resultado.isResultadoB();
 
-            <%
-                while(!autenticado){
-                    }
-            %>
+        %>
+
+        <%
+        if (autenticado) {
+
+        %>
 
 
 
         <%
 
-            String nombre = request.getParameter("nombreTest");
-            String descripcion = request.getParameter("descripcion");
+            String nombre = request.getParameter("NombreTest");
+            String descripcion = request.getParameter("DescripcionTest");
 
             Testigo resultado2 = new Testigo();
             resultado2.setOperacion(Testigo.Operaciones.pedirFicherosPropios);
@@ -140,10 +144,11 @@
         <div id="cuerpo">
             <form method="post" name="formTest" action="guardarTest.jsp" onsubmit="desactivarBoton();">
                 <h2> <%= nombre%> </h2>
-                <p> Descripci&oacute;n: <input type="text" name="descripcion" size="25" value="<%= descripcion%>">
+                <p> Descripci&oacute;n: <input type="text" name="DescripcionTest" size="25" value="<%= descripcion%>">
                 </p>
                 <input  type="hidden" value="<%= descripcion%>" name="DescripcionAntigua">
-                <input  type="hidden" value="<%= nombre%>" name="nombreTest">
+                <input  type="hidden" value="<%= nombre%>" name="NombreTest">
+                <input type="hidden" value="modificar" name="operacion">
                 <input type="submit" name="seleccionar" value="Guardar Test" onclick="javascript:salida=false;">
             </form>
             <div id="enlaces">
@@ -152,7 +157,7 @@
                         <tbody>
                             <tr>
                                 <td>
-                                    <form method="post" name="formAnadir" action="peticionTest2.jsp" onsubmit="return valida();">
+                                    <form method="post" name="formAnadir" action="crearFicheroPropio.jsp" onsubmit="return valida();">
                                         <input type="submit" name="seleccionar" value="A&ntilde;adir FicheroPropio" onclick="javascript:salida=false;">
                                     </form>
                                 </td>
@@ -285,6 +290,21 @@
                 </table>
             </div>
         </div>
- 
+            <% } else {
+    %>
+
+    <h2 class="error" align="center">
+        ERROR!!! En la base de datos </h2>
+    <br>
+    <p class="error" align="center">
+        Ha ocurrido un problema en la base de datos al intentar crear la practica.
+        Revise el nombre de la practica.
+    </p>
+    <br>
+    <br>
+
+
+    <% }
+    %>
     </body>
 </html>

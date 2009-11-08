@@ -33,8 +33,8 @@
 
 
             function valida(){
-                if(!(document.formTest.descripcion.value==document.formTest.DescripcionAntigua.value)
-                    || !(document.formTest.fechaEntrega.value==document.formTest.FechaAntigua.value)){
+                if(!(document.formTest.DescripcionPractica.value==document.formTest.DescripcionAntigua.value)
+                    || !(document.formTest.FechaPractica.value==document.formTest.FechaAntigua.value)){
                     alert("Debe guardar la practica antes de continuar")
                     return false
                 }
@@ -59,10 +59,13 @@
 
         boolean autenticado = false;
 
-
-
         Testigo resultado = new Testigo();
-        resultado.setOperacion(Testigo.Operaciones.modificarPractica);
+        if (request.getParameter("operacion").equalsIgnoreCase("crear")){
+                resultado.setOperacion(Testigo.Operaciones.crearPractica);
+            }
+        else{
+            resultado.setOperacion(Testigo.Operaciones.modificarPractica);
+        }
 
         resultado.setParametro((HttpServletRequest) request);
 
@@ -82,9 +85,9 @@
 
     <%
 
-            String nombre = request.getParameter("nombrePractica");
-            String descripcion = request.getParameter("descripcion");
-            String fechaEntrega = request.getParameter("fechaEntrega");
+            String nombre = request.getParameter("NombrePractica");
+            String descripcion = request.getParameter("DescripcionPractica");
+            String fechaEntrega = request.getParameter("FechaPractica");
 
             Testigo resultado2 = new Testigo();
             resultado2.setOperacion(Testigo.Operaciones.pedirTests);
@@ -107,6 +110,7 @@
                 <input  type="hidden" value="<%= descripcion%>" name="DescripcionAntigua">
                 <input  type="hidden" value="<%= fechaEntrega%>" name="FechaAntigua">
                 <input  type="hidden" value="<%= nombre%>" name="nombrePractica">
+                <input type="hidden" value="modificar" name="operacion">
             </p>
             <input type="submit" name="seleccionar" value="Guardar Practica" onclick="javascript:salida=false;">
         </form>
@@ -115,7 +119,7 @@
                 <tbody>
                     <tr>
                         <td>
-                            <form method="post" name="formAnadir" action="peticionTest2.jsp" onsubmit="return valida();">
+                            <form method="post" name="formAnadir" action="crearTest.jsp" onsubmit="return valida();">
                                 <input type="submit" name="seleccionar" value="A&ntilde;adir Test" onclick="javascript:salida=false;">
                             </form>
                         </td>
@@ -164,7 +168,8 @@
         ERROR!!! En la base de datos </h2>
     <br>
     <p class="error" align="center">
-        Ha ocurrido un problema en la base de datos al intentar modificar la practica.
+        Ha ocurrido un problema en la base de datos al intentar crear la practica.
+        Revise el nombre de la practica.
     </p>
     <br>
     <br>

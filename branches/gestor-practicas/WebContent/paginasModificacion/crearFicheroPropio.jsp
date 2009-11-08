@@ -41,6 +41,18 @@
             }
 
 
+            function comprobar(){
+                if((document.formTest.NombreFichero.value=="") || ((document.formTest.LeerFichero.value=="") &&
+                    (document.formTest.CodigoFichero.value==""))){
+                    alert("Debe rellenar todos los datos del formulario")
+                    return false
+                }
+                else{
+                    return true
+                }
+            }
+
+
             //-->
         </SCRIPT>
     </head>
@@ -51,28 +63,19 @@
             <a href="modificarPractica.jsp" class="menu" onclick="javascript:salida=false;"> [Practica] |
                 <a href="modificarTest.jsp" class="menu" onclick="javascript:salida=false;"> [Test] |
                     <a href="salida.jsp" class="menu"  onclick="javascript:salida=false;">[Salir]</a> </p>
-        <h1 class="center"  class="color">
-			Modificaci&oacute;n del Fichero Propio.
-        </h1>
-
-
-
-        <%
-            String nombre = request.getParameter("NombreFichero");
-            String codigo = request.getParameter("CodigoFichero");
-        %>
-        <div id="cuerpo">
-            <form method="post" name="formTest" enctype="multipart/form-data" action="guardarFicherosPropios.jsp" onsubmit="desactivarBoton();">
-                <h2> <%= nombre%> </h2>
-                <p> C&oacute;digo: <TEXTAREA NAME="CodigoFichero" ROWS=3 COLS=40><%= codigo %></TEXTAREA>
-                </p>
-                <p> <input type="file" name="LeerFichero" size="30">
-                </p>
-                <input  type="hidden" value="<%= codigo%>" name="CodigoAntiguo">
-                <input  type="hidden" value="<%= nombre%>" name="NombreFichero">
-                <input type="hidden"  value="guardar" name="operacion">
-                <input type="submit" name="seleccionar" value="Guardar Fichero" onclick="javascript:salida=false;">
-            </form>
-        </div>
-    </body>
-</html>
+                    <h1 class="center"  class="color">
+			Creaci&oacute;n del Fichero Propio.
+                    </h1>
+                    <div id="cuerpo">
+                        <form method="post" name="formTest" enctype="multipart/form-data" action="guardarFicherosPropios.jsp" onsubmit="return comprobar();">
+                            <p> Nombre del Fichero: <input  type="text" name="NombreFichero"> </p>
+                            <p> C&oacute;digo: <TEXTAREA NAME="CodigoFichero" ROWS=3 COLS=40></TEXTAREA>
+                            </p>
+                            <p> <input type="file" name="LeerFichero" size="30">
+                            </p>
+                            <input type="hidden" name="operacion" value="crear">
+                            <input type="submit" name="seleccionar" value="Guardar Fichero" onclick="javascript:salida=false;">
+                        </form>
+                    </div>
+                    </body>
+                    </html>

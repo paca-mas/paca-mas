@@ -35,7 +35,7 @@
             }
 
             function valida(){
-                if(!(document.formTest.descripcion.value==document.formTest.DescripcionAntigua.value)){
+                if(!(document.formTest.DescripcionTest.value==document.formTest.DescripcionAntigua.value)){
                     alert("Debe guardar la practica antes de continuar")
                     return false
                 }
@@ -135,10 +135,11 @@
         <div id="cuerpo">
             <form method="post" name="formTest" action="guardarTest.jsp" onsubmit="desactivarBoton();">
                 <h2> <%= nombre%> </h2>
-                <p> Descripci&oacute;n: <input type="text" name="descripcion" size="25" value="<%= descripcion%>">
+                <p> Descripci&oacute;n: <input type="text" name="DescripcionTest" size="25" value="<%= descripcion%>">
                 </p>
                 <input  type="hidden" value="<%= descripcion%>" name="DescripcionAntigua">
-                <input  type="hidden" value="<%= nombre%>" name="nombreTest">
+                <input  type="hidden" value="<%= nombre%>" name="NombreTest">
+                <input type="hidden" value="modificar" name="operacion">
                 <input type="submit" name="seleccionar" value="Guardar Test" onclick="javascript:salida=false;">
             </form>
             <div id="enlaces">
@@ -147,7 +148,7 @@
                         <tbody>
                             <tr>
                                 <td>
-                                    <form method="post" name="formAnadir" action="peticionTest2.jsp" onsubmit="return valida();">
+                                    <form method="post" name="formAnadir" action="crearFicheroPropio.jsp" onsubmit="return valida();">
                                         <input type="submit" name="seleccionar" value="A&ntilde;adir FicheroPropio" onclick="javascript:salida=false;">
                                     </form>
                                 </td>
