@@ -136,7 +136,10 @@ public class GestorPracticas extends Agent {
 
                             if (p instanceof Action) {
                                 AgentAction a = (AgentAction) ((Action) p).getAction();
-                                if ((!(a instanceof ModificaPractica) && (!(a instanceof ModificaTest)) && (!(a instanceof ModificaFicheroPropio)) && (!(a instanceof ModificaFicheroIN)) && (!(a instanceof ModificaFicheroOUT)))) {
+                                if ((!(a instanceof ModificaPractica) && (!(a instanceof ModificaTest)) &&
+                                        (!(a instanceof ModificaFicheroPropio)) && (!(a instanceof ModificaFicheroIN)) &&
+                                        (!(a instanceof ModificaFicheroOUT)) && (!(a instanceof CreaPractica)) && 
+                                        (!(a instanceof CreaTest)) && (!(a instanceof CreaFicheroPropio)))) {
                                     reply.setPerformative(ACLMessage.REFUSE);
                                     send(reply);
                                 } else {
@@ -172,6 +175,22 @@ public class GestorPracticas extends Agent {
                                         Caso ca = mfo.getCaso();
                                         FicheroOUT fo = mfo.getFicheroOUT();
                                         salida = ModificarFicheroOUT(pt, ts, ca, fo);
+                                    } else if (a instanceof CreaPractica){
+                                        CreaPractica cp = (CreaPractica) a;
+                                        Practica pt = cp.getPractica();
+                                        salida = CrearPractica(pt);
+
+                                    } else if (a instanceof CreaTest){
+                                        CreaTest ct = (CreaTest) a;
+                                        Practica pt = ct.getPractica();
+                                        Test ts = ct.getTest();
+                                        salida = CrearTest(pt, ts);
+                                    } else if (a instanceof CreaFicheroPropio){
+                                        CreaFicheroPropio cfp =  (CreaFicheroPropio) a;
+                                                                                Test ts = cfp.getTest();
+                                        FicheroPropio fp = cfp.getFicheroPropio();
+                                        Practica pt = cfp.getPractica();
+                                        salida = CrearFicheroPropio(pt, ts, fp);
                                     }
                                     if (salida) {
                                         reply.setPerformative(ACLMessage.INFORM);
@@ -998,6 +1017,37 @@ public class GestorPracticas extends Agent {
     private boolean ModificarFicheroOUT(Practica pt, Test ts, Caso ca, FicheroOUT fo) {
         try {
             String frase = "update FicherosOUT set contenido='" + fo.getContenido() + "' where id='" + fo.getNombre() + "' and id_test='" + ts.getId() + "' and id_practica='" + pt.getId() + "' and id_caso='" + ca.getId() + "' ;";
+            stat.executeUpdate(frase);
+        } catch (SQLException ex) {
+            return false;
+        }
+        return true;
+    }
+
+    private boolean CrearPractica(Practica pt){
+        try {
+            String frase = "insert into Practica values('" + pt.getId() + "', '" + pt.getDescripcion() + "', '" + pt.getFechaEntrega() + "');";
+            stat.executeUpdate(frase);
+        } catch (SQLException ex) {
+            return false;
+        }
+        return true;
+    }
+
+
+        private boolean CrearTest(Practica pt, Test ts){
+        try {
+            String frase = "insert into Test values('" + ts.getId() + "', '" + pt.getId() + "', '" + ts.getDescripcion() + "');";
+            stat.executeUpdate(frase);
+        } catch (SQLException ex) {
+            return false;
+        }
+        return true;
+    }
+
+                private boolean CrearFicheroPropio(Practica pt, Test ts, FicheroPropio fp){
+        try {
+            String frase = "insert into FicherosPropios values('" + fp.getNombre() + "', '" + ts.getId() + "', '" + pt.getId() + "', '"+" "+"', '"+fp.getCodigo()+"');";
             stat.executeUpdate(frase);
         } catch (SQLException ex) {
             return false;

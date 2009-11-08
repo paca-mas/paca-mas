@@ -24,7 +24,7 @@ public class pruebaDatos {
         stat.executeUpdate("drop table FicherosPropios;");
         stat.executeUpdate("drop table FicherosAlumno;");
         stat.executeUpdate("drop table FicherosIN;");
-        stat.executeUpdate("drop table FicherosOUT;");*/
+        stat.executeUpdate("drop table FicherosOUT;");
 
         stat.executeUpdate("create table Practica (id VARCHAR2(20) not null," +
                 " descripcion VARCHAR2(25) not null," +
@@ -79,7 +79,7 @@ public class pruebaDatos {
                 "id_practica VARCHAR2(20) not null," +
                 "contenido VARCHAR2," +
                 "primary key (id, id_caso, id_test, id_practica)," +
-                "foreign key (id_caso, id_test, id_practica) references Caso) ;");
+                "foreign key (id_caso, id_test, id_practica) references Caso) ;");*/
 
         stat.executeUpdate(
                 "insert into Practica values ('Practica1', 'Practica1A: Arboles', '06/08/09');");

@@ -64,70 +64,78 @@
 
                     <%
 
-                        boolean autenticado = false;
+            boolean autenticado = false;
 
-                        HttpServletRequest param1 = (HttpServletRequest) request;
-                        MultipartParser parser = new MultipartParser(param1, 1000000);
-                        // Empezamos a leer.
-                        Part parte = parser.readNextPart();
-                        String nombre = "";
-                        String codigo = "";
-                        while (parte != null) {
-                            if (parte.isFile()) {
-                                //Es un fichero.
+            HttpServletRequest param1 = (HttpServletRequest) request;
+            MultipartParser parser = new MultipartParser(param1, 1000000);
+            // Empezamos a leer.
+            Part parte = parser.readNextPart();
+            String nombre = "";
+            String codigo = "";
+            String operacion = "";
+            while (parte != null) {
+                if (parte.isFile()) {
+                    //Es un fichero.
 
-                                FilePart filepart = (FilePart) parte;
-                                InputStream is = filepart.getInputStream();
-                                StringWriter sw = new StringWriter();
-                                int tempo = is.read();
-                                while (tempo != -1) {
-                                    sw.write(tempo);
-                                    tempo = is.read();
-                                }
-                                if (!(sw.toString().equalsIgnoreCase(""))) {
+                    FilePart filepart = (FilePart) parte;
+                    InputStream is = filepart.getInputStream();
+                    StringWriter sw = new StringWriter();
+                    int tempo = is.read();
+                    while (tempo != -1) {
+                        sw.write(tempo);
+                        tempo = is.read();
+                    }
+                    if (!(sw.toString().equalsIgnoreCase(""))) {
 
-                                    codigo = sw.toString();
+                        codigo = sw.toString();
 
-                                }
-                                sw.close();
-                            }
-                            if (parte.isParam()) {
+                    }
+                    sw.close();
+                }
+                if (parte.isParam()) {
 
-                                if (parte.getName().equals("NombreFichero")) {
-                                    ParamPart parampart = (ParamPart) parte;
-                                    nombre = parampart.getStringValue();
-                                } else if (parte.getName().equals("CodigoFichero")) {
-                                    if (codigo.equalsIgnoreCase("")) {
+                    if (parte.getName().equals("NombreFichero")) {
+                        ParamPart parampart = (ParamPart) parte;
+                        nombre = parampart.getStringValue();
+                    } else if (parte.getName().equals("CodigoFichero")) {
+                        if (codigo.equalsIgnoreCase("")) {
 
-                                        ParamPart parampart = (ParamPart) parte;
-                                        codigo = parampart.getStringValue();
-
-                                    }
-                                }
-
-                            }
-                            parte = parser.readNextPart();
+                            ParamPart parampart = (ParamPart) parte;
+                            codigo = parampart.getStringValue();
 
                         }
+                    } else if (parte.getName().equals("operacion")) {
+                        ParamPart parampart = (ParamPart) parte;
+                        operacion = parampart.getStringValue();
+                    }
 
-                        if (!codigo.equalsIgnoreCase("")) {
+                }
+                parte = parser.readNextPart();
 
-                            Testigo resultado = new Testigo();
-                            resultado.setOperacion(Testigo.Operaciones.modificarFicherosPropios);
-                            resultado.setParametro(nombre + "#" + codigo);
+            }
 
-                            interfazGestor.sendTestigo(resultado);
+            if (!codigo.equalsIgnoreCase("")) {
+
+                Testigo resultado = new Testigo();
+                if (operacion.equalsIgnoreCase("crear")) {
+                    resultado.setOperacion(Testigo.Operaciones.crearFicheroPropio);
+                } else {
+                    resultado.setOperacion(Testigo.Operaciones.modificarFicherosPropios);
+                }
+                resultado.setParametro(nombre + "#" + codigo);
+
+                interfazGestor.sendTestigo(resultado);
 
 
-                            autenticado = resultado.isResultadoB();
-                        } else {
-                            autenticado = true;
-                        }
+                autenticado = resultado.isResultadoB();
+            } else {
+                autenticado = true;
+            }
 
                     %>
 
                     <%
-                        if (autenticado) {
+            if (autenticado) {
 
                     %>
 
@@ -140,6 +148,7 @@
                             </p>
                             <input  type="hidden" value="<%= codigo%>" name="CodigoAntiguo">
                             <input  type="hidden" value="<%= nombre%>" name="NombreFichero">
+                            <input type="hidden"  value="guardar" name="operacion">
                             <input type="submit" name="seleccionar" value="Guardar Fichero" onclick="javascript:salida=false;">
                         </form>
                     </div>
@@ -151,7 +160,7 @@
                         ERROR!!! En la base de datos </h2>
                     <br>
                     <p class="error" align="center">
-                        Ha ocurrido un problema en la base de datos al intentar modificar el FicheroPropio.
+                        Ha ocurrido un problema en la base de datos al intentar crear el FicheroPropio.
                     </p>
                     <br>
                     <br>

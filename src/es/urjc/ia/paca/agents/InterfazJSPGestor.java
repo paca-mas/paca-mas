@@ -190,9 +190,9 @@ public class InterfazJSPGestor extends InterfazGestor {
 
         public void action() {
             HttpServletRequest param1 = (HttpServletRequest) tes2.getParametro();
-            String descripcion = param1.getParameter("descripcion");
-            String fechaEntrega = param1.getParameter("fechaEntrega");
-            String nombre = param1.getParameter("nombrePractica");
+            String descripcion = param1.getParameter("DescripcionPractica");
+            String fechaEntrega = param1.getParameter("FechaPractica");
+            String nombre = param1.getParameter("NombrePractica");
             Practica pt = new Practica(nombre, descripcion, fechaEntrega);
             addBehaviour(new ModificarPractica(this.myAgent, tes2, pt));
         }
@@ -209,8 +209,8 @@ public class InterfazJSPGestor extends InterfazGestor {
 
         public void action() {
             HttpServletRequest param1 = (HttpServletRequest) tes2.getParametro();
-            String descripcion = param1.getParameter("descripcion");
-            String nombre = param1.getParameter("nombreTest");
+            String descripcion = param1.getParameter("DescripcionTest");
+            String nombre = param1.getParameter("NombreTest");
             Test te = new Test(nombre, descripcion);
             addBehaviour(new ModificarTest(this.myAgent, tes2, te));
         }
@@ -281,6 +281,69 @@ public class InterfazJSPGestor extends InterfazGestor {
 
             FicheroOUT fo = new FicheroOUT(nombre, contenido);
             addBehaviour(new ModificarFicherosOUT(this.myAgent, tes2, fo));
+
+        }
+    }
+
+    public class CrearPracticaBeha extends OneShotBehaviour {
+
+        private Testigo tes2;
+
+        public CrearPracticaBeha(Agent _a, Testigo tes1) {
+            super(_a);
+            this.tes2 = tes1;
+        }
+
+        public void action() {
+            HttpServletRequest request = (HttpServletRequest) tes2.getParametro();
+            String nombre = request.getParameter("NombrePractica");
+            String descripcion = request.getParameter("DescripcionPractica");
+            String fechaEntrega = request.getParameter("FechaPractica");
+            Practica practica = new Practica(nombre, descripcion, fechaEntrega);
+
+            addBehaviour(new CrearPractica(this.myAgent, tes2, practica));
+        }
+    }
+
+        public class CrearTestBeha extends OneShotBehaviour {
+
+        private Testigo tes2;
+
+        public CrearTestBeha(Agent _a, Testigo tes1) {
+            super(_a);
+            this.tes2 = tes1;
+        }
+
+        public void action() {
+            HttpServletRequest request = (HttpServletRequest) tes2.getParametro();
+            String nombre = request.getParameter("NombreTest");
+            String descripcion = request.getParameter("DescripcionTest");
+            Test test = new Test(nombre, descripcion);
+
+            addBehaviour(new CrearTest(this.myAgent, tes2, test));
+        }
+    }
+
+
+            public class CrearFicheroPropioBeha extends OneShotBehaviour {
+
+        private Testigo tes2;
+
+        public CrearFicheroPropioBeha(Agent _a, Testigo tes1) {
+            super(_a);
+            this.tes2 = tes1;
+        }
+
+        public void action() {
+            String param1 = (String) tes2.getParametro();
+
+            StringTokenizer tokenizer = new StringTokenizer(param1, "#");
+            String nombre = tokenizer.nextToken();
+            String codigo = tokenizer.nextToken();
+
+
+            FicheroPropio fp = new FicheroPropio(nombre, codigo);
+            addBehaviour(new CrearFicheroPropio(this.myAgent, tes2, fp));
 
         }
     }
@@ -373,6 +436,17 @@ public class InterfazJSPGestor extends InterfazGestor {
 
                     case ultimoCaso:
                         testigo.setResultado(ultimoCaso);
+                        break;
+                    case crearPractica:
+                        addBehaviour(new CrearPracticaBeha(agent, testigo));
+                        break;
+
+                    case crearTest:
+                        addBehaviour(new CrearTestBeha(agent, testigo));
+                        break;
+
+                    case crearFicheroPropio:
+                        addBehaviour(new CrearFicheroPropioBeha(agent, testigo));
                         break;
 
                     /*
