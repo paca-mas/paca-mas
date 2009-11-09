@@ -78,7 +78,11 @@
 
  Testigo resultado = new Testigo();
  if (request.getParameter("operacion").equalsIgnoreCase("crear")) {
-     resultado.setOperacion(Testigo.Operaciones.crearTest);
+     if (request.getParameter("NombreFichero")==null){
+            resultado.setOperacion(Testigo.Operaciones.crearTest);
+     } else{
+            resultado.setOperacion(Testigo.Operaciones.crearFicheroAlumno);
+     }
  } else {
      resultado.setOperacion(Testigo.Operaciones.modificarTest);
  }
@@ -176,7 +180,7 @@
                         <tbody>
                             <tr>
                                 <td>
-                                    <form method="post" name="formAnadir" action="peticionTest2.jsp" onsubmit="return valida();">
+                                    <form method="post" name="formAnadir" action="crearCaso.jsp" onsubmit="return valida();">
                                         <input type="submit" name="seleccionar" value="A&ntilde;adir Caso" onclick="javascript:salida=false;">
                                     </form>
                                 </td>
@@ -195,7 +199,7 @@
                         <tbody>
                             <tr>
                                 <td>
-                                    <form method="post" name="formAnadir" action="peticionTest2.jsp" onsubmit="return valida();">
+                                    <form method="post" name="formAnadir" action="crearFicheroAlumno.jsp" onsubmit="return valida();">
                                         <input type="submit" name="seleccionar" value="A&ntilde;adir FicheroAlumno" onclick="javascript:salida=false;">
                                     </form>
                                 </td>
@@ -297,8 +301,8 @@
         ERROR!!! En la base de datos </h2>
     <br>
     <p class="error" align="center">
-        Ha ocurrido un problema en la base de datos al intentar crear la practica.
-        Revise el nombre de la practica.
+        Ha ocurrido un problema en la base de datos al intentar crear el test.
+        Revise el nombre del test.
     </p>
     <br>
     <br>

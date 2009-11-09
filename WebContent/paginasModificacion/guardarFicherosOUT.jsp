@@ -46,6 +46,16 @@
 
             }
 
+            function comprobar(){
+                if (document.formTest.LeerFichero.value=="" && document.formTest.ContenidoFichero.value==""){
+                    alert("El Fichero debe tener algun contenido")
+                    return false
+                }
+                else{
+                    return true
+                }
+            }
+
 
             //-->
         </SCRIPT>
@@ -73,6 +83,7 @@
             Part parte = parser.readNextPart();
             String nombre = "";
             String codigo = "";
+            String operacion = "";
             while (parte != null) {
                 if (parte.isFile()) {
                     //Es un fichero.
@@ -85,7 +96,7 @@
                         sw.write(tempo);
                         tempo = is.read();
                     }
-                    if(!(sw.toString().equalsIgnoreCase(""))){
+                    if (!(sw.toString().equalsIgnoreCase(""))) {
 
                         codigo = sw.toString();
 
@@ -104,6 +115,9 @@
                             codigo = parampart.getStringValue();
 
                         }
+                    } else if (parte.getName().equals("operacion")) {
+                        ParamPart parampart = (ParamPart) parte;
+                        operacion = parampart.getStringValue();
                     }
 
                 }
@@ -114,15 +128,18 @@
             if (!codigo.equalsIgnoreCase("")) {
 
                 Testigo resultado = new Testigo();
-                resultado.setOperacion(Testigo.Operaciones.modificarFicherosOUT);
+                if (operacion.equalsIgnoreCase("crear")) {
+                    resultado.setOperacion(Testigo.Operaciones.crearFicheroOUT);
+                } else {
+                    resultado.setOperacion(Testigo.Operaciones.modificarFicherosOUT);
+                }
                 resultado.setParametro(nombre + "#" + codigo);
 
                 interfazGestor.sendTestigo(resultado);
 
 
                 autenticado = resultado.isResultadoB();
-            }
-            else{
+            } else {
                 autenticado = true;
             }
 
@@ -134,7 +151,7 @@
         %>
 
         <div id="cuerpo">
-            <form method="post" name="formTest" enctype="multipart/form-data" action="guardarFicherosIN.jsp" onsubmit="desactivarBoton();">
+            <form method="post" name="formTest" enctype="multipart/form-data" action="guardarFicherosIN.jsp" onsubmit="return comprobar;">
                 <h2> <%= nombre%> </h2>
                 <p> C&oacute;digo: <TEXTAREA NAME="ContenidoFichero" ROWS=3 COLS=40><%= codigo%></TEXTAREA>
                 </p>
@@ -142,6 +159,7 @@
                 </p>
                 <input  type="hidden" value="<%= codigo%>" name="ContenidoAntiguo">
                 <input  type="hidden" value="<%= nombre%>" name="NombreFichero">
+                <input type="hidden" value="guardar" name="operacion">
                 <input type="submit" name="seleccionar" value="Guardar Fichero" onclick="javascript:salida=false;">
             </form>
         </div>
@@ -153,7 +171,8 @@
             ERROR!!! En la base de datos </h2>
         <br>
         <p class="error" align="center">
-            Ha ocurrido un problema en la base de datos al intentar modificar el FicheroPropio.
+            Ha ocurrido un problema en la base de datos al intentar crear el FicheroOUT.
+            Revise el nombre del Fichero.
         </p>
         <br>
         <br>

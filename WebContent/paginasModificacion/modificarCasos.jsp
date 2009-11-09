@@ -76,47 +76,73 @@
                     </h1>
 
 
+                    <%
+                boolean autenticado = false;
+
+                if (request.getParameter("operacion") != null) {
+                    if (request.getParameter("operacion").equalsIgnoreCase("crear")) {
+                        if (request.getParameter("NombreCaso") == null) {
+                            autenticado = true;
+                        } else {
+                            Testigo resultado = new Testigo();
+                            resultado.setOperacion(Testigo.Operaciones.crearCaso);
+                            resultado.setParametro((HttpServletRequest) request);
+                            interfazGestor.sendTestigo(resultado);
+                            autenticado = resultado.isResultadoB();
+                        }
+                    } else {
+                        autenticado = true;
+                    }
+                } else {
+                    autenticado = true;
+                }
+
+                    %>
+
+                    <%
+                                if (autenticado) {
+                    %>
 
                     <%
 
-            String nombre = request.getParameter("NombreCaso");
-            if (nombre == null) {
-                Testigo resultado = new Testigo();
-                resultado.setOperacion(Testigo.Operaciones.ultimoCaso);
+    String nombre = request.getParameter("NombreCaso");
+    if (nombre == null) {
+        Testigo resultado = new Testigo();
+        resultado.setOperacion(Testigo.Operaciones.ultimoCaso);
 
-                interfazGestor.sendTestigo(resultado);
+        interfazGestor.sendTestigo(resultado);
 
-                while (!resultado.isRelleno()) {
-                }
+        while (!resultado.isRelleno()) {
+        }
 
-                Caso ca = (Caso) resultado.getResultado();
-                nombre = ca.getId();
+        Caso ca = (Caso) resultado.getResultado();
+        nombre = ca.getId();
 
-            }
+    }
 
-            Testigo resultado2 = new Testigo();
-            resultado2.setOperacion(Testigo.Operaciones.pedirFicherosIN);
-            resultado2.setParametro((HttpServletRequest) request);
-
-
-            interfazGestor.sendTestigo(resultado2);
-
-            while (!resultado2.isRelleno()) {
-            }
-
-            FicheroIN[] fis = (FicheroIN[]) resultado2.getResultado();
-
-            Testigo resultado3 = new Testigo();
-            resultado3.setOperacion(Testigo.Operaciones.pedirFicherosOUT);
-            resultado3.setParametro((HttpServletRequest) request);
+    Testigo resultado2 = new Testigo();
+    resultado2.setOperacion(Testigo.Operaciones.pedirFicherosIN);
+    resultado2.setParametro((HttpServletRequest) request);
 
 
-            interfazGestor.sendTestigo(resultado3);
+    interfazGestor.sendTestigo(resultado2);
 
-            while (!resultado3.isRelleno()) {
-            }
+    while (!resultado2.isRelleno()) {
+    }
 
-            FicheroOUT[] fos = (FicheroOUT[]) resultado3.getResultado();
+    FicheroIN[] fis = (FicheroIN[]) resultado2.getResultado();
+
+    Testigo resultado3 = new Testigo();
+    resultado3.setOperacion(Testigo.Operaciones.pedirFicherosOUT);
+    resultado3.setParametro((HttpServletRequest) request);
+
+
+    interfazGestor.sendTestigo(resultado3);
+
+    while (!resultado3.isRelleno()) {
+    }
+
+    FicheroOUT[] fos = (FicheroOUT[]) resultado3.getResultado();
 
 
 
@@ -129,7 +155,7 @@
                                     <tbody>
                                         <tr>
                                             <td>
-                                                <form method="post" name="formAnadir" action="peticionTest2.jsp" onsubmit="return valida();">
+                                                <form method="post" name="formAnadir" action="crearFicheroIN.jsp" onsubmit="return valida();">
                                                     <input type="submit" name="seleccionar" value="A&ntilde;adir FicheroIN" onclick="javascript:salida=false;">
                                                 </form>
                                             </td>
@@ -148,7 +174,7 @@
                                     <tbody>
                                         <tr>
                                             <td>
-                                                <form method="post" name="formAnadir" action="peticionTest2.jsp" onsubmit="return valida();">
+                                                <form method="post" name="formAnadir" action="crearFicheroOUT.jsp" onsubmit="return valida();">
                                                     <input type="submit" name="seleccionar" value="A&ntilde;adir FicheroOUT" onclick="javascript:salida=false;">
                                                 </form>
                                             </td>
@@ -188,7 +214,7 @@
                                         </td>
                                     </tr>
                                     <%
-            }
+    }
                                     %>
                                 </tbody>
                             </table>
@@ -217,12 +243,29 @@
                                         </td>
                                     </tr>
                                     <%
-            }
+    }
                                     %>
                                 </tbody>
                             </table>
                         </div>
                     </div>
+
+                    <% } else {
+                    %>
+
+                    <h2 class="error" align="center">
+                        ERROR!!! En la base de datos </h2>
+                    <br>
+                    <p class="error" align="center">
+                        Ha ocurrido un problema en la base de datos al intentar crear el caso.
+                        Revise el nombre del caso.
+                    </p>
+                    <br>
+                    <br>
+
+
+                    <% }
+                    %>
 
                     </body>
                     </html>

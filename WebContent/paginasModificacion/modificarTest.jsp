@@ -73,62 +73,89 @@
         </h1>
 
 
+        <%
+            boolean autenticado = false;
+
+            if (request.getParameter("operacion") != null) {
+                if (request.getParameter("operacion").equalsIgnoreCase("crear")) {
+                    if (request.getParameter("NombreFicheroAlumno") == null) {
+                        autenticado = true;
+                    } else {
+                        Testigo resultado = new Testigo();
+                        resultado.setOperacion(Testigo.Operaciones.crearFicheroAlumno);
+                        resultado.setParametro((HttpServletRequest) request);
+                        interfazGestor.sendTestigo(resultado);
+                        autenticado = resultado.isResultadoB();
+                    }
+                } else {
+                    autenticado = true;
+                }
+            } else {
+                autenticado = true;
+            }
+
+
+        %>
 
         <%
+            if (autenticado) {
 
-            String nombre = request.getParameter("NombreTest");
-            String descripcion = request.getParameter("DescripcionTest");
+        %>
+        <%
 
-            if (nombre == null) {
-                Testigo resultado = new Testigo();
-                resultado.setOperacion(Testigo.Operaciones.ultimoTest);
+                String nombre = request.getParameter("NombreTest");
+                String descripcion = request.getParameter("DescripcionTest");
 
-                interfazGestor.sendTestigo(resultado);
+                if (nombre == null) {
+                    Testigo resultado = new Testigo();
+                    resultado.setOperacion(Testigo.Operaciones.ultimoTest);
 
-                while (!resultado.isRelleno()) {
+                    interfazGestor.sendTestigo(resultado);
+
+                    while (!resultado.isRelleno()) {
+                    }
+
+                    Test ts = (Test) resultado.getResultado();
+                    nombre = ts.getId();
+                    descripcion = ts.getDescripcion();
+
                 }
 
-                Test ts = (Test) resultado.getResultado();
-                nombre = ts.getId();
-                descripcion = ts.getDescripcion();
-
-            }
-
-            Testigo resultado2 = new Testigo();
-            resultado2.setOperacion(Testigo.Operaciones.pedirFicherosPropios);
-            resultado2.setParametro((HttpServletRequest) request);
+                Testigo resultado2 = new Testigo();
+                resultado2.setOperacion(Testigo.Operaciones.pedirFicherosPropios);
+                resultado2.setParametro((HttpServletRequest) request);
 
 
-            interfazGestor.sendTestigo(resultado2);
+                interfazGestor.sendTestigo(resultado2);
 
-            while (!resultado2.isRelleno()) {
-            }
+                while (!resultado2.isRelleno()) {
+                }
 
-            FicheroPropio[] fps = (FicheroPropio[]) resultado2.getResultado();
+                FicheroPropio[] fps = (FicheroPropio[]) resultado2.getResultado();
 
-            Testigo resultado3 = new Testigo();
-            resultado3.setOperacion(Testigo.Operaciones.pedirCasos);
-            resultado3.setParametro((HttpServletRequest) request);
-
-
-            interfazGestor.sendTestigo(resultado3);
-
-            while (!resultado3.isRelleno()) {
-            }
-
-            Caso[] cas = (Caso[]) resultado3.getResultado();
-
-            Testigo resultado4 = new Testigo();
-            resultado4.setOperacion(Testigo.Operaciones.pedirFicherosAlumno);
-            resultado4.setParametro((HttpServletRequest) request);
+                Testigo resultado3 = new Testigo();
+                resultado3.setOperacion(Testigo.Operaciones.pedirCasos);
+                resultado3.setParametro((HttpServletRequest) request);
 
 
-            interfazGestor.sendTestigo(resultado4);
+                interfazGestor.sendTestigo(resultado3);
 
-            while (!resultado4.isRelleno()) {
-            }
+                while (!resultado3.isRelleno()) {
+                }
 
-            FicheroAlumno[] fas = (FicheroAlumno[]) resultado4.getResultado();
+                Caso[] cas = (Caso[]) resultado3.getResultado();
+
+                Testigo resultado4 = new Testigo();
+                resultado4.setOperacion(Testigo.Operaciones.pedirFicherosAlumno);
+                resultado4.setParametro((HttpServletRequest) request);
+
+
+                interfazGestor.sendTestigo(resultado4);
+
+                while (!resultado4.isRelleno()) {
+                }
+
+                FicheroAlumno[] fas = (FicheroAlumno[]) resultado4.getResultado();
 
 
         %>
@@ -167,7 +194,7 @@
                         <tbody>
                             <tr>
                                 <td>
-                                    <form method="post" name="formAnadir" action="peticionTest2.jsp" onsubmit="return valida();">
+                                    <form method="post" name="formAnadir" action="crearCaso.jsp" onsubmit="return valida();">
                                         <input type="submit" name="seleccionar" value="A&ntilde;adir Caso" onclick="javascript:salida=false;">
                                     </form>
                                 </td>
@@ -186,7 +213,7 @@
                         <tbody>
                             <tr>
                                 <td>
-                                    <form method="post" name="formAnadir" action="peticionTest2.jsp" onsubmit="return valida();">
+                                    <form method="post" name="formAnadir" action="crearFicheroAlumno.jsp" onsubmit="return valida();">
                                         <input type="submit" name="seleccionar" value="A&ntilde;adir FicheroAlumno" onclick="javascript:salida=false;">
                                     </form>
                                 </td>
@@ -226,7 +253,7 @@
                             </td>
                         </tr>
                         <%
-            }
+                }
                         %>
                     </tbody>
                 </table>
@@ -254,7 +281,7 @@
                             </td>
                         </tr>
                         <%
-            }
+                }
                         %>
                     </tbody>
                 </table>
@@ -275,13 +302,28 @@
                             </td>
                         </tr>
                         <%
-            }
+                }
                         %>
                     </tbody>
                 </table>
             </div>
         </div>
+        <% } else {
+        %>
 
+        <h2 class="error" align="center">
+            ERROR!!! En la base de datos </h2>
+        <br>
+        <p class="error" align="center">
+            Ha ocurrido un problema en la base de datos al intentar crear el FicheroAlumno.
+            Revise el nombre del Fichero.
+        </p>
+        <br>
+        <br>
+
+
+        <% }
+        %>
     </body>
 </html>
 
