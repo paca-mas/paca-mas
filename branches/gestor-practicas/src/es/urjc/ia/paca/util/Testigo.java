@@ -8,7 +8,8 @@ public class Testigo extends Resultado{
 		buscarCorrector, corregir, parsear, entregarPractica, pedirFicherosFinal, descripcionPractica,
 		modificarPractica, descripcionTest, pedirFicherosPropios, modificarTest, modificarFicherosPropios,
                 pedirCasos, pedirFicherosIN, pedirFicherosOUT, modificarFicherosIN, modificarFicherosOUT,
-                pedirFicherosAlumno, ultimaPractica, ultimoTest, ultimoCaso, crearPractica, crearTest, crearFicheroPropio
+                pedirFicherosAlumno, ultimaPractica, ultimoTest, ultimoCaso, crearPractica, crearTest, crearFicheroPropio,
+                crearFicheroAlumno, crearCaso, crearFicheroIN, crearFicheroOUT
 	}
 	
 	private Object resultado;

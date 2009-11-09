@@ -40,6 +40,16 @@
                 document.formTest.seleccionar.disabled=true;
             }
 
+            function comprobar(){
+                if (document.formTest.LeerFichero.value=="" && document.formTest.ContenidoFichero.value==""){
+                    alert("El Fichero debe tener algun contenido")
+                    return false
+                }
+                else{
+                    return true
+                }
+            }
+
 
             //-->
         </SCRIPT>
@@ -49,9 +59,9 @@
 
         <p class="derecha" > <a href="mostrarPracticas.jsp" class="menu"  onclick="javascript:salida=false;">[Listado de Practicas]</a> |
             <a href="modificarPractica.jsp" class="menu" onclick="javascript:salida=false;"> [Practica]</a> |
-                <a href="modificarTest.jsp" class="menu" onclick="javascript:salida=false;"> [Test]</a> |
-                    <a href="modificarCasos.jsp" class="menu" onclick="javascript:salida=false;"> [Caso] </a> |
-                    <a href="salida.jsp" class="menu"  onclick="javascript:salida=false;">[Salir]</a> </p>
+            <a href="modificarTest.jsp" class="menu" onclick="javascript:salida=false;"> [Test]</a> |
+            <a href="modificarCasos.jsp" class="menu" onclick="javascript:salida=false;"> [Caso] </a> |
+            <a href="salida.jsp" class="menu"  onclick="javascript:salida=false;">[Salir]</a> </p>
         <h1 class="center"  class="color">
 			Modificaci&oacute;n del Fichero OUT.
         </h1>
@@ -63,14 +73,15 @@
             String codigo = request.getParameter("ContenidoFichero");
         %>
         <div id="cuerpo">
-            <form method="post" name="formTest" enctype="multipart/form-data" action="guardarFicherosOUT.jsp" onsubmit="desactivarBoton();">
+            <form method="post" name="formTest" enctype="multipart/form-data" action="guardarFicherosOUT.jsp" onsubmit="return comprobar();">
                 <h2> <%= nombre%> </h2>
-                <p> C&oacute;digo: <TEXTAREA NAME="ContenidoFichero" ROWS=3 COLS=40><%= codigo %></TEXTAREA>
+                <p> C&oacute;digo: <TEXTAREA NAME="ContenidoFichero" ROWS=3 COLS=40><%= codigo%></TEXTAREA>
                 </p>
                 <p> <input type="file" name="LeerFichero" size="30">
                 </p>
                 <input  type="hidden" value="<%= codigo%>" name="CodigoAntiguo">
                 <input  type="hidden" value="<%= nombre%>" name="NombreFichero">
+                <input type="hidden" value="guardar" name="operacion">
                 <input type="submit" name="seleccionar" value="Guardar Fichero" onclick="javascript:salida=false;">
             </form>
         </div>

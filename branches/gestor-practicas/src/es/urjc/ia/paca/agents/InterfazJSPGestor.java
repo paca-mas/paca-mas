@@ -22,6 +22,7 @@ import com.oreilly.servlet.multipart.ParamPart;
 import com.oreilly.servlet.multipart.Part;
 
 import es.urjc.ia.paca.ontology.Caso;
+import es.urjc.ia.paca.ontology.FicheroAlumno;
 import es.urjc.ia.paca.ontology.FicheroIN;
 import es.urjc.ia.paca.ontology.FicheroOUT;
 import es.urjc.ia.paca.ontology.FicheroPropio;
@@ -305,7 +306,7 @@ public class InterfazJSPGestor extends InterfazGestor {
         }
     }
 
-        public class CrearTestBeha extends OneShotBehaviour {
+    public class CrearTestBeha extends OneShotBehaviour {
 
         private Testigo tes2;
 
@@ -324,8 +325,7 @@ public class InterfazJSPGestor extends InterfazGestor {
         }
     }
 
-
-            public class CrearFicheroPropioBeha extends OneShotBehaviour {
+    public class CrearFicheroPropioBeha extends OneShotBehaviour {
 
         private Testigo tes2;
 
@@ -344,6 +344,89 @@ public class InterfazJSPGestor extends InterfazGestor {
 
             FicheroPropio fp = new FicheroPropio(nombre, codigo);
             addBehaviour(new CrearFicheroPropio(this.myAgent, tes2, fp));
+
+        }
+    }
+
+    public class CrearFicheroAlumnoBeha extends OneShotBehaviour {
+
+        private Testigo tes2;
+
+        public CrearFicheroAlumnoBeha(Agent _a, Testigo tes1) {
+            super(_a);
+            this.tes2 = tes1;
+        }
+
+        public void action() {
+            HttpServletRequest request = (HttpServletRequest) tes2.getParametro();
+            String nombre = request.getParameter("NombreFicheroAlumno");
+            FicheroAlumno fa = new FicheroAlumno(nombre);
+
+            addBehaviour(new CrearFicheroAlumno(this.myAgent, tes2, fa));
+        }
+    }
+
+    public class CrearCasoBeha extends OneShotBehaviour {
+
+        private Testigo tes2;
+
+        public CrearCasoBeha(Agent _a, Testigo tes1) {
+            super(_a);
+            this.tes2 = tes1;
+        }
+
+        public void action() {
+            HttpServletRequest request = (HttpServletRequest) tes2.getParametro();
+            String nombre = request.getParameter("NombreCaso");
+            Caso ca = new Caso(nombre);
+
+            addBehaviour(new CrearCaso(this.myAgent, tes2, ca));
+        }
+    }
+
+    public class CrearFicheroINBeha extends OneShotBehaviour {
+
+        private Testigo tes2;
+
+        public CrearFicheroINBeha(Agent _a, Testigo tes1) {
+            super(_a);
+            this.tes2 = tes1;
+        }
+
+        public void action() {
+            String param1 = (String) tes2.getParametro();
+
+            StringTokenizer tokenizer = new StringTokenizer(param1, "#");
+            String nombre = tokenizer.nextToken();
+            String contenido = tokenizer.nextToken();
+
+
+            FicheroIN fi = new FicheroIN(nombre, contenido);
+            addBehaviour(new CrearFicheroIN(this.myAgent, tes2, fi));
+
+        }
+    }
+
+
+        public class CrearFicheroOUTBeha extends OneShotBehaviour {
+
+        private Testigo tes2;
+
+        public CrearFicheroOUTBeha(Agent _a, Testigo tes1) {
+            super(_a);
+            this.tes2 = tes1;
+        }
+
+        public void action() {
+            String param1 = (String) tes2.getParametro();
+
+            StringTokenizer tokenizer = new StringTokenizer(param1, "#");
+            String nombre = tokenizer.nextToken();
+            String contenido = tokenizer.nextToken();
+
+
+            FicheroOUT fo = new FicheroOUT(nombre, contenido);
+            addBehaviour(new CrearFicheroOUT(this.myAgent, tes2, fo));
 
         }
     }
@@ -447,6 +530,24 @@ public class InterfazJSPGestor extends InterfazGestor {
 
                     case crearFicheroPropio:
                         addBehaviour(new CrearFicheroPropioBeha(agent, testigo));
+                        break;
+
+                    case crearFicheroAlumno:
+                        addBehaviour(new CrearFicheroAlumnoBeha(agent, testigo));
+                        break;
+
+
+                    case crearCaso:
+                        addBehaviour(new CrearCasoBeha(agent, testigo));
+                        break;
+
+                    case crearFicheroIN:
+                        addBehaviour(new CrearFicheroINBeha(agent, testigo));
+                        break;
+
+
+                                            case crearFicheroOUT:
+                        addBehaviour(new CrearFicheroOUTBeha(agent, testigo));
                         break;
 
                     /*

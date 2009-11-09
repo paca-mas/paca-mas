@@ -138,8 +138,10 @@ public class GestorPracticas extends Agent {
                                 AgentAction a = (AgentAction) ((Action) p).getAction();
                                 if ((!(a instanceof ModificaPractica) && (!(a instanceof ModificaTest)) &&
                                         (!(a instanceof ModificaFicheroPropio)) && (!(a instanceof ModificaFicheroIN)) &&
-                                        (!(a instanceof ModificaFicheroOUT)) && (!(a instanceof CreaPractica)) && 
-                                        (!(a instanceof CreaTest)) && (!(a instanceof CreaFicheroPropio)))) {
+                                        (!(a instanceof ModificaFicheroOUT)) && (!(a instanceof CreaPractica)) &&
+                                        (!(a instanceof CreaTest)) && (!(a instanceof CreaFicheroPropio)) &&
+                                        (!(a instanceof CreaFicheroAlumno)) && (!(a instanceof CreaCaso)) &&
+                                        (!(a instanceof CreaFicheroIN)) && (!(a instanceof CreaFicheroOUT)))) {
                                     reply.setPerformative(ACLMessage.REFUSE);
                                     send(reply);
                                 } else {
@@ -175,22 +177,48 @@ public class GestorPracticas extends Agent {
                                         Caso ca = mfo.getCaso();
                                         FicheroOUT fo = mfo.getFicheroOUT();
                                         salida = ModificarFicheroOUT(pt, ts, ca, fo);
-                                    } else if (a instanceof CreaPractica){
+                                    } else if (a instanceof CreaPractica) {
                                         CreaPractica cp = (CreaPractica) a;
                                         Practica pt = cp.getPractica();
                                         salida = CrearPractica(pt);
 
-                                    } else if (a instanceof CreaTest){
+                                    } else if (a instanceof CreaTest) {
                                         CreaTest ct = (CreaTest) a;
                                         Practica pt = ct.getPractica();
                                         Test ts = ct.getTest();
                                         salida = CrearTest(pt, ts);
-                                    } else if (a instanceof CreaFicheroPropio){
-                                        CreaFicheroPropio cfp =  (CreaFicheroPropio) a;
-                                                                                Test ts = cfp.getTest();
+                                    } else if (a instanceof CreaFicheroPropio) {
+                                        CreaFicheroPropio cfp = (CreaFicheroPropio) a;
+                                        Test ts = cfp.getTest();
                                         FicheroPropio fp = cfp.getFicheroPropio();
                                         Practica pt = cfp.getPractica();
                                         salida = CrearFicheroPropio(pt, ts, fp);
+                                    } else if (a instanceof CreaFicheroAlumno) {
+                                        CreaFicheroAlumno cfp = (CreaFicheroAlumno) a;
+                                        Test ts = cfp.getTest();
+                                        FicheroAlumno fp = cfp.getFicheroAlumno();
+                                        Practica pt = cfp.getPractica();
+                                        salida = CrearFicheroAlumno(pt, ts, fp);
+                                    } else if (a instanceof CreaCaso) {
+                                        CreaCaso cfp = (CreaCaso) a;
+                                        Test ts = cfp.getTest();
+                                        Caso fp = cfp.getCaso();
+                                        Practica pt = cfp.getPractica();
+                                        salida = CrearCaso(pt, ts, fp);
+                                    } else if (a instanceof CreaFicheroIN) {
+                                        CreaFicheroIN cfp = (CreaFicheroIN) a;
+                                        Test ts = cfp.getTest();
+                                        Caso fp = cfp.getCaso();
+                                        Practica pt = cfp.getPractica();
+                                        FicheroIN fi = cfp.getFicheroIN();
+                                        salida = CrearFicheroIN(pt, ts, fp, fi);
+                                    } else if (a instanceof CreaFicheroOUT) {
+                                        CreaFicheroOUT cfp = (CreaFicheroOUT) a;
+                                        Test ts = cfp.getTest();
+                                        Caso fp = cfp.getCaso();
+                                        Practica pt = cfp.getPractica();
+                                        FicheroOUT fo = cfp.getFicheroOUT();
+                                        salida = CrearFicheroOUT(pt, ts, fp, fo);
                                     }
                                     if (salida) {
                                         reply.setPerformative(ACLMessage.INFORM);
@@ -1024,7 +1052,7 @@ public class GestorPracticas extends Agent {
         return true;
     }
 
-    private boolean CrearPractica(Practica pt){
+    private boolean CrearPractica(Practica pt) {
         try {
             String frase = "insert into Practica values('" + pt.getId() + "', '" + pt.getDescripcion() + "', '" + pt.getFechaEntrega() + "');";
             stat.executeUpdate(frase);
@@ -1034,8 +1062,7 @@ public class GestorPracticas extends Agent {
         return true;
     }
 
-
-        private boolean CrearTest(Practica pt, Test ts){
+    private boolean CrearTest(Practica pt, Test ts) {
         try {
             String frase = "insert into Test values('" + ts.getId() + "', '" + pt.getId() + "', '" + ts.getDescripcion() + "');";
             stat.executeUpdate(frase);
@@ -1045,9 +1072,50 @@ public class GestorPracticas extends Agent {
         return true;
     }
 
-                private boolean CrearFicheroPropio(Practica pt, Test ts, FicheroPropio fp){
+    private boolean CrearFicheroPropio(Practica pt, Test ts, FicheroPropio fp) {
         try {
-            String frase = "insert into FicherosPropios values('" + fp.getNombre() + "', '" + ts.getId() + "', '" + pt.getId() + "', '"+" "+"', '"+fp.getCodigo()+"');";
+            String frase = "insert into FicherosPropios values('" + fp.getNombre() + "', '" + ts.getId() + "', '" + pt.getId() + "', '', '" + fp.getCodigo() + "');";
+            stat.executeUpdate(frase);
+        } catch (SQLException ex) {
+            return false;
+        }
+        return true;
+    }
+
+    private boolean CrearFicheroAlumno(Practica pt, Test ts, FicheroAlumno fa) {
+        try {
+            String frase = "insert into FicherosAlumno values('" + fa.getNombre() + "', '" + ts.getId() + "', '" + pt.getId() + "', '', '');";
+            stat.executeUpdate(frase);
+        } catch (SQLException ex) {
+            return false;
+        }
+        return true;
+    }
+
+    private boolean CrearCaso(Practica pt, Test ts, Caso ca) {
+        try {
+            String frase = "insert into Caso values('" + ca.getId() + "', '" + ts.getId() + "', '" + pt.getId() + "');";
+            stat.executeUpdate(frase);
+        } catch (SQLException ex) {
+            return false;
+        }
+        return true;
+    }
+
+    private boolean CrearFicheroIN(Practica pt, Test ts, Caso ca, FicheroIN fi) {
+        try {
+            String frase = "insert into FicherosIN values('" + fi.getNombre() + "', '" + ca.getId() + "', '" + ts.getId() + "', '" + pt.getId() + "', '" + fi.getContenido() + "');";
+            stat.executeUpdate(frase);
+        } catch (SQLException ex) {
+            return false;
+        }
+        return true;
+    }
+
+
+        private boolean CrearFicheroOUT(Practica pt, Test ts, Caso ca, FicheroOUT fo) {
+        try {
+            String frase = "insert into FicherosOUT values('" + fo.getNombre() + "', '" + ca.getId() + "', '" + ts.getId() + "', '" + pt.getId() + "', '" + fo.getContenido() + "');";
             stat.executeUpdate(frase);
         } catch (SQLException ex) {
             return false;
