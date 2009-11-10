@@ -78,15 +78,15 @@
                             <td> <%= pract[i].getId()%></td>
                             <td>
                                 <form method="post" name="formpracticas" action="modificarPractica.jsp" onsubmit="desactivarBoton();">
-                                    <input  type="hidden" value=<%= pract[i].getId()%> name="NombrePractica">
-                                    <input  type="hidden" value=<%= pract[i].getDescripcion()%> name="DescripcionPractica">
-                                    <input  type="hidden" value=<%= pract[i].getFechaEntrega()%> name="FechaPractica">
+                                    <input  type="hidden" value="<%= pract[i].getId()%>" name="NombrePractica">
+                                    <input  type="hidden" value="<%= pract[i].getDescripcion()%>" name="DescripcionPractica">
+                                    <input  type="hidden" value="<%= pract[i].getFechaEntrega()%>" name="FechaPractica">
                                     <input type="submit" name="Ver" value="Ver" onclick="javascript:salida=false;">
                                 </form>
                             </td>
                             <td>
                                 <form method="post" name="formpracticas" action="eliminarPractica.jsp" onclick="javascript:salida=false;">
-                                    <input  type="hidden" value=<%= pract[i].getId()%> name="NombrePractica">
+                                    <input  type="hidden" value="<%= pract[i].getId()%>" name="NombrePractica">
                                     <input type="submit" name="Eliminar" value="Eliminar" onclick="javascript:salida=false;">
                                 </form>
                             </td>

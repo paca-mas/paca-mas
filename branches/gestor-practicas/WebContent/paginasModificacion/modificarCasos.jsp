@@ -201,14 +201,14 @@
                                         <td> <%= fis[i].getNombre()%></td>
                                         <td>
                                             <form method="post" name="formVer" action="modificarFicherosIN.jsp" onsubmit="return valida();">
-                                                <input  type="hidden" value=<%= fis[i].getNombre()%> name="NombreFichero">
-                                                <input  type="hidden" value=<%= fis[i].getContenido()%> name="ContenidoFichero">
+                                                <input  type="hidden" value="<%= fis[i].getNombre()%>" name="NombreFichero">
+                                                <input  type="hidden" value="<%= fis[i].getContenido()%>" name="ContenidoFichero">
                                                 <input type="submit" name="Ver" value="Ver" onclick="javascript:salida=false;">
                                             </form>
                                         </td>
                                         <td>
                                             <form method="post" name="formEliminar" action="eliminarTest.jsp" onsubmit="return valida();">
-                                                <input  type="hidden" value=<%= fis[i].getNombre()%> name="NombreFichero">
+                                                <input  type="hidden" value="<%= fis[i].getNombre()%>" name="NombreFichero">
                                                 <input type="submit" name="Eliminar" value="Eliminar" onclick="javascript:salida=false;">
                                             </form>
                                         </td>
@@ -230,14 +230,14 @@
                                         <td> <%= fos[i].getNombre()%></td>
                                         <td>
                                             <form method="post" name="formVer" action="modificarFicherosOUT.jsp" onsubmit="return valida();">
-                                                <input  type="hidden" value=<%= fos[i].getNombre()%> name="NombreFichero">
-                                                <input  type="hidden" value=<%= fos[i].getContenido()%> name="ContenidoFichero">
+                                                <input  type="hidden" value="<%= fos[i].getNombre()%>" name="NombreFichero">
+                                                <input  type="hidden" value="<%= fos[i].getContenido()%>" name="ContenidoFichero">
                                                 <input type="submit" name="Ver" value="Ver" onclick="javascript:salida=false;">
                                             </form>
                                         </td>
                                         <td>
                                             <form method="post" name="formEliminar" action="eliminarTest.jsp" onsubmit="return valida();">
-                                                <input  type="hidden" value=<%= fos[i].getNombre()%> name="NombreFichero">
+                                                <input  type="hidden" value="<%= fos[i].getNombre()%>" name="NombreFichero">
                                                 <input type="submit" name="Eliminar" value="Eliminar" onclick="javascript:salida=false;">
                                             </form>
                                         </td>

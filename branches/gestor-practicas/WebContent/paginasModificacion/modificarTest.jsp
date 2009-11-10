@@ -240,14 +240,14 @@
                             <td> <%= fps[i].getNombre()%></td>
                             <td>
                                 <form method="post" name="formVer" action="modificarFicherosPropios.jsp" onsubmit="return valida();">
-                                    <input  type="hidden" value=<%= fps[i].getNombre()%> name="NombreFichero">
-                                    <input  type="hidden" value=<%= fps[i].getCodigo()%> name="CodigoFichero">
+                                    <input  type="hidden" value="<%= fps[i].getNombre()%>" name="NombreFichero">
+                                    <input  type="hidden" value="<%= fps[i].getCodigo()%>" name="CodigoFichero">
                                     <input type="submit" name="Ver" value="Ver" onclick="javascript:salida=false;">
                                 </form>
                             </td>
                             <td>
                                 <form method="post" name="formEliminar" action="eliminarTest.jsp" onsubmit="return valida();">
-                                    <input  type="hidden" value=<%= fps[i].getNombre()%> name="NombrePractica">
+                                    <input  type="hidden" value="<%= fps[i].getNombre()%>" name="NombrePractica">
                                     <input type="submit" name="Eliminar" value="Eliminar" onclick="javascript:salida=false;">
                                 </form>
                             </td>
@@ -269,13 +269,13 @@
                             <td> <%= cas[i].getId()%></td>
                             <td>
                                 <form method="post" name="formVer" action="modificarCasos.jsp" onsubmit="return valida();">
-                                    <input  type="hidden" value=<%= cas[i].getId()%> name="NombreCaso">
+                                    <input  type="hidden" value="<%= cas[i].getId()%>" name="NombreCaso">
                                     <input type="submit" name="Ver" value="Ver" onclick="javascript:salida=false;">
                                 </form>
                             </td>
                             <td>
                                 <form method="post" name="formEliminar" action="eliminarTest.jsp" onsubmit="return valida();">
-                                    <input  type="hidden" value=<%= cas[i].getId()%> name="NombreCaso">
+                                    <input  type="hidden" value="<%= cas[i].getId()%>" name="NombreCaso">
                                     <input type="submit" name="Eliminar" value="Eliminar" onclick="javascript:salida=false;">
                                 </form>
                             </td>
@@ -296,7 +296,7 @@
                             <td> <%= fas[i].getNombre()%></td>
                             <td>
                                 <form method="post" name="formEliminar" action="eliminarTest.jsp" onsubmit="return valida();">
-                                    <input  type="hidden" value=<%= fas[i].getNombre()%> name="NombreFichero">
+                                    <input  type="hidden" value="<%= fas[i].getNombre()%>" name="NombreFichero">
                                     <input type="submit" name="Eliminar" value="Eliminar" onclick="javascript:salida=false;">
                                 </form>
                             </td>
