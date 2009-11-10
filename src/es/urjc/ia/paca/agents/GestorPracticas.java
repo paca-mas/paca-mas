@@ -142,7 +142,7 @@ public class GestorPracticas extends Agent {
                                         (!(a instanceof ModificaFicheroOUT)) && (!(a instanceof CreaPractica)) &&
                                         (!(a instanceof CreaTest)) && (!(a instanceof CreaFicheroPropio)) &&
                                         (!(a instanceof CreaFicheroAlumno)) && (!(a instanceof CreaCaso)) &&
-                                        (!(a instanceof CreaFicheroIN)) && (!(a instanceof CreaFicheroOUT)))) {
+                                        (!(a instanceof CreaFicheroIN)) && (!(a instanceof CreaFicheroOUT)) && (!(a instanceof EliminaPractica)))) {
                                     reply.setPerformative(ACLMessage.REFUSE);
                                     send(reply);
                                 } else {
@@ -220,6 +220,10 @@ public class GestorPracticas extends Agent {
                                         Practica pt = cfp.getPractica();
                                         FicheroOUT fo = cfp.getFicheroOUT();
                                         salida = CrearFicheroOUT(pt, ts, fp, fo);
+                                    } else if (a instanceof EliminaPractica) {
+                                        EliminaPractica ept = (EliminaPractica) a;
+                                        Practica pt = ept.getPractica();
+                                        salida = EliminarPractica(pt);
                                     }
                                     if (salida) {
                                         reply.setPerformative(ACLMessage.INFORM);
@@ -1123,16 +1127,140 @@ public class GestorPracticas extends Agent {
         return true;
     }
 
+    private boolean EliminarPractica(Practica pt) {
+        try {
+            String frase = "delete from Practica where id='" + pt.getId() + "' ;";
+            stat.executeUpdate(frase);
+            frase = "delete from Test where id_practica='" + pt.getId() + "';";
+            stat.executeUpdate(frase);
+            frase = "delete from Caso where id_practica='" + pt.getId() + "';";
+            stat.executeUpdate(frase);
+            frase = "delete from FicherosPropios where id_practica='" + pt.getId() + "';";
+            stat.executeUpdate(frase);
+            frase = "delete from FicherosAlumno where id_practica='" + pt.getId() + "';";
+            stat.executeUpdate(frase);
+            frase = "delete from FicherosIN where id_practica='" + pt.getId() + "';";
+            stat.executeUpdate(frase);
+            frase = "delete from FicherosOUT where id_practica='" + pt.getId() + "';";
+            stat.executeUpdate(frase);
+
+        } catch (SQLException ex) {
+            return false;
+        }
+        return true;
+    }
+
+    private boolean EliminarTest(Practica pt, Test ts) {
+        try {
+            String frase = "delete from Test where id='" + ts.getId() + "'and id_practica='" + pt.getId() + "';";
+            stat.executeUpdate(frase);
+            frase = "select * from FicherosPropios where id_test='" + ts.getId() + "'and id_practica='" + pt.getId() + "';";
+            ResultSet rs = stat.executeQuery(frase);
+            while (rs.next()) {
+                FicheroPropio fp = new FicheroPropio(rs.getString("id"));
+                EliminarFicheroPropio(pt, ts, fp);
+            }
+            rs.close();
+
+            frase = "select * from FicherosAlumno where id_test='" + ts.getId() + "'and id_practica='" + pt.getId() + "';";
+            ResultSet rs2 = stat.executeQuery(frase);
+            while (rs2.next()) {
+                FicheroAlumno fa = new FicheroAlumno(rs2.getString("id"));
+                EliminarFicheroAlumno(pt, ts, fa);
+            }
+            rs2.close();
+
+
+            frase = "select * from Caso where id_test='" + ts.getId() + "'and id_practica='" + pt.getId() + "';";
+            ResultSet rs3 = stat.executeQuery(frase);
+            while (rs3.next()) {
+                Caso ca = new Caso(rs3.getString("id"));
+                EliminarCaso(pt, ts, ca);
+            }
+            rs3.close();
+        } catch (SQLException ex) {
+            return false;
+        }
+        return true;
+    }
+
+    private boolean EliminarFicheroPropio(Practica pt, Test ts, FicheroPropio fp) {
+        try {
+            String frase = "delete from FicherosPropios where id='" + fp.getNombre() + "' and id_test='" + ts.getId() + "' and id_practica='" + pt.getId() + "';";
+            stat.executeUpdate(frase);
+        } catch (SQLException ex) {
+            return false;
+        }
+        return true;
+    }
+
+    private boolean EliminarFicheroAlumno(Practica pt, Test ts, FicheroAlumno fa) {
+        try {
+            String frase = "delete from FicherosAlumno where id='" + fa.getNombre() + "' and id_test='" + ts.getId() + "' and id_practica='" + pt.getId() + "';";
+            stat.executeUpdate(frase);
+        } catch (SQLException ex) {
+            return false;
+        }
+        return true;
+    }
+
+    private boolean EliminarCaso(Practica pt, Test ts, Caso ca) {
+        try {
+            String frase = "delete from FicherosPropios where id='" + ca.getId() + "' and id_test='" + ts.getId() + "' and id_practica='" + pt.getId() + "';";
+            stat.executeUpdate(frase);
+
+            frase = "select * from FicherosOUT where id_caso='" + ca.getId() + "' and id_test='" + ts.getId() + "'and id_practica='" + pt.getId() + "';";
+            ResultSet rs2 = stat.executeQuery(frase);
+            while (rs2.next()) {
+                FicheroOUT fo = new FicheroOUT(rs2.getString("id"));
+                EliminarFicheroOUT(pt, ts, ca, fo);
+            }
+            rs2.close();
+
+
+            frase = "select * from FicherosIN where id_caso='" + ca.getId() + "' and id_test='" + ts.getId() + "'and id_practica='" + pt.getId() + "';";
+            ResultSet rs3 = stat.executeQuery(frase);
+            while (rs3.next()) {
+                FicheroIN fi = new FicheroIN(rs3.getString("id"));
+                EliminarFicheroIN(pt, ts, ca, fi);
+            }
+            rs3.close();
+        } catch (SQLException ex) {
+            return false;
+        }
+        return true;
+    }
+
+    private boolean EliminarFicheroOUT(Practica pt, Test ts, Caso ca, FicheroOUT fo) {
+        try {
+            String frase = "delete from FicherosOUT where id='" + fo.getNombre() + "' and id_caso='" + ca.getId() + "' and id_test='" + ts.getId() + "' and id_practica='" + pt.getId() + "';";
+            stat.executeUpdate(frase);
+        } catch (SQLException ex) {
+            return false;
+        }
+        return true;
+    }
+
+    private boolean EliminarFicheroIN(Practica pt, Test ts, Caso ca, FicheroIN fi) {
+        try {
+            String frase = "delete from FicherosIN where id='" + fi.getNombre() + "' and id_caso='" + ca.getId() + "' and id_test='" + ts.getId() + "' and id_practica='" + pt.getId() + "';";
+            stat.executeUpdate(frase);
+        } catch (SQLException ex) {
+            return false;
+        }
+        return true;
+    }
+
     private void IniciarBaseDatos() throws SQLException, ClassNotFoundException {
         File ff = new File("datos.db");
         if (!ff.exists()) {
             Datos dt = new Datos();
             conn = dt.getConnection();
             stat = dt.getStat();
-        } else{
-        Class.forName("org.sqlite.JDBC");
-        conn = DriverManager.getConnection("jdbc:sqlite:datos.db"); //Esto seria el fichero donde guardar los datos
-        stat = conn.createStatement();
+        } else {
+            Class.forName("org.sqlite.JDBC");
+            conn = DriverManager.getConnection("jdbc:sqlite:datos.db"); //Esto seria el fichero donde guardar los datos
+            stat = conn.createStatement();
         }
     }
 

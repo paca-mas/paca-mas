@@ -51,14 +51,38 @@
 
 
         <%
+            String operacion = request.getParameter("operacion");
+            boolean autenticado = false;
 
-                Testigo resultado2 = new Testigo();
-                resultado2.setOperacion(Testigo.Operaciones.pedirPracticas);
+            if (operacion != null) {
+                if (operacion.equalsIgnoreCase("EliminarPractica")) {
+                    Testigo resultado = new Testigo();
+                    resultado.setOperacion(Testigo.Operaciones.eliminarPractica);
+                    resultado.setParametro((HttpServletRequest) request);
+                    interfazGestor.sendTestigo(resultado);
 
-                interfazGestor.sendTestigo(resultado2);
+                    autenticado = resultado.isResultadoB();
+                } else {
+                    autenticado = true;
+                }
+            } else {
+                autenticado = true;
+            }
+
+        %>
+
+        <% if (autenticado) {
+
+        %>
+
+        <%
+Testigo resultado2 = new Testigo();
+resultado2.setOperacion(Testigo.Operaciones.pedirPracticas);
+
+interfazGestor.sendTestigo(resultado2);
 
 
-                Practica[] pract = (Practica[]) resultado2.getResultado();
+Practica[] pract = (Practica[]) resultado2.getResultado();
 
 
         %>
@@ -85,14 +109,17 @@
                                 </form>
                             </td>
                             <td>
-                                <form method="post" name="formpracticas" action="eliminarPractica.jsp" onclick="javascript:salida=false;">
+                                <form method="post" name="formpracticas" action="mostrarPracticas.jsp" onsubmit="desactivarBoton();">
                                     <input  type="hidden" value="<%= pract[i].getId()%>" name="NombrePractica">
+                                    <input  type="hidden" value="<%= pract[i].getDescripcion()%>" name="DescripcionPractica">
+                                    <input  type="hidden" value="<%= pract[i].getFechaEntrega()%>" name="FechaPractica">
+                                    <input type="hidden" value="EliminarPractica" name="operacion">
                                     <input type="submit" name="Eliminar" value="Eliminar" onclick="javascript:salida=false;">
                                 </form>
                             </td>
                         </tr>
                         <%
-                }
+     }
                         %>
                     </tbody>
                 </table>
@@ -102,6 +129,22 @@
             </form>
 
         </div>
+
+        <% } else {
+        %>
+
+        <h2 class="error" align="center">
+            ERROR!!! En la base de datos </h2>
+        <br>
+        <p class="error" align="center">
+            Ha ocurrido un problema en la base de datos al intentar eliminar la practica.
+        </p>
+        <br>
+        <br>
+
+
+        <% }
+        %>
     </body>
 </html>
 

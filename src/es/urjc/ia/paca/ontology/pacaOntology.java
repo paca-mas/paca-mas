@@ -113,6 +113,13 @@ public class pacaOntology extends Ontology {
     public static final String CREAFICHEROALUMNO = "CreaFicheroAlumno";
     public static final String CREAFICHEROIN = "CreaFicheroIN";
     public static final String CREAFICHEROOUT = "CreaFicheroOUT";
+    public static final String ELIMINAPRACTICA = "EliminaPractica";
+    public static final String ELIMINATEST = "EliminaTest";
+    public static final String ELIMINAFICHEROPROPIO = "EliminaFicheroPropio";
+    public static final String ELIMINACASO = "EliminaCaso";
+    public static final String ELIMINAFICHEROALUMNO = "EliminaFicheroAlumno";
+    public static final String ELIMINAFICHEROIN = "EliminaFicheroIN";
+    public static final String ELIMINAFICHEROOUT = "EliminaFicheroOUT";
     /**
     Instancia de la ontolog�a. Sigue un patr�n de dise�o SINGLETON.
      */
@@ -379,6 +386,51 @@ public class pacaOntology extends Ontology {
             ps23.add(TEST, (ConceptSchema) getSchema(TEST));
             ps23.add(PRACTICA, (ConceptSchema) getSchema(PRACTICA));
             ps23.add(CASO, (ConceptSchema) getSchema(CASO));
+
+
+
+            add(new AgentActionSchema(ELIMINAPRACTICA), EliminaPractica.class);
+            AgentActionSchema ps24 = (AgentActionSchema) getSchema(ELIMINAPRACTICA);
+            ps24.add(PRACTICA, (ConceptSchema) getSchema(PRACTICA));
+
+            add(new AgentActionSchema(ELIMINATEST), EliminaTest.class);
+            AgentActionSchema ps25 = (AgentActionSchema) getSchema(ELIMINATEST);
+            ps25.add(TEST, (ConceptSchema) getSchema(TEST));
+            ps25.add(PRACTICA, (ConceptSchema) getSchema(PRACTICA));
+
+            add(new AgentActionSchema(ELIMINAFICHEROPROPIO), EliminaFicheroPropio.class);
+            AgentActionSchema ps26 = (AgentActionSchema) getSchema(ELIMINAFICHEROPROPIO);
+            ps26.add(TEST, (ConceptSchema) getSchema(TEST));
+            ps26.add(PRACTICA, (ConceptSchema) getSchema(PRACTICA));
+            ps26.add(FICHEROPROPIO, (ConceptSchema) getSchema(FICHEROPROPIO));
+
+            add(new AgentActionSchema(ELIMINAFICHEROIN), EliminaFicheroIN.class);
+            AgentActionSchema ps27 = (AgentActionSchema) getSchema(ELIMINAFICHEROIN);
+            ps27.add(TEST, (ConceptSchema) getSchema(TEST));
+            ps27.add(PRACTICA, (ConceptSchema) getSchema(PRACTICA));
+            ps27.add(CASO, (ConceptSchema) getSchema(CASO));
+            ps27.add(FICHEROIN, (ConceptSchema) getSchema(FICHEROIN));
+
+
+            add(new AgentActionSchema(ELIMINAFICHEROOUT), EliminaFicheroOUT.class);
+            AgentActionSchema ps28 = (AgentActionSchema) getSchema(ELIMINAFICHEROOUT);
+            ps28.add(TEST, (ConceptSchema) getSchema(TEST));
+            ps28.add(PRACTICA, (ConceptSchema) getSchema(PRACTICA));
+            ps28.add(CASO, (ConceptSchema) getSchema(CASO));
+            ps28.add(FICHEROOUT, (ConceptSchema) getSchema(FICHEROOUT));
+
+
+            add(new AgentActionSchema(ELIMINAFICHEROALUMNO), EliminaFicheroAlumno.class);
+            AgentActionSchema ps29 = (AgentActionSchema) getSchema(ELIMINAFICHEROALUMNO);
+            ps29.add(TEST, (ConceptSchema) getSchema(TEST));
+            ps29.add(PRACTICA, (ConceptSchema) getSchema(PRACTICA));
+            ps29.add(FICHEROALUMNO, (ConceptSchema) getSchema(FICHEROALUMNO));
+
+            add(new AgentActionSchema(ELIMINACASO), EliminaCaso.class);
+            AgentActionSchema ps30 = (AgentActionSchema) getSchema(ELIMINACASO);
+            ps30.add(TEST, (ConceptSchema) getSchema(TEST));
+            ps30.add(PRACTICA, (ConceptSchema) getSchema(PRACTICA));
+            ps30.add(CASO, (ConceptSchema) getSchema(CASO));
 
 
 

@@ -407,8 +407,7 @@ public class InterfazJSPGestor extends InterfazGestor {
         }
     }
 
-
-        public class CrearFicheroOUTBeha extends OneShotBehaviour {
+    public class CrearFicheroOUTBeha extends OneShotBehaviour {
 
         private Testigo tes2;
 
@@ -428,6 +427,26 @@ public class InterfazJSPGestor extends InterfazGestor {
             FicheroOUT fo = new FicheroOUT(nombre, contenido);
             addBehaviour(new CrearFicheroOUT(this.myAgent, tes2, fo));
 
+        }
+    }
+
+    public class EliminarPracticaBeha extends OneShotBehaviour {
+
+        private Testigo tes2;
+
+        public EliminarPracticaBeha(Agent _a, Testigo tes1) {
+            super(_a);
+            this.tes2 = tes1;
+        }
+
+        public void action() {
+            HttpServletRequest request = (HttpServletRequest) tes2.getParametro();
+            String nombre = request.getParameter("NombrePractica");
+            String descripcion = request.getParameter("DescripcionPractica");
+            String fechaEntrega = request.getParameter("FechaPractica");
+            Practica practica = new Practica(nombre, descripcion, fechaEntrega);
+
+            addBehaviour(new EliminarPractica(this.myAgent, tes2, practica));
         }
     }
 
@@ -546,76 +565,13 @@ public class InterfazJSPGestor extends InterfazGestor {
                         break;
 
 
-                                            case crearFicheroOUT:
+                    case crearFicheroOUT:
                         addBehaviour(new CrearFicheroOUTBeha(agent, testigo));
                         break;
 
-                    /*
-                    case pedirFicheros:
-                    testigo.setResultado(agent.doTestPracticasRequest((HttpServletRequest) testigo.getParametro()));
-                    break;
-
-                    case insertarFicheros:
-                    addBehaviour(new PideFicherosBeha(agent, testigo, (String[]) testigo.getParametro()));
-                    break;
-
-                    case corregir:
-                    try {
-                    String[] contenido = doObtieneContenidoRequest((HttpServletRequest) testigo.getParametro());
-                    addBehaviour(new PideCorreccionBeha(agent, testigo, contenido));
-                    } catch (IOException e) {
-
-                    // TODO Auto-generated catch block
-                    e.printStackTrace();
-                    }
-                    break;
-
-                    case parsear:
-                    testigo.setResultado(ParseaSalida((String) testigo.getParametro()));
-                    break;
-
-                    case pedirFicherosFinal:
-                    testigo.setResultado((agent.doTestEntregaFinal((HttpServletRequest) testigo.getParametro())));
-                    break;
-
-                    case entregarPractica:
-                    try {
-                    testigo.setResultado((agent.doEntregaFinalRequest((HttpServletRequest) testigo.getParametro())));
-                    } catch (IOException e) {
-                    // TODO Auto-generated catch block
-                    e.printStackTrace();
-                    }
-                    break;
-
-                    case descripcionPractica:
-                    addBehaviour(new PideDescripcionPracticaBeha(agent, testigo));
-                    break;
-
-                    case modificarPractica:
-                    addBehaviour(new ModificarPracticaBeha(agent, testigo));
-                    break;
-
-                    case descripcionTest:
-                    addBehaviour(new PideDescripcionTestBeha(agent, testigo));
-                    break;
-
-                    case pedirFicherosPropios:
-                    addBehaviour(new PideFicherosPropiosBeha(agent, testigo));
-                    break;
-
-                    case modificarTest:
-                    addBehaviour(new ModificarTestBeha(agent, testigo));
-                    break;
-
-
-
-
-
-
-
-
-
-                     */
+                    case eliminarPractica:
+                        addBehaviour(new EliminarPracticaBeha(agent, testigo));
+                        break;
 
                     default:
                         testigo.setResultado("-");
