@@ -1,5 +1,6 @@
 package es.urjc.ia.paca.agents;
 
+import es.urjc.ia.baseDatos.Datos;
 import es.urjc.ia.paca.ontology.*;
 import es.urjc.ia.paca.ontology.FicheroIN;
 import jade.content.ContentManager;
@@ -1112,8 +1113,7 @@ public class GestorPracticas extends Agent {
         return true;
     }
 
-
-        private boolean CrearFicheroOUT(Practica pt, Test ts, Caso ca, FicheroOUT fo) {
+    private boolean CrearFicheroOUT(Practica pt, Test ts, Caso ca, FicheroOUT fo) {
         try {
             String frase = "insert into FicherosOUT values('" + fo.getNombre() + "', '" + ca.getId() + "', '" + ts.getId() + "', '" + pt.getId() + "', '" + fo.getContenido() + "');";
             stat.executeUpdate(frase);
@@ -1124,9 +1124,16 @@ public class GestorPracticas extends Agent {
     }
 
     private void IniciarBaseDatos() throws SQLException, ClassNotFoundException {
+        File ff = new File("datos.db");
+        if (!ff.exists()) {
+            Datos dt = new Datos();
+            conn = dt.getConnection();
+            stat = dt.getStat();
+        } else{
         Class.forName("org.sqlite.JDBC");
         conn = DriverManager.getConnection("jdbc:sqlite:datos.db"); //Esto seria el fichero donde guardar los datos
         stat = conn.createStatement();
+        }
     }
 
     /*------------SETUP DEL AGENTE---------------------*/

@@ -156,7 +156,7 @@ public class Corrector extends Agent {
     private Date fechaLimite = new Date(fechaActual.getTime() + intervalo);
     private int tiempo_minimo = 1;
     private int tiempo_maximo = 10;
-    public String gestorPracticas = "gestor";
+    public String gestorPracticas = "gestorDePracticas";
 
     /**
      * Incicialización de datos para pruebas

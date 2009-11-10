@@ -48,7 +48,7 @@ public class RunPacaPlatform {
 			// Create corrector agent
 			AgentController corrector = ac.createNewAgent("corrector", "es.urjc.ia.paca.agents.Corrector", new Object[0]);
                         // Create gestor agent
-                        AgentController gestor = ac.createNewAgent("gestor", "es.urjc.ia.paca.agents.GestorPracticas", new Object[0]);
+                        AgentController gestor = ac.createNewAgent("gestorDePracticas", "es.urjc.ia.paca.agents.GestorPracticas", new Object[0]);
 
 			// Start agents
 			auth.start();

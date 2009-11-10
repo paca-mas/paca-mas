@@ -152,7 +152,7 @@ public class InterfazGestor extends Agent {
      */
     public String[] TestPosiblesPractica;
     /**Identifica al agente gestor de practicas**/
-    public String gestorPracticas = "gestor";
+    public String gestorPracticas = "gestorDePracticas";
     public Practica[] auxPracticas;
     public Test[] auxTest;
     public FicheroPropio[] FicherosPropiosDisponibles;
