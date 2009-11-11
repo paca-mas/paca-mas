@@ -76,7 +76,13 @@ import es.urjc.ia.paca.ontology.CreaFicheroOUT;
 import es.urjc.ia.paca.ontology.CreaFicheroPropio;
 import es.urjc.ia.paca.ontology.CreaPractica;
 import es.urjc.ia.paca.ontology.CreaTest;
+import es.urjc.ia.paca.ontology.EliminaCaso;
+import es.urjc.ia.paca.ontology.EliminaFicheroAlumno;
+import es.urjc.ia.paca.ontology.EliminaFicheroIN;
+import es.urjc.ia.paca.ontology.EliminaFicheroOUT;
+import es.urjc.ia.paca.ontology.EliminaFicheroPropio;
 import es.urjc.ia.paca.ontology.EliminaPractica;
+import es.urjc.ia.paca.ontology.EliminaTest;
 import es.urjc.ia.paca.ontology.EntregarPractica;
 import es.urjc.ia.paca.ontology.FicheroAlumno;
 import es.urjc.ia.paca.ontology.FicheroIN;
@@ -1913,8 +1919,6 @@ public class InterfazGestor extends Agent {
         }
     }
 
-
-
     public class EliminarPractica extends OneShotBehaviour {
 
         private Resultado tes1;
@@ -1942,6 +1946,296 @@ public class InterfazGestor extends Agent {
                 Action act = new Action();
                 act.setAction(cp);
                 act.setActor(receiver);
+
+
+                getContentManager().fillContent(solicitud, act);
+                addBehaviour(new RecibeMensajes(myAgent, tes1));
+                send(solicitud);
+            } catch (CodecException ex) {
+                Logger.getLogger(Interfaz.class.getName()).log(Level.SEVERE, null, ex);
+            } catch (OntologyException ex) {
+                Logger.getLogger(Interfaz.class.getName()).log(Level.SEVERE, null, ex);
+            }
+        }
+    }
+
+    public class EliminarTest extends OneShotBehaviour {
+
+        private Resultado tes1;
+        private Test test;
+
+        public EliminarTest(Agent _a, Resultado tes, Test test) {
+            super(_a);
+            this.tes1 = tes;
+            this.test = test;
+        }
+
+        public void action() {
+            try {
+
+                AID receiver = new AID(gestorPracticas, AID.ISLOCALNAME);
+                ACLMessage solicitud = new ACLMessage(ACLMessage.REQUEST);
+                solicitud.addReceiver(receiver);
+                solicitud.setLanguage(codec.getName());
+                solicitud.setOntology(pacaOntology.NAME);
+
+
+                EliminaTest ct = new EliminaTest();
+                ct.setPractica(ultimaPractica);
+                ct.setTest(test);
+
+                Action act = new Action();
+                act.setAction(ct);
+                act.setActor(receiver);
+
+
+                getContentManager().fillContent(solicitud, act);
+                addBehaviour(new RecibeMensajes(myAgent, tes1));
+                send(solicitud);
+            } catch (CodecException ex) {
+                Logger.getLogger(Interfaz.class.getName()).log(Level.SEVERE, null, ex);
+            } catch (OntologyException ex) {
+                Logger.getLogger(Interfaz.class.getName()).log(Level.SEVERE, null, ex);
+            }
+        }
+    }
+
+    public class EliminarFicheroPropio extends OneShotBehaviour {
+
+        private Resultado tes1;
+        private FicheroPropio fp;
+
+        public EliminarFicheroPropio(Agent _a, Resultado tes, FicheroPropio fp) {
+            super(_a);
+            this.tes1 = tes;
+            this.fp = fp;
+        }
+
+        public void action() {
+            try {
+                /*ultimaPractica = IdPractica;
+                Practica p = EncontrarPractica();
+                tes1.setResultado(p);*/
+                AID receiver = new AID(gestorPracticas, AID.ISLOCALNAME);
+                ACLMessage solicitud = new ACLMessage(ACLMessage.REQUEST);
+                solicitud.addReceiver(receiver);
+                solicitud.setLanguage(codec.getName());
+                solicitud.setOntology(pacaOntology.NAME);
+
+
+                Practica pt = ultimaPractica;
+                Test ts = ultimoTest;
+
+
+
+                //AbsConcept Abspt = (AbsConcept) PACAOntology.fromObject(pt);
+                //AbsAgentAction AbsEntp = new AbsAgentAction(pacaOntology.MODIFICAPRACTICA);
+                EliminaFicheroPropio mfp = new EliminaFicheroPropio();
+                mfp.setTest(ts);
+                mfp.setFicheroPropio(fp);
+                mfp.setPractica(pt);
+
+                Action act = new Action();
+                act.setAction(mfp);
+                act.setActor(receiver);
+
+                //AbsEntp.set(pacaOntology.PRACTICA, Abspt);
+
+
+                getContentManager().fillContent(solicitud, act);
+                addBehaviour(new RecibeMensajes(myAgent, tes1));
+                send(solicitud);
+            } catch (CodecException ex) {
+                Logger.getLogger(Interfaz.class.getName()).log(Level.SEVERE, null, ex);
+            } catch (OntologyException ex) {
+                Logger.getLogger(Interfaz.class.getName()).log(Level.SEVERE, null, ex);
+            }
+        }
+    }
+
+    public class EliminarCaso extends OneShotBehaviour {
+
+        private Resultado tes1;
+        private Caso ca;
+
+        public EliminarCaso(Agent _a, Resultado tes, Caso ca) {
+            super(_a);
+            this.tes1 = tes;
+            this.ca = ca;
+        }
+
+        public void action() {
+            try {
+                /*ultimaPractica = IdPractica;
+                Practica p = EncontrarPractica();
+                tes1.setResultado(p);*/
+                AID receiver = new AID(gestorPracticas, AID.ISLOCALNAME);
+                ACLMessage solicitud = new ACLMessage(ACLMessage.REQUEST);
+                solicitud.addReceiver(receiver);
+                solicitud.setLanguage(codec.getName());
+                solicitud.setOntology(pacaOntology.NAME);
+
+
+                Practica pt = ultimaPractica;
+                Test ts = ultimoTest;
+
+
+
+                //AbsConcept Abspt = (AbsConcept) PACAOntology.fromObject(pt);
+                //AbsAgentAction AbsEntp = new AbsAgentAction(pacaOntology.MODIFICAPRACTICA);
+                EliminaCaso mfp = new EliminaCaso();
+                mfp.setTest(ts);
+                mfp.setCaso(ca);
+                mfp.setPractica(pt);
+
+                Action act = new Action();
+                act.setAction(mfp);
+                act.setActor(receiver);
+
+                //AbsEntp.set(pacaOntology.PRACTICA, Abspt);
+
+
+                getContentManager().fillContent(solicitud, act);
+                addBehaviour(new RecibeMensajes(myAgent, tes1));
+                send(solicitud);
+            } catch (CodecException ex) {
+                Logger.getLogger(Interfaz.class.getName()).log(Level.SEVERE, null, ex);
+            } catch (OntologyException ex) {
+                Logger.getLogger(Interfaz.class.getName()).log(Level.SEVERE, null, ex);
+            }
+        }
+    }
+
+    public class EliminarFicheroAlumno extends OneShotBehaviour {
+
+        private Resultado tes1;
+        private FicheroAlumno fa;
+
+        public EliminarFicheroAlumno(Agent _a, Resultado tes, FicheroAlumno fa) {
+            super(_a);
+            this.tes1 = tes;
+            this.fa = fa;
+        }
+
+        public void action() {
+            try {
+
+                AID receiver = new AID(gestorPracticas, AID.ISLOCALNAME);
+                ACLMessage solicitud = new ACLMessage(ACLMessage.REQUEST);
+                solicitud.addReceiver(receiver);
+                solicitud.setLanguage(codec.getName());
+                solicitud.setOntology(pacaOntology.NAME);
+
+
+                Practica pt = ultimaPractica;
+                Test ts = ultimoTest;
+
+
+                EliminaFicheroAlumno mfp = new EliminaFicheroAlumno();
+                mfp.setTest(ts);
+                mfp.setFicheroAlumno(fa);
+                mfp.setPractica(pt);
+
+                Action act = new Action();
+                act.setAction(mfp);
+                act.setActor(receiver);
+
+                getContentManager().fillContent(solicitud, act);
+                addBehaviour(new RecibeMensajes(myAgent, tes1));
+                send(solicitud);
+            } catch (CodecException ex) {
+                Logger.getLogger(Interfaz.class.getName()).log(Level.SEVERE, null, ex);
+            } catch (OntologyException ex) {
+                Logger.getLogger(Interfaz.class.getName()).log(Level.SEVERE, null, ex);
+            }
+        }
+    }
+
+    public class EliminarFicheroIN extends OneShotBehaviour {
+
+        private Resultado tes1;
+        private FicheroIN fi;
+
+        public EliminarFicheroIN(Agent _a, Resultado tes, FicheroIN fi) {
+            super(_a);
+            this.tes1 = tes;
+            this.fi = fi;
+        }
+
+        public void action() {
+            try {
+
+                AID receiver = new AID(gestorPracticas, AID.ISLOCALNAME);
+                ACLMessage solicitud = new ACLMessage(ACLMessage.REQUEST);
+                solicitud.addReceiver(receiver);
+                solicitud.setLanguage(codec.getName());
+                solicitud.setOntology(pacaOntology.NAME);
+
+
+                Practica pt = ultimaPractica;
+                Test ts = ultimoTest;
+                Caso ca = ultimoCaso;
+
+
+                EliminaFicheroIN mfp = new EliminaFicheroIN();
+                mfp.setTest(ts);
+                mfp.setCaso(ca);
+                mfp.setPractica(pt);
+                mfp.setFicheroIN(fi);
+
+                Action act = new Action();
+                act.setAction(mfp);
+                act.setActor(receiver);
+
+
+
+                getContentManager().fillContent(solicitud, act);
+                addBehaviour(new RecibeMensajes(myAgent, tes1));
+                send(solicitud);
+            } catch (CodecException ex) {
+                Logger.getLogger(Interfaz.class.getName()).log(Level.SEVERE, null, ex);
+            } catch (OntologyException ex) {
+                Logger.getLogger(Interfaz.class.getName()).log(Level.SEVERE, null, ex);
+            }
+        }
+    }
+
+    public class EliminarFicheroOUT extends OneShotBehaviour {
+
+        private Resultado tes1;
+        private FicheroOUT fo;
+
+        public EliminarFicheroOUT(Agent _a, Resultado tes, FicheroOUT fo) {
+            super(_a);
+            this.tes1 = tes;
+            this.fo = fo;
+        }
+
+        public void action() {
+            try {
+
+                AID receiver = new AID(gestorPracticas, AID.ISLOCALNAME);
+                ACLMessage solicitud = new ACLMessage(ACLMessage.REQUEST);
+                solicitud.addReceiver(receiver);
+                solicitud.setLanguage(codec.getName());
+                solicitud.setOntology(pacaOntology.NAME);
+
+
+                Practica pt = ultimaPractica;
+                Test ts = ultimoTest;
+                Caso ca = ultimoCaso;
+
+
+                EliminaFicheroOUT mfp = new EliminaFicheroOUT();
+                mfp.setTest(ts);
+                mfp.setCaso(ca);
+                mfp.setPractica(pt);
+                mfp.setFicheroOUT(fo);
+
+                Action act = new Action();
+                act.setAction(mfp);
+                act.setActor(receiver);
+
 
 
                 getContentManager().fillContent(solicitud, act);

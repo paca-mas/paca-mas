@@ -38,6 +38,9 @@
                 if(!(document.formTest.DescripcionTest.value==document.formTest.DescripcionAntigua.value)){
                     alert("Debe guardar la practica antes de continuar")
                     return false
+                } else if(document.formTest.DescripcionTest.value==""){
+                    alert("Debe rellenar todos los campos")
+                    return false
                 }
                 else{
                     document.formTest.seleccionar.disabled=true;
@@ -74,13 +77,11 @@
 
 
         <%
-            boolean autenticado = false;
-
-            if (request.getParameter("operacion") != null) {
-                if (request.getParameter("operacion").equalsIgnoreCase("crear")) {
-                    if (request.getParameter("NombreFicheroAlumno") == null) {
-                        autenticado = true;
-                    } else {
+            boolean autenticado = true;
+            String operacion = request.getParameter("operacion");
+            if (operacion != null) {
+                if (operacion.equalsIgnoreCase("crear")) {
+                    if (request.getParameter("NombreFicheroAlumno") != null) {
                         Testigo resultado = new Testigo();
                         resultado.setOperacion(Testigo.Operaciones.crearFicheroAlumno);
                         resultado.setParametro((HttpServletRequest) request);
@@ -88,10 +89,19 @@
                         autenticado = resultado.isResultadoB();
                     }
                 } else {
-                    autenticado = true;
+                    Testigo resultado = new Testigo();
+                    if (operacion.equalsIgnoreCase("eliminarFicheroPropio")) {
+                        resultado.setOperacion(Testigo.Operaciones.eliminarFicheroPropio);
+                    } else if(operacion.equalsIgnoreCase("eliminarCaso")){
+                        resultado.setOperacion(Testigo.Operaciones.eliminarCaso);
+                    } else if(operacion.equalsIgnoreCase("eliminarFicheroAlumno")){
+                        resultado.setOperacion(Testigo.Operaciones.eliminarFicheroAlumno);
+                    }
+                    resultado.setParametro((HttpServletRequest) request);
+                    interfazGestor.sendTestigo(resultado);
+                    autenticado = resultado.isResultadoB();
+
                 }
-            } else {
-                autenticado = true;
             }
 
 
@@ -246,8 +256,10 @@
                                 </form>
                             </td>
                             <td>
-                                <form method="post" name="formEliminar" action="eliminarTest.jsp" onsubmit="return valida();">
-                                    <input  type="hidden" value="<%= fps[i].getNombre()%>" name="NombrePractica">
+                                <form method="post" name="formEliminar" action="modificarTest.jsp" onsubmit="return valida();">
+                                    <input  type="hidden" value="<%= fps[i].getNombre()%>" name="NombreFichero">
+                                    <input  type="hidden" value="<%= fps[i].getCodigo()%>" name="CodigoFichero">
+                                    <input type="hidden" value="eliminarFicheroPropio" name="operacion">
                                     <input type="submit" name="Eliminar" value="Eliminar" onclick="javascript:salida=false;">
                                 </form>
                             </td>
@@ -274,8 +286,9 @@
                                 </form>
                             </td>
                             <td>
-                                <form method="post" name="formEliminar" action="eliminarTest.jsp" onsubmit="return valida();">
+                                <form method="post" name="formEliminar" action="modificarTest.jsp" onsubmit="return valida();">
                                     <input  type="hidden" value="<%= cas[i].getId()%>" name="NombreCaso">
+                                    <input type="hidden" value="eliminarCaso" name="operacion">
                                     <input type="submit" name="Eliminar" value="Eliminar" onclick="javascript:salida=false;">
                                 </form>
                             </td>
@@ -295,8 +308,9 @@
                         <tr>
                             <td> <%= fas[i].getNombre()%></td>
                             <td>
-                                <form method="post" name="formEliminar" action="eliminarTest.jsp" onsubmit="return valida();">
-                                    <input  type="hidden" value="<%= fas[i].getNombre()%>" name="NombreFichero">
+                                <form method="post" name="formEliminar" action="modificarTest.jsp" onsubmit="return valida();">
+                                    <input  type="hidden" value="<%= fas[i].getNombre()%>" name="NombreFicheroAlumno">
+                                    <input type="hidden" value="eliminarFicheroAlumno" name="operacion">
                                     <input type="submit" name="Eliminar" value="Eliminar" onclick="javascript:salida=false;">
                                 </form>
                             </td>

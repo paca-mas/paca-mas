@@ -77,72 +77,76 @@
 
 
                     <%
-                boolean autenticado = false;
-
-                if (request.getParameter("operacion") != null) {
-                    if (request.getParameter("operacion").equalsIgnoreCase("crear")) {
-                        if (request.getParameter("NombreCaso") == null) {
-                            autenticado = true;
-                        } else {
-                            Testigo resultado = new Testigo();
-                            resultado.setOperacion(Testigo.Operaciones.crearCaso);
-                            resultado.setParametro((HttpServletRequest) request);
-                            interfazGestor.sendTestigo(resultado);
-                            autenticado = resultado.isResultadoB();
-                        }
-                    } else {
-                        autenticado = true;
+            boolean autenticado = true;
+            String operacion = request.getParameter("operacion");
+            if (operacion != null) {
+                if (operacion.equalsIgnoreCase("crear")) {
+                    if (request.getParameter("NombreCaso") != null) {
+                        Testigo resultado = new Testigo();
+                        resultado.setOperacion(Testigo.Operaciones.crearCaso);
+                        resultado.setParametro((HttpServletRequest) request);
+                        interfazGestor.sendTestigo(resultado);
+                        autenticado = resultado.isResultadoB();
                     }
                 } else {
-                    autenticado = true;
+                    Testigo resultado = new Testigo();
+                    if (operacion.equalsIgnoreCase("eliminarFicheroIN")) {
+                        resultado.setOperacion(Testigo.Operaciones.eliminarFicheroIN);
+                    } else if (operacion.equalsIgnoreCase("eliminarFicheroOUT")) {
+                        resultado.setOperacion(Testigo.Operaciones.eliminarFicheroOUT);
+                    }
+                    resultado.setParametro((HttpServletRequest) request);
+                    interfazGestor.sendTestigo(resultado);
+                    autenticado = resultado.isResultadoB();
+                }
+            }
+
+                    %>
+
+                    <%
+            if (autenticado) {
+                    %>
+
+                    <%
+
+                String nombre = request.getParameter("NombreCaso");
+                if (nombre == null) {
+                    Testigo resultado = new Testigo();
+                    resultado.setOperacion(Testigo.Operaciones.ultimoCaso);
+
+                    interfazGestor.sendTestigo(resultado);
+
+                    while (!resultado.isRelleno()) {
+                    }
+
+                    Caso ca = (Caso) resultado.getResultado();
+                    nombre = ca.getId();
+
                 }
 
-                    %>
-
-                    <%
-                                if (autenticado) {
-                    %>
-
-                    <%
-
-    String nombre = request.getParameter("NombreCaso");
-    if (nombre == null) {
-        Testigo resultado = new Testigo();
-        resultado.setOperacion(Testigo.Operaciones.ultimoCaso);
-
-        interfazGestor.sendTestigo(resultado);
-
-        while (!resultado.isRelleno()) {
-        }
-
-        Caso ca = (Caso) resultado.getResultado();
-        nombre = ca.getId();
-
-    }
-
-    Testigo resultado2 = new Testigo();
-    resultado2.setOperacion(Testigo.Operaciones.pedirFicherosIN);
-    resultado2.setParametro((HttpServletRequest) request);
+                Testigo resultado2 = new Testigo();
+                resultado2.setOperacion(Testigo.Operaciones.pedirFicherosIN);
+                resultado2.setParametro((HttpServletRequest) request);
 
 
-    interfazGestor.sendTestigo(resultado2);
+                interfazGestor.sendTestigo(resultado2);
 
-    while (!resultado2.isRelleno()) {
-    }
+                while (!resultado2.isRelleno()) {
+                }
 
-    FicheroIN[] fis = (FicheroIN[]) resultado2.getResultado();
+                FicheroIN[] fis = (FicheroIN[]) resultado2.getResultado();
 
-    Testigo resultado3 = new Testigo();
-    resultado3.setOperacion(Testigo.Operaciones.pedirFicherosOUT);
-    resultado3.setParametro((HttpServletRequest) request);
+                Testigo resultado3 = new Testigo();
+                resultado3.setOperacion(Testigo.Operaciones.pedirFicherosOUT);
+                resultado3.setParametro((HttpServletRequest) request);
 
 
-    interfazGestor.sendTestigo(resultado3);
+                interfazGestor.sendTestigo(resultado3);
 
-    while (!resultado3.isRelleno()) {
-    }
+                while (!resultado3.isRelleno()) {
+                }
 
-    FicheroOUT[] fos = (FicheroOUT[]) resultado3.getResultado();
+                FicheroOUT[] fos = (FicheroOUT[]) resultado3.getResultado();
 
 
 
@@ -207,14 +211,16 @@
                                             </form>
                                         </td>
                                         <td>
-                                            <form method="post" name="formEliminar" action="eliminarTest.jsp" onsubmit="return valida();">
+                                            <form method="post" name="formEliminar" action="modificarCasos.jsp" onsubmit="return valida();">
                                                 <input  type="hidden" value="<%= fis[i].getNombre()%>" name="NombreFichero">
+                                                <input  type="hidden" value="<%= fis[i].getContenido()%>" name="ContenidoFichero">
+                                                <input type="hidden" value="eliminarFicheroIN" name="operacion">
                                                 <input type="submit" name="Eliminar" value="Eliminar" onclick="javascript:salida=false;">
                                             </form>
                                         </td>
                                     </tr>
                                     <%
-    }
+                }
                                     %>
                                 </tbody>
                             </table>
@@ -236,14 +242,16 @@
                                             </form>
                                         </td>
                                         <td>
-                                            <form method="post" name="formEliminar" action="eliminarTest.jsp" onsubmit="return valida();">
+                                            <form method="post" name="formEliminar" action="modificarCasos.jsp" onsubmit="return valida();">
                                                 <input  type="hidden" value="<%= fos[i].getNombre()%>" name="NombreFichero">
+                                                <input  type="hidden" value="<%= fos[i].getContenido()%>" name="ContenidoFichero">
+                                                <input type="hidden" value="eliminarFicheroOUT" name="operacion">
                                                 <input type="submit" name="Eliminar" value="Eliminar" onclick="javascript:salida=false;">
                                             </form>
                                         </td>
                                     </tr>
                                     <%
-    }
+                }
                                     %>
                                 </tbody>
                             </table>
