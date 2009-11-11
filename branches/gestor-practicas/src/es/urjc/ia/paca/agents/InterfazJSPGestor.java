@@ -450,6 +450,121 @@ public class InterfazJSPGestor extends InterfazGestor {
         }
     }
 
+    public class EliminarCasoBeha extends OneShotBehaviour {
+
+        private Testigo tes2;
+
+        public EliminarCasoBeha(Agent _a, Testigo tes1) {
+            super(_a);
+            this.tes2 = tes1;
+        }
+
+        public void action() {
+            HttpServletRequest request = (HttpServletRequest) tes2.getParametro();
+            String nombre = request.getParameter("NombreCaso");
+            Caso ca = new Caso(nombre);
+
+            addBehaviour(new EliminarCaso(this.myAgent, tes2, ca));
+        }
+    }
+
+    public class EliminarTestBeha extends OneShotBehaviour {
+
+        private Testigo tes2;
+
+        public EliminarTestBeha(Agent _a, Testigo tes1) {
+            super(_a);
+            this.tes2 = tes1;
+        }
+
+        public void action() {
+            HttpServletRequest request = (HttpServletRequest) tes2.getParametro();
+            String nombre = request.getParameter("NombreTest");
+            String descripcion = request.getParameter("DescripcionTest");
+            Test test = new Test(nombre, descripcion);
+
+            addBehaviour(new EliminarTest(this.myAgent, tes2, test));
+        }
+    }
+
+    public class EliminarFicheroPropioBeha extends OneShotBehaviour {
+
+        private Testigo tes2;
+
+        public EliminarFicheroPropioBeha(Agent _a, Testigo tes1) {
+            super(_a);
+            this.tes2 = tes1;
+        }
+
+        public void action() {
+            HttpServletRequest request = (HttpServletRequest) tes2.getParametro();
+            String nombre = request.getParameter("NombreFichero");
+            String descripcion = request.getParameter("CodigoFichero");
+            FicheroPropio fp = new FicheroPropio(nombre, descripcion);
+
+            addBehaviour(new EliminarFicheroPropio(this.myAgent, tes2, fp));
+        }
+    }
+
+    public class EliminarFicheroAlumnoBeha extends OneShotBehaviour {
+
+        private Testigo tes2;
+
+        public EliminarFicheroAlumnoBeha(Agent _a, Testigo tes1) {
+            super(_a);
+            this.tes2 = tes1;
+        }
+
+        public void action() {
+            HttpServletRequest request = (HttpServletRequest) tes2.getParametro();
+            String nombre = request.getParameter("NombreFicheroAlumno");
+            FicheroAlumno fa = new FicheroAlumno(nombre);
+
+            addBehaviour(new EliminarFicheroAlumno(this.myAgent, tes2, fa));
+        }
+    }
+
+        public class EliminarFicheroINBeha extends OneShotBehaviour {
+
+        private Testigo tes2;
+
+        public EliminarFicheroINBeha(Agent _a, Testigo tes1) {
+            super(_a);
+            this.tes2 = tes1;
+        }
+
+        public void action() {
+            HttpServletRequest request = (HttpServletRequest) tes2.getParametro();
+            String nombre = request.getParameter("NombreFichero");
+            String contenido = request.getParameter("ContenidoFichero");
+
+            FicheroIN fi = new FicheroIN(nombre, contenido);
+            addBehaviour(new EliminarFicheroIN(this.myAgent, tes2, fi));
+
+        }
+    }
+
+    public class EliminarFicheroOUTBeha extends OneShotBehaviour {
+
+        private Testigo tes2;
+
+        public EliminarFicheroOUTBeha(Agent _a, Testigo tes1) {
+            super(_a);
+            this.tes2 = tes1;
+        }
+
+        public void action() {
+            HttpServletRequest request = (HttpServletRequest) tes2.getParametro();
+            String nombre = request.getParameter("NombreFichero");
+            String contenido = request.getParameter("ContenidoFichero");
+
+
+            FicheroOUT fo = new FicheroOUT(nombre, contenido);
+            addBehaviour(new EliminarFicheroOUT(this.myAgent, tes2, fo));
+
+        }
+    }
+
     public class ProcesaTestigo extends OneShotBehaviour {
 
         private Testigo testigo;
@@ -571,6 +686,30 @@ public class InterfazJSPGestor extends InterfazGestor {
 
                     case eliminarPractica:
                         addBehaviour(new EliminarPracticaBeha(agent, testigo));
+                        break;
+
+                    case eliminarTest:
+                        addBehaviour(new EliminarTestBeha(agent, testigo));
+                        break;
+
+                    case eliminarFicheroPropio:
+                        addBehaviour(new EliminarFicheroPropioBeha(agent, testigo));
+                        break;
+
+                    case eliminarCaso:
+                        addBehaviour(new EliminarCasoBeha(agent, testigo));
+                        break;
+
+                    case eliminarFicheroAlumno:
+                        addBehaviour(new EliminarFicheroAlumnoBeha(agent, testigo));
+                        break;
+
+                    case eliminarFicheroIN:
+                        addBehaviour(new EliminarFicheroINBeha(agent, testigo));
+                        break;
+
+                    case eliminarFicheroOUT:
+                        addBehaviour(new EliminarFicheroOUTBeha(agent, testigo));
                         break;
 
                     default:

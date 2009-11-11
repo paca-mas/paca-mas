@@ -37,12 +37,22 @@
                     || !(document.formTest.FechaPractica.value==document.formTest.FechaAntigua.value)){
                     alert("Debe guardar la practica antes de continuar")
                     return false
-                }
+                } 
                 else{
                     document.formTest.seleccionar.disabled=true;
                     document.formAnadir.seleccionar.disabled=true;
                     document.formEliminar.seleccionar.disabled=true;
                     document.formSeleccionar.seleccionar.disabled=true;
+                    return true
+                }
+            }
+
+            function comprueba(){
+                if((document.formTest.DescripcionPractica.value=="") || (document.formTest.FechaPractica.value=="")){
+                    alert("Debe rellenar todos los datos del formulario")
+                    return false
+                }
+                else{
                     return true
                 }
             }
@@ -58,8 +68,28 @@
 			Modificaci&oacute;n de la pr&aacute;ctica.
         </h1>
 
+        <%
+            boolean autenticado = true;
+            String operacion = request.getParameter("operacion");
+
+            if (operacion != null) {
+                if (request.getParameter("operacion").equalsIgnoreCase("eliminar")) {
+                    Testigo resultado = new Testigo();
+                    resultado.setOperacion(Testigo.Operaciones.eliminarTest);
+                    resultado.setParametro((HttpServletRequest) request);
+
+                    interfazGestor.sendTestigo(resultado);
+
+                    autenticado = resultado.isResultadoB();
+                }
+            }
+
+        %>
 
 
+        <%
+        if (autenticado){
+        %>
         <%
 
             String nombre = request.getParameter("NombrePractica");
@@ -67,7 +97,7 @@
             String fechaEntrega = request.getParameter("FechaPractica");
 
 
-            if (nombre==null) {
+            if (nombre == null) {
                 Testigo resultado = new Testigo();
                 resultado.setOperacion(Testigo.Operaciones.ultimaPractica);
 
@@ -97,7 +127,7 @@
 
         %>
         <div id="cuerpo">
-            <form method="post" name="formTest" action="guardarPractica.jsp" onclick="javascript:salida=false;">
+            <form method="post" name="formTest" action="guardarPractica.jsp" onsubmit="return comprueba();">
                 <h2> <%= nombre%> </h2>
                 <p> Descripci&oacute;n: <input type="text" name="DescripcionPractica" size="25" value="<%= descripcion%>">  </p>
                 <p> Fecha Entrega: <input type="text" name="FechaPractica" size="25" value="<%= fechaEntrega%>">
@@ -143,8 +173,10 @@
                             </form>
                         </td>
                         <td>
-                            <form method="post" name="formpracticas" action="eliminarTest.jsp" onsubmit="return valida();">
-                                <input  type="hidden" value="<%= tests[i].getId()%>" name="NombrePractica">
+                            <form method="post" name="formpracticas" action="modificarPractica.jsp" onsubmit="return valida();">
+                                <input  type="hidden" value="<%= tests[i].getId()%>" name="NombreTest">
+                                <input type="hidden" value="<%= tests[i].getDescripcion()%>" name="DescripcionTest">
+                                <input type="hidden" value="eliminar" name="operacion">
                                 <input type="submit" name="Eliminar" value="Eliminar" onclick="javascript:salida=false;">
                             </form>
                         </td>
@@ -155,6 +187,22 @@
                 </tbody>
             </table>
         </div>
+
+                        <% } else {
+        %>
+
+        <h2 class="error" align="center">
+            ERROR!!! En la base de datos </h2>
+        <br>
+        <p class="error" align="center">
+            Ha ocurrido un problema en la base de datos al intentar eliminar el test.
+        </p>
+        <br>
+        <br>
+
+
+        <% }
+        %>
     </body>
 </html>
 

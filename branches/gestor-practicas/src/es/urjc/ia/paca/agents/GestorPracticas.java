@@ -142,7 +142,11 @@ public class GestorPracticas extends Agent {
                                         (!(a instanceof ModificaFicheroOUT)) && (!(a instanceof CreaPractica)) &&
                                         (!(a instanceof CreaTest)) && (!(a instanceof CreaFicheroPropio)) &&
                                         (!(a instanceof CreaFicheroAlumno)) && (!(a instanceof CreaCaso)) &&
-                                        (!(a instanceof CreaFicheroIN)) && (!(a instanceof CreaFicheroOUT)) && (!(a instanceof EliminaPractica)))) {
+                                        (!(a instanceof CreaFicheroIN)) && (!(a instanceof CreaFicheroOUT)) && 
+                                        (!(a instanceof EliminaPractica)) && (!(a instanceof EliminaTest)) &&
+                                        (!(a instanceof EliminaFicheroPropio)) && (!(a instanceof EliminaCaso)) &&
+                                        (!(a instanceof EliminaFicheroAlumno)) && (!(a instanceof EliminaFicheroIN)) &&
+                                        (!(a instanceof EliminaFicheroOUT)))) {
                                     reply.setPerformative(ACLMessage.REFUSE);
                                     send(reply);
                                 } else {
@@ -224,7 +228,46 @@ public class GestorPracticas extends Agent {
                                         EliminaPractica ept = (EliminaPractica) a;
                                         Practica pt = ept.getPractica();
                                         salida = EliminarPractica(pt);
+                                    } else if (a instanceof EliminaTest) {
+                                        EliminaTest ct = (EliminaTest) a;
+                                        Practica pt = ct.getPractica();
+                                        Test ts = ct.getTest();
+                                        salida = EliminarTest(pt, ts);
+                                    } else if (a instanceof EliminaFicheroPropio) {
+                                        EliminaFicheroPropio cfp = (EliminaFicheroPropio) a;
+                                        Test ts = cfp.getTest();
+                                        FicheroPropio fp = cfp.getFicheroPropio();
+                                        Practica pt = cfp.getPractica();
+                                        salida = EliminarFicheroPropio(pt, ts, fp);
+                                    } else if (a instanceof EliminaCaso) {
+                                        EliminaCaso cfp = (EliminaCaso) a;
+                                        Test ts = cfp.getTest();
+                                        Caso fp = cfp.getCaso();
+                                        Practica pt = cfp.getPractica();
+                                        salida = EliminarCaso(pt, ts, fp);
+                                    } else if (a instanceof EliminaFicheroAlumno) {
+                                        EliminaFicheroAlumno cfp = (EliminaFicheroAlumno) a;
+                                        Test ts = cfp.getTest();
+                                        FicheroAlumno fp = cfp.getFicheroAlumno();
+                                        Practica pt = cfp.getPractica();
+                                        salida = EliminarFicheroAlumno(pt, ts, fp);
+                                    } else if (a instanceof EliminaFicheroIN) {
+                                        EliminaFicheroIN cfp = (EliminaFicheroIN) a;
+                                        Test ts = cfp.getTest();
+                                        Caso fp = cfp.getCaso();
+                                        Practica pt = cfp.getPractica();
+                                        FicheroIN fi = cfp.getFicheroIN();
+                                        salida = EliminarFicheroIN(pt, ts, fp, fi);
+                                    } else if (a instanceof EliminaFicheroOUT) {
+                                        EliminaFicheroOUT cfp = (EliminaFicheroOUT) a;
+                                        Test ts = cfp.getTest();
+                                        Caso fp = cfp.getCaso();
+                                        Practica pt = cfp.getPractica();
+                                        FicheroOUT fo = cfp.getFicheroOUT();
+                                        salida = EliminarFicheroOUT(pt, ts, fp, fo);
                                     }
+
+
                                     if (salida) {
                                         reply.setPerformative(ACLMessage.INFORM);
                                         reply.setContent("DONE");
@@ -1154,30 +1197,12 @@ public class GestorPracticas extends Agent {
         try {
             String frase = "delete from Test where id='" + ts.getId() + "'and id_practica='" + pt.getId() + "';";
             stat.executeUpdate(frase);
-            frase = "select * from FicherosPropios where id_test='" + ts.getId() + "'and id_practica='" + pt.getId() + "';";
-            ResultSet rs = stat.executeQuery(frase);
-            while (rs.next()) {
-                FicheroPropio fp = new FicheroPropio(rs.getString("id"));
-                EliminarFicheroPropio(pt, ts, fp);
-            }
-            rs.close();
-
-            frase = "select * from FicherosAlumno where id_test='" + ts.getId() + "'and id_practica='" + pt.getId() + "';";
-            ResultSet rs2 = stat.executeQuery(frase);
-            while (rs2.next()) {
-                FicheroAlumno fa = new FicheroAlumno(rs2.getString("id"));
-                EliminarFicheroAlumno(pt, ts, fa);
-            }
-            rs2.close();
-
-
-            frase = "select * from Caso where id_test='" + ts.getId() + "'and id_practica='" + pt.getId() + "';";
-            ResultSet rs3 = stat.executeQuery(frase);
-            while (rs3.next()) {
-                Caso ca = new Caso(rs3.getString("id"));
-                EliminarCaso(pt, ts, ca);
-            }
-            rs3.close();
+            frase = "delete from FicherosPropios where id_test='" + ts.getId() + "'and id_practica='" + pt.getId() + "';";
+            stat.executeUpdate(frase);
+            frase = "delete from FicherosAlumno where id_test='" + ts.getId() + "'and id_practica='" + pt.getId() + "';";
+            stat.executeUpdate(frase);
+            frase = "delete from Caso where id_test='" + ts.getId() + "'and id_practica='" + pt.getId() + "';";
+            stat.executeUpdate(frase);
         } catch (SQLException ex) {
             return false;
         }
@@ -1206,25 +1231,12 @@ public class GestorPracticas extends Agent {
 
     private boolean EliminarCaso(Practica pt, Test ts, Caso ca) {
         try {
-            String frase = "delete from FicherosPropios where id='" + ca.getId() + "' and id_test='" + ts.getId() + "' and id_practica='" + pt.getId() + "';";
+            String frase = "delete from Caso where id='" + ca.getId() + "' and id_test='" + ts.getId() + "' and id_practica='" + pt.getId() + "';";
             stat.executeUpdate(frase);
-
-            frase = "select * from FicherosOUT where id_caso='" + ca.getId() + "' and id_test='" + ts.getId() + "'and id_practica='" + pt.getId() + "';";
-            ResultSet rs2 = stat.executeQuery(frase);
-            while (rs2.next()) {
-                FicheroOUT fo = new FicheroOUT(rs2.getString("id"));
-                EliminarFicheroOUT(pt, ts, ca, fo);
-            }
-            rs2.close();
-
-
-            frase = "select * from FicherosIN where id_caso='" + ca.getId() + "' and id_test='" + ts.getId() + "'and id_practica='" + pt.getId() + "';";
-            ResultSet rs3 = stat.executeQuery(frase);
-            while (rs3.next()) {
-                FicheroIN fi = new FicheroIN(rs3.getString("id"));
-                EliminarFicheroIN(pt, ts, ca, fi);
-            }
-            rs3.close();
+            frase = "delete from FicherosOUT where id_caso='" + ca.getId() + "' and id_test='" + ts.getId() + "'and id_practica='" + pt.getId() + "';";
+            stat.executeUpdate(frase);
+            frase = "delete from FicherosIN where id_caso='" + ca.getId() + "' and id_test='" + ts.getId() + "'and id_practica='" + pt.getId() + "';";
+            stat.executeUpdate(frase);
         } catch (SQLException ex) {
             return false;
         }
