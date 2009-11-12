@@ -72,7 +72,7 @@
                 <a href="modificarTest.jsp" class="menu" onclick="javascript:salida=false;"> [Test] |
                     <a href="salida.jsp" class="menu"  onclick="javascript:salida=false;">[Salir]</a> </p>
                     <h1 class="center"  class="color">
-			Modificaci&oacute;n del test.
+			Modificaci&oacute;n del Caso.
                     </h1>
 
 

@@ -145,3 +145,10 @@ line-height:500%;
 	left: 450px;
 	height: 1px;
 }
+
+#central3{
+    position:relative;
+    left: 45%;
+    width:25%;
+font-size: 14px;
+}

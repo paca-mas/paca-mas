@@ -69,7 +69,7 @@
                     <a href="modificarCasos.jsp" class="menu" onclick="javascript:salida=false;"> [Caso] </a> |
                     <a href="salida.jsp" class="menu"  onclick="javascript:salida=false;">[Salir]</a> </p>
         <h1 class="center"  class="color">
-			Modificaci&oacute;n del FicheroIN.
+			Modificaci&oacute;n del FicheroOUT.
         </h1>
 
 

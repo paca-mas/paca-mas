@@ -69,6 +69,7 @@ import es.urjc.ia.paca.auth.ontology.Autenticado;
 import es.urjc.ia.paca.auth.ontology.AuthOntology;
 import es.urjc.ia.paca.auth.ontology.Usuario;
 import es.urjc.ia.paca.ontology.Caso;
+import es.urjc.ia.paca.ontology.CopiaTest;
 import es.urjc.ia.paca.ontology.CreaCaso;
 import es.urjc.ia.paca.ontology.CreaFicheroAlumno;
 import es.urjc.ia.paca.ontology.CreaFicheroIN;
@@ -95,6 +96,7 @@ import es.urjc.ia.paca.ontology.ModificaFicheroPropio;
 import es.urjc.ia.paca.ontology.ModificaTest;
 import es.urjc.ia.paca.ontology.ModificaFicheroIN;
 import es.urjc.ia.paca.ontology.ModificaFicheroOUT;
+import jade.content.Predicate;
 import jade.core.behaviours.CyclicBehaviour;
 
 /**
@@ -222,67 +224,6 @@ public class InterfazGestor extends Agent {
         return this.alumnoPass;
     }
 
-    /* Encapsula la comunicaci�n necesaria para realizar el protocolo de autenticaci�n definido.
-    @return True o False dependiendo de si se ha producido de forma exitosa o no la autenticacion.
-     */
-    /*public final boolean doAutenticacion(String user, String pass) {
-
-    // Cerrojo para que no se ejecute antes de que termine el setup
-    while (!terminadoSetup) {
-    }
-
-    ACLMessage respuesta = new ACLMessage(ACLMessage.QUERY_IF);
-    respuesta.setLanguage(codec.getName());
-    respuesta.setOntology(AuthOntology.ONTOLOGY_NAME);
-    respuesta.addReceiver(new AID(AgenteAutenticador, AID.ISLOCALNAME));
-
-
-    // Creamos el predicado.
-    Autenticado aut = new Autenticado();
-    Usuario user2 = new Usuario();
-
-    // Creamos el usuario
-    user2.setUser_id(user);
-    user2.setPassword(pass);
-
-
-    aut.setUsuario(user2);
-
-
-    try {
-    //Mandamos el predicado "aut"
-    getContentManager().fillContent(respuesta, aut);
-    send(respuesta);
-    } catch (CodecException e) {
-    // TODO Auto-generated catch block
-    e.printStackTrace();
-    } catch (OntologyException e) {
-    // TODO Auto-generated catch block
-    e.printStackTrace();
-    }
-
-    // Esperamos la respuesta.
-    respuesta = blockingReceive();
-
-    try {
-
-    // Ahora iremos cogiendo los objetos creados de la ontologia.
-    AbsContentElement listaObj2 = null;
-    listaObj2 = getContentManager().extractAbsContent(respuesta);
-    String tipoObjetoContenido = listaObj2.getTypeName();
-
-    if (tipoObjetoContenido.equals(SL1Vocabulary.NOT)) {
-    return (false);
-    } else {
-    setAlumnoID(user);
-    setAlumnoPass(pass);
-    return (true);
-    }
-    } catch (Exception ex) {
-    return (false);
-    }
-
-    }*/
     @Override
     protected void setup() {
 
@@ -517,20 +458,24 @@ public class InterfazGestor extends Agent {
 
         private Resultado tes1;
         private Practica practica;
+        private boolean guardar;
 
-        public PideTestBeha(Agent _a, Resultado tes, Practica practica) {
+        public PideTestBeha(Agent _a, Resultado tes, Practica practica, boolean guardar) {
             super(_a);
             this.tes1 = tes;
             this.practica = practica;
+            this.guardar = guardar;
         }
 
         public void action() {
 
-            //Nos guardamos la �ltima pr�ctica solicitada
-            if (practica != null) {
-                ultimaPractica = practica;
-            } else {
-                practica = ultimaPractica;
+            if (guardar) {
+                //Nos guardamos la �ltima pr�ctica solicitada
+                if (practica != null) {
+                    ultimaPractica = practica;
+                } else {
+                    practica = ultimaPractica;
+                }
             }
 
 
@@ -2248,4 +2193,50 @@ public class InterfazGestor extends Agent {
             }
         }
     }
+
+
+    /**************COMPORTAMIENTOS PARA COPIAR***********/
+        public class CopiarTest extends OneShotBehaviour {
+
+        private Resultado tes1;
+        private Test test;
+        private Practica practica;
+
+        public CopiarTest(Agent _a, Resultado tes, Practica practica, Test test) {
+            super(_a);
+            this.tes1 = tes;
+            this.test = test;
+            this.practica = practica;
+        }
+
+        public void action() {
+            try {
+
+                AID receiver = new AID(gestorPracticas, AID.ISLOCALNAME);
+                ACLMessage solicitud = new ACLMessage(ACLMessage.REQUEST);
+                solicitud.addReceiver(receiver);
+                solicitud.setLanguage(codec.getName());
+                solicitud.setOntology(pacaOntology.NAME);
+
+
+                CopiaTest cp = new CopiaTest();
+                cp.setPractica(practica);
+                cp.setCopyPractica(ultimaPractica);
+                cp.setTest(test);
+
+                Action act = new Action();
+                act.setAction(cp);
+                act.setActor(receiver);
+
+                getContentManager().fillContent(solicitud, act);
+                addBehaviour(new RecibeMensajes(myAgent, tes1));
+                send(solicitud);
+            } catch (CodecException ex) {
+                Logger.getLogger(Interfaz.class.getName()).log(Level.SEVERE, null, ex);
+            } catch (OntologyException ex) {
+                Logger.getLogger(Interfaz.class.getName()).log(Level.SEVERE, null, ex);
+            }
+        }
+    }
+
 }
