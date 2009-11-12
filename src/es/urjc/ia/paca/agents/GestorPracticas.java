@@ -14,6 +14,7 @@ import jade.lang.acl.ACLMessage;
 import es.urjc.ia.paca.util.AndBuilder;
 import jade.content.AgentAction;
 import jade.content.ContentElement;
+import jade.content.abs.AbsAgentAction;
 import jade.content.abs.AbsAggregate;
 import jade.content.abs.AbsConcept;
 import jade.content.abs.AbsContentElement;
@@ -133,20 +134,23 @@ public class GestorPracticas extends Agent {
 
                     } else {
                         if (msg.getPerformative() == ACLMessage.REQUEST) {
+
                             ContentElement p = manager.extractContent(msg);
 
+
                             if (p instanceof Action) {
+                                //AbsAgentAction z = (AbsAgentAction) ((Action)p).getAction();
                                 AgentAction a = (AgentAction) ((Action) p).getAction();
                                 if ((!(a instanceof ModificaPractica) && (!(a instanceof ModificaTest)) &&
                                         (!(a instanceof ModificaFicheroPropio)) && (!(a instanceof ModificaFicheroIN)) &&
                                         (!(a instanceof ModificaFicheroOUT)) && (!(a instanceof CreaPractica)) &&
                                         (!(a instanceof CreaTest)) && (!(a instanceof CreaFicheroPropio)) &&
                                         (!(a instanceof CreaFicheroAlumno)) && (!(a instanceof CreaCaso)) &&
-                                        (!(a instanceof CreaFicheroIN)) && (!(a instanceof CreaFicheroOUT)) && 
+                                        (!(a instanceof CreaFicheroIN)) && (!(a instanceof CreaFicheroOUT)) &&
                                         (!(a instanceof EliminaPractica)) && (!(a instanceof EliminaTest)) &&
                                         (!(a instanceof EliminaFicheroPropio)) && (!(a instanceof EliminaCaso)) &&
                                         (!(a instanceof EliminaFicheroAlumno)) && (!(a instanceof EliminaFicheroIN)) &&
-                                        (!(a instanceof EliminaFicheroOUT)))) {
+                                        (!(a instanceof EliminaFicheroOUT)) && (!(a instanceof CopiaTest)))) {
                                     reply.setPerformative(ACLMessage.REFUSE);
                                     send(reply);
                                 } else {
@@ -265,6 +269,13 @@ public class GestorPracticas extends Agent {
                                         Practica pt = cfp.getPractica();
                                         FicheroOUT fo = cfp.getFicheroOUT();
                                         salida = EliminarFicheroOUT(pt, ts, fp, fo);
+                                    } else if (a instanceof CopiaTest) {
+                                        CopiaTest ct = (CopiaTest) a;
+                                        Practica pt = ct.getPractica();
+                                        Practica cp = ct.getCopyPractica();
+                                        Test ts = ct.getTest();
+
+                                        salida = CopiarTest(pt, ts, cp);
                                     }
 
 
@@ -1170,6 +1181,8 @@ public class GestorPracticas extends Agent {
         return true;
     }
 
+
+    //******************CLASES PARA ELIMINAR******************/
     private boolean EliminarPractica(Practica pt) {
         try {
             String frase = "delete from Practica where id='" + pt.getId() + "' ;";
@@ -1202,6 +1215,10 @@ public class GestorPracticas extends Agent {
             frase = "delete from FicherosAlumno where id_test='" + ts.getId() + "'and id_practica='" + pt.getId() + "';";
             stat.executeUpdate(frase);
             frase = "delete from Caso where id_test='" + ts.getId() + "'and id_practica='" + pt.getId() + "';";
+            stat.executeUpdate(frase);
+            frase = "delete from FicherosIN where id_test='" + ts.getId() + "'and id_practica='" + pt.getId() + "';";
+            stat.executeUpdate(frase);
+            frase = "delete from FicherosOUT where id_test='" + ts.getId() + "'and id_practica='" + pt.getId() + "';";
             stat.executeUpdate(frase);
         } catch (SQLException ex) {
             return false;
@@ -1261,6 +1278,116 @@ public class GestorPracticas extends Agent {
             return false;
         }
         return true;
+    }
+
+    /*****************Clases para copiar*********************************/
+    private boolean CopiarTest(Practica pt, Test ts, Practica cp) {
+
+        boolean salida = true;
+        try {
+            salida = CrearTest(cp, ts);
+
+            String frase = "select * from FicherosPropios where id_Test='" + ts.getId() + "' and id_Practica='" + pt.getId() + "';";
+
+            ResultSet rs = stat.executeQuery(frase);
+            ArrayList<FicheroPropio> fp = new ArrayList<FicheroPropio>();
+
+            //Si se produce algun fallo en la copia de algun fichero propio no continuamos
+            //No podemos llamar directamente a la llamada de CrearFicheroPropio, poruqe el ResutlSet debe de estar cerrado
+            while (rs.next()) {
+                FicheroPropio fichero = new FicheroPropio(rs.getString("id"), rs.getString("codigo"));
+                fp.add(fichero);
+            }
+            rs.close();
+
+            int i = 0;
+            while (i < fp.size() && salida) {
+                salida = CrearFicheroPropio(cp, ts, fp.get(i));
+                i++;
+            }
+
+            frase = "select * from FicherosAlumno where id_Test='" + ts.getId() + "' and id_Practica='" + pt.getId() + "';";
+            ResultSet rs2 = stat.executeQuery(frase);
+            ArrayList<FicheroAlumno> fa = new ArrayList<FicheroAlumno>();
+            while (rs2.next() && salida) {
+                FicheroAlumno fichero = new FicheroAlumno(rs.getString("id"));
+                fa.add(fichero);
+            }
+            rs2.close();
+
+            i = 0;
+            while (i < fa.size() && salida) {
+                salida = CrearFicheroAlumno(cp, ts, fa.get(i));
+                i++;
+
+            }
+
+            frase = "select * from Caso where id_Test='" + ts.getId() + "' and id_Practica='" + pt.getId() + "';";
+            ResultSet rs3 = stat.executeQuery(frase);
+            ArrayList<Caso> ca = new ArrayList<Caso>();
+
+            while (rs3.next() && salida) {
+                Caso caso = new Caso(rs.getString("id"));
+                ca.add(caso);
+            }
+            rs3.close();
+
+            i = 0;
+            while (i < ca.size() && salida) {
+                salida = CopiarCaso(pt, ts, ca.get(i), cp);
+                i++;
+
+            }
+
+
+        } catch (SQLException ex) {
+            return false;
+        }
+        return salida;
+
+    }
+
+    private boolean CopiarCaso(Practica pt, Test ts, Caso ca, Practica cp) {
+        boolean salida = true;
+        try {
+
+            salida = CrearCaso(cp, ts, ca);
+            String frase = "select * from FicherosIN where id_test='" + ts.getId() + "' and id_practica='" + pt.getId() + "' and id_caso='" + ca.getId() + "' ;";
+            ResultSet rs = stat.executeQuery(frase);
+            ArrayList<FicheroIN> fi = new ArrayList<FicheroIN>();
+            while (rs.next() && salida) {
+                FicheroIN fichero = new FicheroIN(rs.getString("id"), rs.getString("contenido"));
+                fi.add(fichero);
+            }
+            rs.close();
+
+            int i = 0;
+            while (i < fi.size() && salida) {
+                salida = CrearFicheroIN(cp, ts, ca, fi.get(i));
+                i++;
+
+            }
+
+            frase = "select * from FicherosOUT where id_test='" + ts.getId() + "' and id_practica='" + pt.getId() + "' and id_caso='" + ca.getId() + "' ;";
+            ResultSet rs2 = stat.executeQuery(frase);
+            ArrayList<FicheroOUT> fo = new ArrayList<FicheroOUT>();
+            while (rs2.next() && salida) {
+                FicheroOUT fichero = new FicheroOUT(rs.getString("id"), rs.getString("contenido"));
+                fo.add(fichero);
+            }
+            rs2.close();
+
+            i = 0;
+            while (i < fi.size() && salida) {
+                salida = CrearFicheroOUT(cp, ts, ca, fo.get(i));
+                i++;
+
+            }
+
+        } catch (SQLException ex) {
+            return false;
+        }
+        return salida;
     }
 
     private void IniciarBaseDatos() throws SQLException, ClassNotFoundException {

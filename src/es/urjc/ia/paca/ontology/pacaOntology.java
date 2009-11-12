@@ -120,6 +120,9 @@ public class pacaOntology extends Ontology {
     public static final String ELIMINAFICHEROALUMNO = "EliminaFicheroAlumno";
     public static final String ELIMINAFICHEROIN = "EliminaFicheroIN";
     public static final String ELIMINAFICHEROOUT = "EliminaFicheroOUT";
+    
+    public static final String COPIATEST = "CopiaTest";
+    public static final String COPYPRACTICA = "CopyPractica";
     /**
     Instancia de la ontolog�a. Sigue un patr�n de dise�o SINGLETON.
      */
@@ -431,6 +434,12 @@ public class pacaOntology extends Ontology {
             ps30.add(TEST, (ConceptSchema) getSchema(TEST));
             ps30.add(PRACTICA, (ConceptSchema) getSchema(PRACTICA));
             ps30.add(CASO, (ConceptSchema) getSchema(CASO));
+
+            add(new AgentActionSchema(COPIATEST), CopiaTest.class);
+            AgentActionSchema ps31 = (AgentActionSchema) getSchema(COPIATEST);
+            ps31.add(TEST, (ConceptSchema) getSchema(TEST));
+            ps31.add(PRACTICA, (ConceptSchema) getSchema(PRACTICA));
+            ps31.add(COPYPRACTICA, (ConceptSchema) getSchema(PRACTICA));
 
 
 

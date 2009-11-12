@@ -55,6 +55,9 @@ public class InterfazJSPGestor extends InterfazGestor {
         }
     }
 
+
+    /***********COMPORTAMIENTOS PARA PEDIR ***************************/
+
     public class PideTestRequestBeha extends OneShotBehaviour {
 
         private Testigo tes2;
@@ -73,7 +76,25 @@ public class InterfazJSPGestor extends InterfazGestor {
                 String fechaEntrega = request.getParameter("FechaPractica");
                 practica = new Practica(nombre, descripcion, fechaEntrega);
             }
-            addBehaviour(new PideTestBeha(this.myAgent, tes2, practica));
+            addBehaviour(new PideTestBeha(this.myAgent, tes2, practica, true));
+        }
+    }
+
+
+        public class SeleccionarTestBeha extends OneShotBehaviour {
+
+        private Testigo tes2;
+
+        public SeleccionarTestBeha(Agent _a, Testigo tes1) {
+            super(_a);
+            this.tes2 = tes1;
+        }
+
+        public void action() {
+            String nombre = (String) tes2.getParametro();
+            Practica practica = new Practica(nombre);
+
+            addBehaviour(new PideTestBeha(this.myAgent, tes2, practica, false));
         }
     }
 
@@ -565,6 +586,28 @@ public class InterfazJSPGestor extends InterfazGestor {
         }
     }
 
+    /****************COMPORTAMIENTOS PARA COPIAR**************/
+
+    public class CopiarTestBeha extends OneShotBehaviour{
+        private Testigo tes2;
+        public CopiarTestBeha(Agent _a, Testigo tes1){
+            super(_a);
+            this.tes2=tes1;
+        }
+
+        public void action() {
+            HttpServletRequest request = (HttpServletRequest) tes2.getParametro();
+            String nombrePractica = request.getParameter("NombrePracticaACopiar");
+            String nombreTest = request.getParameter("NombreTest");
+            String descripcion = request.getParameter("DescripcionTest");
+
+            Practica practica = new Practica(nombrePractica);
+            Test test = new Test(nombreTest, descripcion);
+
+            addBehaviour(new CopiarTest(this.myAgent, tes2, practica, test));
+        }
+    }
+
     public class ProcesaTestigo extends OneShotBehaviour {
 
         private Testigo testigo;
@@ -710,6 +753,14 @@ public class InterfazJSPGestor extends InterfazGestor {
 
                     case eliminarFicheroOUT:
                         addBehaviour(new EliminarFicheroOUTBeha(agent, testigo));
+                        break;
+
+                    case seleccionarTest:
+                        addBehaviour(new SeleccionarTestBeha(agent, testigo));
+                        break;
+
+                    case copiarTest:
+                        addBehaviour(new CopiarTestBeha(agent, testigo));
                         break;
 
                     default:

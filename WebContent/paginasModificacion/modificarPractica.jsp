@@ -73,22 +73,26 @@
             String operacion = request.getParameter("operacion");
 
             if (operacion != null) {
-                if (request.getParameter("operacion").equalsIgnoreCase("eliminar")) {
-                    Testigo resultado = new Testigo();
+                Testigo resultado = new Testigo();
+                if (operacion.equalsIgnoreCase("eliminar")) {
+
                     resultado.setOperacion(Testigo.Operaciones.eliminarTest);
-                    resultado.setParametro((HttpServletRequest) request);
 
-                    interfazGestor.sendTestigo(resultado);
-
-                    autenticado = resultado.isResultadoB();
+                } else if (operacion.equalsIgnoreCase("copiar")) {
+                    resultado.setOperacion(Testigo.Operaciones.copiarTest);
                 }
+                resultado.setParametro((HttpServletRequest) request);
+
+                interfazGestor.sendTestigo(resultado);
+
+                autenticado = resultado.isResultadoB();
             }
 
         %>
 
 
         <%
-        if (autenticado){
+            if (autenticado) {
         %>
         <%
 
@@ -148,7 +152,7 @@
                                 </form>
                             </td>
                             <td>
-                                <form method="post" name="formAnadir" action="peticionTest2.jsp" onsubmit="return valida();">
+                                <form method="post" name="formAnadir" action="seleccionarTest.jsp" onsubmit="return valida();">
                                     <input type="submit" name="seleccionar" value="Seleccionar Test" onclick="javascript:salida=false;">
                                 </form> </td>
                         </tr>
@@ -188,7 +192,7 @@
             </table>
         </div>
 
-                        <% } else {
+        <% } else {
         %>
 
         <h2 class="error" align="center">

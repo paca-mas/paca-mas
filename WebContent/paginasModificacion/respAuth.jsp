@@ -137,6 +137,8 @@
 
                 interfazGestor.sendTestigo(resultado2);
 
+                while (!resultado2.isRelleno()) {
+                }
 
                 Practica[] pract = (Practica[]) resultado2.getResultado();
 

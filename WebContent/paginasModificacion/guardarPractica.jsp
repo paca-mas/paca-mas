@@ -133,7 +133,7 @@
                                 </form>
                             </td>
                             <td>
-                                <form method="post" name="formAnadir" action="peticionTest2.jsp" onsubmit="return valida();">
+                                <form method="post" name="formAnadir" action="seleccionarTest.jsp" onsubmit="return valida();">
                                     <input type="submit" name="seleccionar" value="Seleccionar Test" onclick="javascript:salida=false;">
                                 </form> </td>
                         </tr>
