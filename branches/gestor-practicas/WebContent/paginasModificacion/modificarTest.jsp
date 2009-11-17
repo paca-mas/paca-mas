@@ -96,6 +96,12 @@
                         resultado.setOperacion(Testigo.Operaciones.eliminarCaso);
                     } else if(operacion.equalsIgnoreCase("eliminarFicheroAlumno")){
                         resultado.setOperacion(Testigo.Operaciones.eliminarFicheroAlumno);
+                    } else if(operacion.equalsIgnoreCase("copiarFicheroPropio")){
+                        resultado.setOperacion(Testigo.Operaciones.copiarFicherosPropios);
+                    } else if(operacion.equalsIgnoreCase("copiarFicheroAlumno")){
+                        resultado.setOperacion(Testigo.Operaciones.copiarFicherosAlumno);
+                    } else if(operacion.equalsIgnoreCase("copiarCaso")){
+                        resultado.setOperacion(Testigo.Operaciones.copiarCasos);
                     }
                     resultado.setParametro((HttpServletRequest) request);
                     interfazGestor.sendTestigo(resultado);
@@ -181,6 +187,7 @@
             </form>
             <div id="enlaces">
                 <div id="izquierda">
+                    <h3 class="miniTitulo"> Ficheros Propios</h3>
                     <table border="0">
                         <tbody>
                             <tr>
@@ -190,7 +197,7 @@
                                     </form>
                                 </td>
                                 <td>
-                                    <form method="post" name="formAnadir" action="peticionTest2.jsp" onsubmit="return valida();">
+                                    <form method="post" name="formAnadir" action="seleccionarFicherosPropios.jsp" onsubmit="return valida();">
                                         <input type="submit" name="seleccionar" value="Seleccionar FicheroPropio" onclick="javascript:salida=false;">
                                     </form> </td>
                             </tr>
@@ -200,6 +207,7 @@
                 </div>
 
                 <div id="centro">
+                    <h3> Casos </h3>
                     <table border="0">
                         <tbody>
                             <tr>
@@ -209,7 +217,7 @@
                                     </form>
                                 </td>
                                 <td>
-                                    <form method="post" name="formAnadir" action="peticionTest2.jsp" onsubmit="return valida();">
+                                    <form method="post" name="formAnadir" action="seleccionarCasos.jsp" onsubmit="return valida();">
                                         <input type="submit" name="seleccionar" value="Seleccionar Caso" onclick="javascript:salida=false;">
                                     </form> </td>
                             </tr>
@@ -219,6 +227,7 @@
                 </div>
 
                 <div id="derecha">
+                    <h3 class="miniTitulo"> Ficheros Alumno </h3>
                     <table border="0">
                         <tbody>
                             <tr>
@@ -228,7 +237,7 @@
                                     </form>
                                 </td>
                                 <td>
-                                    <form method="post" name="formAnadir" action="peticionTest2.jsp" onsubmit="return valida();">
+                                    <form method="post" name="formAnadir" action="seleccionarFicherosAlumno.jsp" onsubmit="return valida();">
                                         <input type="submit" name="seleccionar" value="Seleccionar FicheroAlumno" onclick="javascript:salida=false;">
                                     </form> </td>
                             </tr>

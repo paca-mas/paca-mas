@@ -55,9 +55,7 @@ public class InterfazJSPGestor extends InterfazGestor {
         }
     }
 
-
     /***********COMPORTAMIENTOS PARA PEDIR ***************************/
-
     public class PideTestRequestBeha extends OneShotBehaviour {
 
         private Testigo tes2;
@@ -80,8 +78,7 @@ public class InterfazJSPGestor extends InterfazGestor {
         }
     }
 
-
-        public class SeleccionarTestBeha extends OneShotBehaviour {
+    public class SeleccionarTestBeha extends OneShotBehaviour {
 
         private Testigo tes2;
 
@@ -115,7 +112,23 @@ public class InterfazJSPGestor extends InterfazGestor {
                 String descripcion = request.getParameter("DescripcionTest");
                 test = new Test(nombre, descripcion);
             }
-            addBehaviour(new PideFicherosPropios(this.myAgent, tes2, test));
+            addBehaviour(new PideFicherosPropios(this.myAgent, tes2, test, true));
+        }
+    }
+
+    public class SeleccionarFicherosPropiosBeha extends OneShotBehaviour {
+
+        private Testigo tes2;
+
+        public SeleccionarFicherosPropiosBeha(Agent _a, Testigo tes1) {
+            super(_a);
+            this.tes2 = tes1;
+        }
+
+        public void action() {
+            Test test = (Test) tes2.getParametro();
+
+            addBehaviour(new PideFicherosPropios(this.myAgent, tes2, test, false));
         }
     }
 
@@ -136,7 +149,23 @@ public class InterfazJSPGestor extends InterfazGestor {
                 String descripcion = request.getParameter("DescripcionTest");
                 test = new Test(nombre, descripcion);
             }
-            addBehaviour(new PideFicherosAlumno(this.myAgent, tes2, test));
+            addBehaviour(new PideFicherosAlumno(this.myAgent, tes2, test, true));
+        }
+    }
+
+    public class SeleccionarFicherosAlumnoBeha extends OneShotBehaviour {
+
+        private Testigo tes2;
+
+        public SeleccionarFicherosAlumnoBeha(Agent _a, Testigo tes1) {
+            super(_a);
+            this.tes2 = tes1;
+        }
+
+        public void action() {
+            Test test = (Test) tes2.getParametro();
+
+            addBehaviour(new PideFicherosAlumno(this.myAgent, tes2, test, false));
         }
     }
 
@@ -157,7 +186,23 @@ public class InterfazJSPGestor extends InterfazGestor {
                 String descripcion = request.getParameter("DescripcionTest");
                 test = new Test(nombre, descripcion);
             }
-            addBehaviour(new PideCasos(this.myAgent, tes2, test));
+            addBehaviour(new PideCasos(this.myAgent, tes2, test, true));
+        }
+    }
+
+    public class SeleccionarCasosBeha extends OneShotBehaviour {
+
+        private Testigo tes2;
+
+        public SeleccionarCasosBeha(Agent _a, Testigo tes1) {
+            super(_a);
+            this.tes2 = tes1;
+        }
+
+        public void action() {
+            Test test = (Test) tes2.getParametro();
+
+            addBehaviour(new PideCasos(this.myAgent, tes2, test, false));
         }
     }
 
@@ -177,7 +222,23 @@ public class InterfazJSPGestor extends InterfazGestor {
             if (nombre != null) {
                 caso = new Caso(nombre);
             }
-            addBehaviour(new PideFicherosIN(this.myAgent, tes2, caso));
+            addBehaviour(new PideFicherosIN(this.myAgent, tes2, caso, true));
+        }
+    }
+
+    public class SeleccionarFicherosINBeha extends OneShotBehaviour {
+
+        private Testigo tes2;
+
+        public SeleccionarFicherosINBeha(Agent _a, Testigo tes1) {
+            super(_a);
+            this.tes2 = tes1;
+        }
+
+        public void action() {
+            Caso caso = (Caso) tes2.getParametro();
+
+            addBehaviour(new PideFicherosIN(this.myAgent, tes2, caso, false));
         }
     }
 
@@ -197,7 +258,23 @@ public class InterfazJSPGestor extends InterfazGestor {
             if (nombre != null) {
                 caso = new Caso(nombre);
             }
-            addBehaviour(new PideFicherosOUT(this.myAgent, tes2, caso));
+            addBehaviour(new PideFicherosOUT(this.myAgent, tes2, caso, true));
+        }
+    }
+
+    public class SeleccionarFicherosOUTBeha extends OneShotBehaviour {
+
+        private Testigo tes2;
+
+        public SeleccionarFicherosOUTBeha(Agent _a, Testigo tes1) {
+            super(_a);
+            this.tes2 = tes1;
+        }
+
+        public void action() {
+            Caso caso = (Caso) tes2.getParametro();
+
+            addBehaviour(new PideFicherosOUT(this.myAgent, tes2, caso, false));
         }
     }
 
@@ -545,7 +622,7 @@ public class InterfazJSPGestor extends InterfazGestor {
         }
     }
 
-        public class EliminarFicheroINBeha extends OneShotBehaviour {
+    public class EliminarFicheroINBeha extends OneShotBehaviour {
 
         private Testigo tes2;
 
@@ -587,12 +664,13 @@ public class InterfazJSPGestor extends InterfazGestor {
     }
 
     /****************COMPORTAMIENTOS PARA COPIAR**************/
+    public class CopiarTestBeha extends OneShotBehaviour {
 
-    public class CopiarTestBeha extends OneShotBehaviour{
         private Testigo tes2;
-        public CopiarTestBeha(Agent _a, Testigo tes1){
+
+        public CopiarTestBeha(Agent _a, Testigo tes1) {
             super(_a);
-            this.tes2=tes1;
+            this.tes2 = tes1;
         }
 
         public void action() {
@@ -601,10 +679,123 @@ public class InterfazJSPGestor extends InterfazGestor {
             String nombreTest = request.getParameter("NombreTest");
             String descripcion = request.getParameter("DescripcionTest");
 
+            String nombreTestACopiar = request.getParameter("NombreTestACopiar");
+            String descripcionTestACopiar = request.getParameter("DescripcionTestACopiar");
+
             Practica practica = new Practica(nombrePractica);
             Test test = new Test(nombreTest, descripcion);
+            Test testACopiar = new Test(nombreTestACopiar, descripcionTestACopiar);
 
-            addBehaviour(new CopiarTest(this.myAgent, tes2, practica, test));
+            addBehaviour(new CopiarTest(this.myAgent, tes2, practica, test, testACopiar));
+        }
+    }
+
+    public class CopiarFicheroPropioBeha extends OneShotBehaviour {
+
+        private Testigo tes2;
+
+        public CopiarFicheroPropioBeha(Agent _a, Testigo tes1) {
+            super(_a);
+            this.tes2 = tes1;
+        }
+
+        public void action() {
+
+            HttpServletRequest request = (HttpServletRequest) tes2.getParametro();
+            String nombreFichero = request.getParameter("NombreFichero");
+            String codigoFicheroACopiar = request.getParameter("CodigoFicheroACopiar");
+
+            FicheroPropio fp = new FicheroPropio(nombreFichero, codigoFicheroACopiar);
+            addBehaviour(new CopiarFicheroPropio(this.myAgent, tes2, fp));
+
+        }
+    }
+
+    public class CopiarFicheroAlumnoBeha extends OneShotBehaviour {
+
+        private Testigo tes2;
+
+        public CopiarFicheroAlumnoBeha(Agent _a, Testigo tes1) {
+            super(_a);
+            this.tes2 = tes1;
+        }
+
+        public void action() {
+
+            HttpServletRequest request = (HttpServletRequest) tes2.getParametro();
+            String nombreFichero = request.getParameter("NombreFichero");
+
+            FicheroAlumno fp = new FicheroAlumno(nombreFichero);
+            addBehaviour(new CopiarFicheroAlumno(this.myAgent, tes2, fp));
+
+        }
+    }
+
+    public class CopiarCasoBeha extends OneShotBehaviour {
+
+        private Testigo tes2;
+
+        public CopiarCasoBeha(Agent _a, Testigo tes1) {
+            super(_a);
+            this.tes2 = tes1;
+        }
+
+        public void action() {
+            HttpServletRequest request = (HttpServletRequest) tes2.getParametro();
+            String nombrePractica = request.getParameter("NombrePracticaACopiar");
+            String nombreTestACopiar = request.getParameter("NombreTestACopiar");
+            String nombreCasoACopiar = request.getParameter("NombreCasoACopiar");
+
+            String nombreCaso = request.getParameter("NombreCaso");
+
+            Practica practica = new Practica(nombrePractica);
+            Test test = new Test(nombreTestACopiar);
+            Caso casoACopiar = new Caso(nombreCasoACopiar);
+            Caso caso = new Caso(nombreCaso);
+            addBehaviour(new CopiarCaso(this.myAgent, tes2, practica, test, casoACopiar, caso));
+
+        }
+    }
+
+    public class CopiarFicheroINBeha extends OneShotBehaviour {
+
+        private Testigo tes2;
+
+        public CopiarFicheroINBeha(Agent _a, Testigo tes1) {
+            super(_a);
+            this.tes2 = tes1;
+        }
+
+        public void action() {
+
+            HttpServletRequest request = (HttpServletRequest) tes2.getParametro();
+            String nombreFichero = request.getParameter("NombreFichero");
+            String contenido = request.getParameter("ContenidoFichero");
+
+            FicheroIN fi = new FicheroIN(nombreFichero, contenido);
+            addBehaviour(new CopiarFicheroIN(this.myAgent, tes2, fi));
+
+        }
+    }
+
+        public class CopiarFicheroOUTBeha extends OneShotBehaviour {
+
+        private Testigo tes2;
+
+        public CopiarFicheroOUTBeha(Agent _a, Testigo tes1) {
+            super(_a);
+            this.tes2 = tes1;
+        }
+
+        public void action() {
+
+            HttpServletRequest request = (HttpServletRequest) tes2.getParametro();
+            String nombreFichero = request.getParameter("NombreFichero");
+            String contenido = request.getParameter("ContenidoFichero");
+
+            FicheroOUT fo = new FicheroOUT(nombreFichero, contenido);
+            addBehaviour(new CopiarFicheroOUT(this.myAgent, tes2, fo));
+
         }
     }
 
@@ -762,6 +953,53 @@ public class InterfazJSPGestor extends InterfazGestor {
                     case copiarTest:
                         addBehaviour(new CopiarTestBeha(agent, testigo));
                         break;
+
+
+                    case seleccionarFicherosPropios:
+                        addBehaviour(new SeleccionarFicherosPropiosBeha(agent, testigo));
+                        break;
+
+
+                    case copiarFicherosPropios:
+                        addBehaviour(new CopiarFicheroPropioBeha(agent, testigo));
+                        break;
+
+
+                    case seleccionarFicherosAlumno:
+                        addBehaviour(new SeleccionarFicherosAlumnoBeha(agent, testigo));
+                        break;
+
+                    case copiarFicherosAlumno:
+                        addBehaviour(new CopiarFicheroAlumnoBeha(agent, testigo));
+                        break;
+
+
+                    case seleccionarCasos:
+                        addBehaviour(new SeleccionarCasosBeha(agent, testigo));
+                        break;
+
+                    case copiarCasos:
+                        addBehaviour(new CopiarCasoBeha(agent, testigo));
+                        break;
+
+
+                    case seleccionarFicherosIN:
+                        addBehaviour(new SeleccionarFicherosINBeha(agent, testigo));
+                        break;
+
+                    case copiarFicherosIN:
+                        addBehaviour(new CopiarFicheroINBeha(agent, testigo));
+                        break;
+
+
+                    case seleccionarFicherosOUT:
+                        addBehaviour(new SeleccionarFicherosOUTBeha(agent, testigo));
+                        break;
+
+                    case copiarFicherosOUT:
+                        addBehaviour(new CopiarFicheroOUTBeha(agent, testigo));
+                        break;
+
 
                     default:
                         testigo.setResultado("-");

@@ -9,6 +9,7 @@
 <%@ page import="es.urjc.ia.paca.ontology.pacaOntology"%>
 <%@ page import="es.urjc.ia.paca.ontology.Practica"%>
 <%@ page import="es.urjc.ia.paca.ontology.Test"%>
+<%@ page import="es.urjc.ia.paca.ontology.FicheroAlumno"%>
 <%@ page import="es.urjc.ia.paca.agents.InterfazGestor"%>
 <%@ page import="es.urjc.ia.paca.agents.InterfazJSPGestor"%>
 
@@ -22,7 +23,7 @@
 
     <head>
         <title>
-            Seleccionar Test.
+            Seleccionar Ficheros Alumno.
         </title>
         <LINK REL=STYLESHEET TYPE="text/css" HREF="estilos/estiloInterfazGestor.css">
         <SCRIPT TYPE="text/javascript">
@@ -45,11 +46,12 @@
     <body onUnload="exit();">
 
         <p class="derecha" > <a href="mostrarPracticas.jsp" class="menu"  onclick="javascript:salida=false;">[Listado de Practicas]</a> |
-            <a href="modificarPractica.jsp" class="menu" onclick="javascript:salida=false;"> [Practica] | 
-                <a href="salida.jsp" class="menu"  onclick="javascript:salida=false;">[Salir]</a> </p>
+            <a href="modificarPractica.jsp" class="menu" onclick="javascript:salida=false;"> [Practica] |
+                <a href="modificarTest.jsp" class="menu" onclick="javascript:salida=false;"> [Test] |
+                    <a href="salida.jsp" class="menu"  onclick="javascript:salida=false;">[Salir]</a> </p>
 
         <h1 class="center" class="color">
-            Selecci&oacute;n de Test.  </h1>
+            Selecci&oacute;n de FicheroAlumno.  </h1>
 
 
 
@@ -87,19 +89,44 @@
 
         <div id="cuerpo">
             <h3> <%= pract[i].getId()%> </h3>
-            <div id="central3">
-                <% for (int z = 0; z < tests.length; z++) {%>
+
+            <div id="central4">
+
+
+        <%
+            for (int h = 0; h < tests.length; h++){
+
+                Testigo resultado3 = new Testigo();
+                resultado3.setOperacion(Testigo.Operaciones.seleccionarFicherosAlumno);
+                resultado3.setParametro(tests[h]);
+
+                interfazGestor.sendTestigo(resultado3);
+
+                while (!resultado3.isRelleno()) {
+                    }
+
+                FicheroAlumno[] fp = (FicheroAlumno[]) resultado3.getResultado();
+
+     %>
+
+
+
+
+
+                <h4> <%=tests[h].getId()%> </h4>
+                <div id="central3">
+                <% for (int z = 0; z < fp.length; z++) {%>
                 <table border="0">
 
                     <tbody>
                         <tr>
-                    <form class="center" method="post" name="formVer" action="copiarTest.jsp">
-                        <td> <%= tests[z].getId()%>  </td>
+                    <form class="center" method="post" name="formVer" action="copiarFicherosAlumno.jsp">
+                        <td> <%= fp[z].getNombre()%>  </td>
                         <td>
 
-                            <input  type="hidden" value="<%= tests[z].getId()%>" name="NombreTestACopiar">
+                            <input  type="hidden" value="<%= tests[h].getId()%>" name="NombreTestACopiar">
                             <input  type="hidden" value="<%= pract[i].getId()%>" name="NombrePracticaACopiar">
-                            <input type="hidden" value="<%= tests[z].getDescripcion()%>" name="DescripcionTestACopiar">
+                            <input type="hidden" value="<%= fp[z].getNombre()%>" name="NombreFicheroACopiar">
                             <input type="hidden" value="copiar" name="operacion">
                             <input type="submit" name="Seleccionar" value="Seleccionar" onclick="javascript:salida=false;">
 
@@ -113,11 +140,17 @@
                 <%
                 }
                 %>
-            </div>
-        </div>
+                </div>
 
+
+                <%
+                }
+                %>
+
+                </div>
         <% }
         %>
+
+        </div>
     </body>
 </html>
-

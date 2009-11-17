@@ -7,9 +7,6 @@
 <%@ page import="es.urjc.ia.paca.util.*"%>
 <%@page import="es.urjc.ia.paca.ontology.Practica" %>
 <%@page import="es.urjc.ia.paca.ontology.Test" %>
-<%@page import="es.urjc.ia.paca.ontology.FicheroPropio" %>
-<%@page import="es.urjc.ia.paca.ontology.Caso" %>
-<%@page import="es.urjc.ia.paca.ontology.FicheroAlumno" %>
 
 <jsp:useBean id="interfazGestor" class="es.urjc.ia.paca.util.AgentBeanGestor" scope="session"/>
 
@@ -19,7 +16,7 @@
 <html>
     <head>
         <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
-        <title>Creaci&oacute;n del FicheroOUT</title>
+        <title>Copiar FicherosOUT</title>
         <LINK REL=STYLESHEET TYPE="text/css" HREF="estilos/estiloInterfazGestor.css">
         <SCRIPT TYPE="text/javascript">
             <!--
@@ -34,16 +31,8 @@
                 return true;
             }
 
-
-
-            function desactivarBoton(){
-                document.formTest.seleccionar.disabled=true;
-            }
-
-
             function comprobar(){
-                if((document.formTest.NombreFichero.value=="") || ((document.formTest.LeerFichero.value=="") &&
-                    (document.formTest.ContenidoFichero.value==""))){
+                if((document.formTest.NombreFichero.value=="")){
                     alert("Debe rellenar todos los datos del formulario")
                     return false
                 }
@@ -51,34 +40,51 @@
                     return true
                 }
             }
-
+            function valida(){
+                if((document.formTest.DescripcionTest.value=="") ||
+                    (document.formTest.NombreTest.value=="")){
+                    alert("Debe rellenar todos los datos del formulario")
+                    return false
+                }
+                else{
+                    alert("Debe guardar el test")
+                    return false
+                }
+            }
 
             //-->
         </SCRIPT>
     </head>
     <body onUnload="exit();">
+        <%
 
 
+            String NombreFicheroACopiar = request.getParameter("NombreFicheroACopiar");
+            String ContenidoFicheroACopiar = request.getParameter("ContenidoFicheroACopiar");
 
+
+        %>
         <p class="derecha" > <a href="mostrarPracticas.jsp" class="menu"  onclick="javascript:salida=false;">[Listado de Practicas]</a> |
             <a href="modificarPractica.jsp" class="menu" onclick="javascript:salida=false;"> [Practica]</a> |
             <a href="modificarTest.jsp" class="menu" onclick="javascript:salida=false;"> [Test]</a> |
             <a href="modificarCasos.jsp" class="menu" onclick="javascript:salida=false;"> [Caso] </a> |
             <a href="salida.jsp" class="menu"  onclick="javascript:salida=false;">[Salir]</a> </p>
-                    <h1 class="center"  class="color">
-			Creaci&oacute;n del FicheroOUT.
-                    </h1>
+        <h1 class="center"  class="color">
+			Copiar Fichero OUT.
+        </h1>
+
+        <div id="cuerpo">
                     <div id="cuerpo">
-                        <form method="post" name="formTest" enctype="multipart/form-data" action="guardarFicherosOUT.jsp" onsubmit="return comprobar();">
-                            <p> Nombre del Fichero: <input  type="text" name="NombreFichero"> </p>
-                            <p> Contenido: </p>
-                            <p><TEXTAREA NAME="ContenidoFichero" ROWS=3 COLS=50></TEXTAREA>
+                        <form method="post" name="formTest" action="modificarCasos.jsp" onsubmit="return comprobar();">
+                            <p> Nuevo nombre del Fichero: <input  type="text" name="NombreFichero" value="<%= NombreFicheroACopiar%>">
                             </p>
-                            <p> <input type="file" name="LeerFichero" size="30">
-                            </p>
-                            <input type="hidden" name="operacion" value="crear">
-                            <input type="submit" name="seleccionar" value="Guardar Fichero" onclick="javascript:salida=false;">
+                            <input type="hidden" name="ContenidoFichero" value="<%= ContenidoFicheroACopiar%>">
+                            <input type="hidden" name="operacion" value="copiarFicheroOUT">
+                            <input type="submit" name="Copiar" value="Copiar Fichero" onclick="javascript:salida=false;">
                         </form>
                     </div>
-                    </body>
-                    </html>
+
+        </div>
+
+    </body>
+</html>

@@ -150,7 +150,10 @@ public class GestorPracticas extends Agent {
                                         (!(a instanceof EliminaPractica)) && (!(a instanceof EliminaTest)) &&
                                         (!(a instanceof EliminaFicheroPropio)) && (!(a instanceof EliminaCaso)) &&
                                         (!(a instanceof EliminaFicheroAlumno)) && (!(a instanceof EliminaFicheroIN)) &&
-                                        (!(a instanceof EliminaFicheroOUT)) && (!(a instanceof CopiaTest)))) {
+                                        (!(a instanceof EliminaFicheroOUT)) && (!(a instanceof CopiaTest)) &&
+                                        (!(a instanceof CopiaFicheroPropio)) && (!(a instanceof CopiaFicheroAlumno)) &&
+                                        (!(a instanceof CopiaCaso)) && (!(a instanceof CopiaFicheroIN)) &&
+                                        (!(a instanceof CopiaFicheroOUT)))) {
                                     reply.setPerformative(ACLMessage.REFUSE);
                                     send(reply);
                                 } else {
@@ -274,10 +277,50 @@ public class GestorPracticas extends Agent {
                                         Practica pt = ct.getPractica();
                                         Practica cp = ct.getCopyPractica();
                                         Test ts = ct.getTest();
+                                        Test cts = ct.getCopyTest();
 
-                                        salida = CopiarTest(pt, ts, cp);
+                                        salida = CopiarTest(pt, ts, cp, cts);
+                                    } else if (a instanceof CopiaFicheroPropio) {
+                                        CopiaFicheroPropio ct = (CopiaFicheroPropio) a;
+                                        Practica cp = ct.getCopyPractica();
+                                        Test cts = ct.getCopyTest();
+                                        FicheroPropio fp = ct.getCopyFicheroPropio();
+
+                                        salida = CrearFicheroPropio(cp, cts, fp);
+                                    } else if (a instanceof CopiaFicheroAlumno) {
+                                        CopiaFicheroAlumno ct = (CopiaFicheroAlumno) a;
+                                        Practica cp = ct.getCopyPractica();
+                                        Test cts = ct.getCopyTest();
+                                        FicheroAlumno fp = ct.getCopyFicheroAlumno();
+
+                                        salida = CrearFicheroAlumno(cp, cts, fp);
+                                    } else if (a instanceof CopiaCaso) {
+                                        CopiaCaso ct = (CopiaCaso) a;
+                                        Practica pt = ct.getPractica();
+                                        Practica cp = ct.getCopyPractica();
+                                        Test ts = ct.getTest();
+                                        Test cts = ct.getCopyTest();
+                                        Caso ca = ct.getCaso();
+                                        Caso cca = ct.getCopyCaso();
+
+                                        salida = CopiarCaso(pt, ts, ca, cp, cts, cca);
+                                    } else if (a instanceof CopiaFicheroIN) {
+                                        CopiaFicheroIN ct = (CopiaFicheroIN) a;
+                                        Practica cp = ct.getCopyPractica();
+                                        Test cts = ct.getCopyTest();
+                                        Caso ca = ct.getCopyCaso();
+                                        FicheroIN fi = ct.getCopyFicheroIN();
+
+                                        salida = CrearFicheroIN(cp, cts, ca, fi);
+                                    } else if (a instanceof CopiaFicheroOUT) {
+                                        CopiaFicheroOUT ct = (CopiaFicheroOUT) a;
+                                        Practica cp = ct.getCopyPractica();
+                                        Test cts = ct.getCopyTest();
+                                        Caso ca = ct.getCopyCaso();
+                                        FicheroOUT fo = ct.getCopyFicheroOUT();
+
+                                        salida = CrearFicheroOUT(cp, cts, ca, fo);
                                     }
-
 
                                     if (salida) {
                                         reply.setPerformative(ACLMessage.INFORM);
@@ -1181,7 +1224,6 @@ public class GestorPracticas extends Agent {
         return true;
     }
 
-
     //******************CLASES PARA ELIMINAR******************/
     private boolean EliminarPractica(Practica pt) {
         try {
@@ -1281,11 +1323,11 @@ public class GestorPracticas extends Agent {
     }
 
     /*****************Clases para copiar*********************************/
-    private boolean CopiarTest(Practica pt, Test ts, Practica cp) {
+    private boolean CopiarTest(Practica pt, Test ts, Practica cp, Test cts) {
 
         boolean salida = true;
         try {
-            salida = CrearTest(cp, ts);
+            salida = CrearTest(cp, cts);
 
             String frase = "select * from FicherosPropios where id_Test='" + ts.getId() + "' and id_Practica='" + pt.getId() + "';";
 
@@ -1302,7 +1344,7 @@ public class GestorPracticas extends Agent {
 
             int i = 0;
             while (i < fp.size() && salida) {
-                salida = CrearFicheroPropio(cp, ts, fp.get(i));
+                salida = CrearFicheroPropio(cp, cts, fp.get(i));
                 i++;
             }
 
@@ -1317,7 +1359,7 @@ public class GestorPracticas extends Agent {
 
             i = 0;
             while (i < fa.size() && salida) {
-                salida = CrearFicheroAlumno(cp, ts, fa.get(i));
+                salida = CrearFicheroAlumno(cp, cts, fa.get(i));
                 i++;
 
             }
@@ -1334,7 +1376,7 @@ public class GestorPracticas extends Agent {
 
             i = 0;
             while (i < ca.size() && salida) {
-                salida = CopiarCaso(pt, ts, ca.get(i), cp);
+                salida = CopiarCaso(pt, ts, ca.get(i), cp, cts, ca.get(i));
                 i++;
 
             }
@@ -1347,11 +1389,11 @@ public class GestorPracticas extends Agent {
 
     }
 
-    private boolean CopiarCaso(Practica pt, Test ts, Caso ca, Practica cp) {
+    private boolean CopiarCaso(Practica pt, Test ts, Caso ca, Practica cp, Test cts, Caso cca) {
         boolean salida = true;
         try {
 
-            salida = CrearCaso(cp, ts, ca);
+            salida = CrearCaso(cp, cts, cca);
             String frase = "select * from FicherosIN where id_test='" + ts.getId() + "' and id_practica='" + pt.getId() + "' and id_caso='" + ca.getId() + "' ;";
             ResultSet rs = stat.executeQuery(frase);
             ArrayList<FicheroIN> fi = new ArrayList<FicheroIN>();
@@ -1363,7 +1405,7 @@ public class GestorPracticas extends Agent {
 
             int i = 0;
             while (i < fi.size() && salida) {
-                salida = CrearFicheroIN(cp, ts, ca, fi.get(i));
+                salida = CrearFicheroIN(cp, cts, cca, fi.get(i));
                 i++;
 
             }
@@ -1378,8 +1420,8 @@ public class GestorPracticas extends Agent {
             rs2.close();
 
             i = 0;
-            while (i < fi.size() && salida) {
-                salida = CrearFicheroOUT(cp, ts, ca, fo.get(i));
+            while (i < fo.size() && salida) {
+                salida = CrearFicheroOUT(cp, cts, cca, fo.get(i));
                 i++;
 
             }

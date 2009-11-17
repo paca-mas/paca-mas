@@ -142,7 +142,8 @@
                     <div id="cuerpo">
                         <form method="post" name="formTest" enctype="multipart/form-data" action="guardarFicherosPropios.jsp" onsubmit="desactivarBoton();">
                             <h2> <%= nombre%> </h2>
-                            <p> C&oacute;digo: <TEXTAREA NAME="CodigoFichero" ROWS=3 COLS=40><%= codigo%></TEXTAREA>
+                            <p> C&oacute;digo:</p>
+                            <p> <TEXTAREA NAME="CodigoFichero" ROWS=10 COLS=80><%= codigo%></TEXTAREA>
                             </p>
                             <p> <input type="file" name="LeerFichero" size="30">
                             </p>

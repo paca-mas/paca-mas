@@ -11,7 +11,9 @@ public class Testigo extends Resultado{
                 pedirFicherosAlumno, ultimaPractica, ultimoTest, ultimoCaso, crearPractica, crearTest, crearFicheroPropio,
                 crearFicheroAlumno, crearCaso, crearFicheroIN, crearFicheroOUT, eliminarPractica, eliminarTest,
                 eliminarFicheroPropio, eliminarCaso, eliminarFicheroAlumno, eliminarFicheroIN, eliminarFicheroOUT,
-                seleccionarTest, copiarTest
+                seleccionarTest, copiarTest, seleccionarFicherosPropios, copiarFicherosPropios, seleccionarFicherosAlumno,
+                copiarFicherosAlumno, seleccionarCasos, copiarCasos, seleccionarFicherosIN, copiarFicherosIN,
+                seleccionarFicherosOUT, copiarFicherosOUT
 	}
 	
 	private Object resultado;

@@ -143,6 +143,7 @@
             </div>
         </div>
         <div id="central">
+            <h3 class="miniTitulo"> Tests </h3>
             <table border="4" cellspacing="4" cellpadding="4" width="380" class="center">
                 <tbody>
 

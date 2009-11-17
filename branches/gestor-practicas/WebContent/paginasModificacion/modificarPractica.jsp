@@ -96,38 +96,38 @@
         %>
         <%
 
-            String nombre = request.getParameter("NombrePractica");
-            String descripcion = request.getParameter("DescripcionPractica");
-            String fechaEntrega = request.getParameter("FechaPractica");
+                String nombre = request.getParameter("NombrePractica");
+                String descripcion = request.getParameter("DescripcionPractica");
+                String fechaEntrega = request.getParameter("FechaPractica");
 
 
-            if (nombre == null) {
-                Testigo resultado = new Testigo();
-                resultado.setOperacion(Testigo.Operaciones.ultimaPractica);
+                if (nombre == null) {
+                    Testigo resultado = new Testigo();
+                    resultado.setOperacion(Testigo.Operaciones.ultimaPractica);
 
-                interfazGestor.sendTestigo(resultado);
+                    interfazGestor.sendTestigo(resultado);
 
-                while (!resultado.isRelleno()) {
+                    while (!resultado.isRelleno()) {
+                    }
+
+                    Practica pt = (Practica) resultado.getResultado();
+                    nombre = pt.getId();
+                    descripcion = pt.getDescripcion();
+                    fechaEntrega = pt.getFechaEntrega();
+
                 }
 
-                Practica pt = (Practica) resultado.getResultado();
-                nombre = pt.getId();
-                descripcion = pt.getDescripcion();
-                fechaEntrega = pt.getFechaEntrega();
-
-            }
-
-            Testigo resultado2 = new Testigo();
-            resultado2.setOperacion(Testigo.Operaciones.pedirTests);
-            resultado2.setParametro((HttpServletRequest) request);
+                Testigo resultado2 = new Testigo();
+                resultado2.setOperacion(Testigo.Operaciones.pedirTests);
+                resultado2.setParametro((HttpServletRequest) request);
 
 
-            interfazGestor.sendTestigo(resultado2);
+                interfazGestor.sendTestigo(resultado2);
 
-            while (!resultado2.isRelleno()) {
-            }
+                while (!resultado2.isRelleno()) {
+                }
 
-            Test[] tests = (Test[]) resultado2.getResultado();
+                Test[] tests = (Test[]) resultado2.getResultado();
 
         %>
         <div id="cuerpo">
@@ -162,13 +162,15 @@
             </div>
         </div>
         <div id="central">
+            <h3 class="miniTitulo"> Tests </h3>
             <table border="4" cellspacing="4" cellpadding="4" width="380" class="center">
                 <tbody>
 
                     <% for (int i = 0; i < tests.length; i++) {%>
 
                     <tr>
-                        <td> <%= tests[i].getId()%></td>
+                        <td> <a href="modificarTest.jsp" name="post" NombreTest="<%= tests[i].getId()%>" DescripcionTest="<%= tests[i].getDescripcion()%>"><%= tests[i].getId()%></a></td>
+
                         <td>
                             <form method="post" name="formVer" action="modificarTest.jsp" onsubmit="return valida();">
                                 <input  type="hidden" value="<%= tests[i].getId()%>" name="NombreTest">
@@ -186,7 +188,7 @@
                         </td>
                     </tr>
                     <%
-            }
+                }
                     %>
                 </tbody>
             </table>

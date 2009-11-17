@@ -94,6 +94,10 @@
                         resultado.setOperacion(Testigo.Operaciones.eliminarFicheroIN);
                     } else if (operacion.equalsIgnoreCase("eliminarFicheroOUT")) {
                         resultado.setOperacion(Testigo.Operaciones.eliminarFicheroOUT);
+                    } else if (operacion.equalsIgnoreCase("copiarFicheroIN")){
+                        resultado.setOperacion(Testigo.Operaciones.copiarFicherosIN);
+                    } else if (operacion.equalsIgnoreCase("copiarFicheroOUT")){
+                        resultado.setOperacion(Testigo.Operaciones.copiarFicherosOUT);
                     }
                     resultado.setParametro((HttpServletRequest) request);
                     interfazGestor.sendTestigo(resultado);
@@ -155,6 +159,7 @@
                         <h2> <%= nombre%> </h2>
                         <div id="enlaces">
                             <div id="izquierda">
+                                <h3 class="miniTitulo"> FicherosIN </h3>
                                 <table border="0">
                                     <tbody>
                                         <tr>
@@ -164,7 +169,7 @@
                                                 </form>
                                             </td>
                                             <td>
-                                                <form method="post" name="formAnadir" action="peticionTest2.jsp" onsubmit="return valida();">
+                                                <form method="post" name="formAnadir" action="seleccionarFicherosIN.jsp" onsubmit="return valida();">
                                                     <input type="submit" name="seleccionar" value="Seleccionar FicheroIN" onclick="javascript:salida=false;">
                                                 </form> </td>
                                         </tr>
@@ -173,17 +178,18 @@
                                 </table>
                             </div>
 
-                            <div id="derecha">
+                            <div id="derecha3">
+                                <h3 class="miniTitulo"> FicherosOUT </h3>
                                 <table border="0">
                                     <tbody>
                                         <tr>
                                             <td>
-                                                <form method="post" name="formAnadir" action="crearFicheroOUT.jsp" onsubmit="return valida();">
+                                                <form method="post" name="formAnadir" action="crearFicherosOUT.jsp" onsubmit="return valida();">
                                                     <input type="submit" name="seleccionar" value="A&ntilde;adir FicheroOUT" onclick="javascript:salida=false;">
                                                 </form>
                                             </td>
                                             <td>
-                                                <form method="post" name="formAnadir" action="peticionTest2.jsp" onsubmit="return valida();">
+                                                <form method="post" name="formAnadir" action="seleccionarFicherosOUT.jsp" onsubmit="return valida();">
                                                     <input type="submit" name="seleccionar" value="Seleccionar FicheroOUT" onclick="javascript:salida=false;">
                                                 </form> </td>
                                         </tr>
