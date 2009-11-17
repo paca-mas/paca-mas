@@ -84,6 +84,7 @@
                         </form>
                         <div id="enlaces">
                             <div id="izquierda">
+                                <h3 class="miniTitulo"> FicherosIN </h3>
                                 <table border="0">
                                     <tbody>
                                         <tr>
@@ -102,7 +103,8 @@
                                 </table>
                             </div>
 
-                            <div id="derecha">
+                            <div id="derecha3">
+                                <h3 class="miniTitulo"> FicherosOUT </h3>
                                 <table border="0">
                                     <tbody>
                                         <tr>

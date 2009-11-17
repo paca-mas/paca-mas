@@ -5,27 +5,17 @@
 package es.urjc.ia.paca.ontology;
 
 import jade.content.AgentAction;
-import jade.content.Predicate;
-import jade.content.abs.AbsPredicate;
 
 /**
  *
  * @author alvaro
  */
-public class CopiaTest implements AgentAction {
+public class CopiaFicheroAlumno implements AgentAction {
 
-    private Test test;
-    private Practica practica1;
     private Practica CopyPractica;
     private Test CopyTest;
+    private FicheroAlumno Copyfp;
 
-    public Test getTest() {
-        return test;
-    }
-
-    public void setTest(Test test) {
-        this.test = test;
-    }
 
     public Test getCopyTest() {
         return CopyTest;
@@ -35,14 +25,6 @@ public class CopiaTest implements AgentAction {
         this.CopyTest = test;
     }
 
-    public Practica getPractica() {
-        return practica1;
-    }
-
-    public void setPractica(Practica practica) {
-        this.practica1 = practica;
-    }
-
     public Practica getCopyPractica() {
         return CopyPractica;
     }
@@ -50,4 +32,13 @@ public class CopiaTest implements AgentAction {
     public void setCopyPractica(Practica CopyPractica) {
         this.CopyPractica = CopyPractica;
     }
+
+        public void setCopyFicheroAlumno(FicheroAlumno fp){
+        this.Copyfp = fp;
+    }
+
+    public FicheroAlumno getCopyFicheroAlumno(){
+        return Copyfp;
+    }
 }
+

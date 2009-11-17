@@ -73,6 +73,7 @@
             </form>
 <div id="enlaces">
                 <div id="izquierda">
+                    <h3 class="miniTitulo"> Ficheros Propios </h3>
                     <table border="0">
                         <tbody>
                             <tr>
@@ -92,6 +93,7 @@
                 </div>
 
                 <div id="centro">
+                    <h3> Casos </h3>
                     <table border="0">
                         <tbody>
                             <tr>
@@ -111,6 +113,7 @@
                 </div>
 
                 <div id="derecha">
+                    <h3 class="miniTitulo"> Ficheros Alumno </h3>
                     <table border="0">
                         <tbody>
                             <tr>

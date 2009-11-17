@@ -1,23 +1,19 @@
-/*
- * To change this template, choose Tools | Templates
- * and open the template in the editor.
- */
 package es.urjc.ia.paca.ontology;
 
-import jade.content.AgentAction;
-import jade.content.Predicate;
-import jade.content.abs.AbsPredicate;
+import jade.content.AgentAction;;
 
 /**
  *
  * @author alvaro
  */
-public class CopiaTest implements AgentAction {
+public class CopiaCaso implements AgentAction {
 
     private Test test;
     private Practica practica1;
+    private Caso caso;
     private Practica CopyPractica;
     private Test CopyTest;
+    private Caso CopyCaso;
 
     public Test getTest() {
         return test;
@@ -50,4 +46,21 @@ public class CopiaTest implements AgentAction {
     public void setCopyPractica(Practica CopyPractica) {
         this.CopyPractica = CopyPractica;
     }
+
+    public Caso getCaso() {
+        return caso;
+    }
+
+    public void setCaso(Caso caso) {
+        this.caso = caso;
+    }
+
+    public Caso getCopyCaso() {
+        return CopyCaso;
+    }
+
+    public void setCopyCaso(Caso caso) {
+        this.CopyCaso = caso;
+    }
 }
+

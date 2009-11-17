@@ -120,9 +120,19 @@ public class pacaOntology extends Ontology {
     public static final String ELIMINAFICHEROALUMNO = "EliminaFicheroAlumno";
     public static final String ELIMINAFICHEROIN = "EliminaFicheroIN";
     public static final String ELIMINAFICHEROOUT = "EliminaFicheroOUT";
-    
     public static final String COPIATEST = "CopiaTest";
     public static final String COPYPRACTICA = "CopyPractica";
+    public static final String COPYTEST = "CopyTest";
+    public static final String COPIAFICHEROPROPIO = "CopiaFicheroPropio";
+    public static final String COPYFICHEROPROPIO = "CopyFicheroPropio";
+    public static final String COPIAFICHEROALUMNO = "CopiaFicheroAlumno";
+    public static final String COPYFICHEROALUMNO = "CopyFicheroAlumno";
+    public static final String COPIACASO = "CopiaCaso";
+    public static final String COPYCASO = "CopyCaso";
+    public static final String COPYFICHEROIN = "CopyFicheroIN";
+    public static final String COPIAFICHEROIN = "CopiaFicheroIN";
+    public static final String COPYFICHEROOUT = "CopyFicheroOUT";
+    public static final String COPIAFICHEROOUT = "CopiaFicheroOUT";
     /**
     Instancia de la ontolog�a. Sigue un patr�n de dise�o SINGLETON.
      */
@@ -440,6 +450,43 @@ public class pacaOntology extends Ontology {
             ps31.add(TEST, (ConceptSchema) getSchema(TEST));
             ps31.add(PRACTICA, (ConceptSchema) getSchema(PRACTICA));
             ps31.add(COPYPRACTICA, (ConceptSchema) getSchema(PRACTICA));
+            ps31.add(COPYTEST, (ConceptSchema) getSchema(TEST));
+
+
+            add(new AgentActionSchema(COPIAFICHEROPROPIO), CopiaFicheroPropio.class);
+            AgentActionSchema ps32 = (AgentActionSchema) getSchema(COPIAFICHEROPROPIO);
+            ps32.add(COPYPRACTICA, (ConceptSchema) getSchema(PRACTICA));
+            ps32.add(COPYTEST, (ConceptSchema) getSchema(TEST));
+            ps32.add(COPYFICHEROPROPIO, (ConceptSchema) getSchema(FICHEROPROPIO));
+
+            add(new AgentActionSchema(COPIAFICHEROALUMNO), CopiaFicheroAlumno.class);
+            AgentActionSchema ps33 = (AgentActionSchema) getSchema(COPIAFICHEROALUMNO);
+            ps33.add(COPYPRACTICA, (ConceptSchema) getSchema(PRACTICA));
+            ps33.add(COPYTEST, (ConceptSchema) getSchema(TEST));
+            ps33.add(COPYFICHEROALUMNO, (ConceptSchema) getSchema(FICHEROALUMNO));
+
+            add(new AgentActionSchema(COPIACASO), CopiaCaso.class);
+            AgentActionSchema ps34 = (AgentActionSchema) getSchema(COPIACASO);
+            ps34.add(COPYPRACTICA, (ConceptSchema) getSchema(PRACTICA));
+            ps34.add(COPYTEST, (ConceptSchema) getSchema(TEST));
+            ps34.add(COPYCASO, (ConceptSchema) getSchema(CASO));
+            ps34.add(PRACTICA, (ConceptSchema) getSchema(PRACTICA));
+            ps34.add(TEST, (ConceptSchema) getSchema(TEST));
+            ps34.add(CASO, (ConceptSchema) getSchema(CASO));
+
+            add(new AgentActionSchema(COPIAFICHEROIN), CopiaFicheroIN.class);
+            AgentActionSchema ps35 = (AgentActionSchema) getSchema(COPIAFICHEROIN);
+            ps35.add(COPYPRACTICA, (ConceptSchema) getSchema(PRACTICA));
+            ps35.add(COPYTEST, (ConceptSchema) getSchema(TEST));
+            ps35.add(COPYCASO, (ConceptSchema) getSchema(CASO));
+            ps35.add(COPYFICHEROIN, (ConceptSchema) getSchema(FICHEROIN));
+
+            add(new AgentActionSchema(COPIAFICHEROOUT), CopiaFicheroOUT.class);
+            AgentActionSchema ps36 = (AgentActionSchema) getSchema(COPIAFICHEROOUT);
+            ps36.add(COPYPRACTICA, (ConceptSchema) getSchema(PRACTICA));
+            ps36.add(COPYTEST, (ConceptSchema) getSchema(TEST));
+            ps36.add(COPYCASO, (ConceptSchema) getSchema(CASO));
+            ps36.add(COPYFICHEROOUT, (ConceptSchema) getSchema(FICHEROOUT));
 
 
 

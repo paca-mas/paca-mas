@@ -71,7 +71,8 @@
                     <div id="cuerpo">
                         <form method="post" name="formTest" enctype="multipart/form-data" action="guardarFicherosIN.jsp" onsubmit="return comprobar();">
                             <p> Nombre del Fichero: <input  type="text" name="NombreFichero"> </p>
-                            <p> Contenido: <TEXTAREA NAME="ContenidoFichero" ROWS=3 COLS=40></TEXTAREA>
+                            <p> Contenido: </p>
+                            <p><TEXTAREA NAME="ContenidoFichero" ROWS=3 COLS=50></TEXTAREA>
                             </p>
                             <p> <input type="file" name="LeerFichero" size="30">
                             </p>
