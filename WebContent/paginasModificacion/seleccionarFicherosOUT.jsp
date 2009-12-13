@@ -26,6 +26,7 @@
         <title>
             Seleccionar FicherosOUT.
         </title>
+        <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
         <LINK REL=STYLESHEET TYPE="text/css" HREF="estilos/estiloInterfazGestor.css">
         <SCRIPT TYPE="text/javascript">
             <!--
@@ -52,7 +53,7 @@
             <a href="modificarCasos.jsp" class="menu" onclick="javascript:salida=false;"> [Caso] </a> |
             <a href="salida.jsp" class="menu"  onclick="javascript:salida=false;">[Salir]</a> </p>
 
-        <h1 class="center" class="color">
+        <h1 class="center">
             Selecci&oacute;n de FicherosOUT.  </h1>
 
 
@@ -72,7 +73,8 @@
 
         %>
 
-        <%
+        <div id="cuerpo2">
+            <%
             for (int i = 0; i < pract.length; i++) {
 
                 Testigo resultado = new Testigo();
@@ -87,97 +89,96 @@
 
                 Test[] tests = (Test[]) resultado.getResultado();
 
-        %>
+            %>
 
-        <div id="cuerpo">
+
             <h3> <%= pract[i].getId()%> </h3>
 
-            <div id="central4">
 
 
-                <%
-                for (int h = 0; h < tests.length; h++) {
+            <%
+                    for (int h = 0; h < tests.length; h++) {
 
-                    Testigo resultado3 = new Testigo();
-                    resultado3.setOperacion(Testigo.Operaciones.seleccionarCasos);
-                    resultado3.setParametro(tests[h]);
+                        Testigo resultado3 = new Testigo();
+                        resultado3.setOperacion(Testigo.Operaciones.seleccionarCasos);
+                        resultado3.setParametro(tests[h]);
 
-                    interfazGestor.sendTestigo(resultado3);
+                        interfazGestor.sendTestigo(resultado3);
 
-                    while (!resultado3.isRelleno()) {
-                    }
-
-                    Caso[] ca = (Caso[]) resultado3.getResultado();
-
-                %>
-
-
-
-
-
-                <h4> <%=tests[h].getId()%> </h4>
-                <div id="central3">
-                    <% for (int z = 0; z < ca.length; z++) {
-
-                        Testigo resultado4 = new Testigo();
-                        resultado4.setOperacion(Testigo.Operaciones.seleccionarFicherosOUT);
-                        resultado4.setParametro(ca[z]);
-
-                        interfazGestor.sendTestigo(resultado4);
-
-                        while (!resultado4.isRelleno()) {
+                        while (!resultado3.isRelleno()) {
                         }
 
-                        FicheroOUT[] fo = (FicheroOUT[]) resultado4.getResultado();
+                        Caso[] ca = (Caso[]) resultado3.getResultado();
 
-                    %>
-
-                    <h4> <%= ca[z].getId()%> </h4>
-
-                    <div id="central5">
-
-                            <% for (int y = 0; y < fo.length; y++) {
-
-                            %>
-                            <table border="0">
-                                <tbody>
-                                    <tr>
-                                <form class="center" method="post" name="formVer" action="CopiarFicherosOUT.jsp">
-                                    <td> <%= fo[y].getNombre()%>  </td>
-                                    <td>
-
-                                        <input type="hidden" value="<%= fo[y].getNombre()%>" name="NombreFicheroACopiar">
-                                        <input type="hidden" value="<%= fo[y].getContenido()%>" name="ContenidoFicheroACopiar">
-                                        <input type="hidden" value="copiar" name="operacion">
-                                        <input type="submit" name="Seleccionar" value="Seleccionar" onclick="javascript:salida=false;">
-
-                                    </td>
-                                </form>
-
-                                </tr>
-
-                                </tbody>
-
-                            </table>
-
-                            <%
-     }
-                            %>
+            %>
 
 
-                    </div>
 
-                    <%
+
+
+            <h4> <%=tests[h].getId()%> </h4>
+
+            <% for (int z = 0; z < ca.length; z++) {
+
+                    Testigo resultado4 = new Testigo();
+                    resultado4.setOperacion(Testigo.Operaciones.seleccionarFicherosOUT);
+                    resultado4.setParametro(ca[z]);
+
+                    interfazGestor.sendTestigo(resultado4);
+
+                    while (!resultado4.isRelleno()) {
                     }
-                    %>
-                </div>
+
+                    FicheroOUT[] fo = (FicheroOUT[]) resultado4.getResultado();
+
+            %>
+
+            <h4 class="seleccionTest2"> <%= ca[z].getId()%> </h4>
 
 
-                <%
+
+            <% for (int y = 0; y < fo.length; y++) {
+
+            %>
+            <table border="0" class="seleccionCaso">
+                <tbody>
+                    <tr>
+
+                        <td> <%= fo[y].getNombre()%>  </td>
+                        <td>
+                            <form class="center" method="post" name="formVer" action="CopiarFicherosOUT.jsp">
+                                <p class="tabla"><input type="hidden" value="<%= fo[y].getNombre()%>" name="NombreFicheroACopiar">
+                                    <input type="hidden" value="<%= fo[y].getContenido()%>" name="ContenidoFicheroACopiar">
+                                    <input type="hidden" value="copiar" name="operacion">
+                                    <input type="submit" name="Seleccionar" value="Seleccionar" onclick="javascript:salida=false;"></p>
+                            </form>
+
+                        </td>
+
+                    </tr>
+
+                </tbody>
+
+            </table>
+
+            <%
+     }
+            %>
+
+
+
+
+            <%
                 }
-                %>
+            %>
 
-            </div>
+
+
+            <%
+                    }
+            %>
+
+
             <% }
             %>
 

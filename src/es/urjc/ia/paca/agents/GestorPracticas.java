@@ -14,7 +14,6 @@ import jade.lang.acl.ACLMessage;
 import es.urjc.ia.paca.util.AndBuilder;
 import jade.content.AgentAction;
 import jade.content.ContentElement;
-import jade.content.abs.AbsAgentAction;
 import jade.content.abs.AbsAggregate;
 import jade.content.abs.AbsConcept;
 import jade.content.abs.AbsContentElement;
@@ -29,7 +28,6 @@ import jade.content.onto.basic.Action;
 import jade.core.behaviours.CyclicBehaviour;
 import jade.core.behaviours.OneShotBehaviour;
 import java.io.File;
-import java.io.IOException;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import java.sql.*;
@@ -981,7 +979,7 @@ public class GestorPracticas extends Agent {
             Test ts;
 
             while (rs.next()) {
-                ts = new Test(rs.getString("id"), rs.getString("descripcion"));
+                ts = new Test(rs.getString("id"), rs.getString("descripcion"), rs.getString("ejecutable"));
                 aux.add(ts);
             }
             rs.close();
@@ -1117,6 +1115,10 @@ public class GestorPracticas extends Agent {
     private boolean ModificarTest(Practica pt, Test ts) {
         try {
             String frase = "update Test set descripcion='" + ts.getDescripcion() + "' where id='" + ts.getId() + "' and id_practica='" + pt.getId() + "';";
+            
+            String frase2 = "update Test set ejecutable='" + ts.getEjecutable() + "' where id='" + ts.getId() + "' and id_practica='" + pt.getId() + "';";
+            stat.executeUpdate(frase2);
+            
             stat.executeUpdate(frase);
         } catch (SQLException ex) {
             return false;
@@ -1166,7 +1168,7 @@ public class GestorPracticas extends Agent {
 
     private boolean CrearTest(Practica pt, Test ts) {
         try {
-            String frase = "insert into Test values('" + ts.getId() + "', '" + pt.getId() + "', '" + ts.getDescripcion() + "');";
+            String frase = "insert into Test values('" + ts.getId() + "', '" + pt.getId() + "', '" + ts.getDescripcion() + "', '" +ts.getEjecutable()+"');";
             stat.executeUpdate(frase);
         } catch (SQLException ex) {
             return false;

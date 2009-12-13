@@ -20,7 +20,7 @@ body.cab{
 
 strong{
 	color: red;
-	text-transform: uppercase;  
+	text-transform: uppercase;
 }
 
 
@@ -38,7 +38,7 @@ p.desc{
 
 p.err{
 	color:red;
-} 
+}
 
 p.caso{
 	align:center;
@@ -51,15 +51,16 @@ p.test{
 
 
 table.color{
-	background: #FFFFEE; 
+	background: #FFFFEE;
 	color: blue;
-	
+	position: relative;
     border-top-style: none;
     border-bottom-style: none;
     border-left-style: none;
     border-right-style: none;
     align: center;
-    width: 50%;
+    width: 69%;
+left: 42%;
 }
 
 
@@ -99,7 +100,7 @@ div.evalCaso{
 }
 
 div.desc{
-}	
+}
 
 div.form{
 	align: center;
@@ -112,7 +113,7 @@ div.lat{
 	float: right;
 	width: 90%;
 	margin-right:15px;
-	margin-left:15px; 
+	margin-left:15px;
 	padding-bottom:20px;
 }
 
@@ -127,13 +128,13 @@ h4.test{
 }
 
 h5.caso{
-	text-transform: uppercase;	
+	text-transform: uppercase;
 }
 
 
 
-A:link{ 
-	text-decoration: none 
+A:link{
+	text-decoration: none
 }
 
 A:visited{
@@ -149,18 +150,28 @@ A:active{
  */
 .center {
 	text-align: center;
+position: relative;
+left: 30%;
 }
- 
+
 /*
  * Cabecera
  */
 #cabecera {
 	text-align: center;
-	 
+position: relative;
+left: 0%;
+
 }
 
 #cuerpo {
     margin-top: 50px;
 	margin-left: 50px;
     margin-right: 50px;
+width: 800px;
+
+}
+
+.noborder{
+    border: 0;
 }

@@ -60,7 +60,7 @@
 
         <p class="derecha" > <a href="mostrarPracticas.jsp" class="menu"  onclick="javascript:salida=false;">[Listado de Practicas]</a> |
             <a href="salida.jsp" class="menu"  onclick="javascript:salida=false;">[Salir]</a> </p>
-        <h1 class="center"  class="color">
+        <h1 class="center">
 			Modificaci&oacute;n de la pr&aacute;ctica.
         </h1>
 
@@ -121,7 +121,7 @@
                     <input  type="hidden" value="<%= nombre%>" name="NombrePractica">
                     <input type="hidden" value="modificar" name="operacion">
                 </p>
-                <input type="submit" name="seleccionar" value="Guardar Practica" onclick="javascript:salida=false;">
+                <p class="tabla"><input type="submit" name="seleccionar" value="Guardar Practica" onclick="javascript:salida=false;"> </p>
             </form>
             <div id="enlaces">
                 <table border="0">
@@ -129,12 +129,12 @@
                         <tr>
                             <td>
                                 <form method="post" name="formAnadir" action="crearTest.jsp" onsubmit="return valida();">
-                                    <input type="submit" name="seleccionar" value="A&ntilde;adir Test" onclick="javascript:salida=false;">
+                                    <p class="tabla"><input type="submit" name="seleccionar" value="A&ntilde;adir Test" onclick="javascript:salida=false;"></p>
                                 </form>
                             </td>
                             <td>
                                 <form method="post" name="formAnadir" action="seleccionarTest.jsp" onsubmit="return valida();">
-                                    <input type="submit" name="seleccionar" value="Seleccionar Test" onclick="javascript:salida=false;">
+                                    <p class="tabla"><input type="submit" name="seleccionar" value="A&ntilde;adir copia de Test ya existente" onclick="javascript:salida=false;"></p>
                                 </form> </td>
                         </tr>
 
@@ -143,7 +143,9 @@
             </div>
         </div>
         <div id="central">
-            <h3 class="miniTitulo"> Tests </h3>
+            <% if (tests.length >0){ %>
+            <h3 class="miniTituloPractica"> Tests </h3>
+
             <table border="4" cellspacing="4" cellpadding="4" width="380" class="center">
                 <tbody>
 
@@ -153,18 +155,18 @@
                         <td> <%= tests[i].getId()%></td>
                         <td>
                             <form method="post" name="formpracticas" action="modificarTest.jsp" onsubmit="return valida();">
-                                <input  type="hidden" value="<%= tests[i].getId()%>" name="NombreTest">
+                                <p class="tabla"><input  type="hidden" value="<%= tests[i].getId()%>" name="NombreTest">
                                 <input  type="hidden" value="<%= tests[i].getDescripcion()%>" name="DescripcionTest">
-                                <input type="submit" name="Ver" value="Ver" onclick="javascript:salida=false;">
+                                <input type="hidden" value="<%= tests[i].getEjecutable()%>" name="EjecutableTest">
+                                <input type="submit" name="Ver" value="Ver" onclick="javascript:salida=false;"></p>
                             </form>
                         </td>
                         <td>
                             <form method="post" name="formpracticas" action="modificarPractica.jsp" onsubmit="return valida();">
-                                <form method="post" name="formpracticas" action="guardarPractica.jsp" onsubmit="return valida();">
-                                    <input  type="hidden" value="<%= tests[i].getId()%>" name="NombreTest">
+                                    <p class="tabla"><input  type="hidden" value="<%= tests[i].getId()%>" name="NombreTest">
                                     <input type="hidden" value="<%= tests[i].getDescripcion()%>" name="DescripcionTest">
                                     <input type="hidden" value="eliminar" name="operacion">
-                                    <input type="submit" name="Eliminar" value="Eliminar" onclick="javascript:salida=false;">
+                                    <input type="submit" name="Eliminar" value="Eliminar" onclick="javascript:salida=false;"></p>
                                 </form>
                         </td>
                     </tr>
@@ -173,19 +175,21 @@
                     %>
                 </tbody>
             </table>
+                    <%
+                    }
+                    %>
         </div>
         <% } else {
         %>
 
-        <h2 class="error" align="center">
+        <h2 class="error">
             ERROR!!! En la base de datos </h2>
-        <br>
-        <p class="error" align="center">
+        
+        <p class="error"">
             Ha ocurrido un problema en la base de datos al intentar crear la practica.
             Revise el nombre de la practica.
         </p>
-        <br>
-        <br>
+
 
 
         <% }

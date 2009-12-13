@@ -36,6 +36,7 @@ public class Datos {
                 "create table Test (id VARCHAR2(20) not null," +
                 "id_practica VARCHAR2(20) not null, " +
                 "descripcion VARCHAR2(25) not null, " +
+                "ejecutable VARCHAR2," +
                 "primary key (id, id_practica)," +
                 "foreign key (id_practica) references Practica);");
 

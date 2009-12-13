@@ -66,26 +66,24 @@
 
         %>
         <p class="derecha" > <a href="mostrarPracticas.jsp" class="menu"  onclick="javascript:salida=false;">[Listado de Practicas]</a> |
-            <a href="modificarPractica.jsp" class="menu" onclick="javascript:salida=false;"> [Practica] |
-                <a href="modificarTest.jsp" class="menu" onclick="javascript:salida=false;"> [Test] |
+            <a href="modificarPractica.jsp" class="menu" onclick="javascript:salida=false;"> [Practica] </a>|
+                <a href="modificarTest.jsp" class="menu" onclick="javascript:salida=false;"> [Test] </a>|
                     <a href="salida.jsp" class="menu"  onclick="javascript:salida=false;">[Salir]</a> </p>
-        <h1 class="center"  class="color">
+        <h1 class="center">
 			Copiar Caso.
         </h1>
 
-        <div id="cuerpo">
+        
                     <div id="cuerpo">
                         <form method="post" name="formTest" action="modificarTest.jsp" onsubmit="return comprobar();">
                             <p> Nuevo nombre del Caso: <input  type="text" name="NombreCaso" value="<%= NombreCasoACopiar%>"> </p>
-                            <input type="hidden" name="NombrePracticaACopiar" value="<%= NombrePracticaACopiar%>">
+                            <p> <input type="hidden" name="NombrePracticaACopiar" value="<%= NombrePracticaACopiar%>">
                             <input type="hidden" name="NombreTestACopiar" value="<%= NombreTestACopiar%>">
                             <input type="hidden" name="NombreCasoACopiar" value="<%= NombreCasoACopiar%>">
                             <input type="hidden" name="operacion" value="copiarCaso">
-                            <input type="submit" name="Copiar" value="Copiar Caso" onclick="javascript:salida=false;">
+                            <input type="submit" name="Copiar" value="Copiar Caso" onclick="javascript:salida=false;"> </p>
                         </form>
                     </div>
-
-        </div>
 
     </body>
 </html>

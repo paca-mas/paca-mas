@@ -23,7 +23,9 @@
         <title>
             Practicas Disponibles.
         </title>
+        <meta content="text/html; charset=ISO-8859-1" http-equiv="content-type">
         <LINK REL=STYLESHEET TYPE="text/css" HREF="estilos/estiloInterfazGestor.css">
+
         <SCRIPT TYPE="text/javascript">
             <!--
 
@@ -89,7 +91,7 @@ Practica[] pract = (Practica[]) resultado2.getResultado();
 
         <p class="derecha" > <a href="salida.jsp" class="menu"  onclick="javascript:salida=false;">[Salir]</a> </p>
 
-        <h1 class="center" class="color">
+        <h1 class="center">
             Listado de pr&aacute;cticas.  </h1>
         <div id="cuerpo">
             <div id="central2">
@@ -99,22 +101,22 @@ Practica[] pract = (Practica[]) resultado2.getResultado();
                         <% for (int i = 0; i < pract.length; i++) {%>
 
                         <tr>
-                            <td> <%= pract[i].getId()%></td>
+                            <td> <p class="tabla"><%= pract[i].getId()%> </p></td>
                             <td>
                                 <form method="post" name="formpracticas" action="modificarPractica.jsp" onsubmit="desactivarBoton();">
-                                    <input  type="hidden" value="<%= pract[i].getId()%>" name="NombrePractica">
+                                    <p class="tabla"> <input  type="hidden" value="<%= pract[i].getId()%>" name="NombrePractica">
                                     <input  type="hidden" value="<%= pract[i].getDescripcion()%>" name="DescripcionPractica">
                                     <input  type="hidden" value="<%= pract[i].getFechaEntrega()%>" name="FechaPractica">
-                                    <input type="submit" name="Ver" value="Ver" onclick="javascript:salida=false;">
+                                    <input type="submit" name="Ver" value="Ver" onclick="javascript:salida=false;"> </p>
                                 </form>
                             </td>
                             <td>
                                 <form method="post" name="formpracticas" action="mostrarPracticas.jsp" onsubmit="desactivarBoton();">
-                                    <input  type="hidden" value="<%= pract[i].getId()%>" name="NombrePractica">
+                                    <p class="tabla"> <input  type="hidden" value="<%= pract[i].getId()%>" name="NombrePractica">
                                     <input  type="hidden" value="<%= pract[i].getDescripcion()%>" name="DescripcionPractica">
                                     <input  type="hidden" value="<%= pract[i].getFechaEntrega()%>" name="FechaPractica">
                                     <input type="hidden" value="EliminarPractica" name="operacion">
-                                    <input type="submit" name="Eliminar" value="Eliminar" onclick="javascript:salida=false;">
+                                    <input type="submit" name="Eliminar" value="Eliminar" onclick="javascript:salida=false;"> </p>
                                 </form>
                             </td>
                         </tr>
@@ -133,14 +135,13 @@ Practica[] pract = (Practica[]) resultado2.getResultado();
         <% } else {
         %>
 
-        <h2 class="error" align="center">
+        <h2 class="error">
             ERROR!!! En la base de datos </h2>
-        <br>
-        <p class="error" align="center">
+        
+        <p class="error">
             Ha ocurrido un problema en la base de datos al intentar eliminar la practica.
         </p>
-        <br>
-        <br>
+
 
 
         <% }

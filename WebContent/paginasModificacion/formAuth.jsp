@@ -1,10 +1,11 @@
-<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01//EN" "http://www.w3.org/TR/html4/strict.dtd">
 
 <html>
 	<head>
 		<title>
 			P&aacute;gina de Autentificaci&oacute;n
 		</title>
+                <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
 		<LINK REL=STYLESHEET TYPE="text/css" HREF="./estilos/estiloPaca.css">
 		<SCRIPT TYPE="text/javascript">
 			 <!--
@@ -42,11 +43,11 @@
 		<div id="cuerpo">
 			<p class="center">
 			<form method="post" action="respAuth.jsp" name="formauth" onSubmit="return comprobar_form(this);">
-				<br>
+				
 				<p class="center">
 					Bienvenido, por favor inicie una sesi&oacute;n:
 				</p>
-				<br>
+				
 				<p class="center">
 				<p class="form">
 				<table class="color">

@@ -36,10 +36,10 @@
                     (document.formTest.NombreTest.value=="")){
                     alert("Debe rellenar todos los datos del formulario")
                     return false
-                 }
-                 else{
-                     return true
-                 }
+                }
+                else{
+                    return true
+                }
             }
             function valida(){
                 if((document.formTest.DescripcionTest.value=="") ||
@@ -58,9 +58,9 @@
     </head>
     <body onUnload="exit();">
         <p class="derecha" > <a href="mostrarPracticas.jsp" class="menu"  onclick="javascript:salida=false;">[Listado de Practicas]</a> |
-            <a href="modificarPractica.jsp" class="menu" onclick="javascript:salida=false;"> [Practica] |
-                <a href="salida.jsp" class="menu"  onclick="javascript:salida=false;">[Salir]</a> </p>
-        <h1 class="center"  class="color">
+            <a href="modificarPractica.jsp" class="menu" onclick="javascript:salida=false;"> [Practica] </a>|
+            <a href="salida.jsp" class="menu"  onclick="javascript:salida=false;">[Salir]</a> </p>
+        <h1 class="center">
 			Creaci&oacute;n del Test.
         </h1>
 
@@ -68,10 +68,31 @@
             <form method="post" name="formTest" action="guardarTest.jsp" onclick="javascript:salida=false;" onsubmit="return comprobar();">
                 <p> Nombre: <input type="text" name="NombreTest" size="25"> </p>
                 <p> Descripci&oacute;n: <input type="text" name="DescripcionTest" size="25">  </p>
-                <input type="hidden" name="operacion" value="crear">
-                <input type="submit" name="seleccionar" value="Guardar Test" onclick="javascript:salida=false;">
+                <p> <input type="hidden" value="" name="EjecutableTest"> </p>
+                <p> <input type="hidden" name="operacion" value="crear">
+                    <input type="submit" name="seleccionar" value="Guardar Test" onclick="javascript:salida=false;"> </p>
             </form>
-<div id="enlaces">
+
+            <h3> Ejecutable </h3>
+            <div id="centro3">
+                <table border="0">
+                    <tbody>
+                        <tr>
+                            <td>
+                                <form method="post" name="formAnadir" action="crearEjecutable.jsp" onsubmit="return valida();">
+                                    <p> <input type="submit" name="seleccionar" value="Crear Ejecutable" onclick="javascript:salida=false;"> </p>
+                                </form>
+                            </td>
+                            <td>
+                                <form method="post" name="formAnadir" action="seleccionarEjecutable.jsp" onsubmit="return valida();">
+                                    <p><input type="submit" name="seleccionar" value="A&ntilde;adir copia de Ejecutable existente" onclick="javascript:salida=false;"></p>
+                                </form> </td>
+                        </tr>
+
+                    </tbody>
+                </table>
+            </div>
+            <div id="enlaces">
                 <div id="izquierda">
                     <h3 class="miniTitulo"> Ficheros Propios </h3>
                     <table border="0">
@@ -79,12 +100,12 @@
                             <tr>
                                 <td>
                                     <form method="post" name="formAnadir" action="peticionTest2.jsp" onsubmit="return valida();">
-                                        <input type="submit" name="seleccionar" value="A&ntilde;adir FicheroPropio" onclick="javascript:salida=false;">
+                                        <p> <input type="submit" name="seleccionar" value="A&ntilde;adir FicheroPropio" onclick="javascript:salida=false;"> </p>
                                     </form>
                                 </td>
                                 <td>
                                     <form method="post" name="formAnadir" action="peticionTest2.jsp" onsubmit="return valida();">
-                                        <input type="submit" name="seleccionar" value="Seleccionar FicheroPropio" onclick="javascript:salida=false;">
+                                        <p><input type="submit" name="seleccionar" value="A&ntilde;adir copia de FicheroPropio existente" onclick="javascript:salida=false;"></p>
                                     </form> </td>
                             </tr>
 
@@ -99,12 +120,12 @@
                             <tr>
                                 <td>
                                     <form method="post" name="formAnadir" action="peticionTest2.jsp" onsubmit="return valida();">
-                                        <input type="submit" name="seleccionar" value="A&ntilde;adir Caso" onclick="javascript:salida=false;">
+                                        <p><input type="submit" name="seleccionar" value="A&ntilde;adir Caso" onclick="javascript:salida=false;"></p>
                                     </form>
                                 </td>
                                 <td>
                                     <form method="post" name="formAnadir" action="peticionTest2.jsp" onsubmit="return valida();">
-                                        <input type="submit" name="seleccionar" value="Seleccionar Caso" onclick="javascript:salida=false;">
+                                        <p><input type="submit" name="seleccionar" value="A&ntilde;adir copia de Caso existente" onclick="javascript:salida=false;"></p>
                                     </form> </td>
                             </tr>
 
@@ -119,12 +140,12 @@
                             <tr>
                                 <td>
                                     <form method="post" name="formAnadir" action="peticionTest2.jsp" onsubmit="return valida();">
-                                        <input type="submit" name="seleccionar" value="A&ntilde;adir FicheroAlumno" onclick="javascript:salida=false;">
+                                        <p><input type="submit" name="seleccionar" value="A&ntilde;adir FicheroAlumno" onclick="javascript:salida=false;"></p>
                                     </form>
                                 </td>
                                 <td>
                                     <form method="post" name="formAnadir" action="peticionTest2.jsp" onsubmit="return valida();">
-                                        <input type="submit" name="seleccionar" value="Seleccionar FicheroAlumno" onclick="javascript:salida=false;">
+                                        <p><input type="submit" name="seleccionar" value="A&ntilde;adir copia de FicheroAlumno existente" onclick="javascript:salida=false;"></p>
                                     </form> </td>
                             </tr>
 

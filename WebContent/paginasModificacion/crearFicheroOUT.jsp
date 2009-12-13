@@ -65,7 +65,7 @@
             <a href="modificarTest.jsp" class="menu" onclick="javascript:salida=false;"> [Test]</a> |
             <a href="modificarCasos.jsp" class="menu" onclick="javascript:salida=false;"> [Caso] </a> |
             <a href="salida.jsp" class="menu"  onclick="javascript:salida=false;">[Salir]</a> </p>
-                    <h1 class="center"  class="color">
+                    <h1 class="center">
 			Creaci&oacute;n del FicheroOUT.
                     </h1>
                     <div id="cuerpo">
@@ -76,8 +76,8 @@
                             </p>
                             <p> <input type="file" name="LeerFichero" size="30">
                             </p>
-                            <input type="hidden" name="operacion" value="crear">
-                            <input type="submit" name="seleccionar" value="Guardar Fichero" onclick="javascript:salida=false;">
+                            <p> <input type="hidden" name="operacion" value="crear">
+                            <input type="submit" name="seleccionar" value="Guardar Fichero" onclick="javascript:salida=false;"></p>
                         </form>
                     </div>
                     </body>

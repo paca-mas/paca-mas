@@ -26,6 +26,7 @@
         <title>
             Seleccionar FicherosIN.
         </title>
+        <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
         <LINK REL=STYLESHEET TYPE="text/css" HREF="estilos/estiloInterfazGestor.css">
         <SCRIPT TYPE="text/javascript">
             <!--
@@ -52,7 +53,7 @@
             <a href="modificarCasos.jsp" class="menu" onclick="javascript:salida=false;"> [Caso] </a> |
             <a href="salida.jsp" class="menu"  onclick="javascript:salida=false;">[Salir]</a> </p>
 
-        <h1 class="center" class="color">
+        <h1 class="center">
             Selecci&oacute;n de FicherosIN.  </h1>
 
 
@@ -72,6 +73,9 @@
 
         %>
 
+        <div id="cuerpo2">
+
+
         <%
             for (int i = 0; i < pract.length; i++) {
 
@@ -89,10 +93,10 @@
 
         %>
 
-        <div id="cuerpo">
+        
             <h3> <%= pract[i].getId()%> </h3>
 
-            <div id="central4">
+           
 
 
                 <%
@@ -116,7 +120,7 @@
 
 
                 <h4> <%=tests[h].getId()%> </h4>
-                <div id="central3">
+                
                     <% for (int z = 0; z < ca.length; z++) {
 
                         Testigo resultado4 = new Testigo();
@@ -132,27 +136,27 @@
 
                     %>
 
-                    <h4> <%= ca[z].getId()%> </h4>
+                    <h4 class="seleccionTest2"> <%= ca[z].getId()%> </h4>
 
-                    <div id="central5">
+                    
                        
                             <% for (int y = 0; y < fi.length; y++) {
 
                             %>
-                            <table border="0">
+                            <table border="0"  class="seleccionCaso">
                                 <tbody>
                                     <tr>
-                                <form class="center" method="post" name="formVer" action="CopiarFicherosIN.jsp">
+                                
                                     <td> <%= fi[y].getNombre()%>  </td>
                                     <td>
-
-                                        <input type="hidden" value="<%= fi[y].getNombre()%>" name="NombreFicheroACopiar">
+                                    <form class="center" method="post" name="formVer" action="CopiarFicherosIN.jsp">
+                                        <p class="tabla"><input type="hidden" value="<%= fi[y].getNombre()%>" name="NombreFicheroACopiar">
                                         <input type="hidden" value="<%= fi[y].getContenido()%>" name="ContenidoFicheroACopiar">
                                         <input type="hidden" value="copiar" name="operacion">
-                                        <input type="submit" name="Seleccionar" value="Seleccionar" onclick="javascript:salida=false;">
+                                        <input type="submit" name="Seleccionar" value="Seleccionar" onclick="javascript:salida=false;"></p>
+                                                                    </form>
 
                                     </td>
-                                </form>
 
                                 </tr>
 
@@ -165,19 +169,19 @@
                             %>
 
 
-                    </div>
+                    
 
                     <%
                     }
                     %>
-                </div>
+                
 
 
                 <%
                 }
                 %>
 
-            </div>
+            
             <% }
             %>
 

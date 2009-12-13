@@ -1706,6 +1706,10 @@ public class Corrector extends Agent {
             pw = new PrintWriter(fichero);
             pw.println(Te[i].getDescripcion());
             pw.close();
+            fichero = new FileWriter("/tmp/" + pract.getId() + alumno + "/" + Te[i].getId() + "/Ejecutable");
+            pw = new PrintWriter(fichero);
+            pw.println(Te[i].getEjecutable());
+            pw.close();
         }
 
         //Creo los ficheros que ha entregado el alumno

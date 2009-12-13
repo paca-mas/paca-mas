@@ -19,7 +19,7 @@
 <html>
     <head>
         <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
-        <title>Creaci&oacute;n del FicheroAlumno</title>
+        <title>Modificaci&oacute;n del Ejecutable</title>
         <LINK REL=STYLESHEET TYPE="text/css" HREF="estilos/estiloInterfazGestor.css">
         <SCRIPT TYPE="text/javascript">
             <!--
@@ -40,8 +40,10 @@
                 document.formTest.seleccionar.disabled=true;
             }
 
+
             function comprobar(){
-                if((document.formTest.NombreFicheroAlumno.value=="")){
+                if((document.formTest.NombreFichero.value=="") || ((document.formTest.LeerFichero.value=="") &&
+                    (document.formTest.CodigoFichero.value==""))){
                     alert("Debe rellenar todos los datos del formulario")
                     return false
                 }
@@ -49,6 +51,7 @@
                     return true
                 }
             }
+
 
             //-->
         </SCRIPT>
@@ -61,13 +64,21 @@
             <a href="modificarTest.jsp" class="menu" onclick="javascript:salida=false;"> [Test] </a>|
             <a href="salida.jsp" class="menu"  onclick="javascript:salida=false;">[Salir]</a> </p>
         <h1 class="center">
-			Creaci&oacute;n del Fichero Alumno.
+			Modificaci&oacute;n del Ejecutable.
         </h1>
+
+        <%
+        String codigo = request.getParameter("CodigoEjecutable");
+        %>
+        
         <div id="cuerpo">
-            <form method="post" name="formTest" action="modificarTest.jsp" onsubmit="return comprobar();">
-                <p> Nombre del Fichero: <input  type="text" name="NombreFicheroAlumno"> </p>
-                <p> <input type="hidden" name="operacion" value="crear">
-                    <input type="submit" name="seleccionar" value="Guardar Fichero" onclick="javascript:salida=false;"></p>
+            <form method="post" name="formTest" enctype="multipart/form-data" action="guardarEjecutable.jsp" onsubmit="return comprobar();">
+                <p> C&oacute;digo:</p>
+                <p> <TEXTAREA NAME="CodigoFichero" ROWS=10 COLS=80><%= codigo%></TEXTAREA>
+                </p>
+                <p> <input type="file" name="LeerFichero" size="30">
+                </p>
+                <p> <input type="submit" name="seleccionar" value="Guardar Ejecutable" onclick="javascript:salida=false;"></p>
             </form>
         </div>
     </body>

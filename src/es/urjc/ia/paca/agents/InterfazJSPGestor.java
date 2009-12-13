@@ -6,20 +6,8 @@ package es.urjc.ia.paca.agents;
 
 import jade.core.Agent;
 import jade.core.behaviours.OneShotBehaviour;
-import jade.util.leap.ArrayList;
 
-import java.io.IOException;
-import java.io.InputStream;
-import java.io.StringWriter;
-
-import java.util.logging.Level;
-import java.util.logging.Logger;
 import javax.servlet.http.HttpServletRequest;
-
-import com.oreilly.servlet.multipart.FilePart;
-import com.oreilly.servlet.multipart.MultipartParser;
-import com.oreilly.servlet.multipart.ParamPart;
-import com.oreilly.servlet.multipart.Part;
 
 import es.urjc.ia.paca.ontology.Caso;
 import es.urjc.ia.paca.ontology.FicheroAlumno;
@@ -28,7 +16,6 @@ import es.urjc.ia.paca.ontology.FicheroOUT;
 import es.urjc.ia.paca.ontology.FicheroPropio;
 import es.urjc.ia.paca.ontology.Practica;
 import es.urjc.ia.paca.ontology.Test;
-import es.urjc.ia.paca.parser.EvaluacionParser;
 import es.urjc.ia.paca.util.Testigo;
 import java.util.StringTokenizer;
 
@@ -110,7 +97,13 @@ public class InterfazJSPGestor extends InterfazGestor {
             String nombre = request.getParameter("NombreTest");
             if (nombre != null) {
                 String descripcion = request.getParameter("DescripcionTest");
+                String ejecutable = request.getParameter("EjecutableTest");
+                if (ejecutable != null){
+                    test = new Test(nombre, descripcion, ejecutable);
+                }
+                else{
                 test = new Test(nombre, descripcion);
+                }
             }
             addBehaviour(new PideFicherosPropios(this.myAgent, tes2, test, true));
         }
@@ -147,7 +140,13 @@ public class InterfazJSPGestor extends InterfazGestor {
             String nombre = request.getParameter("NombreTest");
             if (nombre != null) {
                 String descripcion = request.getParameter("DescripcionTest");
+                String ejecutable = request.getParameter("EjecutableTest");
+                if (ejecutable != null){
+                    test = new Test(nombre, descripcion, ejecutable);
+                }
+                else{
                 test = new Test(nombre, descripcion);
+                }
             }
             addBehaviour(new PideFicherosAlumno(this.myAgent, tes2, test, true));
         }
@@ -184,7 +183,13 @@ public class InterfazJSPGestor extends InterfazGestor {
             String nombre = request.getParameter("NombreTest");
             if (nombre != null) {
                 String descripcion = request.getParameter("DescripcionTest");
+                String ejecutable = request.getParameter("EjecutableTest");
+                if (ejecutable != null){
+                    test = new Test(nombre, descripcion, ejecutable);
+                }
+                else{
                 test = new Test(nombre, descripcion);
+                }
             }
             addBehaviour(new PideCasos(this.myAgent, tes2, test, true));
         }
@@ -310,8 +315,31 @@ public class InterfazJSPGestor extends InterfazGestor {
             HttpServletRequest param1 = (HttpServletRequest) tes2.getParametro();
             String descripcion = param1.getParameter("DescripcionTest");
             String nombre = param1.getParameter("NombreTest");
-            Test te = new Test(nombre, descripcion);
+            String ejecutable = param1.getParameter("EjecutableTest");
+            Test te;
+            if (ejecutable != null){
+                    te = new Test(nombre, descripcion, ejecutable);
+                }
+                else{
+                    te = new Test(nombre, descripcion);
+                }
             addBehaviour(new ModificarTest(this.myAgent, tes2, te));
+        }
+    }
+
+        public class ModificarEjecutableBeha extends OneShotBehaviour {
+
+        private Testigo tes2;
+
+        public ModificarEjecutableBeha(Agent _a, Testigo tes1) {
+            super(_a);
+            this.tes2 = tes1;
+        }
+
+        public void action() {
+            String param1 = (String) tes2.getParametro();
+
+            addBehaviour(new ModificarEjecutable(this.myAgent, tes2, param1));
         }
     }
 
@@ -678,12 +706,13 @@ public class InterfazJSPGestor extends InterfazGestor {
             String nombrePractica = request.getParameter("NombrePracticaACopiar");
             String nombreTest = request.getParameter("NombreTest");
             String descripcion = request.getParameter("DescripcionTest");
+            String ejecutable = request.getParameter("EjecutableTest");
 
             String nombreTestACopiar = request.getParameter("NombreTestACopiar");
             String descripcionTestACopiar = request.getParameter("DescripcionTestACopiar");
 
             Practica practica = new Practica(nombrePractica);
-            Test test = new Test(nombreTest, descripcion);
+            Test test = new Test(nombreTest, descripcion, ejecutable);
             Test testACopiar = new Test(nombreTestACopiar, descripcionTestACopiar);
 
             addBehaviour(new CopiarTest(this.myAgent, tes2, practica, test, testACopiar));
@@ -843,6 +872,10 @@ public class InterfazJSPGestor extends InterfazGestor {
 
                     case modificarTest:
                         addBehaviour(new ModificarTestBeha(agent, testigo));
+                        break;
+
+                    case modificarEjecutable:
+                        addBehaviour(new ModificarEjecutableBeha(agent, testigo));
                         break;
 
                     case pedirFicherosPropios:
