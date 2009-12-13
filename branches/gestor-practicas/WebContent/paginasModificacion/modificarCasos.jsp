@@ -68,10 +68,10 @@
 
 
         <p class="derecha" > <a href="mostrarPracticas.jsp" class="menu"  onclick="javascript:salida=false;">[Listado de Practicas]</a> |
-            <a href="modificarPractica.jsp" class="menu" onclick="javascript:salida=false;"> [Practica] |
-                <a href="modificarTest.jsp" class="menu" onclick="javascript:salida=false;"> [Test] |
+            <a href="modificarPractica.jsp" class="menu" onclick="javascript:salida=false;"> [Practica] </a>|
+                <a href="modificarTest.jsp" class="menu" onclick="javascript:salida=false;"> [Test] </a>|
                     <a href="salida.jsp" class="menu"  onclick="javascript:salida=false;">[Salir]</a> </p>
-                    <h1 class="center"  class="color">
+                    <h1 class="center">
 			Modificaci&oacute;n del Caso.
                     </h1>
 
@@ -158,19 +158,19 @@
                     <div id="cuerpo">
                         <h2> <%= nombre%> </h2>
                         <div id="enlaces">
-                            <div id="izquierda">
+                            <div id="izquierda3">
                                 <h3 class="miniTitulo"> FicherosIN </h3>
                                 <table border="0">
                                     <tbody>
                                         <tr>
                                             <td>
                                                 <form method="post" name="formAnadir" action="crearFicheroIN.jsp" onsubmit="return valida();">
-                                                    <input type="submit" name="seleccionar" value="A&ntilde;adir FicheroIN" onclick="javascript:salida=false;">
+                                                    <p> <input type="submit" name="seleccionar" value="A&ntilde;adir FicheroIN" onclick="javascript:salida=false;"> </p>
                                                 </form>
                                             </td>
                                             <td>
                                                 <form method="post" name="formAnadir" action="seleccionarFicherosIN.jsp" onsubmit="return valida();">
-                                                    <input type="submit" name="seleccionar" value="Seleccionar FicheroIN" onclick="javascript:salida=false;">
+                                                    <p> <input type="submit" name="seleccionar" value="A&ntilde;adir Copia de FicheroIN ya existente" onclick="javascript:salida=false;"> </p>
                                                 </form> </td>
                                         </tr>
 
@@ -178,19 +178,19 @@
                                 </table>
                             </div>
 
-                            <div id="derecha3">
+                            <div id="derecha4">
                                 <h3 class="miniTitulo"> FicherosOUT </h3>
                                 <table border="0">
                                     <tbody>
                                         <tr>
                                             <td>
-                                                <form method="post" name="formAnadir" action="crearFicherosOUT.jsp" onsubmit="return valida();">
-                                                    <input type="submit" name="seleccionar" value="A&ntilde;adir FicheroOUT" onclick="javascript:salida=false;">
+                                                <form method="post" name="formAnadir" action="crearFicheroOUT.jsp" onsubmit="return valida();">
+                                                    <p><input type="submit" name="seleccionar" value="A&ntilde;adir FicheroOUT" onclick="javascript:salida=false;"></p>
                                                 </form>
                                             </td>
                                             <td>
                                                 <form method="post" name="formAnadir" action="seleccionarFicherosOUT.jsp" onsubmit="return valida();">
-                                                    <input type="submit" name="seleccionar" value="Seleccionar FicheroOUT" onclick="javascript:salida=false;">
+                                                    <p><input type="submit" name="seleccionar" value="A&ntilde;adir Copia de FicheroOUT ya existente" onclick="javascript:salida=false;"></p>
                                                 </form> </td>
                                         </tr>
 
@@ -211,17 +211,17 @@
                                         <td> <%= fis[i].getNombre()%></td>
                                         <td>
                                             <form method="post" name="formVer" action="modificarFicherosIN.jsp" onsubmit="return valida();">
-                                                <input  type="hidden" value="<%= fis[i].getNombre()%>" name="NombreFichero">
+                                                <p class="tabla"><input  type="hidden" value="<%= fis[i].getNombre()%>" name="NombreFichero">
                                                 <input  type="hidden" value="<%= fis[i].getContenido()%>" name="ContenidoFichero">
-                                                <input type="submit" name="Ver" value="Ver" onclick="javascript:salida=false;">
+                                                <input type="submit" name="Ver" value="Ver" onclick="javascript:salida=false;"></p>
                                             </form>
                                         </td>
                                         <td>
                                             <form method="post" name="formEliminar" action="modificarCasos.jsp" onsubmit="return valida();">
-                                                <input  type="hidden" value="<%= fis[i].getNombre()%>" name="NombreFichero">
+                                                <p class="tabla"><input  type="hidden" value="<%= fis[i].getNombre()%>" name="NombreFichero">
                                                 <input  type="hidden" value="<%= fis[i].getContenido()%>" name="ContenidoFichero">
                                                 <input type="hidden" value="eliminarFicheroIN" name="operacion">
-                                                <input type="submit" name="Eliminar" value="Eliminar" onclick="javascript:salida=false;">
+                                                <input type="submit" name="Eliminar" value="Eliminar" onclick="javascript:salida=false;"></p>
                                             </form>
                                         </td>
                                     </tr>
@@ -242,17 +242,17 @@
                                         <td> <%= fos[i].getNombre()%></td>
                                         <td>
                                             <form method="post" name="formVer" action="modificarFicherosOUT.jsp" onsubmit="return valida();">
-                                                <input  type="hidden" value="<%= fos[i].getNombre()%>" name="NombreFichero">
+                                                <p class="tabla"><input  type="hidden" value="<%= fos[i].getNombre()%>" name="NombreFichero">
                                                 <input  type="hidden" value="<%= fos[i].getContenido()%>" name="ContenidoFichero">
-                                                <input type="submit" name="Ver" value="Ver" onclick="javascript:salida=false;">
+                                                <input type="submit" name="Ver" value="Ver" onclick="javascript:salida=false;"></p>
                                             </form>
                                         </td>
                                         <td>
                                             <form method="post" name="formEliminar" action="modificarCasos.jsp" onsubmit="return valida();">
-                                                <input  type="hidden" value="<%= fos[i].getNombre()%>" name="NombreFichero">
+                                                <p class="tabla"><input  type="hidden" value="<%= fos[i].getNombre()%>" name="NombreFichero">
                                                 <input  type="hidden" value="<%= fos[i].getContenido()%>" name="ContenidoFichero">
                                                 <input type="hidden" value="eliminarFicheroOUT" name="operacion">
-                                                <input type="submit" name="Eliminar" value="Eliminar" onclick="javascript:salida=false;">
+                                                <input type="submit" name="Eliminar" value="Eliminar" onclick="javascript:salida=false;"></p>
                                             </form>
                                         </td>
                                     </tr>
@@ -267,15 +267,14 @@
                     <% } else {
                     %>
 
-                    <h2 class="error" align="center">
+                    <h2 class="error">
                         ERROR!!! En la base de datos </h2>
-                    <br>
-                    <p class="error" align="center">
+                    
+                    <p class="error">
                         Ha ocurrido un problema en la base de datos al intentar crear el caso.
                         Revise el nombre del caso.
                     </p>
-                    <br>
-                    <br>
+                   
 
 
                     <% }

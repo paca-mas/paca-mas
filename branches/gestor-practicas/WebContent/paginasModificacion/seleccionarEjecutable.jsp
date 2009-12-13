@@ -9,7 +9,6 @@
 <%@ page import="es.urjc.ia.paca.ontology.pacaOntology"%>
 <%@ page import="es.urjc.ia.paca.ontology.Practica"%>
 <%@ page import="es.urjc.ia.paca.ontology.Test"%>
-<%@ page import="es.urjc.ia.paca.ontology.Caso"%>
 <%@ page import="es.urjc.ia.paca.agents.InterfazGestor"%>
 <%@ page import="es.urjc.ia.paca.agents.InterfazJSPGestor"%>
 
@@ -23,7 +22,7 @@
 
     <head>
         <title>
-            Seleccionar Test.
+            Seleccionar Ejecutable.
         </title>
         <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
         <LINK REL=STYLESHEET TYPE="text/css" HREF="estilos/estiloInterfazGestor.css">
@@ -48,11 +47,10 @@
 
         <p class="derecha" > <a href="mostrarPracticas.jsp" class="menu"  onclick="javascript:salida=false;">[Listado de Practicas]</a> |
             <a href="modificarPractica.jsp" class="menu" onclick="javascript:salida=false;"> [Practica] </a>|
-            <a href="modificarTest.jsp" class="menu" onclick="javascript:salida=false;"> [Test] </a>|
             <a href="salida.jsp" class="menu"  onclick="javascript:salida=false;">[Salir]</a> </p>
 
         <h1 class="center">
-            Selecci&oacute;n de Casos.  </h1>
+            Selecci&oacute;n del Ejecutable.  </h1>
 
 
 
@@ -70,8 +68,9 @@
 
 
         %>
-
         <div id="cuerpo2">
+
+
         <%
             for (int i = 0; i < pract.length; i++) {
 
@@ -91,68 +90,40 @@
 
         
             <h3> <%= pract[i].getId()%> </h3>
-
-           
-
-
-                <%
-                        for (int h = 0; h < tests.length; h++) {
-
-                            Testigo resultado3 = new Testigo();
-                            resultado3.setOperacion(Testigo.Operaciones.seleccionarCasos);
-                            resultado3.setParametro(tests[h]);
-
-                            interfazGestor.sendTestigo(resultado3);
-
-                            while (!resultado3.isRelleno()) {
-                            }
-
-                            Caso[] ca = (Caso[]) resultado3.getResultado();
+            
+                <% for (int z = 0; z < tests.length; z++) {
+                    if (!tests[z].getEjecutable().equalsIgnoreCase("")) {
 
                 %>
 
+                <table border="0" class="seleccionTest">
 
+                    <tbody>
+                        <tr>
+                    
+                        <td> <%= tests[z].getId()%>  </td>
+                        <td>
+                        <form class="center" method="post" name="formVer" action="modificarTest.jsp">
+                            <p class="tabla"> <input type="hidden" value="<%= tests[z].getEjecutable()%>" name="EjecutableTest">
+                            <input type="hidden" value="copiarEjecutable" name="operacion">
+                            <input type="submit" name="Seleccionar" value="Copiar" onclick="javascript:salida=false;"> </p>
+                        </form>
+                        </td>
+                    
 
+                    </tr>
 
-
-                <h4 class="selecccionTest2"> <%=tests[h].getId()%> </h4>
-                
-                    <% for (int z = 0; z < ca.length; z++) {%>
-                    <table border="0" class="seleccionCaso">
-
-                        <tbody>
-                            <tr>
-
-                                <td> <%= ca[z].getId()%>  </td>
-                                <td>
-                                    <form class="center" method="post" name="formVer" action="CopiarCasos.jsp">
-                                        <p class="tabla"><input  type="hidden" value="<%= tests[h].getId()%>" name="NombreTestACopiar">
-                                        <input  type="hidden" value="<%= pract[i].getId()%>" name="NombrePracticaACopiar">
-                                        <input type="hidden" value="<%= ca[z].getId()%>" name="NombreCasoACopiar">
-                                        <input type="hidden" value="copiar" name="operacion">
-                                        <input type="submit" name="Seleccionar" value="Seleccionar" onclick="javascript:salida=false;"></p>
-                                    </form>
-
-                                </td>
-
-                            </tr>
-
-                        </tbody>
-                    </table>
-                    <%
-                    }
-                    %>
-                
-
-
+                    </tbody>
+                </table>
                 <%
+                    }
                 }
                 %>
-
             
-            <% }
-            %>
+        
 
+        <% }
+        %>
         </div>
     </body>
 </html>

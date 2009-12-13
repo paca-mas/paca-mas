@@ -68,7 +68,7 @@
             <a href="modificarTest.jsp" class="menu" onclick="javascript:salida=false;"> [Test]</a> |
             <a href="modificarCasos.jsp" class="menu" onclick="javascript:salida=false;"> [Caso] </a> |
             <a href="salida.jsp" class="menu"  onclick="javascript:salida=false;">[Salir]</a> </p>
-        <h1 class="center"  class="color">
+        <h1 class="center">
 			Modificaci&oacute;n del FicheroIN.
         </h1>
 
@@ -158,25 +158,24 @@
                 </p>
                 <p> <input type="file" name="LeerFichero" size="30">
                 </p>
-                <input  type="hidden" value="<%= codigo%>" name="ContenidoAntiguo">
+                <p><input  type="hidden" value="<%= codigo%>" name="ContenidoAntiguo">
                 <input  type="hidden" value="<%= nombre%>" name="NombreFichero">
                 <input type="hidden" value="guardar" name="operacion">
-                <input type="submit" name="seleccionar" value="Guardar Fichero" onclick="javascript:salida=false;">
+                <input type="submit" name="seleccionar" value="Guardar Fichero" onclick="javascript:salida=false;"></p>
             </form>
         </div>
 
         <% } else {
         %>
 
-        <h2 class="error" align="center">
+        <h2 class="error">
             ERROR!!! En la base de datos </h2>
-        <br>
-        <p class="error" align="center">
+        
+        <p class="error">
             Ha ocurrido un problema en la base de datos al intentar crear el FicheroIN.
             Revise el nombre del Fichero.
         </p>
-        <br>
-        <br>
+        
 
 
         <% }

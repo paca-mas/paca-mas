@@ -24,6 +24,7 @@
         <title>
             Seleccionar Test.
         </title>
+        <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
         <LINK REL=STYLESHEET TYPE="text/css" HREF="estilos/estiloInterfazGestor.css">
         <SCRIPT TYPE="text/javascript">
             <!--
@@ -45,10 +46,10 @@
     <body onUnload="exit();">
 
         <p class="derecha" > <a href="mostrarPracticas.jsp" class="menu"  onclick="javascript:salida=false;">[Listado de Practicas]</a> |
-            <a href="modificarPractica.jsp" class="menu" onclick="javascript:salida=false;"> [Practica] | 
-                <a href="salida.jsp" class="menu"  onclick="javascript:salida=false;">[Salir]</a> </p>
+            <a href="modificarPractica.jsp" class="menu" onclick="javascript:salida=false;"> [Practica] </a>|
+            <a href="salida.jsp" class="menu"  onclick="javascript:salida=false;">[Salir]</a> </p>
 
-        <h1 class="center" class="color">
+        <h1 class="center">
             Selecci&oacute;n de Test.  </h1>
 
 
@@ -68,6 +69,9 @@
 
         %>
 
+        <div id="cuerpo2">
+
+
         <%
             for (int i = 0; i < pract.length; i++) {
 
@@ -85,39 +89,39 @@
 
         %>
 
-        <div id="cuerpo">
+        
             <h3> <%= pract[i].getId()%> </h3>
-            <div id="central3">
                 <% for (int z = 0; z < tests.length; z++) {%>
-                <table border="0">
+                <table border="0" class="seleccionTest">
 
                     <tbody>
                         <tr>
-                    <form class="center" method="post" name="formVer" action="copiarTest.jsp">
-                        <td> <%= tests[z].getId()%>  </td>
-                        <td>
 
-                            <input  type="hidden" value="<%= tests[z].getId()%>" name="NombreTestACopiar">
-                            <input  type="hidden" value="<%= pract[i].getId()%>" name="NombrePracticaACopiar">
-                            <input type="hidden" value="<%= tests[z].getDescripcion()%>" name="DescripcionTestACopiar">
-                            <input type="hidden" value="copiar" name="operacion">
-                            <input type="submit" name="Seleccionar" value="Seleccionar" onclick="javascript:salida=false;">
+                            <td> <%= tests[z].getId()%>  </td>
+                            <td>
+                                <form class="center" method="post" name="formVer" action="copiarTest.jsp">
+                                    <p class="tabla"> <input  type="hidden" value="<%= tests[z].getId()%>" name="NombreTestACopiar">
+                                        <input  type="hidden" value="<%= pract[i].getId()%>" name="NombrePracticaACopiar">
+                                        <input type="hidden" value="<%= tests[z].getDescripcion()%>" name="DescripcionTestACopiar">
+                                        <input type="hidden" value="<%= tests[z].getEjecutable()%>" name="EjecutableTest">
+                                        <input type="hidden" value="copiar" name="operacion">
+                                        <input type="submit" name="Seleccionar" value="Seleccionar" onclick="javascript:salida=false;"></p>
+                                </form>
 
-                        </td>
-                    </form>
+                            </td>
 
-                    </tr>
+                        </tr>
 
                     </tbody>
                 </table>
                 <%
                 }
                 %>
-            </div>
-        </div>
+        
 
         <% }
         %>
+        </div>
     </body>
 </html>
 

@@ -30,27 +30,22 @@ import jade.domain.FIPAAgentManagement.Property;
 import jade.domain.FIPAAgentManagement.ServiceDescription;
 import jade.lang.acl.ACLMessage;
 import jade.lang.acl.MessageTemplate;
-import jade.util.leap.Collection;
 
 import java.util.ArrayList;
 import java.util.Collections;
-import java.util.Comparator;
 import java.util.Hashtable;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Random;
 
-import com.sun.image.codec.jpeg.TruncatedFileException;
 
 import java.util.logging.Level;
 import java.util.logging.Logger;
-import sun.misc.Sort;
 
 import es.urjc.ia.paca.ontology.Alumno;
 import es.urjc.ia.paca.ontology.Corrector;
 import es.urjc.ia.paca.ontology.Corrige;
 import es.urjc.ia.paca.ontology.EvaluacionPractica;
-import es.urjc.ia.paca.ontology.FicheroFuentes;
 import es.urjc.ia.paca.ontology.Interactua;
 import es.urjc.ia.paca.ontology.Practica;
 import es.urjc.ia.paca.ontology.ResultadoEvaluacion;
@@ -65,18 +60,11 @@ import es.urjc.ia.paca.auth.ontology.Autenticado;
 import es.urjc.ia.paca.auth.ontology.AuthOntology;
 import es.urjc.ia.paca.auth.ontology.Usuario;
 import es.urjc.ia.paca.ontology.Caso;
-import es.urjc.ia.paca.ontology.EntregarPractica;
 import es.urjc.ia.paca.ontology.FicheroAlumno;
 import es.urjc.ia.paca.ontology.FicheroIN;
 import es.urjc.ia.paca.ontology.FicheroOUT;
 import es.urjc.ia.paca.ontology.FicheroPropio;
 import es.urjc.ia.paca.ontology.FicherosAlumno;
-import es.urjc.ia.paca.ontology.ModificaPractica;
-import es.urjc.ia.paca.ontology.FicherosPropios;
-import es.urjc.ia.paca.ontology.ModificaFicheroPropio;
-import es.urjc.ia.paca.ontology.ModificaTest;
-import es.urjc.ia.paca.ontology.ModificaFicheroIN;
-import es.urjc.ia.paca.ontology.ModificaFicheroOUT;
 
 /**
 Este agente contiene la comunicaci�n necesaria que debe tener un agente usuario
@@ -238,6 +226,7 @@ public class Interfaz extends Agent {
     /**
     Este m�todo se ejecuta al iniciar el agente y es el encargado de configurarlo.
      */
+    @Override
     protected void setup() {
 
         // Register the codec for the SL0 language
@@ -1114,6 +1103,7 @@ public class Interfaz extends Agent {
             Test te = new Test();
             te.setId("?test");
             te.setDescripcion("");
+            te.setEjecutable("");
 
 
             try {

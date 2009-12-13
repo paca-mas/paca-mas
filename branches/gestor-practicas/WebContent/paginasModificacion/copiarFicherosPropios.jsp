@@ -16,7 +16,7 @@
 <html>
     <head>
         <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
-        <title>Copiar Test</title>
+        <title>Copiar Fichero Propio</title>
         <LINK REL=STYLESHEET TYPE="text/css" HREF="estilos/estiloInterfazGestor.css">
         <SCRIPT TYPE="text/javascript">
             <!--
@@ -65,24 +65,24 @@
 
         %>
         <p class="derecha" > <a href="mostrarPracticas.jsp" class="menu"  onclick="javascript:salida=false;">[Listado de Practicas]</a> |
-            <a href="modificarPractica.jsp" class="menu" onclick="javascript:salida=false;"> [Practica] |
-                <a href="modificarTest.jsp" class="menu" onclick="javascript:salida=false;"> [Test] |
+            <a href="modificarPractica.jsp" class="menu" onclick="javascript:salida=false;"> [Practica] </a>|
+                <a href="modificarTest.jsp" class="menu" onclick="javascript:salida=false;"> [Test] </a>|
                     <a href="salida.jsp" class="menu"  onclick="javascript:salida=false;">[Salir]</a> </p>
-        <h1 class="center"  class="color">
+        <h1 class="center">
 			Copiar Fichero Propio.
         </h1>
 
-        <div id="cuerpo">
+        
                     <div id="cuerpo">
                         <form method="post" name="formTest" action="modificarTest.jsp" onsubmit="return comprobar();">
                             <p> Nuevo nombre del Fichero: <input  type="text" name="NombreFichero" value="<%= NombreFicheroACopiar%>"> </p>
-                            <input type="hidden" value="<%= CodigoFicheroACopiar%>" name="CodigoFicheroACopiar">
+                            <p><input type="hidden" value="<%= CodigoFicheroACopiar%>" name="CodigoFicheroACopiar">
                             <input type="hidden" name="operacion" value="copiarFicheroPropio">
-                            <input type="submit" name="Copiar" value="Copiar Fichero" onclick="javascript:salida=false;">
+                            <input type="submit" name="Copiar" value="Copiar Fichero" onclick="javascript:salida=false;"></p>
                         </form>
                     </div>
 
-        </div>
+        
 
     </body>
 </html>

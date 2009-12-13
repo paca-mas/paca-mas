@@ -47,6 +47,7 @@ public class pacaOntology extends Ontology {
     //A�adido Carlos
     public static final String TEST_ID = "Id";
     public static final String TEST_DESCRIPCION = "Descripcion";
+    public static final String TEST_EJECUTABLE = "Ejecutable";
     //Corrector
     public static final String CORRECTOR = "corrector";
     //A�adido Carlos
@@ -169,6 +170,7 @@ public class pacaOntology extends Ontology {
             ConceptSchema cs1 = (ConceptSchema) getSchema(TEST);
             cs1.add(TEST_ID, (PrimitiveSchema) getSchema(BasicOntology.STRING));
             cs1.add(TEST_DESCRIPCION, (PrimitiveSchema) getSchema(BasicOntology.STRING));
+            cs1.add(TEST_EJECUTABLE, (PrimitiveSchema) getSchema(BasicOntology.STRING));
 
             //Concepto Corrector
             add(new ConceptSchema(CORRECTOR), Corrector.class);

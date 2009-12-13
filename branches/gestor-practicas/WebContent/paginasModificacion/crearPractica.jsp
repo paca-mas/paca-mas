@@ -15,8 +15,9 @@
 
 <html>
     <head>
-        <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+        
         <title>Modificaci&oacute;n de pr&aacute;ctica</title>
+        <meta content="text/html; charset=ISO-8859-1" http-equiv="content-type">
         <LINK REL=STYLESHEET TYPE="text/css" HREF="estilos/estiloInterfazGestor.css">
         <SCRIPT TYPE="text/javascript">
             <!--
@@ -60,7 +61,7 @@
 
         <p class="derecha" > <a href="mostrarPracticas.jsp" class="menu"  onclick="javascript:salida=false;">[Listado de Practicas]</a> |
             <a href="salida.jsp" class="menu"  onclick="javascript:salida=false;">[Salir]</a> </p>
-        <h1 class="center"  class="color">
+        <h1 class="center">
 			Creaci&oacute;n de la pr&aacute;ctica.
         </h1>
 
@@ -69,8 +70,8 @@
                 <p> Nombre: <input type="text" name="NombrePractica" size="25"> </p>
                 <p> Descripci&oacute;n: <input type="text" name="DescripcionPractica" size="25">  </p>
                 <p> Fecha Entrega: <input type="text" name="FechaPractica" size="25"> </p>
-                <input type="hidden" name="operacion" value="crear">
-                <input type="submit" name="seleccionar" value="Guardar Practica" onclick="javascript:salida=false;">
+                <p> <input type="hidden" name="operacion" value="crear">
+                <input type="submit" name="seleccionar" value="Guardar Practica" onclick="javascript:salida=false;"> </p>
             </form>
             <div id="enlaces">
                 <table border="0">
@@ -78,12 +79,12 @@
                         <tr>
                             <td>
                                 <form method="post" name="formAnadir" action="peticionTest2.jsp" onsubmit="return valida();">
-                                    <input type="submit" name="seleccionar" value="A&ntilde;adir Test" onclick="javascript:salida=false;">
+                                    <p class="tabla"> <input type="submit" name="seleccionar" value="A&ntilde;adir Test" onclick="javascript:salida=false;"> </p>
                                 </form>
                             </td>
                             <td>
                                 <form method="post" name="formAnadir" action="peticionTest2.jsp" onsubmit="return valida();">
-                                    <input type="submit" name="seleccionar" value="Seleccionar Test" onclick="javascript:salida=false;">
+                                    <p class="tabla"> <input type="submit" name="seleccionar" value="Seleccionar Test" onclick="javascript:salida=false;"> </p>
                                 </form> </td>
                         </tr>
 

@@ -68,9 +68,9 @@
 
 
         <p class="derecha" > <a href="mostrarPracticas.jsp" class="menu"  onclick="javascript:salida=false;">[Listado de Practicas]</a> |
-            <a href="modificarPractica.jsp" class="menu" onclick="javascript:salida=false;"> [Practica] |
-                <a href="salida.jsp" class="menu"  onclick="javascript:salida=false;">[Salir]</a> </p>
-        <h1 class="center"  class="color">
+            <a href="modificarPractica.jsp" class="menu" onclick="javascript:salida=false;"> [Practica] </a>|
+            <a href="salida.jsp" class="menu"  onclick="javascript:salida=false;">[Salir]</a> </p>
+        <h1 class="center">
 			Modificaci&oacute;n del test.
         </h1>
 
@@ -84,13 +84,16 @@
             if (operacion.equalsIgnoreCase("crear")) {
                 if (request.getParameter("NombreFichero") == null) {
                     resultado.setOperacion(Testigo.Operaciones.crearTest);
+                    resultado.setParametro((HttpServletRequest) request);
                 } else {
                     resultado.setOperacion(Testigo.Operaciones.crearFicheroAlumno);
+                    resultado.setParametro((HttpServletRequest) request);
                 }
             } else {
                 resultado.setOperacion(Testigo.Operaciones.modificarTest);
+                resultado.setParametro((HttpServletRequest) request);
             }
-            resultado.setParametro((HttpServletRequest) request);
+            
 
             interfazGestor.sendTestigo(resultado);
 
@@ -108,71 +111,121 @@
 
         <%
 
-            String nombre = request.getParameter("NombreTest");
-            String descripcion = request.getParameter("DescripcionTest");
+                String nombre = request.getParameter("NombreTest");
+                String descripcion = request.getParameter("DescripcionTest");
+                String ejecutable = request.getParameter("EjecutableTest");
 
-            Testigo resultado2 = new Testigo();
-            resultado2.setOperacion(Testigo.Operaciones.pedirFicherosPropios);
-            resultado2.setParametro((HttpServletRequest) request);
-
-//interfaz.getAtributo().putO2AObject(resultado2,AgentController.SYNC);
-            interfazGestor.sendTestigo(resultado2);
-
-            while (!resultado2.isRelleno()) {
-            }
-
-            FicheroPropio[] fps = (FicheroPropio[]) resultado2.getResultado();
-
-            Testigo resultado3 = new Testigo();
-            resultado3.setOperacion(Testigo.Operaciones.pedirCasos);
-            resultado3.setParametro((HttpServletRequest) request);
+                Testigo resultado2 = new Testigo();
+                resultado2.setOperacion(Testigo.Operaciones.pedirFicherosPropios);
+                resultado2.setParametro((HttpServletRequest) request);
 
 //interfaz.getAtributo().putO2AObject(resultado2,AgentController.SYNC);
-            interfazGestor.sendTestigo(resultado3);
+                interfazGestor.sendTestigo(resultado2);
 
-            while (!resultado3.isRelleno()) {
-            }
+                while (!resultado2.isRelleno()) {
+                }
 
-            Caso[] cas = (Caso[]) resultado3.getResultado();
+                FicheroPropio[] fps = (FicheroPropio[]) resultado2.getResultado();
 
-            Testigo resultado4 = new Testigo();
-            resultado4.setOperacion(Testigo.Operaciones.pedirFicherosAlumno);
-            resultado4.setParametro((HttpServletRequest) request);
+                Testigo resultado3 = new Testigo();
+                resultado3.setOperacion(Testigo.Operaciones.pedirCasos);
+                resultado3.setParametro((HttpServletRequest) request);
 
 //interfaz.getAtributo().putO2AObject(resultado2,AgentController.SYNC);
-            interfazGestor.sendTestigo(resultado4);
+                interfazGestor.sendTestigo(resultado3);
 
-            while (!resultado4.isRelleno()) {
-            }
+                while (!resultado3.isRelleno()) {
+                }
 
-            FicheroAlumno[] fas = (FicheroAlumno[]) resultado4.getResultado();
+                Caso[] cas = (Caso[]) resultado3.getResultado();
+
+                Testigo resultado4 = new Testigo();
+                resultado4.setOperacion(Testigo.Operaciones.pedirFicherosAlumno);
+                resultado4.setParametro((HttpServletRequest) request);
+
+//interfaz.getAtributo().putO2AObject(resultado2,AgentController.SYNC);
+                interfazGestor.sendTestigo(resultado4);
+
+                while (!resultado4.isRelleno()) {
+                }
+
+                FicheroAlumno[] fas = (FicheroAlumno[]) resultado4.getResultado();
 
 
         %>
+
         <div id="cuerpo">
             <form method="post" name="formTest" action="guardarTest.jsp" onsubmit="desactivarBoton();">
                 <h2> <%= nombre%> </h2>
                 <p> Descripci&oacute;n: <input type="text" name="DescripcionTest" size="25" value="<%= descripcion%>">
                 </p>
-                <input  type="hidden" value="<%= descripcion%>" name="DescripcionAntigua">
-                <input  type="hidden" value="<%= nombre%>" name="NombreTest">
-                <input type="hidden" value="modificar" name="operacion">
-                <input type="submit" name="seleccionar" value="Guardar Test" onclick="javascript:salida=false;">
+                <p> <input  type="hidden" value="<%= descripcion%>" name="DescripcionAntigua">
+                    <input  type="hidden" value="<%= nombre%>" name="NombreTest">
+                    <input type="hidden" value="<%= ejecutable%>" name="EjecutableTest">
+                    <input type="hidden" value="modificar" name="operacion">
+                    <input type="submit" name="seleccionar" value="Guardar Test" onclick="javascript:salida=false;"> </p>
             </form>
+            <h3> Ejecutable </h3>
+            <div id="centro3">
+                <table border="0">
+                    <tbody>
+                        <tr>
+                            <td>
+                                <form method="post" name="formAnadir" action="crearEjecutable.jsp" onsubmit="return valida();">
+                                    <p> <input type="submit" name="seleccionar" value="Crear Ejecutable" onclick="javascript:salida=false;"> </p>
+                                </form>
+                            </td>
+                            <td>
+                                <form method="post" name="formAnadir" action="seleccionarEjecutable.jsp" onsubmit="return valida();">
+                                    <p><input type="submit" name="seleccionar" value="A&ntilde;adir copia de Ejecutable existente" onclick="javascript:salida=false;"></p>
+                                </form> </td>
+                        </tr>
+
+                    </tbody>
+                </table>
+
+                <%
+                if (!ejecutable.equalsIgnoreCase("")) {
+                %>
+                <table border="4" cellspacing="4" cellpadding="4" width="380" class="center">
+
+                    <tbody>
+                        <tr>
+                            <td> Ejecutable</td>
+                            <td>
+                                <form method="post" name="formVer" action="modificarEjecutable.jsp" onsubmit="return valida();">
+                                    <p class="tabla"><input  type="hidden" value="<%= ejecutable%>" name="CodigoEjecutable">
+                                    <input type="submit" name="Ver" value="Ver" onclick="javascript:salida=false;"></p>
+                                </form>
+                            </td>
+                            <td>
+                                <form method="post" name="formEliminar" action="modificarTest.jsp" onsubmit="return valida();">
+                                    <p class="tabla"><input type="hidden" value="eliminarEjecutable" name="operacion">
+                                    <input type="submit" name="Eliminar" value="Eliminar" onclick="javascript:salida=false;"></p>
+                                </form>
+                            </td>
+                        </tr>
+                    </tbody>
+                </table>
+
+                <%
+                }
+                %>
+            </div>
             <div id="enlaces">
                 <div id="izquierda">
-                    <h3 class="miniTitulo"> Ficheros Propios </h3>
+                    <h3 class="miniTitulo"> Ficheros Propios</h3>
                     <table border="0">
                         <tbody>
                             <tr>
                                 <td>
                                     <form method="post" name="formAnadir" action="crearFicheroPropio.jsp" onsubmit="return valida();">
-                                        <input type="submit" name="seleccionar" value="A&ntilde;adir FicheroPropio" onclick="javascript:salida=false;">
+                                        <p> <input type="submit" name="seleccionar" value="A&ntilde;adir FicheroPropio" onclick="javascript:salida=false;"> </p>
                                     </form>
                                 </td>
                                 <td>
-                                    <form method="post" name="formSeleccionar" action="seleccionarFicherosPropios.jsp" onsubmit="return valida();">
-                                        <input type="submit" name="seleccionar" value="Seleccionar FicheroPropio" onclick="javascript:salida=false;">
+                                    <form method="post" name="formAnadir" action="seleccionarFicherosPropios.jsp" onsubmit="return valida();">
+                                        <p> <input type="submit" name="seleccionar" value="A&ntilde;adir copia de FicheroPropio existente" onclick="javascript:salida=false;"> </p>
                                     </form> </td>
                             </tr>
 
@@ -181,18 +234,18 @@
                 </div>
 
                 <div id="centro">
-                    <h3> Casos </h3>
+                    <h3 class="miniTituloCaso"> Casos </h3>
                     <table border="0">
                         <tbody>
                             <tr>
                                 <td>
                                     <form method="post" name="formAnadir" action="crearCaso.jsp" onsubmit="return valida();">
-                                        <input type="submit" name="seleccionar" value="A&ntilde;adir Caso" onclick="javascript:salida=false;">
+                                        <p><input type="submit" name="seleccionar" value="A&ntilde;adir Caso" onclick="javascript:salida=false;"></p>
                                     </form>
                                 </td>
                                 <td>
-                                    <form method="post" name="formSeleccionar" action="seleccionarCasos.jsp" onsubmit="return valida();">
-                                        <input type="submit" name="seleccionar" value="Seleccionar Caso" onclick="javascript:salida=false;">
+                                    <form method="post" name="formAnadir" action="seleccionarCasos.jsp" onsubmit="return valida();">
+                                        <p><input type="submit" name="seleccionar" value="A&ntilde;adir copia de Caso existente" onclick="javascript:salida=false;"></p>
                                     </form> </td>
                             </tr>
 
@@ -207,12 +260,12 @@
                             <tr>
                                 <td>
                                     <form method="post" name="formAnadir" action="crearFicheroAlumno.jsp" onsubmit="return valida();">
-                                        <input type="submit" name="seleccionar" value="A&ntilde;adir FicheroAlumno" onclick="javascript:salida=false;">
+                                        <p><input type="submit" name="seleccionar" value="A&ntilde;adir FicheroAlumno" onclick="javascript:salida=false;"></p>
                                     </form>
                                 </td>
                                 <td>
-                                    <form method="post" name="formSeleccionar" action="seleccionarFicherosAlumno.jsp" onsubmit="return valida();">
-                                        <input type="submit" name="seleccionar" value="Seleccionar FicheroAlumno" onclick="javascript:salida=false;">
+                                    <form method="post" name="formAnadir" action="seleccionarFicherosAlumno.jsp" onsubmit="return valida();">
+                                        <p><input type="submit" name="seleccionar" value="A&ntilde;adir copia de FicheroAlumno existente" onclick="javascript:salida=false;"></p>
                                     </form> </td>
                             </tr>
 
@@ -222,8 +275,11 @@
             </div>
         </div>
         <div id="central">
+
             <div id="izquierda2">
+                <% if (fps.length > 0) {%>
                 <table border="4" cellspacing="4" cellpadding="4" width="380" class="center">
+
                     <tbody>
 
                         <% for (int i = 0; i < fps.length; i++) {%>
@@ -232,28 +288,32 @@
                             <td> <%= fps[i].getNombre()%></td>
                             <td>
                                 <form method="post" name="formVer" action="modificarFicherosPropios.jsp" onsubmit="return valida();">
-                                    <input  type="hidden" value="<%= fps[i].getNombre()%>" name="NombreFichero">
-                                    <input  type="hidden" value="<%= fps[i].getCodigo()%>" name="CodigoFichero">
-                                    <input type="submit" name="Ver" value="Ver" onclick="javascript:salida=false;">
+                                    <p class="tabla"><input  type="hidden" value="<%= fps[i].getNombre()%>" name="NombreFichero">
+                                        <input  type="hidden" value="<%= fps[i].getCodigo()%>" name="CodigoFichero">
+                                        <input type="submit" name="Ver" value="Ver" onclick="javascript:salida=false;"></p>
                                 </form>
                             </td>
                             <td>
                                 <form method="post" name="formEliminar" action="modificarTest.jsp" onsubmit="return valida();">
-                                    <input  type="hidden" value="<%= fps[i].getNombre()%>" name="NombreFichero">
-                                    <input  type="hidden" value="<%= fps[i].getCodigo()%>" name="CodigoFichero">
-                                    <input type="hidden" value="eliminarFicheroPropio" name="operacion">
-                                    <input type="submit" name="seleccionar" value="Eliminar" onclick="javascript:salida=false;">
+                                    <p class="tabla">
+                                        <input type="hidden" value="eliminarEjecutable" name="operacion">
+                                        <input type="submit" name="Eliminar" value="Eliminar" onclick="javascript:salida=false;"></p>
                                 </form>
                             </td>
                         </tr>
                         <%
-            }
+     }
                         %>
                     </tbody>
+
                 </table>
+                <%
+}
+                %>
             </div>
 
             <div id="centro2">
+                <% if (cas.length > 0) {%>
                 <table border="4" cellspacing="4" cellpadding="4" width="380" class="center">
                     <tbody>
 
@@ -263,26 +323,29 @@
                             <td> <%= cas[i].getId()%></td>
                             <td>
                                 <form method="post" name="formVer" action="modificarCasos.jsp" onsubmit="return valida();">
-                                    <input  type="hidden" value="<%= cas[i].getId()%>" name="NombreCaso">
-                                    <input type="submit" name="Ver" value="Ver" onclick="javascript:salida=false;">
+                                    <p class="tabla"><input  type="hidden" value="<%= cas[i].getId()%>" name="NombreCaso">
+                                        <input type="submit" name="Ver" value="Ver" onclick="javascript:salida=false;"></p>
                                 </form>
                             </td>
                             <td>
                                 <form method="post" name="formEliminar" action="modificarTest.jsp" onsubmit="return valida();">
-                                    <input  type="hidden" value="<%= cas[i].getId()%>" name="NombreCaso">
-                                    <input type="hidden" value="eliminarCaso" name="operacion">
-                                    <input type="submit" name="seleccionar" value="Eliminar" onclick="javascript:salida=false;">
+                                    <p class="tabla"><input  type="hidden" value="<%= cas[i].getId()%>" name="NombreCaso">
+                                        <input type="hidden" value="eliminarCaso" name="operacion">
+                                        <input type="submit" name="Eliminar" value="Eliminar" onclick="javascript:salida=false;"></p>
                                 </form>
                             </td>
                         </tr>
                         <%
-            }
+     }
                         %>
                     </tbody>
                 </table>
+                <%
+}
+                %>
             </div>
-
             <div id="derecha2">
+                <% if (fas.length > 0) {%>
                 <table border="4" cellspacing="4" cellpadding="4" width="380" class="center">
                     <tbody>
 
@@ -292,34 +355,37 @@
                             <td> <%= fas[i].getNombre()%></td>
                             <td>
                                 <form method="post" name="formEliminar" action="modificarTest.jsp" onsubmit="return valida();">
-                                    <input  type="hidden" value="<%= fas[i].getNombre()%>" name="NombreFicheroAlumno">
-                                    <input type="hidden" value="eliminarFicheroAlumno" name="operacion">
-                                    <input type="submit" name="seleccionar" value="Eliminar" onclick="javascript:salida=false;">
+                                    <p class="tabla"><input  type="hidden" value="<%= fas[i].getNombre()%>" name="NombreFicheroAlumno">
+                                        <input type="hidden" value="eliminarFicheroAlumno" name="operacion">
+                                        <input type="submit" name="Eliminar" value="Eliminar" onclick="javascript:salida=false;"></p>
                                 </form>
                             </td>
                         </tr>
                         <%
-            }
+     }
                         %>
                     </tbody>
                 </table>
+                <%
+}
+                %>
             </div>
         </div>
         <% } else {
         %>
 
-        <h2 class="error" align="center">
+        <h2 class="error">
             ERROR!!! En la base de datos </h2>
-        <br>
-        <p class="error" align="center">
-            Ha ocurrido un problema en la base de datos al intentar crear el test.
-            Revise el nombre del test.
+
+        <p class="error">
+            Ha ocurrido un problema en la base de datos al intentar crear el FicheroAlumno.
+            Revise el nombre del Fichero.
         </p>
-        <br>
-        <br>
+
 
 
         <% }
         %>
     </body>
 </html>
+

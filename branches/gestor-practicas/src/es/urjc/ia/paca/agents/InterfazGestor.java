@@ -5,12 +5,11 @@
 package es.urjc.ia.paca.agents;
 
 //Paquetes JAVA.
-import jade.content.abs.AbsAgentAction;
+
 import jade.content.abs.AbsAggregate;
 import jade.content.abs.AbsConcept;
 import jade.content.abs.AbsContentElement;
 import jade.content.abs.AbsIRE;
-import jade.content.abs.AbsObject;
 import jade.content.abs.AbsPredicate;
 import jade.content.abs.AbsVariable;
 import jade.content.lang.Codec;
@@ -19,7 +18,6 @@ import jade.content.lang.sl.SL1Vocabulary;
 import jade.content.lang.sl.SL2Vocabulary;
 import jade.content.lang.sl.SLCodec;
 import jade.content.lang.sl.SLVocabulary;
-import jade.content.onto.BasicOntology;
 import jade.content.onto.Ontology;
 import jade.content.onto.OntologyException;
 import jade.content.onto.basic.Action;
@@ -27,43 +25,19 @@ import jade.core.AID;
 import jade.core.Agent;
 import jade.core.behaviours.Behaviour;
 import jade.core.behaviours.OneShotBehaviour;
-import jade.domain.DFService;
-import jade.domain.FIPAException;
-import jade.domain.FIPAAgentManagement.DFAgentDescription;
-import jade.domain.FIPAAgentManagement.Property;
-import jade.domain.FIPAAgentManagement.ServiceDescription;
 import jade.lang.acl.ACLMessage;
-import jade.lang.acl.MessageTemplate;
-import jade.util.leap.Collection;
 
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.Comparator;
-import java.util.Hashtable;
-import java.util.Iterator;
-import java.util.List;
-import java.util.Random;
-
-import com.sun.image.codec.jpeg.TruncatedFileException;
 
 import java.util.logging.Level;
 import java.util.logging.Logger;
-import sun.misc.Sort;
 
-import es.urjc.ia.paca.ontology.Alumno;
+
 import es.urjc.ia.paca.ontology.Corrector;
 import es.urjc.ia.paca.ontology.Corrige;
-import es.urjc.ia.paca.ontology.EvaluacionPractica;
-import es.urjc.ia.paca.ontology.FicheroFuentes;
-import es.urjc.ia.paca.ontology.Interactua;
 import es.urjc.ia.paca.ontology.Practica;
-import es.urjc.ia.paca.ontology.ResultadoEvaluacion;
 import es.urjc.ia.paca.ontology.Test;
-import es.urjc.ia.paca.ontology.Tests;
 import es.urjc.ia.paca.ontology.pacaOntology;
-import es.urjc.ia.paca.ontology.Fichero.FuentesPrograma;
 import es.urjc.ia.paca.util.AndBuilder;
-import es.urjc.ia.paca.util.EstadoCorrector;
 import es.urjc.ia.paca.util.Resultado;
 import es.urjc.ia.paca.auth.ontology.Autenticado;
 import es.urjc.ia.paca.auth.ontology.AuthOntology;
@@ -89,20 +63,15 @@ import es.urjc.ia.paca.ontology.EliminaFicheroOUT;
 import es.urjc.ia.paca.ontology.EliminaFicheroPropio;
 import es.urjc.ia.paca.ontology.EliminaPractica;
 import es.urjc.ia.paca.ontology.EliminaTest;
-import es.urjc.ia.paca.ontology.EntregarPractica;
 import es.urjc.ia.paca.ontology.FicheroAlumno;
 import es.urjc.ia.paca.ontology.FicheroIN;
 import es.urjc.ia.paca.ontology.FicheroOUT;
 import es.urjc.ia.paca.ontology.FicheroPropio;
-import es.urjc.ia.paca.ontology.FicherosAlumno;
 import es.urjc.ia.paca.ontology.ModificaPractica;
-import es.urjc.ia.paca.ontology.FicherosPropios;
 import es.urjc.ia.paca.ontology.ModificaFicheroPropio;
 import es.urjc.ia.paca.ontology.ModificaTest;
 import es.urjc.ia.paca.ontology.ModificaFicheroIN;
 import es.urjc.ia.paca.ontology.ModificaFicheroOUT;
-import jade.content.Predicate;
-import jade.core.behaviours.CyclicBehaviour;
 
 /**
  *
@@ -506,6 +475,7 @@ public class InterfazGestor extends Agent {
             Test te = new Test();
             te.setId("?test");
             te.setDescripcion("");
+            te.setEjecutable("");
 
 
             try {
@@ -1390,6 +1360,52 @@ public class InterfazGestor extends Agent {
 
                 ModificaTest mts = new ModificaTest();
                 mts.setTest(te);
+                mts.setPractica(pt);
+
+                Action act = new Action();
+                act.setAction(mts);
+                act.setActor(receiver);
+
+
+                getContentManager().fillContent(solicitud, act);
+                addBehaviour(new RecibeMensajes(myAgent, tes1));
+                send(solicitud);
+            } catch (CodecException ex) {
+                Logger.getLogger(Interfaz.class.getName()).log(Level.SEVERE, null, ex);
+            } catch (OntologyException ex) {
+                Logger.getLogger(Interfaz.class.getName()).log(Level.SEVERE, null, ex);
+            }
+        }
+    }
+
+
+        public class ModificarEjecutable extends OneShotBehaviour {
+
+        private Resultado tes1;
+        private String ejecutable;
+
+        public ModificarEjecutable(Agent _a, Resultado tes, String ejecutable) {
+            super(_a);
+            this.tes1 = tes;
+            this.ejecutable = ejecutable;
+        }
+
+        public void action() {
+            try {
+
+                AID receiver = new AID(gestorPracticas, AID.ISLOCALNAME);
+                ACLMessage solicitud = new ACLMessage(ACLMessage.REQUEST);
+                solicitud.addReceiver(receiver);
+                solicitud.setLanguage(codec.getName());
+                solicitud.setOntology(pacaOntology.NAME);
+
+
+                Practica pt = ultimaPractica;
+                ultimoTest.setEjecutable(ejecutable);
+
+
+                ModificaTest mts = new ModificaTest();
+                mts.setTest(ultimoTest);
                 mts.setPractica(pt);
 
                 Action act = new Action();

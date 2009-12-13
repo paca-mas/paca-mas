@@ -25,6 +25,7 @@
         <title>
             Seleccionar Test.
         </title>
+        <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
         <LINK REL=STYLESHEET TYPE="text/css" HREF="estilos/estiloInterfazGestor.css">
         <SCRIPT TYPE="text/javascript">
             <!--
@@ -46,11 +47,11 @@
     <body onUnload="exit();">
 
         <p class="derecha" > <a href="mostrarPracticas.jsp" class="menu"  onclick="javascript:salida=false;">[Listado de Practicas]</a> |
-            <a href="modificarPractica.jsp" class="menu" onclick="javascript:salida=false;"> [Practica] |
-                <a href="modificarTest.jsp" class="menu" onclick="javascript:salida=false;"> [Test] |
-                    <a href="salida.jsp" class="menu"  onclick="javascript:salida=false;">[Salir]</a> </p>
+            <a href="modificarPractica.jsp" class="menu" onclick="javascript:salida=false;"> [Practica] </a>|
+            <a href="modificarTest.jsp" class="menu" onclick="javascript:salida=false;"> [Test] </a>|
+            <a href="salida.jsp" class="menu"  onclick="javascript:salida=false;">[Salir]</a> </p>
 
-        <h1 class="center" class="color">
+        <h1 class="center">
             Selecci&oacute;n de FicheroPropio.  </h1>
 
 
@@ -70,87 +71,89 @@
 
         %>
 
-        <%
-            for (int i = 0; i < pract.length; i++) {
+        <div id="cuerpo2">
 
-                Testigo resultado = new Testigo();
-                resultado.setOperacion(Testigo.Operaciones.seleccionarTest);
-                resultado.setParametro(pract[i].getId());
+            <%
+                for (int i = 0; i < pract.length; i++) {
+
+                    Testigo resultado = new Testigo();
+                    resultado.setOperacion(Testigo.Operaciones.seleccionarTest);
+                    resultado.setParametro(pract[i].getId());
 
 
-                interfazGestor.sendTestigo(resultado);
+                    interfazGestor.sendTestigo(resultado);
 
-                while (!resultado.isRelleno()) {
-                }
-
-                Test[] tests = (Test[]) resultado.getResultado();
-
-        %>
-
-        <div id="cuerpo">
-            <h3> <%= pract[i].getId()%> </h3>
-
-            <div id="central4">
-
-            
-        <%
-            for (int h = 0; h < tests.length; h++){
-
-                Testigo resultado3 = new Testigo();
-                resultado3.setOperacion(Testigo.Operaciones.seleccionarFicherosPropios);
-                resultado3.setParametro(tests[h]);
-
-                interfazGestor.sendTestigo(resultado3);
-
-                while (!resultado3.isRelleno()) {
+                    while (!resultado.isRelleno()) {
                     }
 
-                FicheroPropio[] fp = (FicheroPropio[]) resultado3.getResultado();
+                    Test[] tests = (Test[]) resultado.getResultado();
 
-     %>
-
-
+            %>
 
 
-     
-                <h4> <%=tests[h].getId()%> </h4>
-                <div id="central3">
-                <% for (int z = 0; z < fp.length; z++) {%>
-                <table border="0">
+            <h3> <%= pract[i].getId()%> </h3>
 
-                    <tbody>
-                        <tr>
-                    <form class="center" method="post" name="formVer" action="copiarFicherosPropios.jsp">
+
+
+
+            <%
+                    for (int h = 0; h < tests.length; h++) {
+
+                        Testigo resultado3 = new Testigo();
+                        resultado3.setOperacion(Testigo.Operaciones.seleccionarFicherosPropios);
+                        resultado3.setParametro(tests[h]);
+
+                        interfazGestor.sendTestigo(resultado3);
+
+                        while (!resultado3.isRelleno()) {
+                        }
+
+                        FicheroPropio[] fp = (FicheroPropio[]) resultado3.getResultado();
+
+            %>
+
+
+
+
+
+            <h4 class="seleccionTest2"> <%=tests[h].getId()%> </h4>
+
+            <% for (int z = 0; z < fp.length; z++) {%>
+            <table border="0" class="seleccionCaso">
+
+                <tbody>
+                    <tr>
+
                         <td> <%= fp[z].getNombre()%>  </td>
                         <td>
-
-                            <input  type="hidden" value="<%= tests[h].getId()%>" name="NombreTestACopiar">
-                            <input  type="hidden" value="<%= pract[i].getId()%>" name="NombrePracticaACopiar">
-                            <input type="hidden" value="<%= fp[z].getNombre()%>" name="NombreFicheroACopiar">
-                            <input type="hidden" value="<%= fp[z].getCodigo()%>" name="CodigoFicheroACopiar">
-                            <input type="hidden" value="copiar" name="operacion">
-                            <input type="submit" name="Seleccionar" value="Seleccionar" onclick="javascript:salida=false;">
+                            <form class="center" method="post" name="formVer" action="copiarFicherosPropios.jsp">
+                                <p class="tabla"><input  type="hidden" value="<%= tests[h].getId()%>" name="NombreTestACopiar">
+                                    <input  type="hidden" value="<%= pract[i].getId()%>" name="NombrePracticaACopiar">
+                                    <input type="hidden" value="<%= fp[z].getNombre()%>" name="NombreFicheroACopiar">
+                                    <input type="hidden" value="<%= fp[z].getCodigo()%>" name="CodigoFicheroACopiar">
+                                    <input type="hidden" value="copiar" name="operacion">
+                                    <input type="submit" name="Seleccionar" value="Seleccionar" onclick="javascript:salida=false;"></p>
+                            </form>
 
                         </td>
-                    </form>
 
                     </tr>
 
-                    </tbody>
-                </table>
-                <%
-                }
-                %>
-                </div>
-            
-        
-                <%
-                }
-                %>
+                </tbody>
+            </table>
+            <%
+            }
+            %>
 
-                </div>
-        <% }
-        %>
+
+
+            <%
+            }
+            %>
+
+
+            <% }
+            %>
 
         </div>
     </body>
