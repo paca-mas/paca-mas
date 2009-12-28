@@ -261,3 +261,13 @@ h4.seleccionTest2{
     left: 60%;
 	width: 10px;
 }
+
+.validadorhtml{
+    position: absolute;
+    right: 90%;
+}
+
+.validadorcss{
+    position: absolute;
+    right: 82%;
+}

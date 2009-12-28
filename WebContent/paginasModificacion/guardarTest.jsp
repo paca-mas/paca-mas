@@ -67,7 +67,16 @@
     <body onUnload="exit();">
 
 
-        <p class="derecha" > <a href="mostrarPracticas.jsp" class="menu"  onclick="javascript:salida=false;">[Listado de Practicas]</a> |
+        <p class="derecha" >
+            <a class="validadorhtml" href="http://validator.w3.org/check?uri=referer"><img
+                    style="border:0;width:88px;height:31px" src="http://www.w3.org/Icons/valid-html401-blue"
+                    alt="Valid HTML 4.01 Strict" height="31" width="88"></a>
+            <a class="validadorcss"href="http://jigsaw.w3.org/css-validator/check/referer">
+                <img style="border:0;width:88px;height:31px"
+                     src="http://jigsaw.w3.org/css-validator/images/vcss-blue"
+                     alt="¡CSS Válido!" >
+            </a>
+            <a href="mostrarPracticas.jsp" class="menu"  onclick="javascript:salida=false;">[Listado de Practicas]</a> |
             <a href="modificarPractica.jsp" class="menu" onclick="javascript:salida=false;"> [Practica] </a>|
             <a href="salida.jsp" class="menu"  onclick="javascript:salida=false;">[Salir]</a> </p>
         <h1 class="center">
@@ -378,8 +387,7 @@
             ERROR!!! En la base de datos </h2>
 
         <p class="error">
-            Ha ocurrido un problema en la base de datos al intentar crear el FicheroAlumno.
-            Revise el nombre del Fichero.
+            Ha ocurrido un problema en la base de datos.
         </p>
 
 
