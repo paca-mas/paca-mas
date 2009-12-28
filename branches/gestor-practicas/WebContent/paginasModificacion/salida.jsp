@@ -9,28 +9,39 @@
 <!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01//EN" "http://www.w3.org/TR/html4/strict.dtd">
 <html>
 
-	<head>
-		<title>
+    <head>
+        <title>
 			Fin de la aplicaci&oacute;n
-		</title>
-            <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+        </title>
+        <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
 
-		<LINK REL=STYLESHEET TYPE="text/css" HREF="/estilos/estiloPaca.css">
+        <LINK REL=STYLESHEET TYPE="text/css" HREF="/estilos/estiloPaca.css">
 
-	</head>
-	<body>
+    </head>
+    <body>
 
-		<%@ include file="cab.html"%>
+        <%@ include file="cab.html"%>
 
-                
-		<%
-		interfazGestor.getAgentController().kill();
-		session.invalidate();
-		%>
+        <p>
+            <a href="http://validator.w3.org/check?uri=referer"><img
+                    style="border:0;width:88px;height:31px" src="http://www.w3.org/Icons/valid-html401-blue"
+                    alt="Valid HTML 4.01 Strict" height="31" width="88"></a>
+            <a href="http://jigsaw.w3.org/css-validator/check/referer">
+                <img style="border:0;width:88px;height:31px"
+                     src="http://jigsaw.w3.org/css-validator/images/vcss-blue"
+                     alt="¡CSS Válido!" >
+            </a>
+        </p>
 
-				<p style="text-align: center">
+
+        <%
+    interfazGestor.getAgentController().kill();
+    session.invalidate();
+        %>
+
+        <p style="text-align: center">
 			Gracias por utilizar la plataforma de correcci&oacute;n autom&aacute;tica.<br>
-		</p>
-	</body>
+        </p>
+    </body>
 </html>
 

@@ -53,121 +53,130 @@
     <body onUnload="exit();">
 
 
-        <p class="derecha" > <a href="mostrarPracticas.jsp" class="menu"  onclick="javascript:salida=false;">[Listado de Practicas]</a> |
+        <p class="derecha" >
+            <a class="validadorhtml" href="http://validator.w3.org/check?uri=referer"><img
+                    style="border:0;width:88px;height:31px" src="http://www.w3.org/Icons/valid-html401-blue"
+                    alt="Valid HTML 4.01 Strict" height="31" width="88"></a>
+            <a class="validadorcss"href="http://jigsaw.w3.org/css-validator/check/referer">
+                <img style="border:0;width:88px;height:31px"
+                     src="http://jigsaw.w3.org/css-validator/images/vcss-blue"
+                     alt="¡CSS Válido!" >
+            </a>
+            <a href="mostrarPracticas.jsp" class="menu"  onclick="javascript:salida=false;">[Listado de Practicas]</a> |
             <a href="modificarPractica.jsp" class="menu" onclick="javascript:salida=false;"> [Practica] </a>|
-                <a href="modificarTest.jsp" class="menu" onclick="javascript:salida=false;"> [Test] </a>|
-                    <a href="salida.jsp" class="menu"  onclick="javascript:salida=false;">[Salir]</a> </p>
-                    <h1 class="center">
+            <a href="modificarTest.jsp" class="menu" onclick="javascript:salida=false;"> [Test] </a>|
+            <a href="salida.jsp" class="menu"  onclick="javascript:salida=false;">[Salir]</a> </p>
+        <h1 class="center">
 			Modificaci&oacute;n del Fichero Propio.
-                    </h1>
+        </h1>
 
 
-                    <%
+        <%
 
-            boolean autenticado = false;
+boolean autenticado = false;
 
-            HttpServletRequest param1 = (HttpServletRequest) request;
-            MultipartParser parser = new MultipartParser(param1, 1000000);
-            // Empezamos a leer.
-            Part parte = parser.readNextPart();
-            String nombre = "";
-            String codigo = "";
-            String operacion = "";
-            while (parte != null) {
-                if (parte.isFile()) {
-                    //Es un fichero.
+HttpServletRequest param1 = (HttpServletRequest) request;
+MultipartParser parser = new MultipartParser(param1, 1000000);
+// Empezamos a leer.
+Part parte = parser.readNextPart();
+String nombre = "";
+String codigo = "";
+String operacion = "";
+while (parte != null) {
+    if (parte.isFile()) {
+        //Es un fichero.
 
-                    FilePart filepart = (FilePart) parte;
-                    InputStream is = filepart.getInputStream();
-                    StringWriter sw = new StringWriter();
-                    int tempo = is.read();
-                    while (tempo != -1) {
-                        sw.write(tempo);
-                        tempo = is.read();
-                    }
-                    if (!(sw.toString().equalsIgnoreCase(""))) {
+        FilePart filepart = (FilePart) parte;
+        InputStream is = filepart.getInputStream();
+        StringWriter sw = new StringWriter();
+        int tempo = is.read();
+        while (tempo != -1) {
+            sw.write(tempo);
+            tempo = is.read();
+        }
+        if (!(sw.toString().equalsIgnoreCase(""))) {
 
-                        codigo = sw.toString();
+            codigo = sw.toString();
 
-                    }
-                    sw.close();
-                }
-                if (parte.isParam()) {
+        }
+        sw.close();
+    }
+    if (parte.isParam()) {
 
-                    if (parte.getName().equals("NombreFichero")) {
-                        ParamPart parampart = (ParamPart) parte;
-                        nombre = parampart.getStringValue();
-                    } else if (parte.getName().equals("CodigoFichero")) {
-                        if (codigo.equalsIgnoreCase("")) {
+        if (parte.getName().equals("NombreFichero")) {
+            ParamPart parampart = (ParamPart) parte;
+            nombre = parampart.getStringValue();
+        } else if (parte.getName().equals("CodigoFichero")) {
+            if (codigo.equalsIgnoreCase("")) {
 
-                            ParamPart parampart = (ParamPart) parte;
-                            codigo = parampart.getStringValue();
-
-                        }
-                    } else if (parte.getName().equals("operacion")) {
-                        ParamPart parampart = (ParamPart) parte;
-                        operacion = parampart.getStringValue();
-                    }
-
-                }
-                parte = parser.readNextPart();
+                ParamPart parampart = (ParamPart) parte;
+                codigo = parampart.getStringValue();
 
             }
+        } else if (parte.getName().equals("operacion")) {
+            ParamPart parampart = (ParamPart) parte;
+            operacion = parampart.getStringValue();
+        }
 
-            if (!codigo.equalsIgnoreCase("")) {
+    }
+    parte = parser.readNextPart();
 
-                Testigo resultado = new Testigo();
-                if (operacion.equalsIgnoreCase("crear")) {
-                    resultado.setOperacion(Testigo.Operaciones.crearFicheroPropio);
-                } else {
-                    resultado.setOperacion(Testigo.Operaciones.modificarFicherosPropios);
-                }
-                resultado.setParametro(nombre + "#" + codigo);
+}
 
-                interfazGestor.sendTestigo(resultado);
+if (!codigo.equalsIgnoreCase("")) {
 
+    Testigo resultado = new Testigo();
+    if (operacion.equalsIgnoreCase("crear")) {
+        resultado.setOperacion(Testigo.Operaciones.crearFicheroPropio);
+    } else {
+        resultado.setOperacion(Testigo.Operaciones.modificarFicherosPropios);
+    }
+    resultado.setParametro(nombre + "#" + codigo);
 
-                autenticado = resultado.isResultadoB();
-            } else {
-                autenticado = true;
-            }
-
-                    %>
-
-                    <%
-            if (autenticado) {
-
-                    %>
-
-                    <div id="cuerpo">
-                        <form method="post" name="formTest" enctype="multipart/form-data" action="guardarFicherosPropios.jsp" onsubmit="desactivarBoton();">
-                            <h2> <%= nombre%> </h2>
-                            <p> C&oacute;digo:</p>
-                            <p> <TEXTAREA NAME="CodigoFichero" ROWS=10 COLS=80><%= codigo%></TEXTAREA>
-                            </p>
-                            <p> <input type="file" name="LeerFichero" size="30">
-                            </p>
-                            <p> <input  type="hidden" value="<%= codigo%>" name="CodigoAntiguo">
-                            <input  type="hidden" value="<%= nombre%>" name="NombreFichero">
-                            <input type="hidden"  value="guardar" name="operacion">
-                            <input type="submit" name="seleccionar" value="Guardar Fichero" onclick="javascript:salida=false;"> </p>
-                        </form>
-                    </div>
-
-                    <% } else {
-                    %>
-
-                    <h2 class="error">
-                        ERROR!!! En la base de datos </h2>
-                    
-                    <p class="error">
-                        Ha ocurrido un problema en la base de datos al intentar crear el FicheroPropio.
-                    </p>
+    interfazGestor.sendTestigo(resultado);
 
 
+    autenticado = resultado.isResultadoB();
+} else {
+    autenticado = true;
+}
 
-                    <% }
-                    %>
+        %>
 
-                    </body>
-                    </html>
+        <%
+if (autenticado) {
+
+        %>
+
+        <div id="cuerpo">
+            <form method="post" name="formTest" enctype="multipart/form-data" action="guardarFicherosPropios.jsp" onsubmit="desactivarBoton();">
+                <h2> <%= nombre%> </h2>
+                <p> C&oacute;digo:</p>
+                <p> <TEXTAREA NAME="CodigoFichero" ROWS=10 COLS=80><%= codigo%></TEXTAREA>
+                </p>
+                <p> <input type="file" name="LeerFichero" size="30">
+                </p>
+                <p> <input  type="hidden" value="<%= codigo%>" name="CodigoAntiguo">
+                    <input  type="hidden" value="<%= nombre%>" name="NombreFichero">
+                    <input type="hidden"  value="guardar" name="operacion">
+                    <input type="submit" name="seleccionar" value="Guardar Fichero" onclick="javascript:salida=false;"> </p>
+            </form>
+        </div>
+
+        <% } else {
+        %>
+
+        <h2 class="error">
+            ERROR!!! En la base de datos </h2>
+
+        <p class="error">
+            Ha ocurrido un problema en la base de datos.
+        </p>
+
+
+
+        <% }
+        %>
+
+    </body>
+</html>
