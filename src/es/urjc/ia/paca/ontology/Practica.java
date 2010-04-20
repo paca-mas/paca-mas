@@ -6,45 +6,61 @@ import jade.content.Concept;
 
 /**
    Clase que implementa el concepto Practica de la ontolog�a.
-   Modificado Carlos Sim�n Garc�a
+   Modificado Alvaro Blázquez
  */
 public class Practica implements Concept{
-	private String Id; 
 
-	private String Descripcion;
 
-	public Practica () {
-		Id = "";
-	}
+    private String FechaEntrega;
+    private String Id;
+    private String Descripcion;
 
-	public Practica ( String nombre) {
-		Id = nombre;
-	}
-        
-        public Practica (String _id, String _description) {
-            this.Id = _id;
-            this.Descripcion = _description;
-        }
+    public Practica () {
+            Id = "";
+            Descripcion = "";
+            FechaEntrega = "";
+    }
 
-	public String getId( ) 
-	{
-		return Id;
-	} 
+    public Practica ( String nombre) {
+           Id = nombre;
+           Descripcion = "";
+           FechaEntrega = "";
+    }
 
-	public void setId( String i )
-	{
-		Id = i;
-	}
+    public Practica (String _id, String _description) {
+           this.Id = _id;
+           this.Descripcion = _description;
+           this.FechaEntrega= "";
+    }
 
-	public String getDescripcion( )
-	{
-		return Descripcion;
-	}
+    public Practica (String _id, String _description, String FechaEntrega) {
+           this.Id = _id;
+           this.Descripcion = _description;
+           this.FechaEntrega = FechaEntrega;
+    }
 
-	public void setDescripcion( String i )
-	{
-		Descripcion = i;
-	}
+    public String getDescripcion () {
+        return Descripcion;
+    }
 
+    public void setDescripcion (String val) {
+            this.Descripcion = val;
+    }
+
+    public String getId () {
+        return Id;
+    }
+
+    public void setId (String val) {
+            this.Id = val;
+    }
+
+    public String getFechaEntrega () {
+        return FechaEntrega;
+    }
+
+    public void setFechaEntrega (String val) {
+        this.FechaEntrega = val;
+    }
 
 }
