@@ -38,7 +38,7 @@
     </head>
     <body onUnload="exit();">
         <%@ include file="cab.html"%>
-        <%@ include file="barraPeticionCasos.html"%>
+        <%@ include file="barra3.html"%>
 
         <%
 
