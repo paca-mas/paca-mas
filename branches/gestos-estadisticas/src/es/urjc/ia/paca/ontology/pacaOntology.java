@@ -6,8 +6,7 @@ package es.urjc.ia.paca.ontology;
 //import jade.onto.SlotDescriptor;
 //import jade.onto.OntologyException;
 //import jade.onto.basic.*;
-import es.urjc.ia.paca.ontology.Fichero.Fichero;
-import es.urjc.ia.paca.ontology.Fichero.FuentesPrograma;
+import es.urjc.ia.paca.ontology.Fichero.*;
 import jade.content.AgentAction;
 import jade.content.lang.sl.SL0Vocabulary;
 import jade.content.lang.sl.SL1Vocabulary;
@@ -67,6 +66,11 @@ public class pacaOntology extends Ontology {
     public static final String FUENTESPROGRAMA_CODIGO = "Codigo";
     //EvaluacionPractica
     public static final String EVALUACIONPRACTICA = "evaluacionPractica";
+    
+    //*********************************************************
+    // EvaluacionCaso
+    public static final String EVALUACIONCASO = "evaluacionCaso";
+    
     //A�adido Carlos
     public static final String EVALUACIONPRACTICA_TEXTO = "textoEvaluacion";
     public static final String INTERFAZ = "interfaz";
