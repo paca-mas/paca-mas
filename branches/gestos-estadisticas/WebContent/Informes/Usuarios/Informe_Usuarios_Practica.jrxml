@@ -1,0 +1,157 @@
+<?xml version="1.0" encoding="UTF-8"  ?>
+<!-- Created with iReport - A designer for JasperReports -->
+<!DOCTYPE jasperReport PUBLIC "//JasperReports//DTD Report Design//EN" "http://jasperreports.sourceforge.net/dtds/jasperreport.dtd">
+<jasperReport
+		 name="Informe_Usuarios_Practica"
+		 columnCount="1"
+		 printOrder="Vertical"
+		 orientation="Portrait"
+		 pageWidth="595"
+		 pageHeight="842"
+		 columnWidth="535"
+		 columnSpacing="0"
+		 leftMargin="30"
+		 rightMargin="30"
+		 topMargin="20"
+		 bottomMargin="20"
+		 whenNoDataType="NoPages"
+		 isTitleNewPage="false"
+		 isSummaryNewPage="false">
+	<property name="ireport.scriptlethandling" value="0" />
+	<property name="ireport.encoding" value="UTF-8" />
+	<import value="java.util.*" />
+	<import value="net.sf.jasperreports.engine.*" />
+	<import value="net.sf.jasperreports.engine.data.*" />
+
+	<parameter name="IDPRACTICA" isForPrompting="true" class="java.lang.Integer"/>
+	<parameter name="IDALUMNO" isForPrompting="true" class="java.lang.String"/>
+	<queryString><![CDATA[SELECT
+     gep.`Id_practica` AS Id_practica,
+     x_practica.`practica` AS practica,
+     aep.`id_grupo` AS id_grupo,
+     x_grupo.`grupo` AS grupo,
+     AVG(aep.`porcentaje_practica`)AS porcentaje_practica,
+     gep.`porcentaje_practica_grupo` AS porcentaje_practica_grupo
+FROM
+     `grupo_evaluacion_practica` gep INNER JOIN `alumno_evaluacion_practica_01` aep ON gep.`Id_grupo` = aep.`id_grupo`
+     AND gep.`Id_practica` = aep.`id_practica`
+     INNER JOIN `x_grupo` x_grupo ON gep.`Id_grupo` = x_grupo.`id_grupo`
+     INNER JOIN `x_practica` x_practica ON gep.`Id_practica` = x_practica.`id_practica`
+     INNER JOIN `usuarios` usuarios ON x_grupo.`id_grupo` = usuarios.`id_grupo`
+     AND usuarios.`id_usuario` = aep.`id_alumno`
+WHERE
+     usuarios.id_usuario IN ($P!{IDALUMNO})
+ AND gep.id_practica = $P!{IDPRACTICA}
+ AND usuarios.tipo = "A"
+GROUP BY
+     Id_practica,
+     id_grupo]]></queryString>
+
+	<field name="Id_practica" class="java.lang.Integer"/>
+	<field name="practica" class="java.lang.String"/>
+	<field name="id_grupo" class="java.lang.Integer"/>
+	<field name="grupo" class="java.lang.String"/>
+	<field name="porcentaje_practica" class="java.lang.Double"/>
+	<field name="porcentaje_practica_grupo" class="java.lang.Integer"/>
+
+
+		<group  name="IDGRUPO" >
+			<groupExpression><![CDATA[$F{id_grupo}]]></groupExpression>
+			<groupHeader>
+			<band height="0"  isSplitAllowed="true" >
+			</band>
+			</groupHeader>
+			<groupFooter>
+			<band height="0"  isSplitAllowed="true" >
+			</band>
+			</groupFooter>
+		</group>
+		<group  name="IDPRACTICA" >
+			<groupExpression><![CDATA[$F{Id_practica}]]></groupExpression>
+			<groupHeader>
+			<band height="0"  isSplitAllowed="true" >
+			</band>
+			</groupHeader>
+			<groupFooter>
+			<band height="0"  isSplitAllowed="true" >
+			</band>
+			</groupFooter>
+		</group>
+		<background>
+			<band height="0"  isSplitAllowed="true" >
+			</band>
+		</background>
+		<title>
+			<band height="0"  isSplitAllowed="true" >
+			</band>
+		</title>
+		<pageHeader>
+			<band height="0"  isSplitAllowed="true" >
+			</band>
+		</pageHeader>
+		<columnHeader>
+			<band height="0"  isSplitAllowed="true" >
+			</band>
+		</columnHeader>
+		<detail>
+			<band height="300"  isSplitAllowed="true" >
+				<barChart>
+					<chart  hyperlinkTarget="Self" >
+					<reportElement
+						x="16"
+						y="15"
+						width="498"
+						height="264"
+						key="element-1"/>
+					<box></box>
+						<chartLegend textColor="#000000" backgroundColor="#FFFFFF" >
+					</chartLegend>
+					</chart>
+					<categoryDataset>
+						<dataset >
+						</dataset>
+						<categorySeries>
+							<seriesExpression><![CDATA["% Practica hecha (alumno)"]]></seriesExpression>
+							<categoryExpression><![CDATA[$F{practica}]]></categoryExpression>
+							<valueExpression><![CDATA[$F{porcentaje_practica}]]></valueExpression>
+				<itemHyperlink >
+				</itemHyperlink>
+						</categorySeries>
+						<categorySeries>
+							<seriesExpression><![CDATA["% Practica hecha (grupo)"]]></seriesExpression>
+							<categoryExpression><![CDATA[$F{practica}]]></categoryExpression>
+							<valueExpression><![CDATA[$F{porcentaje_practica_grupo}]]></valueExpression>
+				<itemHyperlink >
+				</itemHyperlink>
+						</categorySeries>
+					</categoryDataset>
+					<barPlot >
+						<plot orientation="Horizontal" >
+							<seriesColor seriesOrder="0" color="#00CC33"/>
+							<seriesColor seriesOrder="1" color="#006600"/>
+</plot>
+						<categoryAxisFormat>
+							<axisFormat >
+							</axisFormat>
+						</categoryAxisFormat>
+						<valueAxisFormat>
+							<axisFormat >
+							</axisFormat>
+						</valueAxisFormat>
+					</barPlot>
+				</barChart>
+			</band>
+		</detail>
+		<columnFooter>
+			<band height="0"  isSplitAllowed="true" >
+			</band>
+		</columnFooter>
+		<pageFooter>
+			<band height="0"  isSplitAllowed="true" >
+			</band>
+		</pageFooter>
+		<summary>
+			<band height="0"  isSplitAllowed="true" >
+			</band>
+		</summary>
+</jasperReport>

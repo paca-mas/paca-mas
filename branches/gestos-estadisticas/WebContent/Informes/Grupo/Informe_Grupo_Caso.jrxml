@@ -1,0 +1,178 @@
+<?xml version="1.0" encoding="UTF-8"  ?>
+<!-- Created with iReport - A designer for JasperReports -->
+<!DOCTYPE jasperReport PUBLIC "//JasperReports//DTD Report Design//EN" "http://jasperreports.sourceforge.net/dtds/jasperreport.dtd">
+<jasperReport
+		 name="Informe_Grupo_Caso"
+		 columnCount="1"
+		 printOrder="Vertical"
+		 orientation="Landscape"
+		 pageWidth="842"
+		 pageHeight="595"
+		 columnWidth="782"
+		 columnSpacing="0"
+		 leftMargin="30"
+		 rightMargin="30"
+		 topMargin="20"
+		 bottomMargin="20"
+		 whenNoDataType="NoPages"
+		 isTitleNewPage="false"
+		 isSummaryNewPage="false">
+	<property name="ireport.scriptlethandling" value="0" />
+	<property name="ireport.encoding" value="UTF-8" />
+	<import value="java.util.*" />
+	<import value="net.sf.jasperreports.engine.*" />
+	<import value="net.sf.jasperreports.engine.data.*" />
+
+	<parameter name="IDTEST" isForPrompting="true" class="java.lang.Integer"/>
+	<parameter name="IDPRACTICA" isForPrompting="true" class="java.lang.Integer"/>
+	<parameter name="IDGRUPO" isForPrompting="true" class="java.lang.Integer"/>
+	<queryString><![CDATA[SELECT
+     x_grupo.`grupo` AS grupo,
+     x_practica.`practica` AS practica,
+     x_test.`test` AS test,
+     x_caso.`caso` AS caso,
+     grupo_evaluacion_caso.`porcentaje_caso` AS porcentaje_grupo_caso,
+     x_grupo.`id_grupo` AS id_grupo,
+     grupo_evaluacion_caso.`id_practica` AS id_practica,
+     grupo_evaluacion_caso.`id_test` AS id_test,
+     grupo_evaluacion_caso.`id_caso` AS id_caso
+FROM
+     `grupo_evaluacion_caso` grupo_evaluacion_caso INNER JOIN `x_grupo` x_grupo ON grupo_evaluacion_caso.`id_grupo` = x_grupo.`id_grupo`
+     INNER JOIN `x_practica` x_practica ON grupo_evaluacion_caso.`id_practica` = x_practica.`id_practica`
+     INNER JOIN `x_test` x_test ON grupo_evaluacion_caso.`id_practica` = x_test.`id_practica`
+     AND grupo_evaluacion_caso.`id_test` = x_test.`id_test`
+     INNER JOIN `x_caso` x_caso ON grupo_evaluacion_caso.`id_practica` = x_caso.`id_practica`
+     AND grupo_evaluacion_caso.`id_caso` = x_caso.`id_caso`
+     AND grupo_evaluacion_caso.`id_test` = x_caso.`id_test`
+     AND x_practica.`id_practica` = x_test.`id_practica`
+WHERE
+     x_grupo.id_grupo = $P!{IDGRUPO}
+ AND grupo_evaluacion_caso.id_practica = $P!{IDPRACTICA}
+ AND grupo_evaluacion_caso.id_test = $P!{IDTEST}]]></queryString>
+
+	<field name="grupo" class="java.lang.String"/>
+	<field name="practica" class="java.lang.String"/>
+	<field name="test" class="java.lang.String"/>
+	<field name="caso" class="java.lang.String"/>
+	<field name="porcentaje_grupo_caso" class="java.lang.Integer"/>
+	<field name="id_grupo" class="java.lang.Integer"/>
+	<field name="id_practica" class="java.lang.Integer"/>
+	<field name="id_test" class="java.lang.Integer"/>
+	<field name="id_caso" class="java.lang.Integer"/>
+
+
+		<group  name="IDGRUPO" >
+			<groupExpression><![CDATA[$F{id_grupo}]]></groupExpression>
+			<groupHeader>
+			<band height="0"  isSplitAllowed="true" >
+			</band>
+			</groupHeader>
+			<groupFooter>
+			<band height="0"  isSplitAllowed="true" >
+			</band>
+			</groupFooter>
+		</group>
+		<group  name="IDPRACTICA" >
+			<groupExpression><![CDATA[$F{id_practica}]]></groupExpression>
+			<groupHeader>
+			<band height="0"  isSplitAllowed="true" >
+			</band>
+			</groupHeader>
+			<groupFooter>
+			<band height="0"  isSplitAllowed="true" >
+			</band>
+			</groupFooter>
+		</group>
+		<group  name="IDTEST" >
+			<groupExpression><![CDATA[$F{id_test}]]></groupExpression>
+			<groupHeader>
+			<band height="0"  isSplitAllowed="true" >
+			</band>
+			</groupHeader>
+			<groupFooter>
+			<band height="300"  isSplitAllowed="true" >
+				<bar3DChart>
+					<chart  hyperlinkTarget="Self" >
+					<reportElement
+						x="28"
+						y="12"
+						width="496"
+						height="258"
+						key="element-1"/>
+					<box></box>
+						<chartLegend textColor="#000000" backgroundColor="#FFFFFF" >
+					</chartLegend>
+					</chart>
+					<categoryDataset>
+						<dataset >
+						</dataset>
+						<categorySeries>
+							<seriesExpression><![CDATA["Porcentaje del caso"]]></seriesExpression>
+							<categoryExpression><![CDATA[$F{caso}]]></categoryExpression>
+							<valueExpression><![CDATA[$F{porcentaje_grupo_caso}]]></valueExpression>
+				<itemHyperlink >
+				</itemHyperlink>
+						</categorySeries>
+					</categoryDataset>
+					<bar3DPlot >
+						<plot >
+							<seriesColor seriesOrder="0" color="#6699FF"/>
+</plot>
+						<categoryAxisFormat>
+							<axisFormat >
+								<labelFont>
+					<font fontName="SansSerif" pdfFontName="Helvetica" size="7" isBold="false" isItalic="false" isUnderline="false" isStrikeThrough="false" isPdfEmbedded="false" pdfEncoding="Cp1252"/>
+								</labelFont>
+								<tickLabelFont>
+					<font fontName="SansSerif" pdfFontName="Helvetica" size="7" isBold="false" isItalic="false" isUnderline="false" isStrikeThrough="false" isPdfEmbedded="false" pdfEncoding="Cp1252"/>
+								</tickLabelFont>
+							</axisFormat>
+						</categoryAxisFormat>
+						<valueAxisFormat>
+							<axisFormat >
+								<labelFont>
+					<font fontName="SansSerif" pdfFontName="Helvetica" size="7" isBold="false" isItalic="false" isUnderline="false" isStrikeThrough="false" isPdfEmbedded="false" pdfEncoding="Cp1252"/>
+								</labelFont>
+								<tickLabelFont>
+					<font fontName="SansSerif" pdfFontName="Helvetica" size="7" isBold="false" isItalic="false" isUnderline="false" isStrikeThrough="false" isPdfEmbedded="false" pdfEncoding="Cp1252"/>
+								</tickLabelFont>
+							</axisFormat>
+						</valueAxisFormat>
+					</bar3DPlot>
+				</bar3DChart>
+			</band>
+			</groupFooter>
+		</group>
+		<background>
+			<band height="0"  isSplitAllowed="true" >
+			</band>
+		</background>
+		<title>
+			<band height="0"  isSplitAllowed="true" >
+			</band>
+		</title>
+		<pageHeader>
+			<band height="0"  isSplitAllowed="true" >
+			</band>
+		</pageHeader>
+		<columnHeader>
+			<band height="0"  isSplitAllowed="true" >
+			</band>
+		</columnHeader>
+		<detail>
+			<band height="0"  isSplitAllowed="true" >
+			</band>
+		</detail>
+		<columnFooter>
+			<band height="0"  isSplitAllowed="true" >
+			</band>
+		</columnFooter>
+		<pageFooter>
+			<band height="0"  isSplitAllowed="true" >
+			</band>
+		</pageFooter>
+		<summary>
+			<band height="0"  isSplitAllowed="true" >
+			</band>
+		</summary>
+</jasperReport>
