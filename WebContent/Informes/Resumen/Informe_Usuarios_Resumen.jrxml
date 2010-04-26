@@ -1,0 +1,142 @@
+<?xml version="1.0" encoding="UTF-8"  ?>
+<!-- Created with iReport - A designer for JasperReports -->
+<!DOCTYPE jasperReport PUBLIC "//JasperReports//DTD Report Design//EN" "http://jasperreports.sourceforge.net/dtds/jasperreport.dtd">
+<jasperReport
+		 name="Informe_Usuarios_Resumen"
+		 columnCount="1"
+		 printOrder="Vertical"
+		 orientation="Portrait"
+		 pageWidth="595"
+		 pageHeight="842"
+		 columnWidth="535"
+		 columnSpacing="0"
+		 leftMargin="30"
+		 rightMargin="30"
+		 topMargin="20"
+		 bottomMargin="20"
+		 whenNoDataType="NoPages"
+		 isTitleNewPage="false"
+		 isSummaryNewPage="false">
+	<property name="ireport.scriptlethandling" value="0" />
+	<property name="ireport.encoding" value="UTF-8" />
+	<import value="java.util.*" />
+	<import value="net.sf.jasperreports.engine.*" />
+	<import value="net.sf.jasperreports.engine.data.*" />
+
+	<parameter name="IDALUMNO" isForPrompting="true" class="java.lang.String"/>
+	<queryString><![CDATA[SELECT
+     gep.`Id_practica` AS id_practica,
+     x_practica.`practica` AS practica,
+     aep.`id_grupo` AS id_grupo,
+     x_grupo.`grupo` AS grupo,
+     AVG(aep.`porcentaje_practica`) AS porcentaje_practica,
+     gep.`porcentaje_practica_grupo` AS porcentaje_practica_grupo
+FROM
+     `grupo_evaluacion_practica` gep INNER JOIN `alumno_evaluacion_practica_01` aep ON gep.`Id_grupo` = aep.`id_grupo`
+     AND gep.`Id_practica` = aep.`id_practica`
+     INNER JOIN `x_grupo` x_grupo ON gep.`Id_grupo` = x_grupo.`id_grupo`
+     INNER JOIN `x_practica` x_practica ON gep.`Id_practica` = x_practica.`id_practica`
+     INNER JOIN `usuarios` usuarios ON x_grupo.`id_grupo` = usuarios.`id_grupo`
+     AND usuarios.`id_usuario` = aep.`id_alumno`
+WHERE
+     usuarios.id_usuario in ($P!{IDALUMNO})
+AND usuarios.tipo = "A"
+GROUP BY gep.`Id_practica`, aep.`id_grupo`]]></queryString>
+
+	<field name="id_practica" class="java.lang.Integer"/>
+	<field name="practica" class="java.lang.String"/>
+	<field name="id_grupo" class="java.lang.Integer"/>
+	<field name="grupo" class="java.lang.String"/>
+	<field name="porcentaje_practica" class="java.lang.Double"/>
+	<field name="porcentaje_practica_grupo" class="java.lang.Integer"/>
+
+
+		<group  name="IDGRUPO" >
+			<groupExpression><![CDATA[$F{id_grupo}]]></groupExpression>
+			<groupHeader>
+			<band height="0"  isSplitAllowed="true" >
+			</band>
+			</groupHeader>
+			<groupFooter>
+			<band height="300"  isSplitAllowed="true" >
+				<bar3DChart>
+					<chart  hyperlinkTarget="Self" >
+					<reportElement
+						x="19"
+						y="10"
+						width="486"
+						height="271"
+						key="element-2"/>
+					<box></box>
+						<chartLegend textColor="#000000" backgroundColor="#FFFFFF" >
+					</chartLegend>
+					</chart>
+					<categoryDataset>
+						<dataset >
+						</dataset>
+						<categorySeries>
+							<seriesExpression><![CDATA["% Practica hecha (alumno)"]]></seriesExpression>
+							<categoryExpression><![CDATA[$F{practica}]]></categoryExpression>
+							<valueExpression><![CDATA[$F{porcentaje_practica}]]></valueExpression>
+				<itemHyperlink >
+				</itemHyperlink>
+						</categorySeries>
+						<categorySeries>
+							<seriesExpression><![CDATA["% Practica hecha (grupo)"]]></seriesExpression>
+							<categoryExpression><![CDATA[$F{practica}]]></categoryExpression>
+							<valueExpression><![CDATA[$F{porcentaje_practica_grupo}]]></valueExpression>
+				<itemHyperlink >
+				</itemHyperlink>
+						</categorySeries>
+					</categoryDataset>
+					<bar3DPlot >
+						<plot orientation="Horizontal" >
+							<seriesColor seriesOrder="0" color="#3333FF"/>
+							<seriesColor seriesOrder="1" color="#66CCFF"/>
+</plot>
+						<categoryAxisFormat>
+							<axisFormat >
+							</axisFormat>
+						</categoryAxisFormat>
+						<valueAxisFormat>
+							<axisFormat >
+							</axisFormat>
+						</valueAxisFormat>
+					</bar3DPlot>
+				</bar3DChart>
+			</band>
+			</groupFooter>
+		</group>
+		<background>
+			<band height="0"  isSplitAllowed="true" >
+			</band>
+		</background>
+		<title>
+			<band height="0"  isSplitAllowed="true" >
+			</band>
+		</title>
+		<pageHeader>
+			<band height="0"  isSplitAllowed="true" >
+			</band>
+		</pageHeader>
+		<columnHeader>
+			<band height="0"  isSplitAllowed="true" >
+			</band>
+		</columnHeader>
+		<detail>
+			<band height="0"  isSplitAllowed="true" >
+			</band>
+		</detail>
+		<columnFooter>
+			<band height="0"  isSplitAllowed="true" >
+			</band>
+		</columnFooter>
+		<pageFooter>
+			<band height="0"  isSplitAllowed="true" >
+			</band>
+		</pageFooter>
+		<summary>
+			<band height="0"  isSplitAllowed="true" >
+			</band>
+		</summary>
+</jasperReport>

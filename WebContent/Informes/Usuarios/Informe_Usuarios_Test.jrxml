@@ -1,0 +1,177 @@
+<?xml version="1.0" encoding="UTF-8"  ?>
+<!-- Created with iReport - A designer for JasperReports -->
+<!DOCTYPE jasperReport PUBLIC "//JasperReports//DTD Report Design//EN" "http://jasperreports.sourceforge.net/dtds/jasperreport.dtd">
+<jasperReport
+		 name="Informe_Usuarios_Test"
+		 columnCount="1"
+		 printOrder="Vertical"
+		 orientation="Portrait"
+		 pageWidth="595"
+		 pageHeight="842"
+		 columnWidth="535"
+		 columnSpacing="0"
+		 leftMargin="30"
+		 rightMargin="30"
+		 topMargin="20"
+		 bottomMargin="20"
+		 whenNoDataType="NoPages"
+		 isTitleNewPage="false"
+		 isSummaryNewPage="false">
+	<property name="ireport.scriptlethandling" value="0" />
+	<property name="ireport.encoding" value="UTF-8" />
+	<import value="java.util.*" />
+	<import value="net.sf.jasperreports.engine.*" />
+	<import value="net.sf.jasperreports.engine.data.*" />
+
+	<parameter name="IDALUMNO" isForPrompting="true" class="java.lang.String"/>
+	<parameter name="IDPRACTICA" isForPrompting="true" class="java.lang.Integer"/>
+	<parameter name="IDTEST" isForPrompting="true" class="java.lang.Integer"/>
+	<queryString><![CDATA[SELECT
+     x_grupo.`id_grupo` AS id_grupo,
+     x_grupo.`grupo` AS grupo,
+     grupo_evaluacion_test.`id_practica` AS id_practica,
+     x_practica.`practica` AS practica,
+     grupo_evaluacion_test.`id_test` AS id_test,
+     x_test.`test` AS test,
+     grupo_evaluacion_test.`porcentaje_test_grupo` AS porcentaje_test_grupo,
+     AVG(alumno_evaluacion_test_01.`porcentaje_test`) AS porcentaje_test_alumno
+FROM
+     `grupo_evaluacion_test` grupo_evaluacion_test INNER JOIN `alumno_evaluacion_test_01` alumno_evaluacion_test_01 ON grupo_evaluacion_test.`id_grupo` = alumno_evaluacion_test_01.`id_grupo`
+     AND grupo_evaluacion_test.`id_test` = alumno_evaluacion_test_01.`id_test`
+     AND grupo_evaluacion_test.`id_practica` = alumno_evaluacion_test_01.`id_practica`
+     INNER JOIN `usuarios` usuarios ON alumno_evaluacion_test_01.`id_alumno` = usuarios.`id_usuario`
+     INNER JOIN `x_test` x_test ON alumno_evaluacion_test_01.`id_practica` = x_test.`id_practica`
+     AND x_test.`id_test` = alumno_evaluacion_test_01.`id_test`
+     AND x_test.`id_practica` = grupo_evaluacion_test.`id_practica`
+     AND x_test.`id_test` = grupo_evaluacion_test.`id_test`
+     INNER JOIN `x_practica` x_practica ON x_test.`id_practica` = x_practica.`id_practica`
+     AND grupo_evaluacion_test.`id_practica` = x_practica.`id_practica`
+     INNER JOIN `x_grupo` x_grupo ON grupo_evaluacion_test.`id_grupo` = x_grupo.`id_grupo`
+WHERE
+     	    x_practica.id_practica = $P!{IDPRACTICA}
+ 	AND usuarios.id_usuario in ($P!{IDALUMNO})
+ 	AND x_test.id_test = $P!{IDTEST}
+	AND usuarios.tipo = "A"
+GROUP BY x_grupo.`id_grupo`,
+     grupo_evaluacion_test.`id_practica`,
+     grupo_evaluacion_test.`id_test`
+]]></queryString>
+
+	<field name="id_grupo" class="java.lang.Integer"/>
+	<field name="grupo" class="java.lang.String"/>
+	<field name="id_practica" class="java.lang.Integer"/>
+	<field name="practica" class="java.lang.String"/>
+	<field name="id_test" class="java.lang.Integer"/>
+	<field name="test" class="java.lang.String"/>
+	<field name="porcentaje_test_grupo" class="java.lang.Integer"/>
+	<field name="porcentaje_test_alumno" class="java.math.BigDecimal"/>
+
+
+		<group  name="IDGRUPO" >
+			<groupExpression><![CDATA[$F{id_grupo}]]></groupExpression>
+			<groupHeader>
+			<band height="0"  isSplitAllowed="true" >
+			</band>
+			</groupHeader>
+			<groupFooter>
+			<band height="0"  isSplitAllowed="true" >
+			</band>
+			</groupFooter>
+		</group>
+		<group  name="IDPRACTICA" >
+			<groupExpression><![CDATA[$F{id_practica}]]></groupExpression>
+			<groupHeader>
+			<band height="0"  isSplitAllowed="true" >
+			</band>
+			</groupHeader>
+			<groupFooter>
+			<band height="0"  isSplitAllowed="true" >
+			</band>
+			</groupFooter>
+		</group>
+		<group  name="IDTEST" >
+			<groupExpression><![CDATA[$F{id_test}]]></groupExpression>
+			<groupHeader>
+			<band height="0"  isSplitAllowed="true" >
+			</band>
+			</groupHeader>
+			<groupFooter>
+			<band height="0"  isSplitAllowed="true" >
+			</band>
+			</groupFooter>
+		</group>
+		<background>
+			<band height="0"  isSplitAllowed="true" >
+			</band>
+		</background>
+		<title>
+			<band height="0"  isSplitAllowed="true" >
+			</band>
+		</title>
+		<pageHeader>
+			<band height="0"  isSplitAllowed="true" >
+			</band>
+		</pageHeader>
+		<columnHeader>
+			<band height="0"  isSplitAllowed="true" >
+			</band>
+		</columnHeader>
+		<detail>
+			<band height="300"  isSplitAllowed="true" >
+				<barChart>
+					<chart  hyperlinkTarget="Self" >
+					<reportElement
+						x="22"
+						y="11"
+						width="498"
+						height="276"
+						key="element-1"/>
+					<box></box>
+						<chartLegend textColor="#000000" backgroundColor="#FFFFFF" >
+					</chartLegend>
+					</chart>
+					<categoryDataset>
+						<dataset >
+						</dataset>
+						<categorySeries>
+							<seriesExpression><![CDATA["% Test Hecho (Alumno)"]]></seriesExpression>
+							<categoryExpression><![CDATA[$F{test}]]></categoryExpression>
+							<valueExpression><![CDATA[$F{porcentaje_test_alumno}]]></valueExpression>
+				<itemHyperlink >
+				</itemHyperlink>
+						</categorySeries>
+						<categorySeries>
+							<seriesExpression><![CDATA["% Test Hecho (Grupo)"]]></seriesExpression>
+							<categoryExpression><![CDATA[$F{test}]]></categoryExpression>
+							<valueExpression><![CDATA[$F{porcentaje_test_grupo}]]></valueExpression>
+				<itemHyperlink >
+				</itemHyperlink>
+						</categorySeries>
+					</categoryDataset>
+					<barPlot >
+						<plot />
+						<categoryAxisFormat>
+							<axisFormat >
+							</axisFormat>
+						</categoryAxisFormat>
+						<valueAxisFormat>
+							<axisFormat >
+							</axisFormat>
+						</valueAxisFormat>
+					</barPlot>
+				</barChart>
+			</band>
+		</detail>
+		<columnFooter>
+			<band height="0"  isSplitAllowed="true" >
+			</band>
+		</columnFooter>
+		<pageFooter>
+			<band height="0"  isSplitAllowed="true" >
+			</band>
+		</pageFooter>
+		<summary>
+			<band height="0"  isSplitAllowed="true" >
+			</band>
+		</summary>
+</jasperReport>
