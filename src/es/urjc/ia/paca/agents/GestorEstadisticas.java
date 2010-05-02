@@ -36,8 +36,8 @@ public class GestorEstadisticas extends Agent {
 							Serializable contenido = mensaje.getContentObject();
 							//ContentElement contenido = manager.extractContent(mensaje);
 							System.out.println("[CALCULADORA] contenido ...");
-							if(contenido instanceof EvaluacionCaso) {					
-								EvaluacionCaso ec = (EvaluacionCaso)contenido;								
+							if(contenido instanceof EstadisticaEvaluacionCaso) {					
+								EstadisticaEvaluacionCaso ec = (EstadisticaEvaluacionCaso)contenido;								
 								Alumno alumno = ec.getAlumno();
 								Caso caso = ec.getCaso();
 								Practica practica = ec.getPractica();
