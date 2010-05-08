@@ -1,0 +1,57 @@
+<Practica xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" fecha="sb may  1 15:44:08 CEST 2010&#xA;" identificador="practica2B" usuario="1966" xsi:noNamespaceSchemaLocation="file:///g:/XML_parsear/PACA/sandra.xsd">
+	<Descripcion>Practica 2B. Arboles. Codigos de Huffman.</Descripcion>
+	<Test identificador="Test_Codificar">
+		<Descripcion>Test Codificar</Descripcion>
+		<EvaluacionTest codigoEvaluacionTest="compilacion_correcta">
+		</EvaluacionTest>
+		<Caso identificador="Caso01">
+			<EvaluacionCaso codigoEvaluacionCaso="terminacion_incorrecta">
+				<Descripcion>1c1&lt;br&gt; &lt;i&gt;Esperado:&lt;/i&gt; Mensaje codificado =
+	  111100111101&lt;br&gt; ---&lt;br&gt; &lt;i&gt;Obtenido:&lt;/i&gt;
+	  ADA.IO_EXCEPTIONS.DATA_ERROR&lt;br&gt;</Descripcion>
+			</EvaluacionCaso>
+		</Caso>
+	</Test>
+	<Test identificador="Test_CrearCodigo">
+		<Descripcion>Test Crear_Codigo</Descripcion>
+		<EvaluacionTest codigoEvaluacionTest="compilacion_correcta">
+		</EvaluacionTest>
+		<Caso identificador="Caso01">
+			<EvaluacionCaso codigoEvaluacionCaso="terminacion_correcta">
+			</EvaluacionCaso>
+		</Caso>
+	</Test>
+	<Test identificador="Test_Caracter">
+		<Descripcion>Test ObtenerCaracter</Descripcion>
+		<EvaluacionTest codigoEvaluacionTest="compilacion_correcta">
+		</EvaluacionTest>
+		<Caso identificador="Caso01">
+			<EvaluacionCaso codigoEvaluacionCaso="terminacion_incorrecta">
+				<Descripcion>1c1&lt;br&gt;&lt;i&gt;Esperado:&lt;/i&gt; Caracter asociado al codigo = D&lt;br&gt;
+	  ---&lt;br&gt; &lt;i&gt;Obtenido:&lt;/i&gt; ADA.IO_EXCEPTIONS.DATA_ERROR&lt;br&gt;</Descripcion>
+			</EvaluacionCaso>
+		</Caso>
+	</Test>
+	<Test identificador="Test_Codificacion">
+		<Descripcion>Test ObtenerCodificacion</Descripcion>
+		<EvaluacionTest codigoEvaluacionTest="compilacion_correcta">
+		</EvaluacionTest>
+		<Caso identificador="Caso01">
+			<EvaluacionCaso codigoEvaluacionCaso="terminacion_incorrecta">
+				<Descripcion>1c1&lt;br&gt; &lt;i&gt;Esperado:&lt;/i&gt; Codigo del caracter = 101&lt;br&gt;
+	  ---&lt;br&gt; &lt;i&gt;Obtenido:&lt;/i&gt; ADA.IO_EXCEPTIONS.DATA_ERROR&lt;br&gt;</Descripcion>
+			</EvaluacionCaso>
+		</Caso>
+	</Test>
+	<Test identificador="Test_Descodificar">
+		<Descripcion>Test Descodificar</Descripcion>
+		<EvaluacionTest codigoEvaluacionTest="compilacion_correcta">
+		</EvaluacionTest>
+		<Caso identificador="Caso01">
+			<EvaluacionCaso codigoEvaluacionCaso="terminacion_incorrecta">
+				<Descripcion>1c1&lt;br&gt; &lt;i&gt;Esperado:&lt;/i&gt; Mensaje descodificado = CBA&lt;br&gt;
+	  ---&lt;br&gt; &lt;i&gt;Obtenido:&lt;/i&gt; ADA.IO_EXCEPTIONS.DATA_ERROR&lt;br&gt;</Descripcion>
+			</EvaluacionCaso>
+		</Caso>
+	</Test>
+</Practica>
