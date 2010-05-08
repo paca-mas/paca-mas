@@ -68,8 +68,11 @@ public class pacaOntology extends Ontology {
     public static final String EVALUACIONPRACTICA = "evaluacionPractica";
     
     //*********************************************************
-    // EvaluacionCaso
-    public static final String EVALUACIONCASO = "evaluacionCaso";
+    // EvaluacionCaso - Estadisticas
+    public static final String ESTADISTICASEVALUACIONCASO = "EstadisticasEvaluacionCaso";
+    // EntregaPractica - Estadisticas
+    public static final String ESTADISTICASENTREGAPRACTICA = "EstadisticasEntregaPractica";
+    //*********************************************************
     
     //A�adido Carlos
     public static final String EVALUACIONPRACTICA_TEXTO = "textoEvaluacion";
@@ -245,7 +248,22 @@ public class pacaOntology extends Ontology {
 
 
             //---------- PREDICADOS -----------
+            //EstadisticasEvaluacionCaso
+            add(new PredicateSchema(ESTADISTICASENTREGAPRACTICA), EstadisticaEntregaPractica.class);
+            PredicateSchema ps0 = (PredicateSchema) getSchema(ESTADISTICASENTREGAPRACTICA);
+            ps0.add(ALUMNO, (ConceptSchema) getSchema(ALUMNO));
+            ps0.add(PRACTICA, (ConceptSchema) getSchema(PRACTICA));
+            //*********************************************************
+            //EstadisticasEvaluacionCaso
+            add(new PredicateSchema(ESTADISTICASEVALUACIONCASO), EstadisticaEntregaPractica.class);
+            PredicateSchema ps00 = (PredicateSchema) getSchema(ESTADISTICASEVALUACIONCASO);
+            ps00.add(ALUMNO, (ConceptSchema) getSchema(ALUMNO));
+            ps00.add(PRACTICA, (ConceptSchema) getSchema(PRACTICA));
+            ps00.add(TEST, (ConceptSchema) getSchema(TEST));
+            ps00.add(CASO, (ConceptSchema) getSchema(CASO));
+            //*********************************************************
 
+            
             //Corrige
             add(new PredicateSchema(CORRIGE), Corrige.class);
             PredicateSchema ps = (PredicateSchema) getSchema(CORRIGE);
