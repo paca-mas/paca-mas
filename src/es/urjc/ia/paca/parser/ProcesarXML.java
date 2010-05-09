@@ -12,6 +12,7 @@ import org.w3c.dom.Node;
 import org.w3c.dom.NodeList;
 import org.xml.sax.SAXException;
 import es.urjc.ia.paca.ontology.EstadisticaEvaluacionCaso;
+import es.urjc.ia.paca.ontology.EstadisticaEvaluacionPractica;
 
 public class ProcesarXML {
     
@@ -19,8 +20,8 @@ public class ProcesarXML {
     public static List<EstadisticaEvaluacionCaso> listEvaluacion = new ArrayList<EstadisticaEvaluacionCaso>();
     
     //Parsea el archivo XML
-    public static List<EstadisticaEvaluacionCaso> parsearArchivoXml(String fichero) {
-    	List<EstadisticaEvaluacionCaso> List = new ArrayList<EstadisticaEvaluacionCaso>();
+    public static EstadisticaEvaluacionPractica parsearArchivoXml(String fichero) {
+    	EstadisticaEvaluacionPractica e = new EstadisticaEvaluacionPractica(null);
     	// Obteher el objeto DocumentBuilderFactory
     	DocumentBuilderFactory dbf = DocumentBuilderFactory.newInstance();
     	try {
@@ -28,17 +29,16 @@ public class ProcesarXML {
     		DocumentBuilder db = dbf.newDocumentBuilder();
     		// Parsear a partir de un archivo
     		dom = db.parse(fichero);
-    		List = parsearDocumento ();
+    		e = parsearDocumento ();
     	} 
     	catch (ParserConfigurationException pce) {pce.printStackTrace(); } 
     	catch (SAXException se) { se.printStackTrace(); } 
     	catch (IOException ioe) { ioe.printStackTrace(); }
-		return List;
+		return e;
     }
     
     //Parsea el documento XML y extrae los datos
-    public static List<EstadisticaEvaluacionCaso> parsearDocumento() {
-    	String fecha;
+    public static EstadisticaEvaluacionPractica parsearDocumento() {
     	String iduser;
     	String idpractica;
     	String idtest;
@@ -48,7 +48,6 @@ public class ProcesarXML {
     	// Obtener el documento raiz
     	Element docEle = dom.getDocumentElement();
     	// Practica
-    	fecha = docEle.getAttribute("fecha");
     	iduser = docEle.getAttribute("usuario");
     	idpractica = docEle.getAttribute("identificador");
 
@@ -91,6 +90,7 @@ public class ProcesarXML {
     			}
     		}
     	}
-    	return listEvaluacion;
+    	EstadisticaEvaluacionPractica list = new EstadisticaEvaluacionPractica(listEvaluacion);
+    	return list;
     }
 }
