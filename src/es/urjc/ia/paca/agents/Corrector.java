@@ -1,5 +1,7 @@
 package es.urjc.ia.paca.agents;
 
+import jade.content.ContentElement;
+import java.util.*;
 import jade.content.abs.AbsAggregate;
 import jade.content.abs.AbsConcept;
 import jade.content.abs.AbsContentElement;
@@ -25,6 +27,7 @@ import jade.core.behaviours.CyclicBehaviour;
 import jade.core.behaviours.OneShotBehaviour;
 import jade.domain.DFService;
 import jade.domain.FIPAException;
+import jade.domain.FIPANames;
 import jade.domain.FIPAAgentManagement.DFAgentDescription;
 import jade.domain.FIPAAgentManagement.Property;
 import jade.domain.FIPAAgentManagement.ServiceDescription;
@@ -47,10 +50,15 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.Random;
 
-import jade.content.onto.BasicOntology;
+// Estadisticas
+import es.urjc.ia.paca.ontology.EstadisticaEvaluacionCaso;
+import es.urjc.ia.paca.ontology.EstadisticaEvaluacionPractica;
+
 import es.urjc.ia.paca.ontology.Alumno;
 import es.urjc.ia.paca.ontology.Corrige;
 import es.urjc.ia.paca.ontology.EntregarPractica;
+import es.urjc.ia.paca.ontology.EstadisticaEntregaPractica;
+import es.urjc.ia.paca.ontology.EvaluacionCaso;
 import es.urjc.ia.paca.ontology.EvaluacionPractica;
 import es.urjc.ia.paca.ontology.FicheroFuentes;
 import es.urjc.ia.paca.ontology.FormaGrupoCon;
@@ -68,12 +76,14 @@ import es.urjc.ia.paca.ontology.FicheroIN;
 import es.urjc.ia.paca.ontology.FicheroOUT;
 import es.urjc.ia.paca.ontology.FicherosIN;
 import es.urjc.ia.paca.ontology.FicherosOUT;
+import es.urjc.ia.paca.parser.ProcesarXML;
 import es.urjc.ia.paca.util.AndBuilder;
 import jade.content.abs.AbsVariable;
 import java.io.BufferedWriter;
 import java.io.PrintWriter;
 import java.util.logging.Level;
 import java.util.logging.Logger;
+import es.urjc.ia.paca.parser.ProcesarXML;
 
 /**
 Este agente se encarga de realizar la correcci�n de las pr�cticas y tambi�n deposita las entregas que los
@@ -267,6 +277,25 @@ public class Corrector extends Agent {
             this.respuesta = resp1;
             this.quien1 = quien;
         }
+        
+        public void EnviarMensajeGEsta (String xml){
+        	EstadisticaEvaluacionPractica ListaEvaluacion = ProcesarXML.parsearArchivoXml(xml);     	
+        	// ***************************************************************************
+			// request + remitente + agente receptor + lenguaje + protocolo + contenido	
+			// ***************************************************************************			
+			ACLMessage mensaje = new ACLMessage(ACLMessage.REQUEST); // Enviamos un mensaje REQUEST
+			mensaje.setSender(getAID()); // Remitente
+			String nombre = "gp";
+			AID receptor_msg = new AID(nombre,AID.ISLOCALNAME);	// Sacamos el Receptor
+			mensaje.addReceiver(receptor_msg); // Receptor					
+			mensaje.setLanguage(codec.getName());	// Lenguaje
+			mensaje.setProtocol(FIPANames.InteractionProtocol.FIPA_REQUEST); // Protocolo
+			try{	
+				mensaje.setContentObject(ListaEvaluacion);
+				send(mensaje);	// enviamos el mensaje
+				System.out.println( "[" + getLocalName() + "] El mensaje ha sido creado y enviado.");
+			}catch (Exception e) { e.printStackTrace();	}				
+        }
 
         public void action() {
             try {
@@ -320,8 +349,11 @@ public class Corrector extends Agent {
                 //A partir de aqui ya no seria necesario nada, pero lo dejo para que termine bien el programa
                 EvaluacionPractica evaP = EnvioCorreccionAlumno(pract, FP, Te, al, quien1);
 
+                // Gestor Estaadisticas
+                String textoxml = evaP.getTextoEvaluacion();
+                EnviarMensajeGEsta(textoxml);
+                
                 String contenido = evaP.getTextoEvaluacion();
-
                 ResultadoEvaluacion rEvap = new ResultadoEvaluacion();
                 rEvap.setResultadoEvaluacionTexto(contenido);
 
@@ -1136,6 +1168,25 @@ public class Corrector extends Agent {
 
     }
 
+    private void EnviarEntregaGEsta (Practica pract, Alumno al1, Alumno al2){
+       	EstadisticaEntregaPractica EEP = new EstadisticaEntregaPractica(al1,al2,pract);
+    	// ***************************************************************************
+		// request + remitente + agente receptor + lenguaje + protocolo + contenido	
+		// ***************************************************************************			
+		ACLMessage mensaje = new ACLMessage(ACLMessage.REQUEST); // Enviamos un mensaje REQUEST
+		mensaje.setSender(getAID()); // Remitente
+		String nombre = "gp";
+		AID receptor_msg = new AID(nombre,AID.ISLOCALNAME);	// Sacamos el Receptor
+		mensaje.addReceiver(receptor_msg); // Receptor					
+		mensaje.setLanguage(codec.getName());	// Lenguaje
+		mensaje.setProtocol(FIPANames.InteractionProtocol.FIPA_REQUEST); // Protocolo
+		try{	
+			mensaje.setContentObject(EEP);
+			send(mensaje);	// enviamos el mensaje
+			System.out.println( "[" + getLocalName() + "] El mensaje ENTREGA ha sido creado y enviado.");
+		}catch (Exception e) { e.printStackTrace();	}				   	
+    }
+    
     /**
     Envia los fuentes de una pr�ctica para que sean almacenados en el sistema.
      */
@@ -1143,7 +1194,8 @@ public class Corrector extends Agent {
             FuentesPrograma[] fp,
             Alumno al1,
             Alumno al2) {
-
+    	
+    	EnviarEntregaGEsta(pract,al1,al2);
         if (this.ejecucionEnPruebas) {
             return new Alumno();
         }
