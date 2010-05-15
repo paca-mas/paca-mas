@@ -4,6 +4,32 @@ import java.util.*;
 
 public class ObtenerDatos {
 	
+	public static boolean BorrarPracticas (){
+		String sentencia1 = "delete * from b_practica";
+		String sentencia2 = "delete * from b_test";
+		String sentencia3 = "delete * from b_caso";
+		int ListaBorrarP = Sentencias.EjecutarDelete(sentencia1);
+		int ListaBorrarT = Sentencias.EjecutarDelete(sentencia2);
+		int ListaBorrarC = Sentencias.EjecutarDelete(sentencia3);
+		if (ListaBorrarP>=0 && ListaBorrarT>=0 && ListaBorrarC>=0){
+			return true;
+		} else {
+			return false;
+		}
+	}
+	
+	public static boolean BorrarUsuarios (){
+		String sentencia1 = "delete * from b_usuarios where tipo='A'";
+		int ListaBorrarA = Sentencias.EjecutarDelete(sentencia1);
+		String sentencia2 = "delete * from b_grupo";
+		int ListaBorrarG = Sentencias.EjecutarDelete(sentencia2);
+		if (ListaBorrarA>=0 && ListaBorrarG>=0){
+			return true;
+		} else {
+			return false;
+		}
+	}
+	
 	public static List<String> listUser (String auxiliar){
 		int inicio = 0;
 		List<String> ListId = new ArrayList<String>();
