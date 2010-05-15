@@ -33,5 +33,21 @@ public class Sentencias {
 		return Lista;
 	}
 
-	
+	public static int EjecutarDelete (String sentencia){
+		int resultado = -1;
+		Connection conexion = null;
+		try
+		{
+			conexion = es.urjc.ia.baseDatos.Conexion_bbdd.getConexion(conexion);			
+			// Conexion con bd
+			if (!conexion.isClosed()){				
+				Statement st = conexion.createStatement();
+				resultado = st.executeUpdate(sentencia);     		
+				st.close();        	    
+				// cierre de la conexion
+				Conexion_bbdd.closeConexion(conexion);
+			}
+		}catch (Exception e){e.printStackTrace();}	
+		return resultado;
+	}
 }
