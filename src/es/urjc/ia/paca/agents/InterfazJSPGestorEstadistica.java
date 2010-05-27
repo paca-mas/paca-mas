@@ -18,12 +18,12 @@ import es.urjc.ia.paca.ontology.Practica;
 import es.urjc.ia.paca.ontology.Test;
 import es.urjc.ia.paca.util.Testigo;
 import java.util.StringTokenizer;
-import es.urjc.ia.paca.agents.InterfazGestorEstadisticas;
+
 /**
  *
  * @author alvaro
  */
-public class InterfazJSPGestorEstadistica extends InterfazGestorEstadisticas {
+public class InterfazJSPGestorEstadistica extends InterfazGestorEstadistica {
 
     public class AutenticaRequestBeha extends OneShotBehaviour {
 
@@ -65,23 +65,6 @@ public class InterfazJSPGestorEstadistica extends InterfazGestorEstadisticas {
         }
     }
 
-    public class SeleccionarTestBeha extends OneShotBehaviour {
-
-        private Testigo tes2;
-
-        public SeleccionarTestBeha(Agent _a, Testigo tes1) {
-            super(_a);
-            this.tes2 = tes1;
-        }
-
-        public void action() {
-            String nombre = (String) tes2.getParametro();
-            Practica practica = new Practica(nombre);
-
-            addBehaviour(new PideTestBeha(this.myAgent, tes2, practica, false));
-        }
-    }
-
     public class PideCasosBeha extends OneShotBehaviour {
 
         private Testigo tes2;
@@ -109,32 +92,35 @@ public class InterfazJSPGestorEstadistica extends InterfazGestorEstadisticas {
         }
     }
 
-    public class SeleccionarCasosBeha extends OneShotBehaviour {
+    public class EliminarPracticaBeha extends OneShotBehaviour {
 
-        private Testigo tes2;
-
-        public SeleccionarCasosBeha(Agent _a, Testigo tes1) {
+        public EliminarPracticaBeha(Agent _a) {
             super(_a);
-            this.tes2 = tes1;
         }
 
         public void action() {
-            Test test = (Test) tes2.getParametro();
-
-            addBehaviour(new PideCasos(this.myAgent, tes2, test, false));
+             addBehaviour(new EliminarPractica(this.myAgent));
         }
     }
 
+    public class EliminarAlumnoBeha extends OneShotBehaviour {
 
-    
+        public EliminarAlumnoBeha(Agent _a) {
+            super(_a);
+        }
+
+        public void action() {
+        	System.out.println("Eliminar Alumno");
+             addBehaviour(new EliminarAlumno(this.myAgent));
+        }
+    }
+
     public class ProcesaTestigo extends OneShotBehaviour {
 
         private Testigo testigo;
 
         public ProcesaTestigo(Testigo _tes) {
-
             this.testigo = _tes;
-
         }
 
         public void action() {
@@ -144,7 +130,6 @@ public class InterfazJSPGestorEstadistica extends InterfazGestorEstadisticas {
 
             InterfazJSPGestorEstadistica agent = (InterfazJSPGestorEstadistica) this.myAgent;
             while (!agent.FinSetup) {
-
                 System.out.println("FINSETUP");
             }
 
@@ -168,7 +153,7 @@ public class InterfazJSPGestorEstadistica extends InterfazGestorEstadisticas {
                     case pedirCasos:
                         addBehaviour(new PideCasosBeha(agent, testigo));
                         break;
-
+                        
                     case ultimaPractica:
                         testigo.setResultado(ultimaPractica);
                         break;
@@ -181,14 +166,14 @@ public class InterfazJSPGestorEstadistica extends InterfazGestorEstadisticas {
                         testigo.setResultado(ultimoCaso);
                         break;
 
-                    case seleccionarTest:
-                        addBehaviour(new SeleccionarTestBeha(agent, testigo));
+                    case eliminarPractica:
+                        addBehaviour(new EliminarPracticaBeha(agent));
                         break;
 
-                    case seleccionarCasos:
-                        addBehaviour(new SeleccionarCasosBeha(agent, testigo));
+                    case eliminarAlumno:
+                        addBehaviour(new EliminarAlumnoBeha(agent));
                         break;
-
+              
                     default:
                         testigo.setResultado("-");
                         break;
@@ -221,4 +206,3 @@ public class InterfazJSPGestorEstadistica extends InterfazGestorEstadisticas {
         return FinSetup;
     }
 }
-
