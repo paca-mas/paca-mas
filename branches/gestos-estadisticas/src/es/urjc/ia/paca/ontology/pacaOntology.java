@@ -72,6 +72,7 @@ public class pacaOntology extends Ontology {
     public static final String ESTADISTICASEVALUACIONCASO = "EstadisticasEvaluacionCaso";
     // EntregaPractica - Estadisticas
     public static final String ESTADISTICASENTREGAPRACTICA = "EstadisticasEntregaPractica";
+    public static final String ELIMINARDATOSBBDD = "EliminarDatosBBDD";
     //*********************************************************
     
     //A�adido Carlos
@@ -512,7 +513,8 @@ public class pacaOntology extends Ontology {
             ps36.add(COPYCASO, (ConceptSchema) getSchema(CASO));
             ps36.add(COPYFICHEROOUT, (ConceptSchema) getSchema(FICHEROOUT));
 
-
+            add(new AgentActionSchema(ELIMINARDATOSBBDD), EliminarDatosBBDD.class);
+            AgentActionSchema ps37 = (AgentActionSchema) getSchema(ELIMINARDATOSBBDD);
 
         } catch (OntologyException oe) {
             oe.printStackTrace();
