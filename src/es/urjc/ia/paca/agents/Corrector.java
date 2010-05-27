@@ -1,7 +1,5 @@
 package es.urjc.ia.paca.agents;
 
-import jade.content.ContentElement;
-import java.util.*;
 import jade.content.abs.AbsAggregate;
 import jade.content.abs.AbsConcept;
 import jade.content.abs.AbsContentElement;
@@ -27,7 +25,6 @@ import jade.core.behaviours.CyclicBehaviour;
 import jade.core.behaviours.OneShotBehaviour;
 import jade.domain.DFService;
 import jade.domain.FIPAException;
-import jade.domain.FIPANames;
 import jade.domain.FIPAAgentManagement.DFAgentDescription;
 import jade.domain.FIPAAgentManagement.Property;
 import jade.domain.FIPAAgentManagement.ServiceDescription;
@@ -50,15 +47,10 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.Random;
 
-// Estadisticas
-import es.urjc.ia.paca.ontology.EstadisticaEvaluacionCaso;
-import es.urjc.ia.paca.ontology.EstadisticaEvaluacionPractica;
-
+import jade.content.onto.BasicOntology;
 import es.urjc.ia.paca.ontology.Alumno;
 import es.urjc.ia.paca.ontology.Corrige;
 import es.urjc.ia.paca.ontology.EntregarPractica;
-import es.urjc.ia.paca.ontology.EstadisticaEntregaPractica;
-import es.urjc.ia.paca.ontology.EvaluacionCaso;
 import es.urjc.ia.paca.ontology.EvaluacionPractica;
 import es.urjc.ia.paca.ontology.FicheroFuentes;
 import es.urjc.ia.paca.ontology.FormaGrupoCon;
@@ -76,25 +68,23 @@ import es.urjc.ia.paca.ontology.FicheroIN;
 import es.urjc.ia.paca.ontology.FicheroOUT;
 import es.urjc.ia.paca.ontology.FicherosIN;
 import es.urjc.ia.paca.ontology.FicherosOUT;
-import es.urjc.ia.paca.parser.ProcesarXML;
 import es.urjc.ia.paca.util.AndBuilder;
 import jade.content.abs.AbsVariable;
 import java.io.BufferedWriter;
 import java.io.PrintWriter;
 import java.util.logging.Level;
 import java.util.logging.Logger;
-import es.urjc.ia.paca.parser.ProcesarXML;
 
 /**
-Este agente se encarga de realizar la correcciï¿½n de las prï¿½cticas y tambiï¿½n deposita las entregas que los
+Este agente se encarga de realizar la correcci?n de las pr?cticas y tambi?n deposita las entregas que los
 alumnos realizan.
  */
 public class Corrector extends Agent {
 
-    // Modo de ejecuciÃ³n en pruebas
+    // Modo de ejecución en pruebas
     private boolean ejecucionEnPruebas = true;
     private boolean ejecucionEnPruebas2 = true;
-    //	Nombre de la ontologia
+    //  Nombre de la ontologia
     private Ontology ontologia = pacaOntology.getInstance();
     private Ontology basicOntologia = BasicOntology.getInstance();
     //Codec
@@ -102,7 +92,7 @@ public class Corrector extends Agent {
     //Debug
     private boolean debug = false;
     /**
-    Modo depuraciï¿½n del agente.
+    Modo depuraci?n del agente.
      */
     private boolean debugMode = false;
     /**
@@ -115,45 +105,45 @@ public class Corrector extends Agent {
      */
     private String tempDir = "/tmp/pacaCorrector/";
     /**
-    Directorio de trabajo dï¿½nde estï¿½n las prï¿½cticas.
+    Directorio de trabajo d?nde est?n las pr?cticas.
      */
     //private String workDir = "/home/carlos/PACA/practicas/";
     private String workDir = "C:\\" + "Practicas\\";
     /**
-    Directorio de trabajo dï¿½nde se encuentran las librerï¿½as.
+    Directorio de trabajo d?nde se encuentran las librer?as.
      */
     private String libraryDir = "/home/public/Proyectos/PACA/librerias/";
     /**
-    Directorio dï¿½nde se depositan las entregas finales.
+    Directorio d?nde se depositan las entregas finales.
      */
     private String entregaFinalDir = "/home/public/Proyectos/PACA/EntregasFinales/";
     /**
-    Script de correcciï¿½n de prï¿½cticas.
+    Script de correcci?n de pr?cticas.
      */
     private String scriptFile = "/home/public/Proyectos/PACA/paca/script/ca_v4.pl";
     /**
-    Intï¿½rprete del script.
+    Int?rprete del script.
      */
     private String interprete = "/usr/bin/perl";
     // ------------- FIN CONFIGURACION LOCAL -----------------------
     /**
-    Nombre del fichero en el que se genera la evaluaciï¿½n del alumno.
+    Nombre del fichero en el que se genera la evaluaci?n del alumno.
      */
     private String ficheroEvaluacion = "EvaluacionAlumno.xml";
     /**
-    Nombre de los ficheros que contienen la descripciï¿½n de los tests.
+    Nombre de los ficheros que contienen la descripci?n de los tests.
      */
     private String ficheroConfTest = "FTest";
     /**
-    Nombre de los ficheros que contienen la descripciï¿½n de las prï¿½cticas.
+    Nombre de los ficheros que contienen la descripci?n de las pr?cticas.
      */
     private String ficheroConfPractica = "FPractica";
     /**
-    Mensaje de error en la evaluaciï¿½n, codificado en XML.
+    Mensaje de error en la evaluaci?n, codificado en XML.
      */
-    private String errorXML = "<Practica fecha=\"00/00/0000\" usuario=\"ERROR\" identificador=\"ERROR\"><Descripcion>Se ha producido un error interno al realizar la evaluaciï¿½n de la prï¿½ctica.</Descripcion><Test identificador=\"ERROR\"><Descripcion>Se almacenarï¿½n los datos que han producido el error y asï¿½ poder solucionarlo. Perdone por las molestias.</Descripcion><EvaluacionTest codigoEvaluacionTest=\"ERROR\"></EvaluacionTest><Caso identificador=\"ERROR\"><EvaluacionCaso codigoEvaluacionCaso=\"ERROR\"></EvaluacionCaso></Caso></Test></Practica>";
+    private String errorXML = "<Practica fecha=\"00/00/0000\" usuario=\"ERROR\" identificador=\"ERROR\"><Descripcion>Se ha producido un error interno al realizar la evaluaci?n de la pr?ctica.</Descripcion><Test identificador=\"ERROR\"><Descripcion>Se almacenar?n los datos que han producido el error y as? poder solucionarlo. Perdone por las molestias.</Descripcion><EvaluacionTest codigoEvaluacionTest=\"ERROR\"></EvaluacionTest><Caso identificador=\"ERROR\"><EvaluacionCaso codigoEvaluacionCaso=\"ERROR\"></EvaluacionCaso></Caso></Test></Practica>";
     /*************************************
-     * DeclaraciÃ³n de datos para pruebas *
+     * Declaración de datos para pruebas *
      *************************************/
     private Practica[] PracticasPrueba;
     private Hashtable<String, Test[]> TestPracticasPrueba;
@@ -169,26 +159,26 @@ public class Corrector extends Agent {
     public String gestorPracticas = "gestorDePracticas";
 
     /**
-     * IncicializaciÃ³n de datos para pruebas
+     * Incicialización de datos para pruebas
      */
     private void InicializaDatosPruebas() {
 
-        // PrÃ¡cticas
+        // Prácticas
         PracticasPrueba = new Practica[4];
         PracticasPrueba[0] = new Practica("Practica_1", "Des. Practica 1");
         PracticasPrueba[1] = new Practica("Practica_2", "Des. Practica 2");
         PracticasPrueba[2] = new Practica("Practica_3", "Des. Practica 3");
         PracticasPrueba[3] = new Practica("Practica_4", "Des. Practica 4");
 
-        // Test de PrÃ¡cticas
+        // Test de Prácticas
         TestPracticasPrueba = new Hashtable<String, Test[]>();
         Test[] Testtmp;
         FuentesProgramaPrueba = new Hashtable<String, FuentesPrograma[]>();
         FuentesPrograma[] FPtmp;
 
         Testtmp = new Test[2];
-        Testtmp[0] = new Test("Test1_Practica1", "Test 1 de PrÃ¡ctica 1");
-        Testtmp[1] = new Test("Test1_Practica1", "Test 2 de PrÃ¡ctica 1");
+        Testtmp[0] = new Test("Test1_Practica1", "Test 1 de Práctica 1");
+        Testtmp[1] = new Test("Test1_Practica1", "Test 2 de Práctica 1");
         TestPracticasPrueba.put(PracticasPrueba[0].getId(), Testtmp);
         FPtmp = new FuentesPrograma[2];
         FPtmp[0] = new FuentesPrograma(Testtmp[0].getId() + "_Fuente1.txt");
@@ -200,7 +190,7 @@ public class Corrector extends Agent {
 
 
         Testtmp = new Test[1];
-        Testtmp[0] = new Test("Test1_Practica2", "Test 1 de PrÃ¡ctica 2");
+        Testtmp[0] = new Test("Test1_Practica2", "Test 1 de Práctica 2");
         TestPracticasPrueba.put(PracticasPrueba[1].getId(), Testtmp);
         FPtmp = new FuentesPrograma[3];
         FPtmp[0] = new FuentesPrograma(Testtmp[0].getId() + "_Fuente1.txt");
@@ -209,12 +199,12 @@ public class Corrector extends Agent {
         FuentesProgramaPrueba.put(Testtmp[0].getId(), FPtmp);
 
         Testtmp = new Test[6];
-        Testtmp[0] = new Test("Test1_Practica3", "Test 1 de PrÃ¡ctica 3");
-        Testtmp[1] = new Test("Test2_Practica3", "Test 2 de PrÃ¡ctica 3");
-        Testtmp[2] = new Test("Test3_Practica3", "Test 3 de PrÃ¡ctica 3");
-        Testtmp[3] = new Test("Test4_Practica3", "Test 4 de PrÃ¡ctica 3");
-        Testtmp[4] = new Test("Test5_Practica3", "Test 5 de PrÃ¡ctica 3");
-        Testtmp[5] = new Test("Test6_Practica3", "Test 6 de PrÃ¡ctica 3");
+        Testtmp[0] = new Test("Test1_Practica3", "Test 1 de Práctica 3");
+        Testtmp[1] = new Test("Test2_Practica3", "Test 2 de Práctica 3");
+        Testtmp[2] = new Test("Test3_Practica3", "Test 3 de Práctica 3");
+        Testtmp[3] = new Test("Test4_Practica3", "Test 4 de Práctica 3");
+        Testtmp[4] = new Test("Test5_Practica3", "Test 5 de Práctica 3");
+        Testtmp[5] = new Test("Test6_Practica3", "Test 6 de Práctica 3");
         TestPracticasPrueba.put(PracticasPrueba[2].getId(), Testtmp);
         FPtmp = new FuentesPrograma[2];
         FPtmp[0] = new FuentesPrograma(Testtmp[0].getId() + "_Fuente1.txt");
@@ -241,10 +231,11 @@ public class Corrector extends Agent {
         FuentesProgramaPrueba.put(Testtmp[5].getId(), FPtmp);
         FPtmp = new FuentesPrograma[2];
 
+
         Testtmp = new Test[3];
-        Testtmp[0] = new Test("Test1_Practica4", "Test 1 de PrÃ¡ctica 4");
-        Testtmp[1] = new Test("Test2_Practica4", "Test 2 de PrÃ¡ctica 4");
-        Testtmp[2] = new Test("Test3_Practica4", "Test 3 de PrÃ¡ctica 4");
+        Testtmp[0] = new Test("Test1_Practica4", "Test 1 de Práctica 4");
+        Testtmp[1] = new Test("Test2_Practica4", "Test 2 de Práctica 4");
+        Testtmp[2] = new Test("Test3_Practica4", "Test 3 de Práctica 4");
         TestPracticasPrueba.put(PracticasPrueba[3].getId(), Testtmp);
         FPtmp = new FuentesPrograma[2];
         FPtmp[0] = new FuentesPrograma(Testtmp[0].getId() + "_Fuente1.txt");
@@ -276,25 +267,6 @@ public class Corrector extends Agent {
             this.mensaje = msg1;
             this.respuesta = resp1;
             this.quien1 = quien;
-        }
-        
-        public void EnviarMensajeGEsta (String xml){
-        	EstadisticaEvaluacionPractica ListaEvaluacion = ProcesarXML.parsearArchivoXml(xml);     	
-        	// ***************************************************************************
-			// request + remitente + agente receptor + lenguaje + protocolo + contenido	
-			// ***************************************************************************			
-			ACLMessage mensaje = new ACLMessage(ACLMessage.REQUEST); // Enviamos un mensaje REQUEST
-			mensaje.setSender(getAID()); // Remitente
-			String nombre = "gp";
-			AID receptor_msg = new AID(nombre,AID.ISLOCALNAME);	// Sacamos el Receptor
-			mensaje.addReceiver(receptor_msg); // Receptor					
-			mensaje.setLanguage(codec.getName());	// Lenguaje
-			mensaje.setProtocol(FIPANames.InteractionProtocol.FIPA_REQUEST); // Protocolo
-			try{	
-				mensaje.setContentObject(ListaEvaluacion);
-				send(mensaje);	// enviamos el mensaje
-				System.out.println( "[" + getLocalName() + "] El mensaje ha sido creado y enviado.");
-			}catch (Exception e) { e.printStackTrace();	}				
         }
 
         public void action() {
@@ -349,11 +321,8 @@ public class Corrector extends Agent {
                 //A partir de aqui ya no seria necesario nada, pero lo dejo para que termine bien el programa
                 EvaluacionPractica evaP = EnvioCorreccionAlumno(pract, FP, Te, al, quien1);
 
-                // Gestor Estaadisticas
-                String textoxml = evaP.getTextoEvaluacion();
-                EnviarMensajeGEsta(textoxml);
-                
                 String contenido = evaP.getTextoEvaluacion();
+
                 ResultadoEvaluacion rEvap = new ResultadoEvaluacion();
                 rEvap.setResultadoEvaluacionTexto(contenido);
 
@@ -418,7 +387,7 @@ public class Corrector extends Agent {
     }
 
     /**
-    Comportamiento que encapsula la funcionalidad del agente corrector, se ejecuta de manera cï¿½clica hasta que
+    Comportamiento que encapsula la funcionalidad del agente corrector, se ejecuta de manera c?clica hasta que
     el agente muere.
      */
     class CorrectorBehaviour extends CyclicBehaviour {
@@ -436,7 +405,7 @@ public class Corrector extends Agent {
         }
 
         /**
-        Mï¿½todo que se ejecuta cada vez que se inicia el comportamiento.
+        M?todo que se ejecuta cada vez que se inicia el comportamiento.
          */
         public void action() {
 
@@ -477,6 +446,7 @@ public class Corrector extends Agent {
                         AID interfaz = intc.getInterfaz();
                         String rutaInterfaz = interfaz.getLocalName();
                         Alumno al = intc.getAlumno();
+
 
 
 
@@ -533,12 +503,12 @@ public class Corrector extends Agent {
 
                         if (msg.getPerformative() == ACLMessage.SUBSCRIBE) {
                             if (debugMode) {
-                                printError("Modo depuraciï¿½n DESACTIVADO");
+                                printError("Modo depuraci?n DESACTIVADO");
                                 debugMode = !(debugMode);
                             } else {
                                 agente = msg.getSender();
                                 debugMode = !(debugMode);
-                                printError("Modo depuraciï¿½n ACTIVADO");
+                                printError("Modo depuraci?n ACTIVADO");
                             }
                         } else {
                             reply.setPerformative(ACLMessage.NOT_UNDERSTOOD);
@@ -680,6 +650,7 @@ public class Corrector extends Agent {
                                     l_out.add(act);
                                     l_out.add(andfailure);
 
+
                                     //myAgent.fillMsgContent(reply,l_out);
                                     //getContentManager().fillContent(reply, (AbsContentElement) l_out);
                                     reply.setContentObject((Serializable) l_out);
@@ -716,8 +687,8 @@ public class Corrector extends Agent {
     }
 
     /**
-    Mï¿½todo que configura el agente. Selecciona el lenguaje de contenido, la ontologï¿½a que utiliza
-    y aniade el comportamiento que se ejecutarï¿½.
+    M?todo que configura el agente. Selecciona el lenguaje de contenido, la ontolog?a que utiliza
+    y aniade el comportamiento que se ejecutar?.
      */
     protected void setup() {
 
@@ -765,7 +736,7 @@ public class Corrector extends Agent {
     }
 
     /**
-    Lee la descripciï¿½n del fichero (la primera lï¿½nea).
+    Lee la descripci?n del fichero (la primera l?nea).
      */
     private String descriptionFile(File file) {
 
@@ -796,7 +767,7 @@ public class Corrector extends Agent {
     }
 
     /**
-    Lee la lï¿½nea del dead-line.
+    Lee la l?nea del dead-line.
      */
     private boolean practicaInTime(Practica pract) {
 
@@ -852,8 +823,8 @@ public class Corrector extends Agent {
     }
 
     /**
-    Busca los ficheros necesarios que estï¿½n reflejados como "ALUMNO/" en el fichero
-    de configuraciï¿½n.
+    Busca los ficheros necesarios que est?n reflejados como "ALUMNO/" en el fichero
+    de configuraci?n.
      */
     private String[] searchAlumnoFiles(File file) {
 
@@ -884,6 +855,7 @@ public class Corrector extends Agent {
             } catch (Exception e) {
                 printError("Error en Corrector de PACA: " + e.toString());
             }
+
 
         } catch (java.io.FileNotFoundException e) {
         } catch (Exception e) {
@@ -931,7 +903,7 @@ public class Corrector extends Agent {
     }
 
     /**
-    Ejecuta el script de correcciï¿½n y devuelve el resultado de la misma.
+    Ejecuta el script de correcci?n y devuelve el resultado de la misma.
      */
     private EvaluacionPractica EnvioCorreccionAlumno(Practica pract,
             FuentesPrograma[] fp,
@@ -1073,11 +1045,11 @@ public class Corrector extends Agent {
                 printError("Antes de ejecutar de nuevo el programa");
 
                 Process proc = java.lang.Runtime.getRuntime().exec(comando_parametros);
-                printError("Despuï¿½s de ejecutar de nuevo el programa");
+                printError("Despu?s de ejecutar de nuevo el programa");
 
 
                 returnValue = proc.waitFor();
-                printError("Despuï¿½s de esperar por el proceso");
+                printError("Despu?s de esperar por el proceso");
 
 
                 // Show Error messajes in the standard error console
@@ -1089,6 +1061,7 @@ public class Corrector extends Agent {
                     errorSt.write(temp_error_read);
                     temp_error_read = errorIs.read();
                 }
+
 
                 printError("Script terminate with " + returnValue);
                 printError(errorSt.toString());
@@ -1168,34 +1141,14 @@ public class Corrector extends Agent {
 
     }
 
-    private void EnviarEntregaGEsta (Practica pract, Alumno al1, Alumno al2){
-       	EstadisticaEntregaPractica EEP = new EstadisticaEntregaPractica(al1,al2,pract);
-    	// ***************************************************************************
-		// request + remitente + agente receptor + lenguaje + protocolo + contenido	
-		// ***************************************************************************			
-		ACLMessage mensaje = new ACLMessage(ACLMessage.REQUEST); // Enviamos un mensaje REQUEST
-		mensaje.setSender(getAID()); // Remitente
-		String nombre = "gp";
-		AID receptor_msg = new AID(nombre,AID.ISLOCALNAME);	// Sacamos el Receptor
-		mensaje.addReceiver(receptor_msg); // Receptor					
-		mensaje.setLanguage(codec.getName());	// Lenguaje
-		mensaje.setProtocol(FIPANames.InteractionProtocol.FIPA_REQUEST); // Protocolo
-		try{	
-			mensaje.setContentObject(EEP);
-			send(mensaje);	// enviamos el mensaje
-			System.out.println( "[" + getLocalName() + "] El mensaje ENTREGA ha sido creado y enviado.");
-		}catch (Exception e) { e.printStackTrace();	}				   	
-    }
-    
     /**
-    Envia los fuentes de una prï¿½ctica para que sean almacenados en el sistema.
+    Envia los fuentes de una pr?ctica para que sean almacenados en el sistema.
      */
     private Alumno EntregarPractica(Practica pract,
             FuentesPrograma[] fp,
             Alumno al1,
             Alumno al2) {
-    	
-    	EnviarEntregaGEsta(pract,al1,al2);
+
         if (this.ejecucionEnPruebas) {
             return new Alumno();
         }
@@ -1282,7 +1235,7 @@ public class Corrector extends Agent {
     }
 
     /**
-    Imprime el mensaje de error en caso de que estï¿½ activo el modo depuraciï¿½n.
+    Imprime el mensaje de error en caso de que est? activo el modo depuraci?n.
      */
     private void printError(String error) {
         //System.out.println(error);
@@ -1297,7 +1250,7 @@ public class Corrector extends Agent {
         }
     }
 
-    //Mï¿½todo que rellena los tests pedidos
+    //M?todo que rellena los tests pedidos
     private Test[] ExtraeTestsPedidos(List<AbsPredicate> lista) {
         int tamano = lista.size();
         Test[] testAux = new Test[tamano];
@@ -1318,7 +1271,8 @@ public class Corrector extends Agent {
         return testAux;
     }
 
-    //Mï¿½todo que rellena los ficheros fuentes
+
+    //M?todo que rellena los ficheros fuentes
     private FuentesPrograma[] ExtraeFuentesPedidos(List<AbsPredicate> lista) {
         int tamano = lista.size();
         FuentesPrograma[] fuentesAux = new FuentesPrograma[tamano];
@@ -1529,6 +1483,7 @@ public class Corrector extends Agent {
                 AID aidInterfaz = new AID(interfaz, AID.ISLOCALNAME);
                 AbsConcept absaid = (AbsConcept) basicOntologia.fromObject(aidInterfaz);
 
+
                 AbsPredicate absint = new AbsPredicate(pacaOntology.INTERACTUA);
                 absint.set(pacaOntology.INTERFAZ, absaid);
                 absint.set(pacaOntology.ALUMNO, absal);
@@ -1732,6 +1687,7 @@ public class Corrector extends Agent {
         File dir = new File("/tmp/" + pract.getId() + alumno);
         dir.mkdir();
 
+
         //Creo el fichero descripcion de la practica
         FileWriter fichero;
         PrintWriter pw;
@@ -1818,14 +1774,3 @@ public class Corrector extends Agent {
         }
     }
 }
-
-
-
-
-
-
-
-
-
-
-
