@@ -6,18 +6,17 @@ package es.urjc.ia.paca.ontology;
 //import jade.onto.SlotDescriptor;
 //import jade.onto.OntologyException;
 //import jade.onto.basic.*;
-import es.urjc.ia.paca.ontology.Fichero.*;
-import jade.content.AgentAction;
-import jade.content.lang.sl.SL0Vocabulary;
 import jade.content.lang.sl.SL1Vocabulary;
-import jade.content.lang.sl.SLVocabulary;
 import jade.content.onto.BasicOntology;
 import jade.content.onto.Ontology;
 import jade.content.onto.OntologyException;
 import jade.content.schema.AgentActionSchema;
 import jade.content.schema.ConceptSchema;
+import jade.content.schema.ObjectSchema;
 import jade.content.schema.PredicateSchema;
 import jade.content.schema.PrimitiveSchema;
+import es.urjc.ia.paca.ontology.Fichero.Fichero;
+import es.urjc.ia.paca.ontology.Fichero.FuentesPrograma;
 
 /**
 Clase que representa las relaciones entre los diversos objetos de la ontolog�a.
@@ -29,6 +28,11 @@ Modificado Carlos Sim�n Garc�a
 public class pacaOntology extends Ontology {
 
     /**
+	 * 
+	 */
+	private static final long serialVersionUID = 1L;
+	
+	/**
     Nombre de la ontolog�a.
      */
     public static final String NAME = "paca-ontology";
@@ -70,9 +74,19 @@ public class pacaOntology extends Ontology {
     //*********************************************************
     // EvaluacionCaso - Estadisticas
     public static final String ESTADISTICASEVALUACIONCASO = "EstadisticasEvaluacionCaso";
+    public static final String ESTADISTICASEVALUACIONCASO_ALUMNO = "alumno";
+    public static final String ESTADISTICASEVALUACIONCASO_PRACTICA = "practica";
+    public static final String ESTADISTICASEVALUACIONCASO_TEST = "test";
+    public static final String ESTADISTICASEVALUACIONCASO_CASO = "caso";
+    public static final String ESTADISTICASEVALUACIONCASO_EVALUACION = "evaluacion";
+
+    
+    public static final String REGISTRARESTADISTICASEVALUACION = "RegistrarEstadisticaEvaluacion";
+    public static final String EVALUACIONCASOS = "evaluacionesCasos";
     // EntregaPractica - Estadisticas
     public static final String ESTADISTICASENTREGAPRACTICA = "EstadisticasEntregaPractica";
     public static final String ELIMINARDATOSBBDD = "EliminarDatosBBDD";
+    public static final String ELIMINARDATOSBBDDTIPO = "tipo";
     //*********************************************************
     
     //A�adido Carlos
@@ -243,7 +257,16 @@ public class pacaOntology extends Ontology {
             cs9.add(FICHERO_CONTENIDO, (PrimitiveSchema) getSchema(BasicOntology.STRING));
             cs9.add(FUENTESPROGRAMA_CODIGO, (PrimitiveSchema) getSchema(BasicOntology.STRING));
 
-
+          //EstadisticasEvaluacionCaso
+            add(new ConceptSchema(ESTADISTICASEVALUACIONCASO), EstadisticaEvaluacionCaso.class);
+            ConceptSchema cs12 = (ConceptSchema) getSchema(ESTADISTICASEVALUACIONCASO);
+            cs12.add(ESTADISTICASEVALUACIONCASO_ALUMNO, (ConceptSchema) getSchema(ALUMNO));
+            cs12.add(ESTADISTICASEVALUACIONCASO_PRACTICA, (ConceptSchema) getSchema(PRACTICA));
+            cs12.add(ESTADISTICASEVALUACIONCASO_TEST, (ConceptSchema) getSchema(TEST));
+            cs12.add(ESTADISTICASEVALUACIONCASO_CASO, (ConceptSchema) getSchema(CASO));
+            cs12.add(ESTADISTICASEVALUACIONCASO_EVALUACION, (PrimitiveSchema) getSchema(BasicOntology.STRING));
+           
+            
             //Pendiente de crear Concepto Interfaz!!!!!
             //---------- FIN CONCEPTOS -----------
 
@@ -255,13 +278,7 @@ public class pacaOntology extends Ontology {
             ps0.add(ALUMNO, (ConceptSchema) getSchema(ALUMNO));
             ps0.add(PRACTICA, (ConceptSchema) getSchema(PRACTICA));
             //*********************************************************
-            //EstadisticasEvaluacionCaso
-            add(new PredicateSchema(ESTADISTICASEVALUACIONCASO), EstadisticaEntregaPractica.class);
-            PredicateSchema ps00 = (PredicateSchema) getSchema(ESTADISTICASEVALUACIONCASO);
-            ps00.add(ALUMNO, (ConceptSchema) getSchema(ALUMNO));
-            ps00.add(PRACTICA, (ConceptSchema) getSchema(PRACTICA));
-            ps00.add(TEST, (ConceptSchema) getSchema(TEST));
-            ps00.add(CASO, (ConceptSchema) getSchema(CASO));
+            
             //*********************************************************
 
             
@@ -336,11 +353,7 @@ public class pacaOntology extends Ontology {
             ps7.add(TEST, (ConceptSchema) getSchema(TEST));
             ps7.add(FICHEROALUMNO, (ConceptSchema) getSchema(FICHEROALUMNO));
 
-
-
             //---------- FIN PREDICADOS ----------------
-
-
 
             //---------- AGENT ACTIONS ----------------
             //EntregarPractica
@@ -515,7 +528,13 @@ public class pacaOntology extends Ontology {
 
             add(new AgentActionSchema(ELIMINARDATOSBBDD), EliminarDatosBBDD.class);
             AgentActionSchema ps37 = (AgentActionSchema) getSchema(ELIMINARDATOSBBDD);
-
+            ps37.add(ELIMINARDATOSBBDDTIPO, (PrimitiveSchema) getSchema(BasicOntology.STRING));
+                
+            add(new AgentActionSchema(REGISTRARESTADISTICASEVALUACION), RegistrarEstadisticaEvaluacion.class);
+            AgentActionSchema ps38 = (AgentActionSchema) getSchema(REGISTRARESTADISTICASEVALUACION);
+            ps38.add(EVALUACIONCASOS, 
+            		(ConceptSchema) getSchema(ESTADISTICASEVALUACIONCASO), 0, ObjectSchema.UNLIMITED);
+            
         } catch (OntologyException oe) {
             oe.printStackTrace();
         } catch (Exception oe) {
