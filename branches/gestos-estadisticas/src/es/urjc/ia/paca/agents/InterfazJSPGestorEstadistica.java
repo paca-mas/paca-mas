@@ -114,7 +114,40 @@ public class InterfazJSPGestorEstadistica extends InterfazGestorEstadistica {
              addBehaviour(new EliminarAlumno(this.myAgent));
         }
     }
+    
+    public class EliminarDatosBeha extends OneShotBehaviour {
 
+        public EliminarDatosBeha(Agent _a) {
+            super(_a);
+        }
+
+        public void action() {
+             addBehaviour(new EliminarDatos(this.myAgent));
+        }
+    }
+
+    public class CargarPracticaBeha extends OneShotBehaviour {
+
+        public CargarPracticaBeha(Agent _a) {
+            super(_a);
+        }
+
+        public void action() {
+             addBehaviour(new CargarPractica(this.myAgent));
+        }
+    }
+    
+    public class CargarAlumnoBeha extends OneShotBehaviour {
+
+        public CargarAlumnoBeha(Agent _a) {
+            super(_a);
+        }
+
+        public void action() {
+             addBehaviour(new CargarAlumno(this.myAgent));
+        }
+    }
+    
     public class ProcesaTestigo extends OneShotBehaviour {
 
         private Testigo testigo;
@@ -173,7 +206,19 @@ public class InterfazJSPGestorEstadistica extends InterfazGestorEstadistica {
                     case eliminarAlumno:
                         addBehaviour(new EliminarAlumnoBeha(agent));
                         break;
-              
+                        
+                    case cargarPractica:
+                        addBehaviour(new CargarPracticaBeha(agent));
+                        break;
+
+                    case cargarAlumno:
+                        addBehaviour(new CargarAlumnoBeha(agent));
+                        break;
+                    
+                    case eliminarDatos:
+                        addBehaviour(new EliminarDatosBeha(agent));
+                        break;
+                        
                     default:
                         testigo.setResultado("-");
                         break;
