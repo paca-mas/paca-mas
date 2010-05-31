@@ -13,7 +13,8 @@ public class Testigo extends Resultado{
                 eliminarFicheroPropio, eliminarCaso, eliminarFicheroAlumno, eliminarFicheroIN, eliminarFicheroOUT,
                 seleccionarTest, copiarTest, seleccionarFicherosPropios, copiarFicherosPropios, seleccionarFicherosAlumno,
                 copiarFicherosAlumno, seleccionarCasos, copiarCasos, seleccionarFicherosIN, copiarFicherosIN,
-                seleccionarFicherosOUT, copiarFicherosOUT, modificarEjecutable
+                seleccionarFicherosOUT, copiarFicherosOUT, modificarEjecutable, eliminarAlumno, eliminarDatos,
+                cargarPractica, cargarAlumno
 	}
 	
 	private Object resultado;
