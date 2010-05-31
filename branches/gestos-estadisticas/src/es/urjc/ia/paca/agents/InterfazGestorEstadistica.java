@@ -25,6 +25,7 @@ import jade.core.AID;
 import jade.core.Agent;
 import jade.core.behaviours.Behaviour;
 import jade.core.behaviours.OneShotBehaviour;
+import jade.domain.FIPANames;
 import jade.lang.acl.ACLMessage;
 
 
@@ -811,8 +812,13 @@ public class InterfazGestorEstadistica extends Agent {
             	
             	EliminarDatosBBDD e = new EliminarDatosBBDD();
             	e.setTipo("BORRARPRACTICAS");
-    			try{	
-                	solicitud.setContentObject(e);
+            	
+            	Action act = new Action();
+            	act.setAction(e);
+            	act.setActor(receiver);
+    			try{
+    				getContentManager().fillContent(solicitud, act);
+    				solicitud.setProtocol(FIPANames.InteractionProtocol.FIPA_REQUEST);
                     send(solicitud);
     			}catch (Exception exc) { exc.printStackTrace();	}
 System.out.println("Solicitud de eliminacion");
@@ -844,5 +850,86 @@ System.out.println("Solicitud de eliminacion");
 System.out.println("Solicitud de eliminacion A");
         }
     }
+ 
+ 	public class EliminarDatos extends OneShotBehaviour {
 
+     public EliminarDatos(Agent _a) {
+         super(_a);
+     }
+
+     public void action() {
+         //try {
+             AID receiver = new AID(gestorEstadisticas, AID.ISLOCALNAME);
+             ACLMessage solicitud = new ACLMessage(ACLMessage.REQUEST);
+             solicitud.addReceiver(receiver);
+             solicitud.setLanguage(codec.getName());
+             solicitud.setOntology(pacaOntology.NAME);
+         	System.out.println("Eliminar Interfaz");
+         	
+         	EliminarDatosBBDD e = new EliminarDatosBBDD();
+         	e.setTipo("BORRARDATOS");
+         	
+         	Action act = new Action();
+         	act.setAction(e);
+         	act.setActor(receiver);
+ 			try{
+ 				getContentManager().fillContent(solicitud, act);
+ 				solicitud.setProtocol(FIPANames.InteractionProtocol.FIPA_REQUEST);
+                 send(solicitud);
+ 			}catch (Exception exc) { exc.printStackTrace();	}
+System.out.println("Solicitud de eliminacion");
+
+     }
+ }
+
+ 	public class CargarAlumno extends OneShotBehaviour {
+
+        public CargarAlumno(Agent _a) {
+            super(_a);
+        }
+
+        public void action() {
+            //try {
+                AID receiver = new AID(gestorEstadisticas, AID.ISLOCALNAME);
+                ACLMessage solicitud = new ACLMessage(ACLMessage.REQUEST);
+                solicitud.addReceiver(receiver);
+                solicitud.setLanguage(codec.getName());
+                solicitud.setOntology(pacaOntology.NAME);
+            	System.out.println("Cargar Alumno Interfaz");
+            	
+            	EliminarDatosBBDD e = new EliminarDatosBBDD();
+            	e.setTipo("CARGARALUMNOS");
+    			try{	
+                	solicitud.setContentObject(e);
+                    send(solicitud);
+    			}catch (Exception exc) { exc.printStackTrace();	}
+System.out.println("Solicitud de eliminacion A");
+        }
+    }
+ 	
+ 	public class CargarPractica extends OneShotBehaviour {
+
+        public CargarPractica(Agent _a) {
+            super(_a);
+        }
+
+        public void action() {
+            //try {
+                AID receiver = new AID(gestorEstadisticas, AID.ISLOCALNAME);
+                ACLMessage solicitud = new ACLMessage(ACLMessage.REQUEST);
+                solicitud.addReceiver(receiver);
+                solicitud.setLanguage(codec.getName());
+                solicitud.setOntology(pacaOntology.NAME);
+            	System.out.println("Cargar Alumno Interfaz");
+            	
+            	EliminarDatosBBDD e = new EliminarDatosBBDD();
+            	e.setTipo("CARGARPRACTICA");
+    			try{	
+                	solicitud.setContentObject(e);
+                    send(solicitud);
+    			}catch (Exception exc) { exc.printStackTrace();	}
+System.out.println("Solicitud de eliminacion A");
+        }
+    }
+ 	
 }
