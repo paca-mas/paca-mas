@@ -43,67 +43,77 @@ public class InterfazJSPGestorEstadistica extends InterfazGestorEstadistica {
     }
 
     public class EliminarPracticaBeha extends OneShotBehaviour {
+    	 
+    	private Testigo tes;
 
-        public EliminarPracticaBeha(Agent _a) {
+        public EliminarPracticaBeha(Agent _a, Testigo tes1) {
             super(_a);
+            this.tes = tes1;
         }
 
         public void action() {
-             addBehaviour(new EliminarPractica(this.myAgent));
+             addBehaviour(new EliminarPractica(this.myAgent, tes));
         }
     }
 
     public class EliminarAlumnoBeha extends OneShotBehaviour {
 
-        public EliminarAlumnoBeha(Agent _a) {
+    	private Testigo tes;
+
+        public EliminarAlumnoBeha(Agent _a, Testigo tes1) {
             super(_a);
+            this.tes = tes1;
         }
 
         public void action() {
-        	System.out.println("[INTERFAZ JSP] - Eliminar Alumno");
-             addBehaviour(new EliminarAlumno(this.myAgent));
+             addBehaviour(new EliminarAlumno(this.myAgent, tes));
         }
     }
     
     public class EliminarDatosBeha extends OneShotBehaviour {
 
-        public EliminarDatosBeha(Agent _a) {
+    	private Testigo tes;
+
+        public EliminarDatosBeha(Agent _a, Testigo tes1) {
             super(_a);
+            this.tes = tes1;
         }
 
         public void action() {
-        	System.out.println("[INTERFAZ JSP] - Eliminar Datos");        	
-             addBehaviour(new EliminarDatos(this.myAgent));
+             addBehaviour(new EliminarDatos(this.myAgent,tes));
         }
     }
 
     public class CargarPracticaBeha extends OneShotBehaviour {
 
-        public CargarPracticaBeha(Agent _a) {
+    	private Testigo tes;
+
+        public CargarPracticaBeha(Agent _a, Testigo tes1) {
             super(_a);
+            this.tes = tes1;
         }
 
         public void action() {
-        	System.out.println("[INTERFAZ JSP] - Cargar Practica");
-             addBehaviour(new CargarPractica(this.myAgent));
+             addBehaviour(new CargarPractica(this.myAgent, tes));
         }
     }
     
     public class CargarAlumnoBeha extends OneShotBehaviour {
 
-        public CargarAlumnoBeha(Agent _a) {
-            super(_a);
-        }
+    	private Testigo tes;
 
+        public CargarAlumnoBeha(Agent _a, Testigo tes1) {
+            super(_a);
+            this.tes = tes1;
+        }
         public void action() {
-        	System.out.println("[INTERFAZ JSP] - Cargar Alumno");
-        	addBehaviour(new CargarAlumno(this.myAgent));
+        	addBehaviour(new CargarAlumno(this.myAgent,tes));
         }
     }
     
     public class ProcesaTestigo extends OneShotBehaviour {
 
-        private Testigo testigo;
+    	private Testigo testigo;
 
         public ProcesaTestigo(Testigo _tes) {
             this.testigo = _tes;
@@ -113,53 +123,31 @@ public class InterfazJSPGestorEstadistica extends InterfazGestorEstadistica {
             while (this.myAgent == null) {
                 System.out.println("AGENT ES NULL");
             }
-
             InterfazJSPGestorEstadistica agent = (InterfazJSPGestorEstadistica) this.myAgent;
             while (!agent.FinSetup) {
                 System.out.println("FINSETUP");
             }
 
-
             if (this.testigo != null) {
-
                 switch (testigo.getOperacion()) {
-
                     case autenticar:
                         addBehaviour(new AutenticaRequestBeha(agent, testigo));
                         break;
-                        
-                    case ultimaPractica:
-                        testigo.setResultado(ultimaPractica);
-                        break;
-
-                    case ultimoTest:
-                        testigo.setResultado(ultimoTest);
-                        break;
-
-                    case ultimoCaso:
-                        testigo.setResultado(ultimoCaso);
-                        break;
-
                     case eliminarPractica:
-                        addBehaviour(new EliminarPracticaBeha(agent));
+                        addBehaviour(new EliminarPracticaBeha(agent, testigo));
                         break;
-
                     case eliminarAlumno:
-                        addBehaviour(new EliminarAlumnoBeha(agent));
+                        addBehaviour(new EliminarAlumnoBeha(agent, testigo));
                     	break;
-                        
-                    case cargarPractica:
-                        addBehaviour(new CargarPracticaBeha(agent));
-                        break;
-
-                    case cargarAlumno:
-                        addBehaviour(new CargarAlumnoBeha(agent));
-                        break;
-                    
                     case eliminarDatos:
-                        addBehaviour(new EliminarDatosBeha(agent));
+                        addBehaviour(new EliminarDatosBeha(agent, testigo));
                         break;
-                        
+                    case cargarPractica:
+                        addBehaviour(new CargarPracticaBeha(agent, testigo));
+                        break;
+                    case cargarAlumno:
+                        addBehaviour(new CargarAlumnoBeha(agent, testigo));
+                        break;
                     default:
                         testigo.setResultado("-");
                         break;
@@ -177,9 +165,7 @@ public class InterfazJSPGestorEstadistica extends InterfazGestorEstadistica {
      * @param testigo
      */
     public void sendTestigo(Testigo testigo) {
-
         this.addBehaviour(new ProcesaTestigo(testigo));
-
     }
 
     @Override
