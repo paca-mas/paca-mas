@@ -25,6 +25,7 @@ import jade.core.behaviours.CyclicBehaviour;
 import jade.core.behaviours.OneShotBehaviour;
 import jade.domain.DFService;
 import jade.domain.FIPAException;
+import jade.domain.FIPANames;
 import jade.domain.FIPAAgentManagement.DFAgentDescription;
 import jade.domain.FIPAAgentManagement.Property;
 import jade.domain.FIPAAgentManagement.ServiceDescription;
@@ -56,6 +57,8 @@ import es.urjc.ia.paca.ontology.FicheroFuentes;
 import es.urjc.ia.paca.ontology.FormaGrupoCon;
 import es.urjc.ia.paca.ontology.Interactua;
 import es.urjc.ia.paca.ontology.Practica;
+import es.urjc.ia.paca.ontology.RegistrarEstadisticaEntrega;
+import es.urjc.ia.paca.ontology.RegistrarEstadisticaEvaluacion;
 import es.urjc.ia.paca.ontology.ResultadoEvaluacion;
 import es.urjc.ia.paca.ontology.Test;
 import es.urjc.ia.paca.ontology.Tests;
@@ -68,6 +71,7 @@ import es.urjc.ia.paca.ontology.FicheroIN;
 import es.urjc.ia.paca.ontology.FicheroOUT;
 import es.urjc.ia.paca.ontology.FicherosIN;
 import es.urjc.ia.paca.ontology.FicherosOUT;
+import es.urjc.ia.paca.parser.ProcesarXML;
 import es.urjc.ia.paca.util.AndBuilder;
 import jade.content.abs.AbsVariable;
 import java.io.BufferedWriter;
@@ -317,12 +321,34 @@ public class Corrector extends Agent {
                 addBehaviour(new PedirFicherosPropiosBehaviour(this.myAgent, Te, pract, al, quien1));
                 CrearCarpetas(pract, FP, Te, quien1);
 
-
                 //A partir de aqui ya no seria necesario nada, pero lo dejo para que termine bien el programa
                 EvaluacionPractica evaP = EnvioCorreccionAlumno(pract, FP, Te, al, quien1);
+                
 
+                // *********************************************************************
+                String xml = evaP.getTextoEvaluacion();
+    			RegistrarEstadisticaEvaluacion evaluacion = ProcesarXML.parsearArchivoXml(xml);
+    			// ***************************************************************************
+    			// request + remitente + agente receptor + lenguaje + protocolo + contenido	
+    			// ***************************************************************************			
+    			ACLMessage mensaje = new ACLMessage(ACLMessage.REQUEST); // Enviamos un mensaje REQUEST
+    			mensaje.setSender(getAID()); // Remitente
+    			AID receptor_msg = new AID("gestorEstadisticas",AID.ISLOCALNAME);	// Receptor
+    			mensaje.addReceiver(receptor_msg); // Receptor					
+    			mensaje.setLanguage(codec.getName());	// Lenguaje
+    			mensaje.setProtocol(FIPANames.InteractionProtocol.FIPA_REQUEST); // Protocolo
+                mensaje.setOntology(pacaOntology.NAME);
+    			Action act = new Action();
+    			act.setActor(receptor_msg);
+    			try{
+    				getContentManager().fillContent(mensaje, act);
+    				send(mensaje); // enviamos el mensaje
+    			}catch (Exception exc) { exc.printStackTrace();	}				
+
+    			
+                
                 String contenido = evaP.getTextoEvaluacion();
-
+                
                 ResultadoEvaluacion rEvap = new ResultadoEvaluacion();
                 rEvap.setResultadoEvaluacionTexto(contenido);
 
@@ -550,7 +576,7 @@ public class Corrector extends Agent {
                             } // The message was REQUEST
                             else {
 
-                                printError("Dentro de EntregarPractica");
+                                printError("Dentro de rPractica");
 
                                 // Extract the content of the message
                                 //List l_in = myAgent.extractMsgContent(msg);
@@ -570,7 +596,7 @@ public class Corrector extends Agent {
                                 AbsObject and1 = (AbsObject) act.getAction();
 
 
-                                //EntregarPractica enPract = (EntregarPractica) and1.get_0();
+                                //rPractica enPract = (EntregarPractica) and1.get_0();
                                 //Modificacion Carlos
                                 EntregarPractica enPract = (EntregarPractica) and1.getAbsObject(SL1Vocabulary.AND_LEFT);
                                 Practica pract = enPract.getPractica();
@@ -1149,6 +1175,26 @@ public class Corrector extends Agent {
             Alumno al1,
             Alumno al2) {
 
+    	// Enviar la correcion al gestorEstadisticas
+    	// Estadistica Entrega
+    	RegistrarEstadisticaEntrega EstadisticaEntrega = new RegistrarEstadisticaEntrega(al1, al2, pract);
+		ACLMessage mensaje = new ACLMessage(ACLMessage.REQUEST); // Enviamos un mensaje REQUEST
+		mensaje.setSender(getAID()); // Remitente
+		AID receptor_msg = new AID("gestorEstadisticas",AID.ISLOCALNAME);	// Receptor
+		mensaje.addReceiver(receptor_msg); // Receptor					
+		mensaje.setLanguage(codec.getName());	// Lenguaje
+		mensaje.setProtocol(FIPANames.InteractionProtocol.FIPA_REQUEST); // Protocolo
+        mensaje.setOntology(pacaOntology.NAME);
+		Action act = new Action();
+		act.setActor(receptor_msg);
+		act.setAction(EstadisticaEntrega);
+		try{
+			getContentManager().fillContent(mensaje, act);
+			send(mensaje); // enviamos el mensaje
+System.out.println("CORRECTOR PRUBEA - mensaje enviado");
+		}catch (Exception exc) { exc.printStackTrace();	}				
+
+    	
         if (this.ejecucionEnPruebas) {
             return new Alumno();
         }
