@@ -1,8 +1,10 @@
 package es.urjc.ia.paca.parser;
 
+import jade.util.leap.ArrayList;
+import jade.util.leap.List;
+
 import java.io.IOException;
-import java.util.ArrayList;
-import java.util.List;
+
 import javax.xml.parsers.DocumentBuilder;
 import javax.xml.parsers.DocumentBuilderFactory;
 import javax.xml.parsers.ParserConfigurationException;
@@ -11,17 +13,16 @@ import org.w3c.dom.Element;
 import org.w3c.dom.Node;
 import org.w3c.dom.NodeList;
 import org.xml.sax.SAXException;
-import es.urjc.ia.paca.ontology.EstadisticaEvaluacionCaso;
-import es.urjc.ia.paca.ontology.EstadisticaEvaluacionPractica;
+import es.urjc.ia.paca.ontology.*;
 
 public class ProcesarXML {
     
 	public static Document dom;
-    public static List<EstadisticaEvaluacionCaso> listEvaluacion = new ArrayList<EstadisticaEvaluacionCaso>();
+    public static List listEvaluacion = new ArrayList();
     
     //Parsea el archivo XML
-    public static EstadisticaEvaluacionPractica parsearArchivoXml(String fichero) {
-    	EstadisticaEvaluacionPractica e = new EstadisticaEvaluacionPractica(null);
+    public static RegistrarEstadisticaEvaluacion parsearArchivoXml(String fichero) {
+    	RegistrarEstadisticaEvaluacion e = new RegistrarEstadisticaEvaluacion(null);
     	// Obteher el objeto DocumentBuilderFactory
     	DocumentBuilderFactory dbf = DocumentBuilderFactory.newInstance();
     	try {
@@ -38,7 +39,7 @@ public class ProcesarXML {
     }
     
     //Parsea el documento XML y extrae los datos
-    public static EstadisticaEvaluacionPractica parsearDocumento() {
+    public static RegistrarEstadisticaEvaluacion parsearDocumento() {
     	String iduser;
     	String idpractica;
     	String idtest;
@@ -82,7 +83,15 @@ public class ProcesarXML {
     							idtest = test.getAttribute("identificador");
     							idcaso = caso.getAttribute("identificador");
     							evaluacioncaso = evalcaso.getAttribute("codigoEvaluacionCaso");
-    							EstadisticaEvaluacionCaso e = new EstadisticaEvaluacionCaso (iduser, idpractica, idtest, idcaso,  evaluacioncaso);
+    							Alumno a = new Alumno();
+    							a.setIdentificador(iduser);
+    							Practica p = new Practica();
+    							p.setId(idpractica);
+    							Test t = new Test();
+    							t.setId(idtest);
+    							Caso c = new Caso();
+    							c.setId(idcaso);
+    							EstadisticaEvaluacionCaso e = new EstadisticaEvaluacionCaso (a,p,t,c,evaluacioncaso);
     							listEvaluacion.add(e);
     						}
     					}
@@ -90,7 +99,7 @@ public class ProcesarXML {
     			}
     		}
     	}
-    	EstadisticaEvaluacionPractica list = new EstadisticaEvaluacionPractica(listEvaluacion);
+    	RegistrarEstadisticaEvaluacion list = new RegistrarEstadisticaEvaluacion(listEvaluacion);
     	return list;
     }
 }
