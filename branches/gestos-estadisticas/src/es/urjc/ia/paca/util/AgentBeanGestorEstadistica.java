@@ -35,9 +35,7 @@ public class AgentBeanGestorEstadistica {
 
 
 	public void sendTestigo(Testigo testigo) {
-		System.out.println("benssssssssssssss");
 		wait4Agent();
-		System.out.println("Bena enviar Testigo");
 		this.agente.sendTestigo(testigo);
 	}
 
