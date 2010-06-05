@@ -8,7 +8,7 @@ import jade.util.leap.List;
 public class RegistrarEstadisticaEvaluacion implements AgentAction {
 	
 		private List evaluacionesCasos;
-
+		
 		public RegistrarEstadisticaEvaluacion() {
 			evaluacionesCasos = new ArrayList();
 		}
@@ -16,7 +16,7 @@ public class RegistrarEstadisticaEvaluacion implements AgentAction {
 		public RegistrarEstadisticaEvaluacion(List e){
 		    	this.evaluacionesCasos =  e;
 	    }
-		 
+	 
 		public void setEvaluacionesCasos(List lista){
 			this.evaluacionesCasos = lista;
 		}
