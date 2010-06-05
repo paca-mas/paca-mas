@@ -855,10 +855,10 @@ System.out.println("[GE]El mensaje no es nulo");
 									}else{
 										if (tipo.equals("CARGARPRACTICAS")){
 											System.out.println("{GE}cargar practica");
-											Testigo t = new Testigo();
-											Resultado r = new Resultado();
+											Testigo resultado = new Testigo();
+											resultado.setOperacion(Testigo.Operaciones.pedirPracticas);
 											// Pide Practica
-										    addBehaviour(new PidePracticasBehavior(myAgent,r));
+										    addBehaviour(new PidePracticasBehavior(myAgent,resultado));
 										}else{
 											if (tipo.equals("CARGARALUMNOS")){
 												System.out.println("{GE}cargar alumnos");
