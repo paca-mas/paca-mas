@@ -40,6 +40,8 @@ import es.urjc.ia.paca.ontology.Test;
 import es.urjc.ia.paca.ontology.pacaOntology;
 import es.urjc.ia.paca.util.AndBuilder;
 import es.urjc.ia.paca.util.Resultado;
+import es.urjc.ia.paca.util.Testigo;
+import es.urjc.ia.paca.agents.InterfazGestor.RecibeMensajes;
 import es.urjc.ia.paca.auth.ontology.Autenticado;
 import es.urjc.ia.paca.auth.ontology.AuthOntology;
 import es.urjc.ia.paca.auth.ontology.Usuario;
@@ -314,11 +316,14 @@ public class InterfazGestorEstadistica extends Agent {
 	}
 	//-------------- FIN COMPORTAMIENTOS PARA LA AUTENTICACION ----------------------------
 
-
+	// ELIMINAR ESTRUCTURA PRACTICAS
 	public class EliminarPractica extends OneShotBehaviour {
 
-		public EliminarPractica(Agent _a) {
+		private Testigo tes;
+
+		public EliminarPractica(Agent _a, Testigo tes1) {
 			super(_a);
+            this.tes = tes1;
 		}
 
 		public void action() {
@@ -338,16 +343,21 @@ public class InterfazGestorEstadistica extends Agent {
 			try{
 				getContentManager().fillContent(solicitud, act);
 				solicitud.setProtocol(FIPANames.InteractionProtocol.FIPA_REQUEST);
+                addBehaviour(new RecibeMensajes(myAgent, tes));
 				send(solicitud);
 			}catch (Exception exc) { exc.printStackTrace();	}
 			System.out.println("{INTERFAZ} Mensaje enviado - eliminar practica");
 		}
 	}
 
+	// ELIMINAR DATOS DE ALUMNOS
 	public class EliminarAlumno extends OneShotBehaviour {
 
-		public EliminarAlumno(Agent _a) {
+		private Testigo tes;
+
+		public EliminarAlumno(Agent _a, Testigo tes1) {
 			super(_a);
+            this.tes = tes1;
 		}
 
 		public void action() {
@@ -365,16 +375,21 @@ public class InterfazGestorEstadistica extends Agent {
 			try{
 				getContentManager().fillContent(solicitud, act);
 				solicitud.setProtocol(FIPANames.InteractionProtocol.FIPA_REQUEST);
+                addBehaviour(new RecibeMensajes(myAgent, tes));
 				send(solicitud);
 			}catch (Exception exc) { exc.printStackTrace();	}
 			System.out.println("{INTERFAZ} Eliminar alumno");
 		}
 	}
 
+	// ELIMINAR DATOS ESTADISTICOS
 	public class EliminarDatos extends OneShotBehaviour {
 
-		public EliminarDatos(Agent _a) {
+		private Testigo tes;
+
+		public EliminarDatos(Agent _a, Testigo tes1) {
 			super(_a);
+            this.tes = tes1;
 		}
 
 		public void action() {
@@ -395,6 +410,7 @@ public class InterfazGestorEstadistica extends Agent {
 			try{
 				getContentManager().fillContent(solicitud, act);
 				solicitud.setProtocol(FIPANames.InteractionProtocol.FIPA_REQUEST);
+                addBehaviour(new RecibeMensajes(myAgent, tes));
 				send(solicitud);
 			}catch (Exception exc) { exc.printStackTrace();	}
         	System.out.println("{INTERFAZ} Mensaje enviado - Eliminar datos");
@@ -402,11 +418,14 @@ public class InterfazGestorEstadistica extends Agent {
 		}
 	}
 
+	// CARGAR DATOS ALUMNOS
 	public class CargarAlumno extends OneShotBehaviour {
+		private Testigo tes;
 
-		public CargarAlumno(Agent _a) {
+		public CargarAlumno(Agent _a, Testigo tes1) {
 			super(_a);
-		}
+            this.tes = tes1;
+		}	
 
 		public void action() {
 			//try {
@@ -415,7 +434,6 @@ public class InterfazGestorEstadistica extends Agent {
 			solicitud.addReceiver(receiver);
 			solicitud.setLanguage(codec.getName());
 			solicitud.setOntology(pacaOntology.NAME);
-        	System.out.println("{INTERFAZ} Cargar alumno");
 
 			EliminarDatosBBDD e = new EliminarDatosBBDD();
 			e.setTipo("CARGARALUMNOS");
@@ -425,17 +443,21 @@ public class InterfazGestorEstadistica extends Agent {
 			try{
 				getContentManager().fillContent(solicitud, act);
 				solicitud.setProtocol(FIPANames.InteractionProtocol.FIPA_REQUEST);
+                addBehaviour(new RecibeMensajes(myAgent, tes));
 				send(solicitud);
 			}catch (Exception exc) { exc.printStackTrace();	}
-        	System.out.println("{INTERFAZ} Mensaje enviado - Cargar alumnos");
 		}
 	}
 
+	// CARGAR ESTRUCTURA PRACTICAS
 	public class CargarPractica extends OneShotBehaviour {
+		
+		private Testigo tes;
 
-		public CargarPractica(Agent _a) {
+		public CargarPractica(Agent _a, Testigo tes1) {
 			super(_a);
-		}
+            this.tes = tes1;
+		}	
 
 		public void action() {
 			AID receiver = new AID(gestorEstadisticas, AID.ISLOCALNAME);
@@ -443,7 +465,6 @@ public class InterfazGestorEstadistica extends Agent {
 			solicitud.addReceiver(receiver);
 			solicitud.setLanguage(codec.getName());
 			solicitud.setOntology(pacaOntology.NAME);
-        	System.out.println("{INTERFAZ} Cargar practica");
 
 			EliminarDatosBBDD e = new EliminarDatosBBDD();
 			e.setTipo("CARGARPRACTICAS");
@@ -453,12 +474,13 @@ public class InterfazGestorEstadistica extends Agent {
 			try{
 				getContentManager().fillContent(solicitud, act);
 				solicitud.setProtocol(FIPANames.InteractionProtocol.FIPA_REQUEST);
+                addBehaviour(new RecibeMensajes(myAgent, tes));
 				send(solicitud);
 			}catch (Exception exc) { exc.printStackTrace();	}
-        	System.out.println("{INTERFAZ} Mensaje enviado - Cargar practica");
 		}
 	}
 
+	// RECIBE MENSAJES
 	public class RecibeMensajes extends Behaviour {
 
 		private Resultado tes1;
@@ -472,21 +494,24 @@ public class InterfazGestorEstadistica extends Agent {
 		public void action() {
 			ACLMessage respuesta = receive();
 			if (respuesta != null) {
-				try {
-					if (respuesta.getPerformative() == ACLMessage.AGREE) {
-
-						addBehaviour(new RecibeMensajes(myAgent, tes1));
+				//				try {
+				if (respuesta.getPerformative() == ACLMessage.AGREE) {
+					System.out.println ("INFORM");
+					addBehaviour(new RecibeMensajes(myAgent, tes1));
+					finalizado = true;
+				} else {
+					if (respuesta.getPerformative() == ACLMessage.FAILURE) {
+						tes1.setResultadoB(false);
 						finalizado = true;
 					} else {
-						if (respuesta.getPerformative() == ACLMessage.FAILURE) {
-
-							tes1.setResultadoB(false);
+						if (respuesta.getPerformative() == ACLMessage.INFORM) {
+							System.out.println ("INFORM");
+							tes1.setResultadoB(true);
 							finalizado = true;
-						} else {
-							if (respuesta.getContent().equalsIgnoreCase("DONE")) {
-								tes1.setResultadoB(true);
-								finalizado = true;
-							} else {
+						}
+					}
+				}
+							/*else {
 								AbsContentElement listaAbs = null;
 								listaAbs = getContentManager().extractAbsContent(respuesta);
 								String tipoMensaje = listaAbs.getTypeName();
@@ -511,7 +536,7 @@ public class InterfazGestorEstadistica extends Agent {
 				} catch (OntologyException e) {
 					// TODO Auto-generated catch block
 					e.printStackTrace();
-				}
+				}*/
 			} else {
 				block();
 			}
