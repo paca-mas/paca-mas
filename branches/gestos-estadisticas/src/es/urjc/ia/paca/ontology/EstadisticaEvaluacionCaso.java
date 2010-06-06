@@ -1,15 +1,25 @@
 package es.urjc.ia.paca.ontology;
 
-import jade.content.Predicate;
+import jade.content.Concept;
 
-public class EstadisticaEvaluacionCaso implements Predicate{
+public class EstadisticaEvaluacionCaso implements Concept {
 
 	private Alumno alumno;
 	private Practica practica;
 	private Test test;
 	private Caso caso;
 	private String evaluacion;
-	
+
+	  //Constructor de la clase
+    public EstadisticaEvaluacionCaso(Alumno alumno, Practica practica,
+    		Test test, Caso caso, String evaluacion){
+    	this.alumno =  alumno;
+    	this.practica = practica;
+    	this.test = test;
+    	this.caso = caso;
+    	this.evaluacion = evaluacion;
+    }
+    
 	public void setAlumno(Alumno alumno){
 		this.alumno = alumno;
 	}
