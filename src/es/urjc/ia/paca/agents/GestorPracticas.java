@@ -2,7 +2,6 @@ package es.urjc.ia.paca.agents;
 
 import es.urjc.ia.baseDatos.Datos;
 import es.urjc.ia.paca.ontology.*;
-import es.urjc.ia.paca.ontology.FicheroIN;
 import jade.content.ContentManager;
 import jade.content.lang.Codec;
 import jade.content.lang.Codec.CodecException;
@@ -59,9 +58,7 @@ public class GestorPracticas extends Agent {
 
                 if (msg != null) {
                     ACLMessage reply = msg.createReply();
-
                     if (msg.getPerformative() == ACLMessage.QUERY_REF) {
-
                         //ATENDEMOS LAS PETICIONES DEL CORRECTOR
                         AbsContentElement l_in = null;
                         l_in = getContentManager().extractAbsContent(msg);
@@ -80,7 +77,6 @@ public class GestorPracticas extends Agent {
 
                             //QUERY-REF DEL INTERFAZ
                             if (requestedInfoName2.equals(pacaOntology.CORRIGE)) {
-
                                 addBehaviour(new PracCorrecBehaviour(this.myAgent, reply, allPred));
                             } else {
                                 AndBuilder predicado = new AndBuilder();
@@ -132,7 +128,6 @@ public class GestorPracticas extends Agent {
 
                     } else {
                         if (msg.getPerformative() == ACLMessage.REQUEST) {
-
                             ContentElement p = manager.extractContent(msg);
 
 
@@ -715,6 +710,7 @@ public class GestorPracticas extends Agent {
 
                 //Si no hay practicas en la base de datos envia esta practica
                 if (lpractn.isEmpty()) {
+                	System.out.println("No hay practicas");
                     Practica p = new Practica("No hay practicas");
                     AbsConcept elem;
                     try {
@@ -743,6 +739,7 @@ public class GestorPracticas extends Agent {
                 equalPred.set(SLVocabulary.EQUALS_RIGHT, absPracticas);
                 //Mandamos el predicado al interfaz
                 try {
+                	System.out.println("Enviar mensaje");
                     getContentManager().fillContent(resp1, equalPred);
                 } catch (CodecException e) {
                     // TODO Auto-generated catch block

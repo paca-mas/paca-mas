@@ -6,18 +6,11 @@ package es.urjc.ia.paca.agents;
 
 //Paquetes JAVA.
 
-import jade.content.abs.AbsAggregate;
-import jade.content.abs.AbsConcept;
 import jade.content.abs.AbsContentElement;
-import jade.content.abs.AbsIRE;
-import jade.content.abs.AbsPredicate;
-import jade.content.abs.AbsVariable;
 import jade.content.lang.Codec;
 import jade.content.lang.Codec.CodecException;
 import jade.content.lang.sl.SL1Vocabulary;
-import jade.content.lang.sl.SL2Vocabulary;
 import jade.content.lang.sl.SLCodec;
-import jade.content.lang.sl.SLVocabulary;
 import jade.content.onto.Ontology;
 import jade.content.onto.OntologyException;
 import jade.content.onto.basic.Action;
@@ -27,54 +20,20 @@ import jade.core.behaviours.Behaviour;
 import jade.core.behaviours.OneShotBehaviour;
 import jade.domain.FIPANames;
 import jade.lang.acl.ACLMessage;
-
-
-import java.util.logging.Level;
-import java.util.logging.Logger;
-
-import es.urjc.ia.paca.ontology.EliminarDatosBBDD;
-import es.urjc.ia.paca.ontology.Corrector;
-import es.urjc.ia.paca.ontology.Corrige;
-import es.urjc.ia.paca.ontology.Practica;
-import es.urjc.ia.paca.ontology.Test;
-import es.urjc.ia.paca.ontology.pacaOntology;
-import es.urjc.ia.paca.util.AndBuilder;
-import es.urjc.ia.paca.util.Resultado;
-import es.urjc.ia.paca.util.Testigo;
-import es.urjc.ia.paca.agents.InterfazGestor.RecibeMensajes;
 import es.urjc.ia.paca.auth.ontology.Autenticado;
 import es.urjc.ia.paca.auth.ontology.AuthOntology;
 import es.urjc.ia.paca.auth.ontology.Usuario;
 import es.urjc.ia.paca.ontology.Caso;
-import es.urjc.ia.paca.ontology.CopiaCaso;
-import es.urjc.ia.paca.ontology.CopiaFicheroAlumno;
-import es.urjc.ia.paca.ontology.CopiaFicheroIN;
-import es.urjc.ia.paca.ontology.CopiaFicheroOUT;
-import es.urjc.ia.paca.ontology.CopiaFicheroPropio;
-import es.urjc.ia.paca.ontology.CopiaTest;
-import es.urjc.ia.paca.ontology.CreaCaso;
-import es.urjc.ia.paca.ontology.CreaFicheroAlumno;
-import es.urjc.ia.paca.ontology.CreaFicheroIN;
-import es.urjc.ia.paca.ontology.CreaFicheroOUT;
-import es.urjc.ia.paca.ontology.CreaFicheroPropio;
-import es.urjc.ia.paca.ontology.CreaPractica;
-import es.urjc.ia.paca.ontology.CreaTest;
-import es.urjc.ia.paca.ontology.EliminaCaso;
-import es.urjc.ia.paca.ontology.EliminaFicheroAlumno;
-import es.urjc.ia.paca.ontology.EliminaFicheroIN;
-import es.urjc.ia.paca.ontology.EliminaFicheroOUT;
-import es.urjc.ia.paca.ontology.EliminaFicheroPropio;
-import es.urjc.ia.paca.ontology.EliminaPractica;
-import es.urjc.ia.paca.ontology.EliminaTest;
+import es.urjc.ia.paca.ontology.ModificarDatosBBDD;
 import es.urjc.ia.paca.ontology.FicheroAlumno;
 import es.urjc.ia.paca.ontology.FicheroIN;
 import es.urjc.ia.paca.ontology.FicheroOUT;
 import es.urjc.ia.paca.ontology.FicheroPropio;
-import es.urjc.ia.paca.ontology.ModificaPractica;
-import es.urjc.ia.paca.ontology.ModificaFicheroPropio;
-import es.urjc.ia.paca.ontology.ModificaTest;
-import es.urjc.ia.paca.ontology.ModificaFicheroIN;
-import es.urjc.ia.paca.ontology.ModificaFicheroOUT;
+import es.urjc.ia.paca.ontology.Practica;
+import es.urjc.ia.paca.ontology.Test;
+import es.urjc.ia.paca.ontology.pacaOntology;
+import es.urjc.ia.paca.util.Resultado;
+import es.urjc.ia.paca.util.Testigo;
 
 /**
  *
@@ -334,7 +293,7 @@ public class InterfazGestorEstadistica extends Agent {
 			solicitud.setOntology(pacaOntology.NAME);
 			System.out.println("{INTERFAZ} Eliminar practica");
 
-			EliminarDatosBBDD e = new EliminarDatosBBDD();
+			ModificarDatosBBDD e = new ModificarDatosBBDD();
 			e.setTipo("BORRARPRACTICAS");
 
 			Action act = new Action();
@@ -366,7 +325,7 @@ public class InterfazGestorEstadistica extends Agent {
 			solicitud.addReceiver(receiver);
 			solicitud.setLanguage(codec.getName());
 			solicitud.setOntology(pacaOntology.NAME);
-			EliminarDatosBBDD e = new EliminarDatosBBDD();
+			ModificarDatosBBDD e = new ModificarDatosBBDD();
 			e.setTipo("BORRARALUMNOS");
 
 			Action act = new Action();
@@ -401,7 +360,7 @@ public class InterfazGestorEstadistica extends Agent {
 			solicitud.setOntology(pacaOntology.NAME);
         	System.out.println("{INTERFAZ} Eliminar datos");
 
-			EliminarDatosBBDD e = new EliminarDatosBBDD();
+			ModificarDatosBBDD e = new ModificarDatosBBDD();
 			e.setTipo("BORRARDATOS");
 
 			Action act = new Action();
@@ -435,7 +394,7 @@ public class InterfazGestorEstadistica extends Agent {
 			solicitud.setLanguage(codec.getName());
 			solicitud.setOntology(pacaOntology.NAME);
 
-			EliminarDatosBBDD e = new EliminarDatosBBDD();
+			ModificarDatosBBDD e = new ModificarDatosBBDD();
 			e.setTipo("CARGARALUMNOS");
 			Action act = new Action();
 			act.setAction(e);
@@ -466,7 +425,7 @@ public class InterfazGestorEstadistica extends Agent {
 			solicitud.setLanguage(codec.getName());
 			solicitud.setOntology(pacaOntology.NAME);
 
-			EliminarDatosBBDD e = new EliminarDatosBBDD();
+			ModificarDatosBBDD e = new ModificarDatosBBDD();
 			e.setTipo("CARGARPRACTICAS");
 			Action act = new Action();
 			act.setAction(e);
@@ -474,7 +433,8 @@ public class InterfazGestorEstadistica extends Agent {
 			try{
 				getContentManager().fillContent(solicitud, act);
 				solicitud.setProtocol(FIPANames.InteractionProtocol.FIPA_REQUEST);
-                addBehaviour(new RecibeMensajes(myAgent, tes));
+                System.out.println("Enviar mensaje");
+				addBehaviour(new RecibeMensajes(myAgent, tes));
 				send(solicitud);
 			}catch (Exception exc) { exc.printStackTrace();	}
 		}
@@ -511,8 +471,33 @@ public class InterfazGestorEstadistica extends Agent {
 						}
 					}
 				}
-							/*else {
-								AbsContentElement listaAbs = null;
+			}
+							/*	AbsContentElement listaAbs = null;
+							listaAbs = getContentManager().extractAbsContent(respuesta);
+							String tipoMensaje = listaAbs.getTypeName();
+							if (tipoMensaje.equals("autenticado") | tipoMensaje.equals("not")) {
+								addBehaviour(new RecibeAutenticacion(myAgent, tes1, listaAbs));
+								finalizado = true;
+							} else if (tipoMensaje.equals("=")) {
+								AbsAggregate listaElementos = (AbsAggregate) listaAbs.getAbsObject(SLVocabulary.EQUALS_RIGHT);
+
+								//Cogemos el primer elemento de la lista
+								AbsConcept primerElem = (AbsConcept) listaElementos.get(0);
+
+								//Miramos el tipo del primer elemento
+								String tipo = primerElem.getTypeName();
+							}
+						}
+					}
+				}
+					
+						}	
+					}
+				}
+			}else {
+			
+			}
+			/*	AbsContentElement listaAbs = null;
 								listaAbs = getContentManager().extractAbsContent(respuesta);
 								String tipoMensaje = listaAbs.getTypeName();
 								if (tipoMensaje.equals("autenticado") | tipoMensaje.equals("not")) {
@@ -536,11 +521,11 @@ public class InterfazGestorEstadistica extends Agent {
 				} catch (OntologyException e) {
 					// TODO Auto-generated catch block
 					e.printStackTrace();
-				}*/
+				}
 			} else {
 				block();
 			}
-
+*/
 		}
 
 		@Override

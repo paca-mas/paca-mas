@@ -319,7 +319,7 @@ public class Corrector extends Agent {
 
 
                 addBehaviour(new PedirFicherosPropiosBehaviour(this.myAgent, Te, pract, al, quien1));
-                CrearCarpetas(pract, FP, Te, quien1);
+                //CrearCarpetas(pract, FP, Te, quien1);
 
                 //A partir de aqui ya no seria necesario nada, pero lo dejo para que termine bien el programa
                 EvaluacionPractica evaP = EnvioCorreccionAlumno(pract, FP, Te, al, quien1);
@@ -363,8 +363,8 @@ public class Corrector extends Agent {
                 getContentManager().fillContent(respuesta, qrr);
                 myAgent.send(respuesta);
 
-            } catch (IOException ex) {
-                Logger.getLogger(Corrector.class.getName()).log(Level.SEVERE, null, ex);
+         //   } catch (IOException ex) {
+           //     Logger.getLogger(Corrector.class.getName()).log(Level.SEVERE, null, ex);
             } catch (CodecException e) {
                 // TODO Auto-generated catch block
                 e.printStackTrace();
