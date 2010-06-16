@@ -18,12 +18,21 @@
 
 <jsp:useBean id="InterfazGestorEstadistica" class="es.urjc.ia.paca.util.AgentBeanGestorEstadistica" scope="session"/>
 
-
 <html xmlns="http://www.w3.org/1999/xhtml">
 <head>
+<meta http-equiv="content-type" content="text/html; charset=utf-8" />
+<title>Generacion Web Estadisticas</title>
+<meta name="keywords" content="" />
+<meta name="description" content="" />
+<link href="<%=Configuracion.Css%>" rel="stylesheet" type="text/css" media="screen" />
+
 <%
-	//*****************************************************************************************
-// parametros : user (ALUMNO) list (PARAMETRO ALUMNOS)
+//*****************************************************************************************
+//parametros : 
+//user (ALUMNO) 
+//list (lista de usuarios) 
+//practica
+//boolean (borrarAlumnos,borrarPractica, borrarDatos, cargarPractica, cargarDatos)
 //*****************************************************************************************
 	// Parametro user
 	String idUsuario = "";
@@ -52,69 +61,44 @@
 	if(request.getParameter("practica")!=null) {
 		id_practica = Integer.parseInt(request.getParameter("practica")); 
 	}
-	
-	// Parametro borrar/cargar
+	// Parametro boolean
 	String b = "";
 	if(request.getParameter("boolean")!=null) {
 		b = request.getParameter("boolean"); 
 	}	
 	
+	// Si el parametro boolean no es vacio, habrá que avisar al Agente Interfaz
 	if (b.equals("borrarAlumnos")) {
-		Testigo resultado2 = new Testigo();
-		resultado2.setOperacion(Testigo.Operaciones.eliminarAlumno);
-		InterfazGestorEstadistica.sendTestigo(resultado2);
+		Testigo resultado1 = new Testigo();
+		resultado1.setOperacion(Testigo.Operaciones.eliminarAlumno);
+		InterfazGestorEstadistica.sendTestigo(resultado1);
 	}else{
 		if (b.equals("borrarPracticas")){
-		Testigo resultado2 = new Testigo();
-		resultado2.setOperacion(Testigo.Operaciones.eliminarPractica);
-		InterfazGestorEstadistica.sendTestigo(resultado2);
-		}
-	}
-%>
-<script type="text/javascript">
-	function redirigir(idUser) {
-		var checkboxes = document.getElementById("form1").check; //Array que contiene los checkbox
-		var valores = "";
-		var idUser = <%=idUsuario%>;
-
-		for (var x=0; x < checkboxes.length; x++) {
-			if (checkboxes[x].checked) {
-				if (valores == "") {
-					valores = checkboxes[x].value;
-				} else {   
-					valores = valores + "," + checkboxes[x].value;
+			Testigo resultado2 = new Testigo();
+			resultado2.setOperacion(Testigo.Operaciones.eliminarPractica);
+			InterfazGestorEstadistica.sendTestigo(resultado2);
+		}else{
+			if (b.equals("cargarAlumnos")) {
+				Testigo resultado3 = new Testigo();
+				resultado3.setOperacion(Testigo.Operaciones.cargarAlumno);
+				InterfazGestorEstadistica.sendTestigo(resultado3);
+			} else {
+				if (b.equals("cargarPracticas")) {
+					System.out.println("cargarPracticas");
+					Testigo resultado4 = new Testigo();
+					resultado4.setOperacion(Testigo.Operaciones.cargarPractica);
+					InterfazGestorEstadistica.sendTestigo(resultado4);
+				}else{
+					if (b.equals("borrarDatos")) {
+						Testigo resultado5 = new Testigo();
+						resultado5.setOperacion(Testigo.Operaciones.eliminarDatos);
+						InterfazGestorEstadistica.sendTestigo(resultado5);
+					}
 				}
 			}
 		}
-		window.location="Entrega.jsp?user=" + idUser +"&list=" + valores ;
- 	}
-	function BorrarDatosAlumnos() {
-		var confirmacion = confirm("¿Esta seguro de que desea eliminar los datos de los Alumnos)");	
-		if (confirmacion == true) {
-				alert("Hecho. Se han borrado los datos de los alumnos");
-		}	
 	}
-	 
-	function BorrarDatosPracticas() {
-		var confirmacion = confirm("¿Esta seguro de que desea eliminar los datos de los Alumnos)");	
-		if (confirmacion == true) {
-				alert("Hecho. Se han borrado los datos de las practicas");
-		}	
-	 }
-	function CargarDatosPracticas() {
-		var confirmacion = confirm("¿Esta seguro de que desea cargar los datos de las practicas?");	
-		if (confirmacion == true) {
-				alert("Hecho. Se han cargado los datos de las practicas");
-		}	
-	 }	
-	 function CargarDatosAlumnos() {
-			var confirmacion = confirm("¿Esta seguro de que desea cargar los datos de los alumnos?");	
-			if (confirmacion == true) {
-					alert("Hecho. Se han cargado los datos de los alumnos");
-			}	
-	 }
-</script>
-<%
+	
 	// Ruta
 	String dirLeer = LeerHtml.CrearRutaCompleta(idUsuario + "/" + id_practica);
 	String dir = LeerHtml.CrearRutaRelativa(idUsuario + "/" + id_practica);
@@ -126,85 +110,227 @@
 	// Lista String
 	List<String> imagenes = new ArrayList<String>();
 %>
-<meta http-equiv="content-type" content="text/html; charset=utf-8" />
-<title>Generacion Web de Informes</title>
-<meta name="keywords" content="" />
-<meta name="description" content="" />
-<link href="<%=Configuracion.Css%>" rel="stylesheet" type="text/css"
-	media="screen" />
+<script type="text/javascript">
+
+	function redirigir(idUser) {
+		var checkboxes = document.getElementById("formCheckAlumnos").check; //Array que contiene los checkbox
+		var idUser = <%=idUsuario%>;
+		var valores = <%=idUsuario%>;
+
+		for (var x=0; x < checkboxes.length; x++) {
+			if (checkboxes[x].checked) {
+				if (valores == "") {
+					valores = checkboxes[x].value;
+				} else {   
+					valores = valores + "," + checkboxes[x].value;
+				}
+			}
+		}
+		if (valores==null){
+			valores=idUser;
+		}
+		window.location="LanzarEntregaPractica.jsp?user=" + idUser +"&list=" + valores ;
+ 	}
+
+	function BorrarDatosAlumnos() {
+		var checkboxes = document.getElementById("formCheckAlumnos").check; //Array que contiene los checkbox
+		var idUser = <%=idUsuario%>;
+		var valores = <%=idUsuario%>;
+
+		for (var x=0; x < checkboxes.length; x++) {
+			if (checkboxes[x].checked) {
+				if (valores == "") {
+					valores = checkboxes[x].value;
+				} else {   
+					valores = valores + "," + checkboxes[x].value;
+				}
+			}
+		}
+		
+		if (valores==null){
+			valores=idUser;
+		}
+		var confirmacion = confirm("¿Esta seguro de que desea eliminar los datos de los Alumnos");	
+		if (confirmacion == true) {
+				alert("Hecho. Se han borrado los datos de los alumnos");
+				window.location="LanzarEntregaPractica.jsp?user=" + idUser + "&list" + valores + "&boolean=borrarAlumnos";
+		}else{
+			alert("La operación se ha cancelado a petición del usuario");
+			window.location="LanzarEntregaPractica.jsp?user=" + idUser + "&list" + valores;
+		}	
+	}
+
+	function BorrarDatosPracticas() {
+		var checkboxes = document.getElementById("formCheckAlumnos").check; //Array que contiene los checkbox
+		var idUser = <%=idUsuario%>;
+		var valores = <%=idUsuario%>;
+
+		for (var x=0; x < checkboxes.length; x++) {
+			if (checkboxes[x].checked) {
+				if (valores == "") {
+					valores = checkboxes[x].value;
+				} else {   
+					valores = valores + "," + checkboxes[x].value;
+				}
+			}
+		}
+		
+		if (valores==null){
+			valores=idUser;
+		}
+		
+		var confirmacion = confirm("¿Esta seguro de que desea eliminar los datos de los Alumnos)");	
+		if (confirmacion == true) {
+				alert("Hecho. Se han borrado los datos de los alumnos");
+				window.location="LanzarEntregaPractica.jsp?user=" + idUser + "&list" + valores + "&boolean=borrarPracticas";
+		}else{
+			alert("La operación se ha cancelado a petición del usuario");
+			window.location="LanzarEntregaPractica.jsp?user=" + idUser + "&list" + valores;
+		}	
+	}
+
+	function BorrarDatosEstadisticas() {
+		var checkboxes = document.getElementById("formCheckAlumnos").check; //Array que contiene los checkbox
+		var idUser = <%=idUsuario%>;
+		var valores = <%=idUsuario%>;
+
+		for (var x=0; x < checkboxes.length; x++) {
+			if (checkboxes[x].checked) {
+				if (valores == "") {
+					valores = checkboxes[x].value;
+				} else {   
+					valores = valores + "," + checkboxes[x].value;
+				}
+			}
+		}
+		
+		if (valores==null){
+			valores=idUser;
+		}
+		
+		var confirmacion = confirm("¿Esta seguro de que desea eliminar los datos Estadisticos");	
+		if (confirmacion == true) {
+			alert("Hecho. Se han borrado los datos de los alumnos");
+			window.location="LanzarEntregaPractica.jsp?user=" + idUser + "&list" + valores + "&boolean=borrarDatos";
+		}else{
+			alert("La operación se ha cancelado a petición del usuario");
+			window.location="LanzarEntregaPractica.jsp?user=" + idUser + "&list" + valores;
+		}	
+	}
+	
+	function CargarDatosAlumnos() {
+		var checkboxes = document.getElementById("formCheckAlumnos").check; //Array que contiene los checkbox
+		var idUser = <%=idUsuario%>;
+		var valores = <%=idUsuario%>;
+
+		for (var x=0; x < checkboxes.length; x++) {
+			if (checkboxes[x].checked) {
+				if (valores == "") {
+					valores = checkboxes[x].value;
+				} else {   
+					valores = valores + "," + checkboxes[x].value;
+				}
+			}
+		}
+		
+		if (valores==null){
+			valores=idUser;
+		}
+		
+		var confirmacion = confirm("¿Esta seguro de que desea cargar datos alumnos");	
+		if (confirmacion == true) {
+			alert("Hecho. Se han borrado los datos de los alumnos");
+			window.location="LanzarEntregaPractica.jsp?user=" + idUser + "&list" + valores + "&boolean=cargarAlumnos";
+		}else{
+			alert("La operación se ha cancelado a petición del usuario");
+			window.location="LanzarEntregaPractica.jsp?user=" + idUser + "&list" + valores;
+		}
+	}
+
+	function CargarDatosPracticas() {
+		var checkboxes = document.getElementById("formCheckAlumnos").check; //Array que contiene los checkbox
+		var idUser = <%=idUsuario%>;
+		var valores = <%=idUsuario%>;
+
+		for (var x=0; x < checkboxes.length; x++) {
+			if (checkboxes[x].checked) {
+				if (valores == "") {
+					valores = checkboxes[x].value;
+				} else {   
+					valores = valores + "," + checkboxes[x].value;
+				}
+			}
+		}
+		
+		if (valores==null){
+			valores=idUser;
+		}
+		
+		var confirmacion = confirm("¿Esta seguro de que desea eliminar los datos Estadisticos");	
+		if (confirmacion == true) {
+			alert("Hecho. Se han borrado los datos de los alumnos");
+			window.location="LanzarEntregaPractica.jsp?user=" + idUser + "&list" + valores + "&boolean=cargarPracticas";
+		}else{
+			alert("La operación se ha cancelado a petición del usuario");
+			window.location="LanzarEntregaPractica.jsp?user=" + idUser + "&list" + valores;
+		}	
+
+	}
+	
+</script>
 </head>
+
 <body>
 <div id="logo">
-<h1>ESTRUCTURA DE LOS DATOS Y DE LA INFORMACION</h1>
-<p>&nbsp;</p>
-<p><em>
-http://zenon.etsii.urjc.es/grupo/docencia/edi/Gestion09-10/doku.php</em></p>
-</div>
-<!-- end #logo -->
+	<h1>ESTRUCTURA DE LOS DATOS Y DE LA INFORMACION</h1>
+	<p>&nbsp;</p>
+	<p><em>http://zenon.etsii.urjc.es/grupo/docencia/edi/Gestion09-10/doku.php</em></p>
+</div><!-- end #logo -->
 
 <div id="header">
 <div id="menu">
 <ul>
-	<li><a
-		href="<%=Configuracion.Jsp_Inicio%>?user=<%=idUsuario%>&list=<%=idAlumnos%>">inicio</a></li>
-	<li><a
-		href="<%=Configuracion.Jsp_Evaluacion%>?user=<%=idUsuario%>&list=<%=idAlumnos%>">evaluacion</a></li>
-	<li><a
-		href="<%=Configuracion.Jsp_Entrega%>?user=<%=idUsuario%>&list=<%=idAlumnos%>">entrega</a></li>
-	<li><a
-		href="<%=Configuracion.Jsp_Grupo%>?user=<%=idUsuario%>&list=<%=idAlumnos%>">grupo</a></li>
+	<li><a href="<%=Configuracion.Jsp_Inicio%>?user=<%=idUsuario%>&list=<%=idAlumnos%>">inicio</a></li>
+	<li><a href="<%=Configuracion.Jsp_Evaluacion%>?user=<%=idUsuario%>&list=<%=idAlumnos%>">evaluacion</a></li>
+	<li><a href="<%=Configuracion.Jsp_Entrega%>?user=<%=idUsuario%>&list=<%=idAlumnos%>">entrega</a></li>
+	<li><a href="<%=Configuracion.Jsp_Grupo%>?user=<%=idUsuario%>&list=<%=idAlumnos%>">grupo</a></li>
 </ul>
-</div>
-<!-- end #menu -->
+</div><!-- end #menu -->
 
 
 <div id="search">
-<%
-				out.println(nombre_usuario);
-			%>
-</div>
-<!-- end #search --></div>
-<!-- end #header -->
-<!-- end #header-wrapper -->
+<%out.println(nombre_usuario);%>
+</div><!-- end #search -->
+
+</div><!-- end #header -->
 
 <div id="page">
 <div id="content">
 <div class="post">
-<div class="title">Estadistica de las Entregas</div>
-<div class="title">Practica <%=id_practica%></div>
+<div class="title">Estadistica de las Entregas</div><!-- end #title -->
+<div class="title">Practica <%=id_practica%></div><!-- end #title -->
 <div class="entry">
-<%
-    			 	// Lanzar Informe
-					LanzarInforme.InformePracticaEntrega(idUsuario,p1,p2,p3);
-					imagenes = LeerHtml.LeerImagenes(dirLeer, Configuracion.N_Informe_Entrega);%>
-<table>
+	<%// Lanzar Informe
+	LanzarInforme.InformePracticaEntrega(idUsuario,p1,p2,p3);
+	imagenes = LeerHtml.LeerImagenes(dirLeer, Configuracion.N_Informe_Entrega);%>
+	<table>
 	<%for (String img:imagenes){
-    			    	String ruta_img = dirLeer + img;%>
-	<tr>
-		<td><img src="<%=ruta_img%>"></img></td>
-	</tr>
+    	String ruta_img = dirLeer + img;%>
+		<tr><td><img src="<%=ruta_img%>"></img></td></tr>
 	<%}%>
-</table>
-<div class="comment">
-<table>
-	<tr>
-		<td></td>
-	</tr>
-	<tr>
-		<td></td>
-	</tr>
-	<tr>
-		<td>Comentarios:</td>
-	</tr>
-	<tr>
-		<td><%=ComentariosGraficos.N_Informe_Entrega%></td>
-	</tr>
-</table>
-</div>
-</div>
-<!-- end #entry --></div>
-<!-- end #post --></div>
-<!-- end #content -->
+	</table>
+	
+	<div class="comment">
+	<table>
+		<tr><td></td></tr>
+		<tr><td></td></tr>
+		<tr><td>Comentarios:</td></tr>
+		<tr><td><%=ComentariosGraficos.N_Informe_Entrega%></td></tr>
+	</table>
+	</div><!-- end #comment -->
+</div><!-- end #entry -->
+</div><!-- end #post -->
+</div><!-- end #content -->
 
 <div id="sidebar">
 <ul>
@@ -212,10 +338,8 @@ http://zenon.etsii.urjc.es/grupo/docencia/edi/Gestion09-10/doku.php</em></p>
 	<h2>Estadistica de Usuarios</h2>
 	<ul>
 		<%List<String> ListaPractica = ObtenerDatos.ListaPracticas();
-				for (String practica:ListaPractica){%>
-		<li><a
-			href="<%=Configuracion.Jsp_AlumnosP%>?user=<%=idUsuario%>&list=<%=idAlumnos%>&practica=<%=id_practica%>">
-		<%out.println("Practica "+ practica);%> </a></li>
+		for (String practica:ListaPractica){%>
+			<li><a href="<%=Configuracion.Jsp_AlumnosP%>?user=<%=idUsuario%>&list=<%=idAlumnos%>&practica=<%=id_practica%>"><%out.println("Practica "+ practica);%> </a></li>
 		<%}%>
 	</ul>
 	</li>
@@ -226,9 +350,7 @@ http://zenon.etsii.urjc.es/grupo/docencia/edi/Gestion09-10/doku.php</em></p>
 	<h2>Estadistica de Grupo</h2>
 	<ul>
 		<%for (String practica:ListaPractica){%>
-		<li><a
-			href="<%=Configuracion.Jsp_GrupoP%>?user=<%=idUsuario%>&list=<%=idAlumnos%>&practica=<%=id_practica%>">
-		<%out.println("Practica "+ practica);%> </a></li>
+			<li><a href="<%=Configuracion.Jsp_GrupoP%>?user=<%=idUsuario%>&list=<%=idAlumnos%>&practica=<%=id_practica%>"><%out.println("Practica "+ practica);%> </a></li>
 		<%}%>
 	</ul>
 	</li>
@@ -239,28 +361,25 @@ http://zenon.etsii.urjc.es/grupo/docencia/edi/Gestion09-10/doku.php</em></p>
 	<li>
 	<h2>Seleccionar Alumnos</h2>
 	<ul>
-		<li><input type="image"
-			src="<%=Configuracion.DIRIMAGES + "refresh.gif"%>" align=right
-			onClick="redirigir();" /> <br />
+		<li>
+		<input type="image" src="<%=Configuracion.DIRIMAGES + "refresh.gif"%>" align=right onClick="redirigir();"/><br/>
 		</li>
-		<form id="form1" method="post" action="#">
+		<form id="formCheckAlumnos" method="post" action="#">
 		<%List <String> ListaAlumnos = ObtenerDatos.ListaAlumnos(1);
-					int i = 0;
-					int id = 1;
-					while (i < ListaAlumnos.size()) {
-						String nombre = ListaAlumnos.get(i+1) + " "  + ListaAlumnos.get(i+2);%>
-		<li><input type="checkbox" name="check" id="option<%=id%>"
-			value="<%=ListaAlumnos.get(i)%>"
-			<%if ( ListId.contains(ListaAlumnos.get(i)) ){ %> checked <%}%>></input>
-		<label for="option<%=id%>"><%=nombre%></label> <br />
-		</li>
-		<%i = i + 3;
-						id ++;
-					}%>
+		int i = 0;
+		int id = 1;
+		while (i < ListaAlumnos.size()) {
+			String nombre = ListaAlumnos.get(i+1) + " "  + ListaAlumnos.get(i+2);%>
+			<li>
+			<input type="checkbox" name="check" id="option<%=id%>" value="<%=ListaAlumnos.get(i)%>"<%if ( ListId.contains(ListaAlumnos.get(i)) ){ %> checked <%}%>></input>
+			<label for="option<%=id%>"><%=nombre%></label> <br />
+			</li>
+			<%i = i + 3;
+			id ++;
+		}%>
 		</form>
-		<li><input type="image"
-			src="<%=Configuracion.DIRIMAGES + "refresh.gif"%>" align=right
-			onClick="redirigir();" /> <br />
+		<li>
+		<input type="image" src="<%=Configuracion.DIRIMAGES + "refresh.gif"%>" align=right onClick="redirigir();"/><br/>
 		</li>
 	</ul>
 	</li>
@@ -268,25 +387,20 @@ http://zenon.etsii.urjc.es/grupo/docencia/edi/Gestion09-10/doku.php</em></p>
 
 <ul>
 	<li>
-	<h2>Configuracion</h2>
+	<h2>Configuración</h2>
 	<ul>
-		<li>Borrar Datos</li>
-		<li><a href="<%=Configuracion.Jsp_Entrega%>?user=<%=idUsuario%>&list=<%=idAlumnos%>&boolean=borrarAlumnos" 
-		onclick="BorrarDatosAlumnos();"> Borrar datos Alumnos </a></br></li>
-		<li><a href="<%=Configuracion.Jsp_Entrega%>?user=<%=idUsuario%>&list=<%=idAlumnos%>&boolean=borrarPracticas" 
-		onclick="BorrarDatosPracticas();"> Borrar datos Practica </a></br></li>
-		<li>Cargar Datos</li>
-		<li><a href="<%=Configuracion.Jsp_Entrega%>?user=<%=idUsuario%>&list=<%=idAlumnos%>&boolean=cargarAlumnos" 
-		onclick="CargarDatosAlumnos();"> Cargar datos Alumnos </a></br></li>
-		<li><a href="<%=Configuracion.Jsp_Entrega%>?user=<%=idUsuario%>&list=<%=idAlumnos%>&boolean=cargarPracticas" 
-		onclick="CargarDatosPracticas();"> Cargar datos Practica </a></br></li>
+		<li><a href="javascript:BorrarDatosAlumnos();">Borrar Datos Alumnos</a></li>
+		<li><a href="javascript:BorrarDatosPracticas();">Borrar Estructura Prácticas</a></li>
+		<li><a href="javascript:BorrarDatosPracticas();">Borrar Datos Estadisticas</a></li>
+		<li><a href="javascript:CargarDatosAlumnos();">Cargar Datos Alumnos</a></li>
+		<li><a href="javascript:CargarDatosPracticas();">Cargar Estructura Practicas</a></li>
 	</ul>
 	</li>
 </ul>
 <%}%>
-</div>
-<!-- end #sidebar --></div>
-<!-- end #page -->
+
+</div><!-- end #sidebar -->
+</div><!-- end #page -->
 
 </body>
 </html>
