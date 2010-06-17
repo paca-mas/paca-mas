@@ -92,7 +92,7 @@ public class pacaOntology extends Ontology {
     public static final String REGISTRARESTADISTICAENTREGA_PRACTICA = "practica";
     
     // Estadistica - Ordenes BBDD
-    public static final String ELIMINARDATOSBBDD = "EliminarDatosBBDD";
+    public static final String MODIFICARDATOSBBDD = "EliminarDatosBBDD";
     public static final String ELIMINARDATOSBBDDTIPO = "tipo";
     //*********************************************************
     
@@ -504,8 +504,8 @@ public class pacaOntology extends Ontology {
             ps36.add(COPYFICHEROOUT, (ConceptSchema) getSchema(FICHEROOUT));
 
             // *********************************************************************************************
-            add(new AgentActionSchema(ELIMINARDATOSBBDD), EliminarDatosBBDD.class);
-            AgentActionSchema ps37 = (AgentActionSchema) getSchema(ELIMINARDATOSBBDD);
+            add(new AgentActionSchema(MODIFICARDATOSBBDD), ModificarDatosBBDD.class);
+            AgentActionSchema ps37 = (AgentActionSchema) getSchema(MODIFICARDATOSBBDD);
             ps37.add(ELIMINARDATOSBBDDTIPO, (PrimitiveSchema) getSchema(BasicOntology.STRING));
                 
             add(new AgentActionSchema(REGISTRARESTADISTICAEVALUACION), RegistrarEstadisticaEvaluacion.class);
