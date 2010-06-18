@@ -3,6 +3,9 @@ package es.urjc.ia.paca.parser;
 import jade.util.leap.ArrayList;
 import jade.util.leap.List;
 
+import java.io.BufferedWriter;
+import java.io.File;
+import java.io.FileWriter;
 import java.io.IOException;
 
 import javax.xml.parsers.DocumentBuilder;
@@ -21,16 +24,30 @@ public class ProcesarXML {
     public static List listEvaluacion = new ArrayList();
     
     //Parsea el archivo XML
-    public static RegistrarEstadisticaEvaluacion parsearArchivoXml(String fichero) {
+    public static RegistrarEstadisticaEvaluacion parsearArchivoXml(String contenido) {
     	RegistrarEstadisticaEvaluacion e = new RegistrarEstadisticaEvaluacion(null);
+    	String ruta = "c:\\Users\\sandrita\\workspace_PFC\\gestor-estadisticas\\" +
+    			"src\\es\\urjc\\ia\\paca\\parser\\temp.txt";
+    	File fichero = new File (ruta);
+    	if (fichero.exists()){
+    		try {
+				BufferedWriter bw = new BufferedWriter(new FileWriter(fichero));
+				bw.write(contenido);
+				bw.close();
+			} catch (IOException e1) {
+				// TODO Auto-generated catch block
+				e1.printStackTrace();
+			}
+    	}
     	// Obteher el objeto DocumentBuilderFactory
     	DocumentBuilderFactory dbf = DocumentBuilderFactory.newInstance();
     	try {
     		// Usar DocumentBuilderFactory para crear un DocumentBuilder
     		DocumentBuilder db = dbf.newDocumentBuilder();
     		// Parsear a partir de un archivo
-    		dom = db.parse(fichero);
+    		dom = db.parse(ruta);
     		e = parsearDocumento ();
+    		
     	} 
     	catch (ParserConfigurationException pce) {pce.printStackTrace(); } 
     	catch (SAXException se) { se.printStackTrace(); } 
