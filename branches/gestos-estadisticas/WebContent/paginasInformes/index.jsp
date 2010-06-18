@@ -309,8 +309,7 @@
 	}
 	
 </script>
-
-
+</head>
 <body>
 	<div id="logo">
 		<h1>ESTRUCTURA DE LOS DATOS Y DE LA INFORMACION</h1>
@@ -347,7 +346,7 @@
 		</center> 
 	<%} else {
  		// Asignamos el valor al parametro y lo lanzamos
- 		LanzarInforme.InformeEvaluacionResumen(idUsuario, p1);
+ 		LanzarInforme.InformeEvaluacionResumen(idUsuario, auxiliar);
  		// Creamos la ruta para leer el fichero Html
  		imagenes = LeerHtml.LeerImagenes(dirLeer,
  		Configuracion.N_Informe_Usuarios_Resumen);%>
@@ -383,8 +382,8 @@
 	Configuracion.N_Informe_Entrega_Resumen);%>
 	<table>
 	<%// Mostramos las imagens de forma relativa
-	for (String img : imagenes) {
-		String ruta_img = dirLeer + img;%>
+	for (String img : imagenes) {		
+		String ruta_img = dir + img;%>
 		<tr><td><img src="<%=ruta_img%>"></img></td></tr>
 	<%}%>
 	</table>
