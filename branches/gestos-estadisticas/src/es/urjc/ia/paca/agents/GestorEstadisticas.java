@@ -1,11 +1,5 @@
 package es.urjc.ia.paca.agents;
 
-import java.util.ArrayList;
-import java.util.logging.Level;
-import java.util.logging.Logger;
-
-import javax.servlet.http.HttpServletRequest;
-
 import jade.content.ContentManager;
 import jade.content.abs.AbsAgentAction;
 import jade.content.abs.AbsAggregate;
@@ -16,814 +10,673 @@ import jade.content.abs.AbsPredicate;
 import jade.content.abs.AbsVariable;
 import jade.content.lang.Codec;
 import jade.content.lang.Codec.CodecException;
-import jade.content.lang.sl.SL1Vocabulary;
 import jade.content.lang.sl.SL2Vocabulary;
 import jade.content.lang.sl.SLCodec;
 import jade.content.lang.sl.SLVocabulary;
 import jade.content.onto.Ontology;
 import jade.content.onto.OntologyException;
+import jade.content.onto.UngroundedException;
 import jade.content.onto.basic.Done;
 import jade.core.AID;
 import jade.core.Agent;
 import jade.core.behaviours.Behaviour;
 import jade.core.behaviours.CyclicBehaviour;
-import jade.core.behaviours.OneShotBehaviour;
-import jade.domain.FIPANames;
 import jade.lang.acl.ACLMessage;
 import jade.util.leap.List;
-import es.urjc.ia.paca.agents.InterfazGestor.PideTestBeha;
-import es.urjc.ia.paca.agents.InterfazGestor.RecibeAutenticacion;
-import es.urjc.ia.paca.agents.InterfazGestor.RecibeCasosBeha;
-import es.urjc.ia.paca.agents.InterfazGestor.RecibeFicherosAlumnoBeha;
-import es.urjc.ia.paca.agents.InterfazGestor.RecibeFicherosINBeha;
-import es.urjc.ia.paca.agents.InterfazGestor.RecibeFicherosOUTBeha;
-import es.urjc.ia.paca.agents.InterfazGestor.RecibeFicherosPropiosBeha;
-import es.urjc.ia.paca.agents.InterfazGestor.RecibeMensajes;
-import es.urjc.ia.paca.agents.InterfazGestor.RecibePracticasBeh;
-import es.urjc.ia.paca.agents.InterfazGestor.RecibeTestBeha;
-import es.urjc.ia.paca.auth.ontology.Autenticado;
+
+import java.util.ArrayList;
+import java.util.Calendar;
+import java.util.Date;
+
 import es.urjc.ia.paca.auth.ontology.AuthOntology;
-import es.urjc.ia.paca.auth.ontology.Usuario;
 import es.urjc.ia.paca.ontology.Alumno;
 import es.urjc.ia.paca.ontology.Caso;
 import es.urjc.ia.paca.ontology.Corrector;
 import es.urjc.ia.paca.ontology.Corrige;
-import es.urjc.ia.paca.ontology.EliminarDatosBBDD;
 import es.urjc.ia.paca.ontology.EstadisticaEvaluacionCaso;
-import es.urjc.ia.paca.ontology.FicheroAlumno;
-import es.urjc.ia.paca.ontology.FicheroIN;
-import es.urjc.ia.paca.ontology.FicheroOUT;
-import es.urjc.ia.paca.ontology.FicheroPropio;
+import es.urjc.ia.paca.ontology.ModificarDatosBBDD;
 import es.urjc.ia.paca.ontology.Practica;
 import es.urjc.ia.paca.ontology.RegistrarEstadisticaEntrega;
 import es.urjc.ia.paca.ontology.RegistrarEstadisticaEvaluacion;
 import es.urjc.ia.paca.ontology.Test;
 import es.urjc.ia.paca.ontology.pacaOntology;
 import es.urjc.ia.paca.parser.ParsearAlumnos;
-import es.urjc.ia.paca.parser.ProcesarXML;
 import es.urjc.ia.paca.util.AndBuilder;
 import es.urjc.ia.paca.util.Resultado;
-import es.urjc.ia.paca.util.Testigo;
+
+import java.sql.Connection;
+import java.sql.DriverManager;
+import java.sql.SQLException;
+import java.sql.Statement;
+
+import org.w3c.dom.Element;
+
 
 public class GestorEstadisticas extends Agent {
+	
 	private boolean debug = false;
 	private Codec codec = new SLCodec();
 	private ContentManager manager  = (ContentManager)getContentManager();
 	private Ontology ontologia = AuthOntology.getInstance();
 	private Ontology PACAOntology = pacaOntology.getInstance();
 
-	   /**
-    ID del alumno
-     */
-    private String alumnoID;
-    /**
-    Password del Alumno;
-     */
-    private String alumnoPass;
-    /**
-    AID de esta instancia del agente Interfaz.
-     */
-    private AID miAID;
-    /**
-    AID del agente corrector de prï¿½cticas.
-     */
-    private AID correctorAID;
-    /**
-    Variable booleana cerrojo para evitar que ninguna funciï¿½n se ejecute
-    antes de que termine de ejecutarse el mï¿½todo "setup"
-     */
-    private boolean terminadoSetup = false;
-    /**
-    Nombre del agente corrector
-     */
-    //private String AgenteCorrector = "corrector";
-    public AID AgenteCorrector;
-    /**
-    Nombre del agente autenticador
-     */
-    private String AgenteAutenticador = "autenticador";
-    /**
-    El identificador de la ï¿½ltima prï¿½ctica solicitada
-     */
-    public Practica ultimaPractica;
-    public Practica auxUltimaPractica;
-    public Test ultimoTest;
-    public Test auxUltimoTest;
-    /**
-    Array con los nombres de los ficheros de la ï¿½ltima
-    prï¿½ctica solicitada
-     */
-    public String[] ficherosUltimaPractica;
-    /**
-    Array con los identificadores de los test de la ï¿½ltima
-    prï¿½ctica solicitada
-     */
-    public String[] TestUltimaPractica;
-    /**
-    Array con los identificadores de los test posibles para una
-    prï¿½ctica solicitada.
-     */
-    public String[] TestPosiblesPractica;
-    /**Identifica al agente gestor de practicas**/
+   /**Identifica al agente gestor de practicas**/
     public String gestorPracticas = "gestorDePracticas";
-    public Practica[] auxPracticas;
-    public Test[] auxTest;
-    public Caso ultimoCaso;
-
-    /**
-    Constructor.
-     */
-    public GestorEstadisticas() {
-
-        miAID = getAID();
-    }
-    public String usuario;
-    public String passUsu;
-
-    public void setUsuarioAux(String usu) {
-        this.usuario = usu;
-    }
-
-    public void setPasswordAux(String pas) {
-        this.passUsu = pas;
-    }
-
-    public String getUsuarioAux() {
-        return this.usuario;
-    }
-
-    public String getPasswordAux() {
-        return this.passUsu;
-    }
-
-    /**
-    Este mï¿½todo asigna el identificador del alumno que representamos.
-     */
-    public void setAlumnoID(String id) {
-        this.alumnoID = id;
-    }
-
-    /**
-    Este mï¿½todo asigna el password que utilizara el alumno que representamos.
-     */
-    public void setAlumnoPass(String pass) {
-        this.alumnoPass = pass;
-    }
-
-    /**
-    Este mï¿½todo devuelve el identificador del alumno que representamos.
-     */
-    public String getAlumnoID() {
-        return this.alumnoID;
-    }
-
-    /**
-    Este mï¿½todo devuelve el password del alumno que representamos.
-     */
-    public String getAlumnoPass() {
-        return this.alumnoPass;
-    }
     
-    //-------------- INICIO COMPORTAMIENTOS PARA LA AUTENTICACION ----------------------------    
-    public class EnviaAutenticaBehaviour extends OneShotBehaviour {
-
-        private String usuAux;
-        private String passAux;
-        private Resultado tes1;
-
-        public EnviaAutenticaBehaviour(Agent _a, Resultado tes, String usuario, String passw) {
-            super(_a);
-            this.usuAux = usuario;
-            this.passAux = passw;
-            this.tes1 = tes;
-        }
-
-        public void action() {
-            ACLMessage solicitud = new ACLMessage(ACLMessage.QUERY_IF);
-            solicitud.setLanguage(codec.getName());
-            solicitud.setOntology(AuthOntology.ONTOLOGY_NAME);
-            solicitud.addReceiver(new AID(AgenteAutenticador, AID.ISLOCALNAME));
-
-            // Creamos el predicado.
-            Autenticado aut = new Autenticado();
-            Usuario user2 = new Usuario();
-
-            // Creamos el usuario
-            user2.setUser_id(usuAux);
-            user2.setPassword(passAux);
-
-            aut.setUsuario(user2);
-
-            //Metodos auxiliares para no pasar parametros innecesarios al comportamiento "Recibiendo"
-            //Guardamos el usuario y el password por si la autenticacion ha sido correcta
-            setUsuarioAux(usuAux);
-            setPasswordAux(passAux);
-
-            try {
-                //Mandamos el predicado "aut"
-                getContentManager().fillContent(solicitud, aut);
-                addBehaviour(new RecibeMensajes(myAgent, tes1));
-                send(solicitud);
-            } catch (CodecException e) {
-                // TODO Auto-generated catch block
-                e.printStackTrace();
-            } catch (OntologyException e) {
-                // TODO Auto-generated catch block
-                e.printStackTrace();
-            }
-
-        }
-    }
-
-    //Comportamiento para autentica al usuario
-    public class RecibeAutenticacion extends OneShotBehaviour {
-
-        private Resultado tes1;
-        private boolean resultado;
-        private AbsContentElement mens1;
-        private String usu1;
-        private String pass1;
-
-        public RecibeAutenticacion(Agent _a, Resultado tes, AbsContentElement mensaje) {
-            super(_a);
-            this.tes1 = tes;
-            this.mens1 = mensaje;
-        }
-
-        public void action() {
-            try {
-
-                String tipoObjetoContenido = mens1.getTypeName();
-
-                if (tipoObjetoContenido.equals(SL1Vocabulary.NOT)) {
-                    resultado = false;
-                } else {
-                    usu1 = getUsuarioAux();
-                    pass1 = getPasswordAux();
-                    setAlumnoID(usu1);
-                    setAlumnoPass(pass1);
-                    resultado = true;
-                }
-            } catch (Exception ex) {
-                resultado = false;
-                tes1.setResultadoB(resultado);
-            }
-
-            if (debug) {
-                System.out.println("Interfaz - Autenticar: " + resultado);
-            }
-
-            tes1.setResultadoB(resultado);
-            if (debug) {
-                System.out.println("Rellenamos el testigo " + tes1.isRelleno());
-            }
-        }
-    }
-    //-------------- FIN COMPORTAMIENTOS PARA LA AUTENTICACION ----------------------------
-
     //-------------- INICIO PROCEDURES PARA BORRAR ----------------------------
-    private boolean EliminarPractica() {
-		//try{
-		String frase = "delete from `b_practica`;";
-		System.out.println ("[GE]" + frase);
-		//stat.executeUpdate(frase);
-		//frase = "delete from b_test;";
-		//stat.executeUpdate(frase);
-		//frase = "delete from b_caso;";
-		//stat.executeUpdate(frase);
-		//} catch (SQLException ex) {
-		//return false;
-		//}
-		return true;
+    private void EliminarPractica() {
+    	Connection conexion = null;
+   		try {
+   			Class.forName("com.mysql.jdbc.Driver");
+    	} catch (ClassNotFoundException e) {
+    			System.out.println("MySQL JDBC Driver not found. ");
+    		    System.exit(1);
+    	}
+    		
+    	// Se conecta con la Base de Datos
+    	try {
+    		conexion = DriverManager.getConnection("jdbc:mysql://localhost/Prueba","root", "cobi");
+    	} catch (SQLException e) {
+    		System.out.println("Error de conexión: " + e.getMessage());
+    		System.exit(4);			
+   		}
+ 
+    	try {
+				Statement st = conexion.createStatement();
+				String frase1 = "delete from `x_practica`;";
+				st.execute(frase1);
+				String frase2 = "delete from `x_test`;";
+				st.execute(frase2);
+				String frase3 = "delete from `x_caso`;";
+				st.execute(frase3);
+				conexion.close();
+			} catch (SQLException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			}
+    }
+
+	private void EliminarAlumno() {
+    	Connection conexion = null;
+   		try {
+   			Class.forName("com.mysql.jdbc.Driver");
+    	} catch (ClassNotFoundException e) {
+    			System.out.println("MySQL JDBC Driver not found. ");
+    		    System.exit(1);
+    	}
+    		
+    	// Se conecta con la Base de Datos
+    	try {
+    		conexion = DriverManager.getConnection("jdbc:mysql://localhost/Prueba","root", "cobi");
+    	} catch (SQLException e) {
+    		System.out.println("Error de conexión: " + e.getMessage());
+    		System.exit(4);			
+   		}
+ 
+    	try {
+				Statement st = conexion.createStatement();
+				String frase = "delete from `usuarios` where tipo = 'A';";
+				st.execute(frase);
+				conexion.close();
+			} catch (SQLException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			}
 	}
 
-	private boolean EliminarAlumno() {
-		//try {
-		String frase = "delete from usuarios;";
-		System.out.println("[GE]" + frase);
-		//stat.executeUpdate(frase);
-		//} catch (SQLException ex) {
-		//return false;
-		//}
-		return true;
-	}
-
-	private boolean EliminarDatos() {
-		//try{
-		String frase = "delete from `b_practica`;";
-		System.out.println ("[GE]" + frase);
-		//stat.executeUpdate(frase);
-		//frase = "delete from b_test;";
-		//stat.executeUpdate(frase);
-		//frase = "delete from b_caso;";
-		//stat.executeUpdate(frase);
-		//} catch (SQLException ex) {
-		//return false;
-		//}
-		return true;
+	private void EliminarDatos() {
+    	Connection conexion = null;
+   		try {
+   			Class.forName("com.mysql.jdbc.Driver");
+    	} catch (ClassNotFoundException e) {
+    			System.out.println("MySQL JDBC Driver not found. ");
+    		    System.exit(1);
+    	}
+    		
+    	// Se conecta con la Base de Datos
+    	try {
+    		conexion = DriverManager.getConnection("jdbc:mysql://localhost/Prueba","root", "cobi");
+    	} catch (SQLException e) {
+    		System.out.println("Error de conexión: " + e.getMessage());
+    		System.exit(4);			
+   		}
+ 
+    	try {
+				Statement st = conexion.createStatement();
+				String frase1 = "delete from `x_evaluacion_caso`;";
+				String frase2 = "delete from `x_entrega_practica`;";
+				st.execute(frase1);
+				st.execute(frase2);
+				conexion.close();
+			} catch (SQLException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			}
 	}
     //-------------- FIN PROCEDURES PARA BORRAR ----------------------------
 	
     //-------------- INICIO CARGA DATOS ALUMNO ----------------------------
-	private boolean CargaDatosAlumnos (){
-		boolean terminar = false;
+	private void CargarDatosAlumnos (){
 		java.util.List<Alumno> lista = new ArrayList<Alumno>();
-		System.out.println("Antes de pasarle el fichero");
 		lista = ParsearAlumnos.parsearArchivoXml("C:/Users/sandrita/workspace_PFC/gestor-estadisticas/src/es/urjc/ia/paca/parser/correccion.xml");
-		System.out.println(lista);
-		return terminar; 
+		
+		Connection conexion = null;
+   		try {
+   			Class.forName("com.mysql.jdbc.Driver");
+    	} catch (ClassNotFoundException e) {
+    			System.out.println("MySQL JDBC Driver not found. ");
+    		    System.exit(1);
+    	}
+    		
+    	// Se conecta con la Base de Datos
+    	try {
+    		conexion = DriverManager.getConnection("jdbc:mysql://localhost/Prueba","root", "cobi");
+    	} catch (SQLException e) {
+    		System.out.println("Error de conexión: " + e.getMessage());
+    		System.exit(4);			
+   		}
+ 
+    	try {
+    		for (int i = 0; i < lista.size(); i ++){
+    			Alumno a = lista.get(i);
+    			String alumno = a.getIdentificador();
+    			String pass = a.getPassword();
+				Statement st = conexion.createStatement();
+				String frase = "INSERT INTO `usuarios`(`Id_usuario`,`id_grupo`,`tipo`,`pass`) "; 
+				frase = frase + "VALUE (" + alumno + ", 1 , A ," + pass + ")";
+				st.execute(frase);
+				conexion.close();
+    		}
+			} catch (SQLException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			}
 	}
+	
+	private void InsertarBBDD (Practica p, Test t, Caso c){
+		System.out.println("Insertado");
+		p.getId();
+		p.getDescripcion();
+		p.getFechaEntrega();
+		t.getId();
+		t.getDescripcion();
+		t.getEjecutable();
+		c.getId();
+	}
+
     //-------------- FIN CARGA DATOS ALUMNOS ----------------------------
 
+    //-------------------------- INICIO COMPORTAMIENTOS PARA CASOS ---------------------------
+	public void PideCasos (Test test, Practica practica) {
+		try{
+		//CREAMOS EL MENSAJE
+		ACLMessage msg = new ACLMessage(ACLMessage.QUERY_REF);
+		AID receiver = new AID(gestorPracticas, AID.ISLOCALNAME);
+		msg.setSender(getAID());
+		msg.addReceiver(receiver);
+		msg.setLanguage(codec.getName());
+		msg.setOntology(pacaOntology.NAME);
+
+		//CREAMOS EL PREDICADO TESTS PARA SABER CUAL ES LA PRACTICA
+		//Y EL TEST DE LOS CASOS QUE VAMOS A PEDIR
+		AbsConcept abspract;
+			abspract = (AbsConcept) PACAOntology.fromObject(practica);
+			AbsConcept absts = (AbsConcept) PACAOntology.fromObject(test);
+		AbsPredicate abstss = new AbsPredicate(pacaOntology.TESTS);
+		abstss.set(pacaOntology.TEST, absts);
+		abstss.set(pacaOntology.PRACTICA, abspract);
+
+
+		//CREAMOS EL PREDICADO PARA PEDIR LOS CASOS
+		Caso ca = new Caso("?Caso");
+		AbsConcept absca;
+			absca = (AbsConcept) PACAOntology.fromObject(ca);
+		AbsPredicate abscas = new AbsPredicate(pacaOntology.CASOS);
+		abscas.set(pacaOntology.TEST, absts);
+		abscas.set(pacaOntology.CASO, absca);
+
+		//CREAMOS UN ANDBUILDER PARA UNIR LOS DOS PREDICADOS ANTERIORES
+		AndBuilder constructor = new AndBuilder();
+		constructor.addPredicate(abstss);
+		constructor.addPredicate(abscas);
+
+
+		//CREAMOS EL IRE CON LA VARIABLE X Y ENVIAMOS TODO
+		AbsVariable x =
+			new AbsVariable("caso", pacaOntology.CASO);
+		AbsIRE qrall = new AbsIRE(SL2Vocabulary.ALL);
+		qrall.setVariable(x);
+		qrall.setProposition(constructor.getAnd());
+		getContentManager().fillContent(msg, qrall);
+		send(msg);
+		} catch (OntologyException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		} catch (CodecException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+	}
+
+	public Caso[] RecibeCasos (){
+		Caso[] ListaCaso = null;
+		ACLMessage respuesta = blockingReceive();
+		if (respuesta != null) {
+			try {
+				AbsContentElement listaAbs = null;
+				listaAbs = getContentManager().extractAbsContent(respuesta);
+				String tipoMensaje = listaAbs.getTypeName();
+				if (tipoMensaje.equals("=")) {
+					AbsAggregate listaElementos = (AbsAggregate) listaAbs.getAbsObject(SLVocabulary.EQUALS_RIGHT);
+					//Cogemos el primer elemento de la lista
+					AbsConcept primerElem = (AbsConcept) listaElementos.get(0);
+					//Miramos el tipo del primer elemento
+					String tipo = primerElem.getTypeName();
+					if (tipo.equals(pacaOntology.CASO)) {
+						Caso[] retornable = new Caso[0];
+						Caso ca;
+						try {
+							retornable = new Caso[listaElementos.size()];
+							for (int i = 0; i < listaElementos.size(); i++) {
+								ca = (Caso) PACAOntology.toObject(listaElementos.get(i));
+								if (!(ca.getId().equalsIgnoreCase("No hay casos"))) {
+									retornable[i] = ca;
+								} else {
+									retornable = new Caso[0];
+								}		
+							}
+							System.out.println("Numero casos " + retornable.length);
+						ListaCaso = retornable;
+						}catch (Exception e) {
+							//ficherosUltimaPractica = retornable;
+							//tes2.setResultado(retornable);
+						}
+					}	 
+				}    
+			} catch (CodecException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			} catch (OntologyException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			}
+		}
+		return ListaCaso;
+	}
+    //-------------------------- FIN COMPORTAMIENTOS PARA CASOS ---------------------------
+	
+    //-------------------------- COMPORTAMIENTOS PARA TESTS -------------------------------
+	public void PideTest (Practica practica) {
+
+		//AID agentCorrec = getAgenteCorrector();
+		AID receiver = new AID(gestorPracticas, AID.ISLOCALNAME);
+		ACLMessage solicitud = new ACLMessage(ACLMessage.QUERY_REF);
+		solicitud.addReceiver(receiver);
+		solicitud.setLanguage(codec.getName());
+		solicitud.setOntology(pacaOntology.NAME);
+
+		// Generamos el mensaje para enviar
+		Corrige cor = new Corrige();
+		Corrector correc = new Corrector();
+		correc.setId(gestorPracticas);
+		cor.setPractica(practica);
+		cor.setCorrector(correc);
+
+		Test te = new Test();
+		te.setId("?test");
+		te.setDescripcion("");
+		te.setEjecutable("");
+
+
+		try {
+			//Convertimos la practica a un concepto abstracto
+			AbsConcept absPract = (AbsConcept) PACAOntology.fromObject(practica);
+
+			//Convertimo el corrector a un concepto abstracto
+			AbsConcept absCorrec = (AbsConcept) PACAOntology.fromObject(correc);
+
+			//Convertimos el test a un concepto abstracto
+			AbsConcept absTest = (AbsConcept) PACAOntology.fromObject(te);
+
+			//Creamos el predicado CORRIGE de forma abstracta utilizando los conceptos abstractos creados anteriormente
+			AbsPredicate absCorrige = new AbsPredicate(pacaOntology.CORRIGE);
+			absCorrige.set(pacaOntology.PRACTICA, absPract);
+			absCorrige.set(pacaOntology.CORRECTOR, absCorrec);
+
+			//Creamos el predicado TESTS de forma abstracta utilizando los conceptos abstractos creados anteriormente
+			AbsPredicate absTests = new AbsPredicate(pacaOntology.TESTS);
+			absTests.set(pacaOntology.PRACTICA, absPract);
+			absTests.set(pacaOntology.TEST, absTest);
+
+			AbsVariable x = new AbsVariable("test", pacaOntology.TEST);
+
+			AndBuilder predicado = new AndBuilder();
+			predicado.addPredicate(absCorrige);
+			predicado.addPredicate(absTests);
+
+			AbsIRE qrall = new AbsIRE(SL2Vocabulary.ALL);
+			qrall.setVariable(x);
+			qrall.setProposition(predicado.getAnd());
+
+			getContentManager().fillContent(solicitud, qrall);
+			send(solicitud);
+
+		} catch (NullPointerException ex) {
+			ex.printStackTrace();
+		} catch (OntologyException e1) {
+			// TODO Auto-generated catch block
+			e1.printStackTrace();
+		} catch (CodecException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+	}
+
+	public Test[] RecibeTest () {
+		Test[] ListaTest = null; 
+		// Recibir Mensaje Test
+		ACLMessage respuesta = blockingReceive();
+		if (respuesta != null) {
+			try {
+				AbsContentElement listaAbs = null;
+				listaAbs = getContentManager().extractAbsContent(respuesta);
+				String tipoMensaje = listaAbs.getTypeName();
+				if (tipoMensaje.equals("=")) {
+					AbsAggregate listaElementos = (AbsAggregate) listaAbs.getAbsObject(SLVocabulary.EQUALS_RIGHT);
+					//Cogemos el primer elemento de la lista
+					AbsConcept primerElem = (AbsConcept) listaElementos.get(0);
+					//Miramos el tipo del primer elemento
+					String tipo = primerElem.getTypeName();
+					if (tipo.equals(pacaOntology.TEST)) {
+						Test t = new Test();
+						Test[] aux = new Test[listaElementos.size()];
+						try {
+							int j = 0;
+							for (int i = 0; i < listaElementos.size(); i++) {
+								//Pasamos de concepto abstracto a objeto "real", en este caso son tests
+								t = (Test) PACAOntology.toObject(listaElementos.get(i));
+								if (!(t.getId().equalsIgnoreCase("No hay Tests"))) {
+									aux[i] = t;
+								} else {
+									aux = new Test[0];
+								}
+							}
+						} catch (Exception e) {
+							e.printStackTrace();
+						}
+						ListaTest = aux;
+					} 
+				}
+			} catch (CodecException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			} catch (OntologyException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			}
+		}
+		return ListaTest; 
+	}
+    //-------------------------- FIN COMPORTAMIENTOS PARA TESTS ---------------------------
+	public void RegistrarEvaluaciones(RegistrarEstadisticaEvaluacion evaluacion){
+    	Connection conexion = null;
+   		try {
+   			Class.forName("com.mysql.jdbc.Driver");
+    	} catch (ClassNotFoundException e) {
+    			System.out.println("MySQL JDBC Driver not found. ");
+    		    System.exit(1);
+    	}
+    		
+    	// Se conecta con la Base de Datos
+    	try {
+    		conexion = DriverManager.getConnection("jdbc:mysql://localhost/Prueba","root", "cobi");
+    	} catch (SQLException e) {
+    		System.out.println("Error de conexión: " + e.getMessage());
+    		System.exit(4);			
+   		}
+ 
+    	try {
+    		List lista = evaluacion.getEvaluacionesCasos();
+    		String idalumno;
+    		String idpractica;
+    		String idtest;
+    		String idcaso;
+    		String eva_caso;
+    		String frase;
+			java.util.Date fecha = new Date();
+    		int f;
+    		Statement st = null;
+			for (int i = 0; i < lista.size(); i++){
+    			EstadisticaEvaluacionCaso eval = (EstadisticaEvaluacionCaso) lista.get(i);
+    			idalumno = eval.getAlumno().getIdentificador();
+    			idpractica = eval.getPractica().getId();
+    			idtest = eval.getTest().getId();
+    			idcaso = eval.getCaso().getId();
+    			eva_caso = eval.getEvaluacion();
+    			f = fecha.getDate();
+    			frase = "";
+    			frase = "INSERT INTO `x_evaluacion_caso`(`fecha`,`id_practica`,`id_grupo`,`id_caso`,`id_test`,`evaluacion`,`id_alumno`) ";
+    			frase = frase + " VALUE (" + f + "," + idpractica + ",1," + idcaso + "," + idtest + "," + eva_caso + "," + idalumno +" )";
+    			st = conexion.createStatement();
+    			st.execute(frase);
+			}
+			st.execute("CALL `Carga_Evaluacion_Alumno_Test`()");
+			st.execute("CALL `Carga_Evaluacion_Alumno_Practica`()");
+			st.execute("CALL `Carga_Evaluacion_Alumno_Test_Max`()");
+			st.execute("CALL `Carga_Evaluacion_Alumno_Practica_Max`()");
+			st.execute("CALL `Carga_Evaluacion_Grupo_Caso`()");
+			st.execute("CALL `Carga_Evaluacion_Grupo_Test`()");
+			st.execute("CALL `Carga_Evaluacion_Grupo_Practica`()");
+			conexion.close();
+			} catch (SQLException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			}
+	}
+	
+	public void RegistrarEntrega(RegistrarEstadisticaEntrega entrega){
+	   	Connection conexion = null;
+   		try {
+   			Class.forName("com.mysql.jdbc.Driver");
+    	} catch (ClassNotFoundException e) {
+    			System.out.println("MySQL JDBC Driver not found. ");
+    		    System.exit(1);
+    	}
+    		
+    	// Se conecta con la Base de Datos
+    	try {
+    		conexion = DriverManager.getConnection("jdbc:mysql://localhost/Prueba","root", "cobi");
+    	} catch (SQLException e) {
+    		System.out.println("Error de conexión: " + e.getMessage());
+    		System.exit(4);			
+   		}
+ 
+    	try {
+				Statement st = conexion.createStatement();
+				Alumno a = entrega.getAlumno1();
+				Alumno b = entrega.getAlumno2();
+				Practica p = entrega.getPractica();
+				java.util.Date fecha = new Date();
+				int f = fecha.getDate();
+				String frase_1 = "INSERT INTO `x_entrega_practica` (`fecha`, `id_grupo`,`id_alumno`, `id_practica`)"; 
+				frase_1 = frase_1 + "VALUE (" + f + ", 1 ," + a.getIdentificador() + ","+ p.getId() + ")";
+				String frase_2 = "INSERT INTO `x_entrega_practica` (`fecha`, `id_grupo`,`id_alumno`, `id_practica`)"; 
+				frase_1 = frase_2 + "VALUE (" + f + ", 1 ," + b.getIdentificador() + ","+ p.getId() + ")";
+				st.execute(frase_1);
+				st.execute(frase_2);
+				conexion.close();
+			} catch (SQLException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			}
+	}
+	
     //-------------------------- INICIO COMPORTAMIENTOS PARA PRACTICAS -----------------------	
-    public class PidePracticasBehavior extends OneShotBehaviour {
+	private void PidePracticas() {
+		try{
+		AID receiver = new AID(gestorPracticas, AID.ISLOCALNAME);
+		ACLMessage solicitud = new ACLMessage(ACLMessage.QUERY_REF);
+		solicitud.addReceiver(receiver);
+		solicitud.setLanguage(codec.getName());
+		solicitud.setOntology(pacaOntology.NAME);
 
-        private Resultado tes;
+		Practica pract = new Practica();
+		pract.setId("?practica");
+		pract.setDescripcion("");
 
-        public PidePracticasBehavior(Agent _a, Resultado tes1) {
-            super(_a);
-            this.tes = tes1;
-        }
+		Corrector correc = new Corrector();
+		correc.setId(gestorPracticas);
 
-        public void action() {
+		//Convertimos la practica a un objecto abstracto
+		AbsConcept absPract;
+		absPract = (AbsConcept) PACAOntology.fromObject(pract);
 
-            AID receiver = new AID(gestorPracticas, AID.ISLOCALNAME);
-            //AID agentCorrec = getAgenteCorrector();
-            ACLMessage solicitud = new ACLMessage(ACLMessage.QUERY_REF);
-            solicitud.addReceiver(receiver);
-            solicitud.setLanguage(codec.getName());
-            solicitud.setOntology(pacaOntology.NAME);
+		//Convertimos el correcto a un objecto abstracto
+		AbsConcept absCorrec = (AbsConcept) PACAOntology.fromObject(correc);
 
-            Practica pract = new Practica();
-            pract.setId("?practica");
-            pract.setDescripcion("");
+		//Creamos el predicado abstracto "CORRIGE"
+		AbsPredicate absPredCorr = new AbsPredicate(pacaOntology.CORRIGE);
+		absPredCorr.set(pacaOntology.PRACTICA, absPract);
+		absPredCorr.set(pacaOntology.CORRECTOR, absCorrec);
 
-            try {
-                Corrector correc = new Corrector();
-                correc.setId(gestorPracticas);
+		//Creamos la variable que queremos pedir, en este caso "?practica"
+		AbsVariable x = new AbsVariable("practica", pacaOntology.PRACTICA);
 
-                //Convertimos la practica a un objecto abstracto
-                AbsConcept absPract = (AbsConcept) PACAOntology.fromObject(pract);
+		//Creamos el IRE con la variable "x" y el predicado "CORRIGE"
+		AbsIRE qrall = new AbsIRE(SL2Vocabulary.ALL);
+		qrall.setVariable(x);
+		qrall.setProposition(absPredCorr);
 
-                //Convertimos el correcto a un objecto abstracto
-                AbsConcept absCorrec = (AbsConcept) PACAOntology.fromObject(correc);
+		//Mandamos el mensaje
+		getContentManager().fillContent(solicitud, qrall);              
+		send(solicitud);
+		RecibePracticas();
+		} catch (OntologyException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		} catch (CodecException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+	}
 
-                //Creamos el predicado abstracto "CORRIGE"
-                AbsPredicate absPredCorr = new AbsPredicate(pacaOntology.CORRIGE);
-                absPredCorr.set(pacaOntology.PRACTICA, absPract);
-                absPredCorr.set(pacaOntology.CORRECTOR, absCorrec);
+	public void RecibePracticas () {
+		ACLMessage respuesta = blockingReceive();
+		if (respuesta != null) {
+			AbsContentElement listaAbs = null;
+			try {
+				listaAbs = getContentManager().extractAbsContent(respuesta);
+			} catch (CodecException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			} catch (OntologyException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			}
+			String tipoMensaje = listaAbs.getTypeName();
+			if (tipoMensaje.equals("=")) {
+				AbsAggregate listaElementos = (AbsAggregate) listaAbs.getAbsObject(SLVocabulary.EQUALS_RIGHT);
+				//Cogemos el primer elemento de la lista
+				AbsConcept primerElem = (AbsConcept) listaElementos.get(0);
+				//Miramos el tipo del primer elemento
+				String tipo = primerElem.getTypeName();
+				if (tipo.equals(pacaOntology.PRACTICA)) {
+System.out.println("es una practica, sacamos las practicas");
+					//Sacamos las practicas que vienen en el mensaje como conceptos abstractos
+					Practica p = new Practica();
+					Practica[] ListaPractica = new Practica[listaElementos.size()];
 
-                //Creamos la variable que queremos pedir, en este caso "?practica"
-                AbsVariable x = new AbsVariable("practica", pacaOntology.PRACTICA);
-
-                //Creamos el IRE con la variable "x" y el predicado "CORRIGE"
-                AbsIRE qrall = new AbsIRE(SL2Vocabulary.ALL);
-                qrall.setVariable(x);
-                qrall.setProposition(absPredCorr);
-
-                //Mandamos el mensaje
-                getContentManager().fillContent(solicitud, qrall);
-                addBehaviour(new RecibeMensajes(myAgent, tes));              
-                send(solicitud);
-                System.out.println("[GE] Mensaje completado");
-            } catch (NullPointerException ex) {
-                // TODO Auto-generated catch block
-                ex.printStackTrace();
-            } catch (OntologyException e1) {
-                // TODO Auto-generated catch block
-                e1.printStackTrace();
-            } catch (CodecException e) {
-                // TODO Auto-generated catch block
-                e.printStackTrace();
-            }
-
-        }
-    }
-
-    public class RecibePracticasBeh extends OneShotBehaviour {
-
-        private Resultado tes1;
-        private AbsAggregate practicas1;
-
-        public RecibePracticasBeh(Agent _a, Resultado tes, AbsAggregate practicas) {
-            super(_a);
-            this.tes1 = tes;
-            this.practicas1 = practicas;
-            
-        }
-
-        public void action() {
-            Practica[] retornable = new Practica[0];
-            try {
-                //Sacamos las practicas que vienen en el mensaje como conceptos abstractos
-
-                Practica p = new Practica();
-                retornable = new Practica[practicas1.size()];
-                Practica[] aux = new Practica[practicas1.size()];
-
-                for (int i = 0; i < practicas1.size(); i++) {
-                    //Pasamos de concepto abstracto a objeto "real", en este caso son practicas
-                    p = (Practica) PACAOntology.toObject(practicas1.get(i));
-
-                    //Comprobamos que haya practicas disponibles
-                    if (!(p.getId().equalsIgnoreCase("No hay practicas"))) {
-                        retornable[i] = p;
-                        //Guardamos todas la practicas para despues saber cual es
-                        //la descripcion y la fecha de entrega de la practica elegida
-                        aux[i] = p;
-                    } else {
-                        retornable = new Practica[0];
-                    }
-                }
-                auxPracticas = aux;
-            } catch (OntologyException oe) {
-                System.out.println("[GE]Excepcion en ontologia");
-                oe.printStackTrace();
-            } catch (java.lang.NullPointerException e) {
-                System.out.println("[GE]Empty message");
-                e.printStackTrace();
-            } catch (Exception e) {
-                // Si obtenemos alguna excepciï¿½n de error, directamente no
-                // ofrecemos las practicas ...
-                retornable = new Practica[1];
-                retornable[0] = new Practica("Error en la obtenciï¿½n de las prï¿½cticas");
-            }
-            System.out.println("[GE]Retornable ....");
-            System.out.println("[GE]" + retornable);
-            tes1.setResultado(retornable);
-        }
-    }
+					for (int i = 0; i < listaElementos.size(); i++) {
+						//Pasamos de concepto abstracto a objeto "real", en este caso son practicas
+						try {
+							p = (Practica) PACAOntology.toObject(listaElementos.get(i));
+						} catch (UngroundedException e) {
+							// TODO Auto-generated catch block
+							e.printStackTrace();
+						} catch (OntologyException e) {
+							// TODO Auto-generated catch block
+							e.printStackTrace();
+						}
+						//Comprobamos que haya practicas disponibles
+						if (!(p.getId().equalsIgnoreCase("No hay practicas"))) {
+							//Guardamos todas la practicas para despues saber cual es
+							//la descripcion y la fecha de entrega de la practica elegida
+							ListaPractica[i] = p;
+						} else {
+							ListaPractica = new Practica[0];
+						}
+					}	
+					System.out.println("numero de practicas " + ListaPractica.length);
+					Test[] ListaTest = null;
+					Caso[] ListaCaso = null;
+					// Recorremos las prácticas para poder pedir los test
+					for (int j=0; j < ListaPractica.length; j++){
+						System.out.println("Practica " + ListaPractica[j].getId());
+						PideTest(ListaPractica[j]);
+						ListaTest = RecibeTest();
+						for (int k=0; k < ListaTest.length; k ++){
+							System.out.println("Test " + ListaTest[k].getId());
+							PideCasos(ListaTest[k], ListaPractica[j]);
+							ListaCaso = RecibeCasos();
+							for (int l=0; l < ListaCaso.length; l++){
+								InsertarBBDD ( ListaPractica[j], ListaTest[k], ListaCaso[l] );
+								System.out.println("Caso " + ListaCaso.getClass());
+							}
+						}
+					}
+				}		
+			}
+		}
+	}
     //-------------------------- FIN COMPORTAMIENTOS PARA PRACTICAS -----------------------
 
-    //-------------------------- COMPORTAMIENTOS PARA TESTS -------------------------------
-    public class PideTestBeha extends OneShotBehaviour {
+	public class RecibeMensajes extends Behaviour {
+
+		private Resultado tes1;
+		private boolean finalizado = false;
+
+		public void action() {
+			ACLMessage respuesta = receive();
+			if (respuesta != null) {
+				if (respuesta.getPerformative() == ACLMessage.AGREE) {
+					System.out.println("AGREE");
+					addBehaviour(new RecibeMensajes());
+					finalizado = true;
+				} else {
+					if (respuesta.getPerformative() == ACLMessage.FAILURE) {
+						System.out.println("FALILURE");
+						tes1.setResultadoB(false);
+						finalizado = true;
+					} else {
+						if (respuesta.getContent().equalsIgnoreCase("DONE")) {
+							System.out.println("DONE");
+							tes1.setResultadoB(true);
+							finalizado = true;
+						}else{
+							if (respuesta.getPerformative() == ACLMessage.INFORM) {
+								System.out.println ("INFORM");
+								tes1.setResultadoB(true);
+								finalizado = true;
+							}  							
+						}
+					}
+				}
+			}
+		}
+
+		@Override
+		public boolean done() {
+			return finalizado;
+		}
+	}
 
-        private Resultado tes1;
-        private Practica practica;
-        private boolean guardar;
-
-        public PideTestBeha(Agent _a, Resultado tes, Practica practica, boolean guardar) {
-            super(_a);
-            this.tes1 = tes;
-            this.practica = practica;
-            this.guardar = guardar;
-        }
-
-        public void action() {
-
-            if (guardar) {
-                //Nos guardamos la ï¿½ltima prï¿½ctica solicitada
-                if (practica != null) {
-                    ultimaPractica = practica;
-                } else {
-                    practica = ultimaPractica;
-                }
-            } else {
-                auxUltimaPractica = practica;
-            }
-
-
-
-            //AID agentCorrec = getAgenteCorrector();
-            AID receiver = new AID(gestorPracticas, AID.ISLOCALNAME);
-            ACLMessage solicitud = new ACLMessage(ACLMessage.QUERY_REF);
-            solicitud.addReceiver(receiver);
-            solicitud.setLanguage(codec.getName());
-            solicitud.setOntology(pacaOntology.NAME);
-
-            // Generamos el mensaje para enviar
-            Corrige cor = new Corrige();
-            Corrector correc = new Corrector();
-            correc.setId(gestorPracticas);
-            cor.setPractica(practica);
-            cor.setCorrector(correc);
-
-            Test te = new Test();
-            te.setId("?test");
-            te.setDescripcion("");
-            te.setEjecutable("");
-
-
-            try {
-                //Convertimos la practica a un concepto abstracto
-                AbsConcept absPract = (AbsConcept) PACAOntology.fromObject(practica);
-
-                //Convertimo el corrector a un concepto abstracto
-                AbsConcept absCorrec = (AbsConcept) PACAOntology.fromObject(correc);
-
-                //Convertimos el test a un concepto abstracto
-                AbsConcept absTest = (AbsConcept) PACAOntology.fromObject(te);
-
-                //Creamos el predicado CORRIGE de forma abstracta utilizando los conceptos abstractos creados anteriormente
-                AbsPredicate absCorrige = new AbsPredicate(pacaOntology.CORRIGE);
-                absCorrige.set(pacaOntology.PRACTICA, absPract);
-                absCorrige.set(pacaOntology.CORRECTOR, absCorrec);
-
-                //Creamos el predicado TESTS de forma abstracta utilizando los conceptos abstractos creados anteriormente
-                AbsPredicate absTests = new AbsPredicate(pacaOntology.TESTS);
-                absTests.set(pacaOntology.PRACTICA, absPract);
-                absTests.set(pacaOntology.TEST, absTest);
-
-                AbsVariable x = new AbsVariable("test", pacaOntology.TEST);
-
-                AndBuilder predicado = new AndBuilder();
-                predicado.addPredicate(absCorrige);
-                predicado.addPredicate(absTests);
-
-                AbsIRE qrall = new AbsIRE(SL2Vocabulary.ALL);
-                qrall.setVariable(x);
-                qrall.setProposition(predicado.getAnd());
-
-                getContentManager().fillContent(solicitud, qrall);
-                addBehaviour(new RecibeMensajes(myAgent, tes1));
-                send(solicitud);
-
-            } catch (NullPointerException ex) {
-                ex.printStackTrace();
-            } catch (OntologyException e1) {
-                // TODO Auto-generated catch block
-                e1.printStackTrace();
-            } catch (CodecException e) {
-                // TODO Auto-generated catch block
-                e.printStackTrace();
-            }
-
-        }
-    }
-
-    public class RecibeTestBeha extends OneShotBehaviour {
-
-        private Resultado tes1;
-        private AbsAggregate tests1;
-
-        public RecibeTestBeha(Agent _a, Resultado tes, AbsAggregate tests_) {
-            super(_a);
-            this.tes1 = tes;
-            this.tests1 = tests_;
-        }
-
-        public void action() {
-
-            Test[] retornable = new Test[0];
-            try {
-                //Sacamos los tests que vienen en el mensaje como conceptos abstractos
-
-                Test t = new Test();
-                retornable = new Test[tests1.size()];
-                Test[] aux = new Test[tests1.size()];
-                int j = 0;
-                for (int i = 0; i < tests1.size(); i++) {
-                    //Pasamos de concepto abstracto a objeto "real", en este caso son tests
-                    t = (Test) PACAOntology.toObject(tests1.get(i));
-
-                    if (!(t.getId().equalsIgnoreCase("No hay Tests"))) {
-
-                        retornable[i] = t;
-                        //Guardamos todos los test de la practica para posteriormente saber
-                        //la descripcion de los test elegidos
-                        aux[i] = t;
-                    } else {
-                        retornable = new Test[0];
-                        aux = new Test[0];
-                    }
-                }
-                auxTest = aux;
-            } catch (Exception e) {
-                // Si obtenemos alguna excepciï¿½n de error, directamente no
-                // ofrecemos los tests ...
-                retornable = new Test[1];
-                retornable[0] = new Test("Error en la obtenciï¿½n de los tests");
-            }
-            tes1.setResultado(retornable);
-
-
-        }
-    }
-    //-------------------------- FIN COMPORTAMIENTOS PARA TESTS ---------------------------
-    
-    //-------------------------- INICIO COMPORTAMIENTOS PARA CASOS ---------------------------
-    class PideCasos extends OneShotBehaviour {
-
-        private Resultado tes;
-        private Test test;
-        private boolean guardar;
-
-        public PideCasos(Agent a, Resultado tes, Test test, boolean guardar) {
-            super(a);
-            this.tes = tes;
-            this.test = test;
-            this.guardar = guardar;
-
-        }
-
-        public void action() {
-
-            try {
-
-                Practica pt = null;
-                if (guardar) {
-                    if (test == null) {
-                        test = ultimoTest;
-                    } else {
-                        ultimoTest = test;
-                    }
-                    pt = ultimaPractica;
-                } else {
-                    auxUltimoTest = test;
-                    pt = auxUltimaPractica;
-                }
-                //CREAMOS EL MENSAJE
-                ACLMessage msg = new ACLMessage(ACLMessage.QUERY_REF);
-                AID receiver = new AID(gestorPracticas, AID.ISLOCALNAME);
-
-                msg.setSender(getAID());
-                msg.addReceiver(receiver);
-                msg.setLanguage(codec.getName());
-                msg.setOntology(pacaOntology.NAME);
-
-
-
-                //CREAMOS EL PREDICADO TESTS PARA SABER CUAL ES LA PRACTICA
-                //Y EL TEST DE LOS CASOS QUE VAMOS A PEDIR
-
-                AbsConcept abspract = (AbsConcept) PACAOntology.fromObject(pt);
-                AbsConcept absts = (AbsConcept) PACAOntology.fromObject(test);
-                AbsPredicate abstss = new AbsPredicate(pacaOntology.TESTS);
-                abstss.set(pacaOntology.TEST, absts);
-                abstss.set(pacaOntology.PRACTICA, abspract);
-
-
-                //CREAMOS EL PREDICADO PARA PEDIR LOS CASOS
-                Caso ca = new Caso("?Caso");
-                AbsConcept absca = (AbsConcept) PACAOntology.fromObject(ca);
-                AbsPredicate abscas = new AbsPredicate(pacaOntology.CASOS);
-                abscas.set(pacaOntology.TEST, absts);
-                abscas.set(pacaOntology.CASO, absca);
-
-                //CREAMOS UN ANDBUILDER PARA UNIR LOS DOS PREDICADOS ANTERIORES
-                AndBuilder constructor = new AndBuilder();
-                constructor.addPredicate(abstss);
-                constructor.addPredicate(abscas);
-
-
-                //CREAMOS EL IRE CON LA VARIABLE X Y ENVIAMOS TODO
-                AbsVariable x =
-                        new AbsVariable("caso", pacaOntology.CASO);
-                AbsIRE qrall = new AbsIRE(SL2Vocabulary.ALL);
-                qrall.setVariable(x);
-                qrall.setProposition(constructor.getAnd());
-                getContentManager().fillContent(msg, qrall);
-                addBehaviour(new RecibeMensajes(myAgent, tes));
-                myAgent.send(msg);
-            } catch (CodecException ex) {
-                Logger.getLogger(Interfaz.class.getName()).log(Level.SEVERE, null, ex);
-            } catch (OntologyException ex) {
-                Logger.getLogger(Interfaz.class.getName()).log(Level.SEVERE, null, ex);
-            }
-        }
-    }
-
-    public class RecibeCasosBeha extends OneShotBehaviour {
-
-        private Resultado tes2;
-        private AbsAggregate ficheros1;
-
-        public RecibeCasosBeha(Agent _a, Resultado tes, AbsAggregate ficheros) {
-            super(_a);
-            this.tes2 = tes;
-            this.ficheros1 = ficheros;
-        }
-
-        public void action() {
-            Caso[] retornable = new Caso[0];
-            try {
-                //Sacamos los ficheros que vienen en el mensaje como conceptos abstractos
-
-                // Pasamos la lista a un String[]
-                Caso ca;
-                retornable = new Caso[ficheros1.size()];
-                for (int i = 0; i < ficheros1.size(); i++) {
-                    ca = (Caso) PACAOntology.toObject(ficheros1.get(i));
-                    if (!(ca.getId().equalsIgnoreCase("No hay casos"))) {
-                        retornable[i] = ca;
-                    } else {
-                        retornable = new Caso[0];
-                    }
-
-                }
-
-
-
-            } catch (Exception e) {
-                //ficherosUltimaPractica = retornable;
-                //tes2.setResultado(retornable);
-            }
-            //FicherosPropiosDisponibles = retornable;
-            //ficherosUltimaPractica = retornable;
-            tes2.setResultado(retornable);
-
-        }
-    }
-    //-------------------------- FIN COMPORTAMIENTOS PARA CASOS ---------------------------
-
-    
-    public class RecibeMensajes extends Behaviour {
-
-        private Resultado tes1;
-        private boolean finalizado = false;
-
-        public RecibeMensajes(Agent _a, Resultado tes) {
-            super(_a);
-            this.tes1 = tes;
-        }
-
-        public void action() {
-            ACLMessage respuesta = receive();
-            if (respuesta != null) {
-System.out.println("[GE]El mensaje no es nulo");
-            	try {
-                    if (respuesta.getPerformative() == ACLMessage.AGREE) {
-                    	System.out.println("[GE]Recibiendo .... AGREE");
-
-                        addBehaviour(new RecibeMensajes(myAgent, tes1));
-                        finalizado = true;
-                    } else {
-                        if (respuesta.getPerformative() == ACLMessage.FAILURE) {
-                        	System.out.println("[GE]Recibiendo .... FALILURE");
-
-                            tes1.setResultadoB(false);
-                            finalizado = true;
-                        } else {
-                            if (respuesta.getContent().equalsIgnoreCase("DONE")) {
-                            	System.out.println("[GE]Recibiendo ... DONE");
-
-                                tes1.setResultadoB(true);
-                                finalizado = true;
-                            } else {
-                            	System.out.println("[GE]Recibiendo ... otra cosa");
-
-                                AbsContentElement listaAbs = null;
-                                listaAbs = getContentManager().extractAbsContent(respuesta);
-                                String tipoMensaje = listaAbs.getTypeName();
-                                if (tipoMensaje.equals("autenticado") | tipoMensaje.equals("not")) {
-                                	System.out.println("[GE]Recibiendo autenticado");
-
-                                	addBehaviour(new RecibeAutenticacion(myAgent, tes1, listaAbs));
-                                    finalizado = true;
-                                } else if (tipoMensaje.equals("=")) {
-                                	System.out.println("[GE]Recibiendo .... otra cosa");
-
-                                    AbsAggregate listaElementos = (AbsAggregate) listaAbs.getAbsObject(SLVocabulary.EQUALS_RIGHT);
-
-                                    //Cogemos el primer elemento de la lista
-                                    AbsConcept primerElem = (AbsConcept) listaElementos.get(0);
-
-                                    //Miramos el tipo del primer elemento
-                                    String tipo = primerElem.getTypeName();
-                                    if (tipo.equals(pacaOntology.PRACTICA)) {
-                                    	System.out.println("[GE]Antes de recibir las practicas");
-                                        addBehaviour(new RecibePracticasBeh(myAgent, tes1, listaElementos));
-                                    	System.out.println("[GE]Despues de recibir las practicas");
-                                        finalizado = true;
-                                    } else if (tipo.equals(pacaOntology.TEST)) {
-                                       // addBehaviour(new RecibeTestBeha(myAgent, tes1, listaElementos));
-                                       // finalizado = true;
-                                    } else if (tipo.equals(pacaOntology.CASO)) {
-                                       // addBehaviour(new RecibeCasosBeha(myAgent, tes1, listaElementos));
-                                       // finalizado = true;
-                                    } 
-                                }
-                            }
-                        }
-                    }
-                } catch (CodecException e) {
-                    // TODO Auto-generated catch block
-                    e.printStackTrace();
-                } catch (OntologyException e) {
-                    // TODO Auto-generated catch block
-                    e.printStackTrace();
-                }
-            } else {
-            	System.out.println("[GE]Mensaje vacio");
-                block();
-            }
-
-        }
-
-        @Override
-        public boolean done() {
-            return finalizado;
-        }
-    }
-
-	
 	// Clase que recibe un mensaje REQUEST 
 	class ReceiverBehaviour extends CyclicBehaviour {
-		
-        public ReceiverBehaviour(Agent a) {
-            super(a);
-        }
-				
+
+		public ReceiverBehaviour(Agent a) {
+			super(a);
+		}
+
 		public void action() {
 			try {
 				ACLMessage mensaje = blockingReceive();
@@ -835,54 +688,89 @@ System.out.println("[GE]El mensaje no es nulo");
 						abscontent = manager.extractAbsContent(mensaje);
 						AbsAgentAction action = (AbsAgentAction) abscontent.getAbsObject(SLVocabulary.ACTION_ACTION);                     
 
-						if (action.getTypeName().equals(pacaOntology.ELIMINARDATOSBBDD)) {
+						if (action.getTypeName().equals(pacaOntology.REGISTRARESTADISTICAENTREGA)) {
 							// Agree en protocolo REQUEST
 							ACLMessage reply = mensaje.createReply();
 							reply.setPerformative(ACLMessage.AGREE);
 							reply.setContent(mensaje.getContent());
 							send(reply);
-
-							EliminarDatosBBDD x = (EliminarDatosBBDD) PACAOntology.toObject(action);
-							String tipo = x.getTipo();
-							if (tipo.equals("BORRARPRACTICAS")) {
-								System.out.println("{GE}borrar practica");
-							}else{
-								if (tipo.equals("BORRARALUMNOS")){
-									System.out.println("{GE}borrar alumnos");
-								}else{
-									if (tipo.equals("BORRARDATOS")){
-										System.out.println("{GE}borrar datos");
-									}else{
-										if (tipo.equals("CARGARPRACTICAS")){
-											System.out.println("{GE}cargar practica");
-											Testigo resultado = new Testigo();
-											resultado.setOperacion(Testigo.Operaciones.pedirPracticas);
-											// Pide Practica
-										    addBehaviour(new PidePracticasBehavior(myAgent,resultado));
-										}else{
-											if (tipo.equals("CARGARALUMNOS")){
-												System.out.println("{GE}cargar alumnos");
-											}
-										}
-									}
-								}
-							}			
+							
+							RegistrarEstadisticaEntrega entrega = (RegistrarEstadisticaEntrega) PACAOntology.toObject(action);
+							RegistrarEntrega(entrega);
+							
 							// INFORM-DONE
 							reply.setPerformative(ACLMessage.INFORM);
 							Done informdone = new Done();
-							informdone.setAction(x);
+							informdone.setAction(entrega);
 							getContentManager().fillContent(reply, informdone);
 							send(reply);					
-						} 
+						}else{
+							if (action.getTypeName().equals(pacaOntology.REGISTRARESTADISTICAEVALUACION)) {
+								// Agree en protocolo REQUEST
+								ACLMessage reply = mensaje.createReply();
+								reply.setPerformative(ACLMessage.AGREE);
+								reply.setContent(mensaje.getContent());
+								send(reply);
+								
+								RegistrarEstadisticaEvaluacion evaluacion = (RegistrarEstadisticaEvaluacion) PACAOntology.toObject(action);
+								RegistrarEvaluaciones(evaluacion);
+								
+								// INFORM-DONE
+								reply.setPerformative(ACLMessage.INFORM);
+								Done informdone = new Done();
+								informdone.setAction(evaluacion);
+								getContentManager().fillContent(reply, informdone);
+								send(reply);					
+							}else{
+								if (action.getTypeName().equals(pacaOntology.MODIFICARDATOSBBDD)) {
+									// Agree en protocolo REQUEST
+									ACLMessage reply = mensaje.createReply();
+									reply.setPerformative(ACLMessage.AGREE);
+									reply.setContent(mensaje.getContent());
+									send(reply);
 
+									ModificarDatosBBDD x = (ModificarDatosBBDD) PACAOntology.toObject(action);
+									String tipo = x.getTipo();
+									if (tipo.equals("BORRARPRACTICAS")) {
+										System.out.println("Borrar Estructura Practicas");
+										EliminarPractica();
+									}else{
+										if (tipo.equals("BORRARALUMNOS")){
+											System.out.println("Borrar datos alumnos");
+											EliminarAlumno();
+										}else{
+											if (tipo.equals("BORRARDATOS")){
+												System.out.println("Borrar datos estadisticos");
+												EliminarDatos();
+											}else{
+												if (tipo.equals("CARGARPRACTICAS")){
+													System.out.println("Cargar Estructura practicas");
+													PidePracticas();
+												}else{
+													if (tipo.equals("CARGARALUMNOS")){
+														System.out.println("Cargar Datos Alumnos");
+														CargarDatosAlumnos();
+													}
+												}
+											}
+										}
+									}			
+									// INFORM-DONE
+									reply.setPerformative(ACLMessage.INFORM);
+									Done informdone = new Done();
+									informdone.setAction(x);
+									getContentManager().fillContent(reply, informdone);
+									send(reply);					
+								} 
+							}
+						}
 					}
 				} else {
-                    block();
-                }
+					block();
+				}
 			} catch(Exception excep) { excep.printStackTrace(); }
 		}
 	}
-	
 	
 	// Setup del Agente 
 	protected void setup() {
