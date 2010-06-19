@@ -326,7 +326,7 @@
 		imagenes = LeerHtml.LeerImagenes(dirLeer,Configuracion.N_Informe_Test_Grupo);%>
 		<table>
 		<%for (String img:imagenes){
-			String ruta_img = dirLeer + img;%>
+			String ruta_img = dir + img;%>
 			<tr><td><img src="<%=ruta_img%>"></img></td></tr>
 		<%}%>
 		</table>
