@@ -2,9 +2,11 @@ package es.urjc.ia.web;
 
 public class Configuracion {
 	
-	public static final String DIRBASE		= "C:/Users/sandrita/workspace_PFC/gestor-estadisticas/WebContent/";
-	public static final String DIRINFORME	= "C:/Users/sandrita/workspace_PFC/gestor-estadisticas/WebContent/Informes/";
-	public static final String DIRDATA		= "C:/Users/sandrita/workspace_PFC/gestor-estadisticas/WebContent/paginasInformes/Data/";
+	//public static final String DIR 			= "C:/Program Files/Apache Software Foundation/Tomcat 5.5/webapps";
+	public static final String DIR 			= "C:/Users/sandrita/workspace_PFC";
+	public static final String DIRBASE		= DIR + "/gestor-estadisticas/WebContent/";
+	public static final String DIRINFORME	= DIRBASE + "/paginasInformes/Informes/";
+	public static final String DIRDATA		= DIRBASE + "/paginasInformes/Data/";
 
 	public static final String DIRRELATIVA = "./Data/";
 	
