@@ -1,10 +1,9 @@
 package es.urjc.ia.informes;
 
+import java.io.File;
 import java.sql.Connection;
-import java.io.*;
 import java.util.HashMap;
 
-import es.urjc.ia.web.Configuracion;
 import net.sf.jasperreports.engine.JasperCompileManager;
 import net.sf.jasperreports.engine.JasperExportManager;
 import net.sf.jasperreports.engine.JasperFillManager;
@@ -30,7 +29,7 @@ public class LanzarInforme {
 
 		Connection conn = null;
 		try {
-				conn = es.urjc.ia.baseDatos.Conexion_bbdd.getConexion(conn);		
+				conn = es.urjc.ia.baseDatos.Conexion_bbdd.getConexion(conn);	
 				JasperReport report = JasperCompileManager.compileReport(rutaJrxml);	
 		   		JasperPrint jasperPrint = JasperFillManager.fillReport(report, parametros, conn);
 		   		JasperExportManager.exportReportToHtmlFile(jasperPrint, rutaHtml);
