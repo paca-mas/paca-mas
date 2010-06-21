@@ -5,6 +5,7 @@
 <%@ page import="java.sql.*"%>
 <%@ page import="java.util.*"%>
 <%@ page import="javax.swing.*"%>
+<%@ page import="java.awt.Graphics"%>
 <%@ page import="net.sf.jasperreports.engine.*"%>
 <%@ page import="net.sf.jasperreports.view.JasperViewer"%>
 <%@ page import="java.sql.Connection"%>
@@ -136,6 +137,7 @@
 	List<String> imagenes = new ArrayList<String>(); 
 	String dirLeer = LeerHtml.CrearRutaCompleta(idUsuario);
 	String dir = LeerHtml.CrearRutaRelativa(idUsuario);
+	System.out.println(dir);
 	int num_grupo = ObtenerDatos.DatosGrupo(idUsuario);
 	// Lanzar Informe (parametros)
 	Object p1 = num_grupo;
@@ -307,8 +309,8 @@
 		}	
 
 	}
-	
 </script>
+
 </head>
 <body>
 	<div id="logo">
@@ -344,16 +346,17 @@
 		<tr><td>WARNING!!!!!!!!!! TIENES QUE ELEGIR ALGÚN ALUMNO</td></tr>
 		</table>
 		</center> 
-	<%} else {
+	<%} else {		
  		// Asignamos el valor al parametro y lo lanzamos
  		LanzarInforme.InformeEvaluacionResumen(idUsuario, auxiliar);
  		// Creamos la ruta para leer el fichero Html
- 		imagenes = LeerHtml.LeerImagenes(dirLeer,
- 		Configuracion.N_Informe_Usuarios_Resumen);%>
+ 		imagenes = LeerHtml.LeerImagenes(dir, Configuracion.N_Informe_Usuarios_Resumen);%>
 	<table>
-	<%// Mostramos las imagens de forma relativa
+	<%
+	// Mostramos las imagens de forma relativa
 	for (String img : imagenes) {
-		String ruta_img = dir + img;%>
+		String ruta_img = dir + img;
+		%>
 		<tr><td><img src="<%=ruta_img%>"></img></td></tr>
 	<%}%>
 	</table>
@@ -374,20 +377,6 @@
 <div class="post">
 <div class="title">Estadisticas de las Entregas</div><!-- end #title -->
 <div class="entry">
-	<%
-	// Asignamos los parametros y lanzamos el informe
-	LanzarInforme.InformeEntregaResumen(idUsuario, p1);
-	// Creamos la ruta para leer el fichero Html
-	imagenes = LeerHtml.LeerImagenes(dirLeer,
-	Configuracion.N_Informe_Entrega_Resumen);%>
-	<table>
-	<%// Mostramos las imagens de forma relativa
-	for (String img : imagenes) {		
-		String ruta_img = dir + img;%>
-		<tr><td><img src="<%=ruta_img%>"></img></td></tr>
-	<%}%>
-	</table>
-	
 	<div class="comment">
 	<table>
 		<tr><td></td></tr>
@@ -402,19 +391,6 @@
 <div class="post">
 <div class="title">Estadisticas del grupo</div>
 <div class="entry">
-	<%// Lanzar Informe, añadir parametro
-	LanzarInforme.InformeGrupoResumen(idUsuario, p1);
-	// Creamos la ruta para leer el fichero Html
-	imagenes = LeerHtml.LeerImagenes(dirLeer,
-	Configuracion.N_Informe_Grupo_Resumen);%>
-	<table>
-		<%// Mostramos las imagens de forma relativa
-		for (String img : imagenes) {
-			String ruta_img = dir + img;%>
-			<tr><td><img src="<%=ruta_img%>"></img></td></tr>
-		<%}%>
-	</table>
-
 	<div class="comment">
 	<table>
 		<tr><td></td></tr>
