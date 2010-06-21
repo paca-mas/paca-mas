@@ -7,6 +7,7 @@ import java.io.BufferedWriter;
 import java.io.File;
 import java.io.FileWriter;
 import java.io.IOException;
+import java.io.StringBufferInputStream;
 
 import javax.xml.parsers.DocumentBuilder;
 import javax.xml.parsers.DocumentBuilderFactory;
@@ -41,17 +42,21 @@ public class ProcesarXML {
     	}
     	// Obteher el objeto DocumentBuilderFactory
     	DocumentBuilderFactory dbf = DocumentBuilderFactory.newInstance();
+    	@SuppressWarnings("unused")
+		StringBufferInputStream buff = new StringBufferInputStream(contenido);
+    	
     	try {
     		// Usar DocumentBuilderFactory para crear un DocumentBuilder
     		DocumentBuilder db = dbf.newDocumentBuilder();
     		// Parsear a partir de un archivo
-    		dom = db.parse(ruta);
+    		dom = db.parse(buff);
     		e = parsearDocumento ();
     		
     	} 
     	catch (ParserConfigurationException pce) {pce.printStackTrace(); } 
     	catch (SAXException se) { se.printStackTrace(); } 
     	catch (IOException ioe) { ioe.printStackTrace(); }
+    	System.out.println(e);
 		return e;
     }
     
