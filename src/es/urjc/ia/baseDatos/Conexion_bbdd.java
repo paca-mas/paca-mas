@@ -4,6 +4,8 @@ import java.sql.Connection;
 import java.sql.DriverManager;
 import java.sql.SQLException;
 
+import es.urjc.ia.web.Configuracion;
+
 public class Conexion_bbdd {
 	public static void closeConexion (Connection c) throws SQLException {
 		c.close();		
@@ -20,7 +22,7 @@ public class Conexion_bbdd {
 		
 		// Se conecta con la Base de Datos
 		try {
-			conn = DriverManager.getConnection("jdbc:mysql://localhost/Prueba","root", "cobi");
+			conn = DriverManager.getConnection("jdbc:mysql://localhost/" + Configuracion.bbdd, Configuracion.usuario, Configuracion.pass);
 		} catch (SQLException e) {
 			System.out.println("Error de conexión: " + e.getMessage());
 		    System.exit(4);			
