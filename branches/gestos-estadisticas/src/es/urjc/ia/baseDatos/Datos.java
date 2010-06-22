@@ -6,10 +6,6 @@ package es.urjc.ia.baseDatos;
 
 import java.sql.*;
 
-/**
- *
- * @author alvaro
- */
 public class Datos {
     private Statement stat;
     private Connection conn;
