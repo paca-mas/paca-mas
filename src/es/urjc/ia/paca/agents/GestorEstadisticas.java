@@ -25,7 +25,6 @@ import jade.lang.acl.ACLMessage;
 import jade.util.leap.List;
 
 import java.util.ArrayList;
-import java.util.Calendar;
 import java.util.Date;
 
 import es.urjc.ia.paca.auth.ontology.AuthOntology;
@@ -43,14 +42,12 @@ import es.urjc.ia.paca.ontology.pacaOntology;
 import es.urjc.ia.paca.parser.ParsearAlumnos;
 import es.urjc.ia.paca.util.AndBuilder;
 import es.urjc.ia.paca.util.Resultado;
+import es.urjc.ia.web.Configuracion;
 
 import java.sql.Connection;
 import java.sql.DriverManager;
 import java.sql.SQLException;
 import java.sql.Statement;
-
-import org.w3c.dom.Element;
-
 
 public class GestorEstadisticas extends Agent {
 	
@@ -75,7 +72,7 @@ public class GestorEstadisticas extends Agent {
     		
     	// Se conecta con la Base de Datos
     	try {
-    		conexion = DriverManager.getConnection("jdbc:mysql://localhost/Prueba","root", "cobi");
+    		conexion = DriverManager.getConnection("jdbc:mysql://localhost/" + Configuracion.bbdd, Configuracion.usuario, Configuracion.pass);
     	} catch (SQLException e) {
     		System.out.println("Error de conexión: " + e.getMessage());
     		System.exit(4);			
@@ -107,7 +104,7 @@ public class GestorEstadisticas extends Agent {
     		
     	// Se conecta con la Base de Datos
     	try {
-    		conexion = DriverManager.getConnection("jdbc:mysql://localhost/Prueba","root", "cobi");
+    		conexion = DriverManager.getConnection("jdbc:mysql://localhost/" + Configuracion.bbdd,Configuracion.usuario, Configuracion.pass);
     	} catch (SQLException e) {
     		System.out.println("Error de conexión: " + e.getMessage());
     		System.exit(4);			
@@ -135,7 +132,7 @@ public class GestorEstadisticas extends Agent {
     		
     	// Se conecta con la Base de Datos
     	try {
-    		conexion = DriverManager.getConnection("jdbc:mysql://localhost/Prueba","root", "cobi");
+    		conexion = DriverManager.getConnection("jdbc:mysql://localhost/" + Configuracion.bbdd, Configuracion.usuario, Configuracion.pass);
     	} catch (SQLException e) {
     		System.out.println("Error de conexión: " + e.getMessage());
     		System.exit(4);			
@@ -170,7 +167,7 @@ public class GestorEstadisticas extends Agent {
     		
     	// Se conecta con la Base de Datos
     	try {
-    		conexion = DriverManager.getConnection("jdbc:mysql://localhost/Prueba","root", "cobi");
+    		conexion = DriverManager.getConnection("jdbc:mysql://localhost/" + Configuracion.bbdd, Configuracion.usuario, Configuracion.pass);
     	} catch (SQLException e) {
     		System.out.println("Error de conexión: " + e.getMessage());
     		System.exit(4);			
@@ -429,7 +426,7 @@ public class GestorEstadisticas extends Agent {
     		
     	// Se conecta con la Base de Datos
     	try {
-    		conexion = DriverManager.getConnection("jdbc:mysql://localhost/Prueba","root", "cobi");
+    		conexion = DriverManager.getConnection("jdbc:mysql://localhost/" + Configuracion.bbdd, Configuracion.usuario, Configuracion.pass);
     	} catch (SQLException e) {
     		System.out.println("Error de conexión: " + e.getMessage());
     		System.exit(4);			
@@ -485,7 +482,7 @@ public class GestorEstadisticas extends Agent {
     		
     	// Se conecta con la Base de Datos
     	try {
-    		conexion = DriverManager.getConnection("jdbc:mysql://localhost/Prueba","root", "cobi");
+    		conexion = DriverManager.getConnection("jdbc:mysql://localhost/" + Configuracion.bbdd,Configuracion.usuario, Configuracion.pass);
     	} catch (SQLException e) {
     		System.out.println("Error de conexión: " + e.getMessage());
     		System.exit(4);			
