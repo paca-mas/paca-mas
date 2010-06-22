@@ -61,6 +61,6 @@ public class Configuracion {
 
 	// Datos bbdd
 	public static final String usuario = "root";
-	public static final String pass = "cobi";
-	public static final String bbdd = "Prueba";
+	public static final String pass = "estadisticas";
+	public static final String bbdd = "BBDDEstadisticas";
 }
