@@ -2,7 +2,6 @@ package es.urjc.ia.web;
 
 public class Configuracion {
 	
-	//public static final String DIR 			= "C:/Program Files/Apache Software Foundation/Tomcat 5.5/webapps";
 	public static final String DIR 			= "C:/Users/sandrita/workspace_PFC";
 	public static final String DIRBASE		= DIR + "/gestor-estadisticas/WebContent/";
 	public static final String DIRINFORME	= DIRBASE + "/paginasInformes/Informes/";
@@ -59,4 +58,9 @@ public class Configuracion {
 
 	// Css
 	public static final String Css = "./estilos/styleEstadisticas.css";
+
+	// Datos bbdd
+	public static final String usuario = "root";
+	public static final String pass = "cobi";
+	public static final String bbdd = "Prueba";
 }
